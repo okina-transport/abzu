@@ -40,7 +40,7 @@ module.exports = new Promise(function(resolve, reject) {
     tiamatBaseUrl: {
       doc: 'Base URL for for tiamat graphql endpoint',
       format: 'url',
-      default: 'https://api-test.entur.org/stop_places/1.0/graphql',
+	    default: 'https://entur.okina.fr/services/stop_places/graphql',
       env: 'TIAMAT_BASE_URL'
     },
     endpointBase: {
@@ -58,7 +58,7 @@ module.exports = new Promise(function(resolve, reject) {
     authServerUrl: {
       doc: 'URL to keycloak auth server',
       format: String,
-      default: 'https://www-test.entur.org/auth/',
+      default: 'https://auth.okina.fr/auth/',
       env: 'AUTH_SERVER_URL'
     }
   });
