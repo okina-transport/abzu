@@ -28,7 +28,9 @@ import {
   updateChildOfParentStop,
   mutateRemoveTag,
   mutateCreateTag,
-  mutateTerminateStopPlace
+  mutateTerminateStopPlace,
+  mutateGroupOfStopPlaces,
+  deleteGroupMutation
 } from './Mutations';
 import {
   allVersionsOfStopPlace,
@@ -43,7 +45,8 @@ import {
   findTagByNameQuery,
   getStopById,
   getQueryTopographicPlaces,
-  getTagsByNameQuery
+  getTagsByNameQuery,
+  getGroupOfStopPlaceQuery
 } from '../graphql/Queries';
 import mapToMutationVariables from '../modelUtils/mapToQueryVariables';
 
@@ -194,7 +197,25 @@ export const createParentStopPlace = (client, {name, description, versionComment
       coordinates,
       validBetween,
       stopPlaceIds
-    }
+    },
+    fetchPolicy: 'network-only'
+  });
+
+
+export const mutateGroupOfStopPlace = (client, variables) =>
+  new Promise((resolve, reject) => {
+    client.mutate({
+      mutation: mutateGroupOfStopPlaces,
+      variables,
+      fetchPolicy: 'network-only'
+    }).then(({data}) =>{
+      const id = data['mutateGroupOfStopPlaces']
+        ? data['mutateGroupOfStopPlaces'].id
+        : null;
+      resolve(id);
+    }).catch(err => {
+      reject(null);
+    });
   });
 
 export const getStopPlaceVersions = (client, stopPlaceId) =>
@@ -261,7 +282,8 @@ export const moveQuaysToNewStop = (client, quayIds, fromVersionComment, toVersio
       quayIds,
       fromVersionComment,
       toVersionComment
-    }
+    },
+    fetchPolicy: 'network-only',
   })
 );
 
@@ -359,6 +381,24 @@ export const removeTag = (client, name, idReference) =>
     variables: {
       name,
       idReference
+    },
+    fetchPolicy: 'network-only'
+  });
+
+export const getGroupOfStopPlacesBy = (client, id) =>
+  client.query({
+    query: getGroupOfStopPlaceQuery,
+    variables: {
+      id
+    },
+    fetchPolicy: 'network-only'
+  });
+
+export const deleteGroupOfStopPlaces = (client, id) =>
+  client.mutate({
+    mutation: deleteGroupMutation,
+    variables: {
+      id
     },
     fetchPolicy: 'network-only'
   });

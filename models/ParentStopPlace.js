@@ -92,6 +92,19 @@ class ParentStopPlace {
         clientStop.validBetween = stop.validBetween;
       }
 
+      if (stop.groups && stop.groups.length) {
+        clientStop.groups = stop.groups.map(group => {
+          let newGroup = {...group};
+          newGroup.name = group.name && group.name.value
+            ? group.name.value : '';
+          return newGroup;
+        });
+        clientStop.belongsToGroup = true;
+      } else {
+        clientStop.groups = [];
+        clientStop.belongsToGroup = false;
+      }
+
       if (stop.tariffZones && stop.tariffZones.length) {
         clientStop.tariffZones = stop.tariffZones.map(zone => {
           if (zone.name && zone.name.value) {
@@ -119,7 +132,7 @@ class ParentStopPlace {
 
       if (stop.geometry && stop.geometry.coordinates) {
         let coordinates = stop.geometry.coordinates[0].slice();
-        // Leaflet uses latLng, GeoJSON [long,lat]
+        // Leaflet uses latLng, GeoJSON is [long,lat]
         clientStop.location = [
           setDecimalPrecision(coordinates[1], 6),
           setDecimalPrecision(coordinates[0], 6),

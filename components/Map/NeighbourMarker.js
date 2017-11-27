@@ -42,7 +42,8 @@ class NeighbourMarker extends React.Component {
     id: PropTypes.string,
     handleHideQuaysForNeighbourStop: PropTypes.func,
     isShowingQuays: PropTypes.bool.isRequired,
-    isEditingStop: PropTypes.bool.isRequired
+    isEditingStop: PropTypes.bool.isRequired,
+    isEditingGroup: PropTypes.bool
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -80,12 +81,15 @@ class NeighbourMarker extends React.Component {
       handleHideQuays,
       isShowingQuays,
       handleMergeStopPlace,
+      handleAddToGroup,
       hasExpired,
       isMultimodal,
       isChildOfParent,
       submode,
       stopPlace,
-      tokenParsed
+      tokenParsed,
+      isEditingGroup,
+      handleCreateGroup
     } = this.props;
 
     const { createMultimodalNotAllowed } = this.state;
@@ -139,7 +143,6 @@ class NeighbourMarker extends React.Component {
           <div>
             <div
               style={{
-                marginBottom: 10,
                 display: 'inline-block',
                 width: '100%',
                 marginBottom: 15,
@@ -175,6 +178,18 @@ class NeighbourMarker extends React.Component {
                 {position[1]}
               </span>
             </div>
+            <PopupButton
+              hidden={!isEditingGroup || isChildOfParent}
+              onClick={() => handleAddToGroup(id)}
+              label={translations.addToGroup}
+            />
+            <PopupButton
+              hidden={isChildOfParent}
+              onClick={() => {
+                handleCreateGroup(id)
+              }}
+              label={translations.createGOS}
+            />
             <PopupButton
               hidden={!isMergingStopAllowed}
               onClick={() => handleMergeStopPlace(id, name)}

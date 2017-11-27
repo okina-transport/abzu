@@ -99,7 +99,9 @@ class StopPlaceMarker extends React.Component {
       id,
       disabled,
       disabledForSearch,
-      hasExpired
+      hasExpired,
+      isEditingGroup,
+      handleCreateGroup
     } = this.props;
 
     const markerLocation = position || missingCoordinatesMap[id];
@@ -175,12 +177,25 @@ class StopPlaceMarker extends React.Component {
               label={translations.adjustCentroid}
             />
             <PopupButton
+              hidden={isMultimodalChild}
+              onClick={() => {
+                handleCreateGroup(id)
+              }}
+              label={translations.createGOS}
+            />
+            <PopupButton
               hidden={!isMultimodalChild}
               onClick={() =>
                 isShowingQuays ? handleHideQuays(id) : handleShowQuays(id)}
               label={
                 isShowingQuays ? translations.hideQuays : translations.showQuays
               }
+            />
+            <PopupButton
+              hidden={!isEditingGroup}
+              labelStyle={{background: 'rgb(152,51,47)'}}
+              onClick={() => this.props.removeFromGroup(id)}
+              label={translations.removeFromGroup}
             />
             <PopupButton
               hidden={isMultimodalChild || isMultimodal || disabledForSearch || hasExpired}
