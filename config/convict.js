@@ -70,7 +70,7 @@ module.exports = new Promise(function (resolve, reject) {
     netexPrefix: {
       doc: 'Netex Prefix to be used',
       format: String,
-      default: 'NSR',
+      default: 'NAQ',
       env: 'NETEX_PREFIX'
     }
   });
