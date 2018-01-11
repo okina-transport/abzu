@@ -372,10 +372,14 @@ helpers.mapReportSearchResultsToClientStop = data => {
   stops.forEach(stop => {
     let stopPlace = helpers.mapStopToClientStop(stop, true, null, null, null);
 
-    // TODO Okina : Is emptying quays intentional ? If it's not returned, it can't be expanded and displayed in "reports" view. Commenting for now.
-    // stopPlace.quays = [];
+    if (!stopPlace.quays) {
+      stopPlace.quays = [];
+    }
 
-    stopPlace.parking = [];
+    if (!stopPlace.parking) {
+      stopPlace.parking = [];
+    }
+
     if (stopPlace.isParent && stopPlace.children) {
       stopPlace.modesFromChildren = stopPlace.children.map(child => ({
         submode: child.submode,
