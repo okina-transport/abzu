@@ -68,6 +68,7 @@
     "redux-raven-middleware": "1.2.0",
     "redux-thunk": "2.2.0",
     "request": "2.81.0",
+    "serve-favicon": "^2.4.5",
     "style-loader": "0.18.2",
     "webpack": "3.6.0",
     "webpack-dev-middleware": "1.12.0",

@@ -9,6 +9,7 @@ var fs = require('fs');
 var axios = require('axios');
 var introspectionQuery = require('./graphql/introspection').introspectionQuery;
 var bodyParser = require('body-parser');
+var favicon = require('serve-favicon');
 const Routes = require('./routes/');
 const getRouteEntries = require('./routes/entries').getRouteEntries;
 
@@ -112,6 +113,8 @@ convictPromise
     app.get(ENDPOINTBASE + 'config/keycloak.json', function(req, res) {
       res.sendFile(__dirname + '/config/keycloak.json');
     });
+
+    app.use(favicon(path.join(__dirname, 'static/icons', 'favicon.ico')))
 
     app.post(ENDPOINTBASE + 'timeOffset', function(req, res) {
       if (req.body.clientTime) {
@@ -231,11 +234,12 @@ convictPromise
     const getPage = () =>
       `<html>
       <head>
-        <title>Stop places</title>
+        <title>Référentiel Multimodal Régional</title>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="favicon.ico">
       </head>
       <body>
         <div id="root">
