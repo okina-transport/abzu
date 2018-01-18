@@ -143,6 +143,10 @@ convictPromise
       res.sendFile(__dirname + '/static/icons/svg-sprite.svg');
     });
 
+    app.get(ENDPOINTBASE + 'doc', function(req, res) {
+      res.sendFile(__dirname + '/doc/MAN-NA-RMRPA-V2.0.pdf');
+    });
+
     app.get(ENDPOINTBASE, function(req, res) {
       res.send(getPage());
     });
