@@ -64,7 +64,7 @@ module.exports = new Promise(function (resolve, reject) {
     authRealmName: {
       doc: 'Authentication realm name',
       format: String,
-      default: 'rutebanken',
+      default: 'Naq',
       env: 'AUTH_REALM_NAME'
     },
     netexPrefix: {
