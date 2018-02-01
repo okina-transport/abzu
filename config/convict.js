@@ -58,7 +58,7 @@ module.exports = new Promise(function (resolve, reject) {
     authServerUrl: {
       doc: 'URL to keycloak auth server',
       format: String,
-      default: 'https://auth.okina.fr/auth/',
+      default: 'https://auth-rmr.nouvelle-aquitaine.pro/auth',
       env: 'AUTH_SERVER_URL'
     },
     authRealmName: {
