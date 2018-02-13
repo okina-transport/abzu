@@ -483,7 +483,8 @@ class SearchBox extends React.Component {
               style={{
                 width: '100%',
                 margin: 'auto',
-                border: '1px solid hsla(182, 53%, 51%, 0.1)'
+                border: '1px solid rgb(219, 219, 219)',
+                backgroundColor: 'rgb(245, 245, 245)'
               }}
             >
               <ModalityFilter
@@ -493,7 +494,7 @@ class SearchBox extends React.Component {
               />
               {showMoreFilterOptions
                 ? <div>
-                    <div style={{ width: '100%', textAlign: 'center' }}>
+                    <div style={{ width: '100%', textAlign: 'center', marginBottom: 15 }}>
                       <FlatButton
                         onClick={() => this.handleToggleFilter(false)}
                         style={{ fontSize: 12 }}
