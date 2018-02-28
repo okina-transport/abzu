@@ -32,6 +32,14 @@ export const supportedNameTypes = [
       fr: 'Traduction',
     },
   },
+  {
+    value: 'other',
+    name: {
+      en: 'Other',
+      nb: 'Annet',
+      fr: 'Autre',
+     },
+  },
 ];
 
 export const allNameTypes = {
@@ -45,6 +53,11 @@ export const allNameTypes = {
     nb: 'Oversettelse',
     fr: 'Traduction',
   },
+  other: {
+    en: 'Other',
+    nb: 'Annet',
+    fr: 'Autre',
+  },
   label: {
     en: 'Label',
     nb: 'Merkelapp',
@@ -54,11 +67,6 @@ export const allNameTypes = {
     en: 'Copy',
     nb: 'Kopi',
     fr: 'Copie',
-  },
-  other: {
-    en: 'Other',
-    nb: 'Annet',
-    fr: 'Autre',
   },
 };
 
