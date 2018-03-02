@@ -84,7 +84,7 @@ class SearchBox extends React.Component {
         chips,
         showFutureAndExpired,
         code
-      ).then(response => {
+      ).then(() => {
         this.setState({ loading: false });
       });
     };
@@ -436,22 +436,16 @@ class SearchBox extends React.Component {
         place => topoiChips.map(chip => chip.value).indexOf(place.id) == -1
       )
       .map(place => {
-        let name = this.getTopographicalNames(place);
-        let shortName = this.getTopographicalNames(place);
-
-          if(shortName.length > 35){
-              shortName = shortName.substring(0, 35) + "...";
-          }
-
-          return {
-              text: name,
-              id: place.id,
-              value: (
-                  <MenuItem
-                      primaryText={shortName}
-                      style={{fontSize: '0.8em'}}
-                      secondaryText={formatMessage({ id: place.topographicPlaceType })}
-                  />
+        const name = this.getTopographicalNames(place);
+        return {
+          text: name,
+          id: place.id,
+          value: (
+            <MenuItem
+              primaryText={name}
+              style={{fontSize: '0.8em', overflow: 'hidden', whiteSpace: 'no-wrap', textOverflow: 'ellipsis'}}
+              secondaryText={formatMessage({ id: place.topographicPlaceType })}
+            />
           ),
           type: place.topographicPlaceType
         };
@@ -547,14 +541,13 @@ class SearchBox extends React.Component {
                         onUpdateInput={this.handleTopographicalPlaceInput.bind(
                             this
                         )}
+                        listStyle={{ width: 'auto', minWidth: 300 }}
                         filter={AutoComplete.caseInsensitiveFilter}
                         style={{
-                            margin: 'auto',
-                            width: '100%',
-                            marginTop: -20
+                          margin: 'auto',
+                          width: '100%',
+                          marginTop: -20,
                         }}
-                        menuStyle={{width: 450}}
-                        listStyle={{width: 450}}
                         maxSearchResults={7}
                         ref="topoFilter"
                         onNewRequest={this.handleAddChip.bind(this)}
