@@ -512,8 +512,6 @@ class SearchBox extends React.Component {
                           width: '100%',
                           marginTop: -20,
                         }}
-                        menuStyle={{width: 450}}
-                        listStyle={{width: 450}}
                         maxSearchResults={7}
                         ref="topoFilter"
                         onNewRequest={this.handleAddChip.bind(this)}
