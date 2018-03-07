@@ -153,12 +153,12 @@ class SearchBox extends React.Component {
   toggleSearchWithCode(value) {
     const { searchText, topoiChips, stopTypeFilter, showFutureAndExpired } = this.props;
     if (searchText) {
-      this.handleSearchUpdate(searchText, null, null, {
-        searchWithCode: value,
-        topoiChips,
-        stopType: stopTypeFilter,
-        showFutureAndExpired
-      });
+        this.handleSearchUpdate(searchText, null, null, {
+           searchWithCode: value,
+           topoiChips,
+           stopType: stopTypeFilter,
+           showFutureAndExpired
+        });
     }
     this.props.dispatch(UserActions.toggleSearchWithCode(value));
   }
@@ -355,18 +355,18 @@ class SearchBox extends React.Component {
     return menuItems;
   }
 
-  getCode(searchWithCode) {
-    let code = null;
-    let codeJSON = JSON.parse(this.props.code);
-    codeJSON = codeJSON.o.toLowerCase();
+  getCode(searchWithCode){
+      let code = null;
+      let codeJSON = JSON.parse(this.props.code);
+      codeJSON = codeJSON.o.toLowerCase();
 
-    if (searchWithCode && codeJSON !== "naq") {
-      code = codeJSON;
-    }
-    else {
-      code = null;
-    }
-    return code;
+      if(searchWithCode && codeJSON !== window.config.netexPrefix.toLowerCase()){
+          code = codeJSON;
+      }
+      else{
+          code = null;
+      }
+      return code;
   }
 
   render() {
