@@ -510,7 +510,8 @@ class SearchBox extends React.Component {
               style={{
                 width: '100%',
                 margin: 'auto',
-                border: '1px solid hsla(182, 53%, 51%, 0.1)'
+                border: '1px solid rgb(219, 219, 219)',
+                backgroundColor: 'rgb(245, 245, 245)'
               }}
             >
               <ModalityFilter
@@ -520,36 +521,37 @@ class SearchBox extends React.Component {
               />
               {showMoreFilterOptions
                 ? <div>
-                  <div style={{ width: '100%', textAlign: 'center' }}>
-                    <FlatButton
-                      onClick={() => this.handleToggleFilter(false)}
-                      style={{ fontSize: 12 }}
-                    >
-                      {formatMessage({ id: 'filters_less' })}
-                    </FlatButton>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <AutoComplete
-                      floatingLabelText={formatMessage({
-                        id: 'filter_by_topography'
-                      })}
-                      floatingLabelStyle={{ marginTop: -22, marginLeft: 5 }}
-                      dataSource={topographicalPlacesDataSource}
-                      onUpdateInput={this.handleTopographicalPlaceInput.bind(
-                        this
-                      )}
-                      listStyle={{ width: 'auto', minWidth: 300 }}
-                      filter={AutoComplete.caseInsensitiveFilter}
-                      style={{
-                        margin: 'auto',
-                        width: '100%',
-                        marginTop: -20,
-                      }}
-                      maxSearchResults={7}
-                      ref="topoFilter"
-                      onNewRequest={this.handleAddChip.bind(this)}
-                    />
-                  </div>
+                    <div style={{ width: '100%', textAlign: 'center', marginBottom: 15 }}>
+                      <FlatButton
+                        onClick={() => this.handleToggleFilter(false)}
+                        style={{ fontSize: 12 }}
+                      >
+                        {formatMessage({ id: 'filters_less' })}
+                      </FlatButton>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <AutoComplete
+                        floatingLabelText={formatMessage({
+                          id: 'filter_by_topography'
+                        })}
+                        floatingLabelStyle={{marginTop: -22, marginLeft: 5}}
+                        dataSource={topographicalPlacesDataSource}
+                        onUpdateInput={this.handleTopographicalPlaceInput.bind(
+                            this
+                        )}
+                        listStyle={{ width: 'auto', minWidth: 300 }}
+                        filter={AutoComplete.caseInsensitiveFilter}
+                        style={{
+                          margin: 'auto',
+                          width: '100%',
+                          marginTop: -20,
+                        }}
+                        maxSearchResults={7}
+                        ref="topoFilter"
+                        onNewRequest={this.handleAddChip.bind(this)}
+                      />
+
+                    </div>
                   <CheckBox
                     checked={showFutureAndExpired}
                     onCheck={(e, value) =>
@@ -564,11 +566,11 @@ class SearchBox extends React.Component {
                     label={formatMessage({ id: 'search_with_code' })}
                     labelStyle={{ fontSize: '0.8em' }}
                   />
-                  <TopographicalFilter
-                    topoiChips={topoiChips}
-                    handleDeleteChip={this.handleDeleteChip.bind(this)}
-                  />
-                </div>
+                    <TopographicalFilter
+                      topoiChips={topoiChips}
+                      handleDeleteChip={this.handleDeleteChip.bind(this)}
+                    />
+                  </div>
                 : <div style={{ width: '100%', textAlign: 'center' }}>
                   <FlatButton
                     style={{ fontSize: 12 }}
