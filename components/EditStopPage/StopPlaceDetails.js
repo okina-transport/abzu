@@ -57,8 +57,8 @@ import TagTray from '../MainPage/TagTray';
 import BelongsToGroup from './../MainPage/BelongsToGroup';
 import AutoComplete from 'material-ui/AutoComplete';
 import {getStopPlaceName} from '../../graphql/Actions';
-import {createSearchMenuItem} from "../MainPage/SearchMenuItem";
 import MenuItem from 'material-ui/MenuItem';
+import MdSpinner from '../../static/icons/spinner';
 
 class StopPlaceDetails extends React.Component {
     constructor(props) {
@@ -71,16 +71,31 @@ class StopPlaceDetails extends React.Component {
             altNamesDialogOpen: false,
             tariffZoneOpen: false,
             tagsOpen: false,
-            loading: false
+            loading: false,
+            currentStopPlaceName: props.stopPlace.name || ''
         };
 
         this.updateStopName = debounce(value => {
+            this.setState({loading: true});
             this.props.dispatch(StopPlaceActions.changeStopName(value));
-        }, 200);
+        }, 5);
 
         this.updateStopDescription = debounce(value => {
             this.props.dispatch(StopPlaceActions.changeStopDescription(value));
         }, 200);
+
+
+        const searchStopName = (searchText, dataSource) => {
+            getStopPlaceName(this.props.client, searchText).then(result => {
+                this.setState({
+                    dataSource: result.data.stopPlaceNameRecommendations,
+                    loading: false
+                });
+            });
+
+        };
+
+        this.debouncedSearchStopName = debounce(searchStopName, 1000);
     }
 
     handleOpenTags() {
@@ -199,18 +214,16 @@ class StopPlaceDetails extends React.Component {
         });
     }
 
-    handleStopNameChange(event) {
-        const name = event.target.value;
-        getStopPlaceName(client, name).then(result => {
-            this.setState({
-                dataSource: result.data.stopPlaceName
-            });
-        });
+    handleUpdateStopName(searchText, dataSource) {
+        this.updateStopName(searchText);
+        this.debouncedSearchStopName(searchText, dataSource);
+    }
 
+    handleStopNameSelected(event) {
+        const name = event.value.props.primaryText.props.children;
         this.setState({
             name: name
         });
-
         this.updateStopName(name);
     }
 
@@ -329,25 +342,43 @@ class StopPlaceDetails extends React.Component {
         return unknownStopPlaceType[locale];
     }
 
-    getMenuItems(nextProps) {
-        const { dataSource, topoiChips, stopTypeFilter } = nextProps;
-        const { formatMessage } = nextProps.intl;
+    getMenuItems(dataSource, nextProps, currentStopPlaceName) {
+        const {formatMessage} = nextProps.intl;
         let menuItems = [];
 
         if (dataSource && dataSource.length) {
-            menuItems = dataSource.map(element =>
-                createSearchMenuItem(element, formatMessage)
-            );
-        } else {
             menuItems = [
                 {
                     text: '',
                     value: (
                         <MenuItem
-                            style={{ paddingLeft: 10, paddingRight: 10, width: 'auto' }}
+                            style={{paddingLeft: 10, paddingRight: 10, width: 'auto'}}
                             primaryText={
-                                <div style={{ fontWeight: 600, fontSize: '0.8em' }}>
-                                    {formatMessage({ id: 'no_results_found' })}
+                                <div style={{fontWeight: 600, fontSize: '0.8em'}}>
+                                    {dataSource}
+                                </div>
+                            }
+                        />
+                    )
+                }
+            ];
+        } else if (nextProps.stopPlace.name != currentStopPlaceName) {
+            menuItems = [
+                {
+                    text: '',
+                    value: (
+                        <MenuItem
+                            style={{paddingLeft: 10, paddingRight: 10, width: 'auto', pointerEvents: 'none'}}
+                            primaryText={
+                                <div style={{fontWeight: 600, fontSize: '0.8em'}}>
+                                    {formatMessage({id: 'conforming_name'})}
+                                    <IconButton
+                                        iconClassName="material-icons"
+                                        style={{verticalAlign: 'middle'}}
+                                        iconStyle={{color: '#24a027'}}
+                                    >
+                                        done
+                                    </IconButton>
                                 </div>
                             }
                         />
@@ -356,46 +387,6 @@ class StopPlaceDetails extends React.Component {
             ];
         }
 
-        if (stopTypeFilter.length || topoiChips.length) {
-            const filterNotification = {
-                text: '',
-                value: (
-                    <MenuItem
-                        style={{
-                            paddingRight: 10,
-                            width: 'auto',
-                            paddingTop: 2,
-                            paddingBottom: 2
-                        }}
-                        disabled={true}
-                        primaryText={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    borderTop: '1px solid #000'
-                                }}
-                            >
-                <span style={{ fontSize: '0.8em', color: '#777' }}>
-                  {formatMessage({ id: 'filters_are_applied' })}
-                </span>
-                                <span
-                                    onClick={() => this.removeFiltersAndSearch()}
-                                    style={{
-                                        fontSize: '0.8em',
-                                        color: getPrimaryDarkerColor(),
-                                        marginRight: 5,
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                  {formatMessage({ id: 'remove' })}
-                </span>
-                            </div>
-                        }
-                    />
-                )
-            };
-        }
         return menuItems;
     }
 
@@ -418,7 +409,9 @@ class StopPlaceDetails extends React.Component {
             weightingOpen,
             weightingAnchorEl,
             tariffZoneOpen,
-            loading
+            loading,
+            dataSource,
+            currentStopPlaceName
         } = this.state;
 
         const wheelchairAccess = getIn(
@@ -473,34 +466,32 @@ class StopPlaceDetails extends React.Component {
         const parentStopHref = belongsToParent ? createStopPlaceHref(getIn(stopPlace, ['parentStop', 'id'], null)) : '';
         const primaryDarker = getPrimaryDarkerColor();
 
-        const menuItems = this.getMenuItems(this.props);
-        const Loading = loading &&
-            !dataSource.length && [
-                {
-                    text: '',
-                    value: (
-                        <MenuItem
-                            style={{paddingRight: 10, width: 'auto'}}
-                            primaryText={
-                                <div
-                                    style={{
-                                        fontWeight: 600,
-                                        fontSize: '0.8em',
-                                        display: 'flex',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <MdSpinner/>
-                                    <div style={{marginLeft: 5}}>
-                                        {formatMessage({id: 'loading'})}
-                                    </div>
+        const menuItems = this.getMenuItems(dataSource, this.props, currentStopPlaceName);
+        const Loading = loading && [
+            {
+                text: '',
+                value: (
+                    <MenuItem
+                        style={{paddingRight: 10, width: 'auto'}}
+                        primaryText={
+                            <div
+                                style={{
+                                    fontWeight: 600,
+                                    fontSize: '0.8em',
+                                    display: 'flex',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <MdSpinner/>
+                                <div style={{marginLeft: 5}}>
+                                    {formatMessage({id: 'loading'})}
                                 </div>
-                            }
-                        />
-                    )
-                }
-            ];
-
+                            </div>
+                        }
+                    />
+                )
+            }
+        ];
 
         return (
             <div style={fixedHeader}>
@@ -604,30 +595,21 @@ class StopPlaceDetails extends React.Component {
                 )}
                 <div style={{display: 'flex', alignItems: 'center'}}>
                     <AutoComplete
-                        textFieldStyle={{width: 380}}
+                        textFieldStyle={{width: 300}}
                         animated={false}
                         openOnFocus
                         hintText={formatMessage({id: 'name'})}
                         dataSource={
-                            loading && !dataSource.length ? Loading : menuItems || []
+                            loading ? Loading : menuItems || []
                         }
                         filter={(searchText, key) => searchText !== ''}
-                        onUpdateInput={this.handleStopNameChange.bind(this)}
-                        maxSearchResults={10}
-                        searchText={this.props.searchText}
+                        onUpdateInput={this.handleUpdateStopName.bind(this)}
+                        searchText={this.props.searchText || name}
                         ref="searchText"
                         onNewRequest={this.handleStopNameSelected.bind(this)}
                         listStyle={{width: 'auto'}}
                         errorText={(name && name.trim().length) ? '' : formatMessage({id: 'name_is_required'})}
-                    />
-                    <TextField
-                        hintText={formatMessage({id: 'name'})}
-                        floatingLabelText={formatMessage({id: 'name'})}
                         style={{marginTop: -10, width: 300}}
-                        value={name}
-                        disabled={disabled}
-                        errorText={(name && name.trim().length) ? '' : formatMessage({id: 'name_is_required'})}
-                        onChange={this.handleStopNameChange.bind(this)}
                     />
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <ToolTippable toolTipText={tariffZonesHint}>
@@ -840,7 +822,8 @@ class StopPlaceDetails extends React.Component {
 
 const mapStateToProps = state => ({
     stopPlace: state.stopPlace.current,
-    keyValuesDialogOpen: state.user.keyValuesDialogOpen
+    keyValuesDialogOpen: state.user.keyValuesDialogOpen,
+    client: state.user.client
 });
 
 export default connect(mapStateToProps)(StopPlaceDetails);
