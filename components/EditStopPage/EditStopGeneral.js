@@ -60,6 +60,8 @@ import { getIn, getIsCurrentVersionMax } from '../../utils/';
 import VersionsPopover from './VersionsPopover';
 import RequiredFieldsMissingDialog from '../Dialogs/RequiredFieldsMissingDialog';
 import Routes from '../../routes/';
+import ToolTippable from "./ToolTippable";
+import Warning from 'material-ui/svg-icons/alert/warning';
 
 
 class EditStopGeneral extends React.Component {
@@ -452,6 +454,19 @@ class EditStopGeneral extends React.Component {
     }
   }
 
+  severalDataProducers(){
+      const {stopPlace} = this.props;
+      let importerIdDataProducer = [];
+      let severalDP = false;
+      stopPlace.importedId.forEach((element) => {
+          if(importerIdDataProducer[stopPlace.importedId.indexOf(element) - 1] && importerIdDataProducer[stopPlace.importedId.indexOf(element) - 1] !== element.substring(0,3)){
+              severalDP = true;
+          }
+          importerIdDataProducer.push(element.substring(0, 3));
+      });
+      return severalDP;
+  }
+
   render() {
     const {
       stopPlace,
@@ -483,13 +498,14 @@ class EditStopGeneral extends React.Component {
       quayItemName: this.getQuayItemName(locale, stopPlace),
       capacity: formatMessage({ id: 'total_capacity' }),
       parking: formatMessage({ id: 'parking_general' }),
-      parkAndRide: formatMessage({ id: 'parking' }), 
+      parkAndRide: formatMessage({ id: 'parking' }),
       bikeParking: formatMessage({ id: 'bike_parking' }),
       unknown: formatMessage({ id: 'uknown_parking_type' }),
       elements: formatMessage({ id: 'elements' }),
       versions: formatMessage({ id: 'versions' }),
       validBetween: formatMessage({ id: 'valid_between' }),
-      notAssigned: formatMessage({id: 'not_assigned'})
+      notAssigned: formatMessage({id: 'not_assigned'}),
+      severalDataProducers: formatMessage({ id: 'several_data_producers' })
     };
 
     const stopPlaceLabel = this.getTitleText(stopPlace, originalStopPlace, formatMessage);
@@ -543,6 +559,15 @@ class EditStopGeneral extends React.Component {
               onClick={() => this.handleAllowUserToGoBack()}
             />
             <div>{stopPlaceLabel}</div>
+              {this.severalDataProducers() &&
+              <ToolTippable
+                  toolTipText={translations.severalDataProducers}
+              >
+                  <Warning
+                      color="orange"
+                      style={{ width: 20, height: 20, marginRight: 25 }}
+                  />
+              </ToolTippable>}
           </div>
           <VersionsPopover
             versions={versions}
@@ -653,6 +678,7 @@ class EditStopGeneral extends React.Component {
                 intl={intl}
                 serverTimeDiff={this.props.serverTimeDiff}
                 currentValidBetween={stopPlace.validBetween}
+                severalDataProducers={this.severalDataProducers()}
               />
             : null}
           <MergeStopDialog
