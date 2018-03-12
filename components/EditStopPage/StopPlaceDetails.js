@@ -56,7 +56,7 @@ import TagsDialog from './TagsDialog';
 import TagTray from '../MainPage/TagTray';
 import BelongsToGroup from './../MainPage/BelongsToGroup';
 import AutoComplete from 'material-ui/AutoComplete';
-import {getStopPlaceName} from '../../graphql/Actions';
+import {getStopPlaceName} from '../../graphql/Tiamat/actions';
 import MenuItem from 'material-ui/MenuItem';
 import MdSpinner from '../../static/icons/spinner';
 
