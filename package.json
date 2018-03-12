@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
+    "build-dev-local": "BABEL_ENV=development NODE_ENV=development TIAMAT_ENV=development TIAMAT_BASE_URL=http://localhost:8585/services/stop_places/graphql webpack --config ./webpack.prod.config.js",
     "dev-with-integ-backend": "port=9000 NODE_ENV=development TIAMAT_ENV=test node server.js",
     "dev": "NODE_ENV=development TIAMAT_ENV=test node server.js",
     "dev-local": "port=9000 NODE_ENV=development TIAMAT_ENV=development TIAMAT_BASE_URL=http://localhost:8585/services/stop_places/graphql node server.js",
