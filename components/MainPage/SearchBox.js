@@ -29,7 +29,10 @@ import MenuItem from 'material-ui/MenuItem';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import FavoriteManager from '../../singletons/FavoriteManager';
 import CoordinatesDialog from '../Dialogs/CoordinatesDialog';
-import { findEntitiesWithFilters, findTopographicalPlace } from '../../graphql/Actions';
+import {
+  findEntitiesWithFilters,
+  findTopographicalPlace
+} from '../../graphql/Tiamat/actions';
 import { withApollo } from 'react-apollo';
 import FavoritePopover from './FavoritePopover';
 import ModalityFilter from '../EditStopPage/ModalityFilter';
