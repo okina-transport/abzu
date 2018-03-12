@@ -85,7 +85,7 @@ class StopPlaceDetails extends React.Component {
         }, 200);
 
 
-        const searchStopName = (searchText, dataSource) => {
+        const searchStopName = (searchText) => {
             getStopPlaceName(this.props.client, searchText).then(result => {
                 this.setState({
                     dataSource: result.data.stopPlaceNameRecommendations,
