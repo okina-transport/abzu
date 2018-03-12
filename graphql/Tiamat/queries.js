@@ -13,7 +13,7 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 import gql from 'graphql-tag';
-import Fragments from './Fragments';
+import Fragments from './fragments';
 
 export const neighbourStopPlaceQuays = gql`
   query neighbourStopPlaceQuays($id: String!) {
@@ -242,7 +242,7 @@ export const getStopById = gql`
 `;
 
 export const findStop = gql`
-    query findStop($query: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $pointInTime: DateTime) {
+    query findStop($query: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $pointInTime: DateTime, $code: String) {
         groupOfStopPlaces(query: $query, size: 7) {
             id
             name {
@@ -274,7 +274,7 @@ export const findStop = gql`
                 }
             }
         }
-        stopPlace(query: $query, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, size: 7, pointInTime: $pointInTime) {
+        stopPlace(query: $query, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, size: 7, pointInTime: $pointInTime, code: $code) {
             id
             groups {
                 id
@@ -352,8 +352,8 @@ export const findStop = gql`
 `;
 
 export const findStopForReport = gql`
-    query findStopForReport($query: String, $importedId: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $withoutLocationOnly: Boolean!, $withDuplicateImportedIds: Boolean!, $pointInTime: DateTime, $withNearbySimilarDuplicates: Boolean, $tags: [String], $withTags: Boolean) {
-        stopPlace(query: $query, importedId: $importedId, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, withoutLocationOnly: $withoutLocationOnly, withDuplicatedQuayImportedIds: $withDuplicateImportedIds, pointInTime: $pointInTime, size: 300, withNearbySimilarDuplicates: $withNearbySimilarDuplicates, tags: $tags, withTags: $withTags) {
+    query findStopForReport($query: String, $importedId: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $withoutLocationOnly: Boolean!, $withDuplicateImportedIds: Boolean!, $pointInTime: DateTime, $withNearbySimilarDuplicates: Boolean, $tags: [String], $withTags: Boolean, $code: String) {
+        stopPlace(query: $query, importedId: $importedId, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, withoutLocationOnly: $withoutLocationOnly, withDuplicatedQuayImportedIds: $withDuplicateImportedIds, pointInTime: $pointInTime, size: 300, withNearbySimilarDuplicates: $withNearbySimilarDuplicates, tags: $tags, withTags: $withTags, code: $code) {
             ...on StopPlace {
                 ...ReportStopPlace
             }

@@ -32,62 +32,62 @@ import {
     mutateGroupOfStopPlaces,
     deleteGroupMutation,
     deleteParkingMutation
-} from './Mutations';
+} from './mutations';
 import {
-    allVersionsOfStopPlace,
-    allEntities,
-    stopPlaceBBQuery,
-    getMergeInfoStopPlace,
-    topopGraphicalPlacesQuery,
-    findStop,
-    getStopPlacesById,
-    getPolygons,
-    getTagsQuery,
-    findTagByNameQuery,
-    getStopById,
-    getQueryTopographicPlaces,
-    getTagsByNameQuery,
-    getGroupOfStopPlaceQuery,
-    findTariffones,
-    getStopPlaceNameWithRecommendations
-} from '../graphql/Queries';
-import mapToMutationVariables from '../modelUtils/mapToQueryVariables';
+  allVersionsOfStopPlace,
+  allEntities,
+  stopPlaceBBQuery,
+  getMergeInfoStopPlace,
+  topopGraphicalPlacesQuery,
+  findStop,
+  getStopPlacesById,
+  getPolygons,
+  getTagsQuery,
+  findTagByNameQuery,
+  getStopById,
+  getQueryTopographicPlaces,
+  getTagsByNameQuery,
+  getGroupOfStopPlaceQuery,
+  findTariffones,
+  getStopPlaceNameWithRecommendations
+} from './queries';
+import mapToMutationVariables from '../../modelUtils/mapToQueryVariables';
 
 export const findTagByName = (client, name) =>
-    client.query({
-        query: findTagByNameQuery,
-        fetchPolicy: 'network-only',
-        variables: {
-            name
-        }
-    });
+  client.query({
+    query: findTagByNameQuery,
+    fetchPolicy: 'network-only',
+    variables: {
+      name
+    }
+  });
 
 export const addTag = (client, idReference, name, comment) =>
-    client.mutate({
-        mutation: mutateCreateTag,
-        fetchPolicy: 'network-only',
-        variables: {
-            idReference,
-            name,
-            comment
-        }
-    });
+  client.mutate({
+    mutation: mutateCreateTag,
+    fetchPolicy: 'network-only',
+    variables: {
+      idReference,
+      name,
+      comment
+    }
+  });
 
 export const getStopPlaceById = (client, id) =>
-    client.query({
-        query: getStopById,
-        fetchPolicy: 'network-only',
-        variables: {
-            id
-        }
-    });
+  client.query({
+    query: getStopById,
+    fetchPolicy: 'network-only',
+    variables: {
+      id
+    }
+  });
 
 export const getAddStopPlaceInfo = (client, stopPlaceIds) =>
-    client.query({
-        query: getStopPlacesById(stopPlaceIds),
-        operationName: 'getAddStopPlaceInfo',
-        fetchPolicy: 'network-only'
-    });
+  client.query({
+    query: getStopPlacesById(stopPlaceIds),
+    operationName: 'getAddStopPlaceInfo',
+    fetchPolicy: 'network-only'
+  });
 
 export const saveStopPlaceBasedOnType = (client, stopPlace, userInput) => {
 
@@ -330,25 +330,26 @@ export const getMergeInfoForStops = (client, stopPlaceId) => (
     })
 );
 
-export const findEntitiesWithFilters = (client, query, stopPlaceType, chips, ignorePointTime) => {
-    const municipalityReference = chips
-        .filter(topos => topos.type === 'municipality')
-        .map(topos => topos.value);
-    const countyReference = chips
-        .filter(topos => topos.type === 'county')
-        .map(topos => topos.value);
+export const findEntitiesWithFilters = (client, query, stopPlaceType, chips, ignorePointTime, code) => {
+  const municipalityReference = chips
+  .filter(topos => topos.type === 'municipality')
+    .map(topos => topos.value);
+  const countyReference = chips
+    .filter(topos => topos.type === 'county')
+    .map(topos => topos.value);
 
-    return client.query({
-        query: findStop,
-        fetchPolicy: 'network-only',
-        variables: {
-            query,
-            stopPlaceType,
-            municipalityReference: municipalityReference,
-            countyReference: countyReference,
-            pointInTime: ignorePointTime ? null : new Date().toISOString()
-        },
-    });
+  return client.query({
+    query: findStop,
+    fetchPolicy: 'network-only',
+    variables: {
+      query,
+      stopPlaceType,
+      municipalityReference: municipalityReference ,
+      countyReference: countyReference,
+      pointInTime: ignorePointTime ? null : new Date().toISOString(),
+      code: code
+    },
+  });
 };
 
 export const findTopographicalPlace = (client, query) =>

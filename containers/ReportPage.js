@@ -24,15 +24,15 @@ import { withApollo } from 'react-apollo';
 import {
   topopGraphicalPlacesReportQuery,
   findStopForReport
-} from '../graphql/Queries';
-import { getTopographicPlaces } from '../graphql/Actions';
+} from '../graphql/Tiamat/queries';
+import { getTopographicPlaces } from '../graphql/Tiamat/actions';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import MdSpinner from '../static/icons/spinner';
 import MdSearch from 'material-ui/svg-icons/action/search';
 import ColumnFilterPopover from '../components/EditStopPage/ColumnFilterPopover';
-import { getParkingForMultipleStopPlaces } from '../graphql/Queries';
+import { getParkingForMultipleStopPlaces } from '../graphql/Tiamat/queries';
 import { reportReducer } from '../reducers/';
 import { injectIntl } from 'react-intl';
 import {
@@ -65,6 +65,7 @@ class ReportPage extends React.Component {
       showFutureAndExpired: false,
       withTags: false,
       tags: [],
+      searchWithCode: false
     };
   }
 
@@ -226,13 +227,16 @@ class ReportPage extends React.Component {
       withNearbySimilarDuplicates,
       withTags,
       showFutureAndExpired,
-      tags
+      tags,
+      searchWithCode
     } = this.state;
     const { client } = this.props;
 
     this.setState({
       isLoading: true
     });
+
+    let code = this.getCode(searchWithCode);
 
     const queryVariables = {
       query: searchQuery,
@@ -250,7 +254,8 @@ class ReportPage extends React.Component {
         .map(topos => topos.id),
       countyReference: topoiChips
         .filter(topos => topos.type === 'county')
-        .map(topos => topos.id)
+        .map(topos => topos.id),
+      code
     };
 
     client
@@ -319,12 +324,18 @@ class ReportPage extends React.Component {
 
   createTopographicPlaceMenuItem(place, formatMessage) {
     let name = this.getTopographicalNames(place);
+    let shortName = this.getTopographicalNames(place);
+
+      if(shortName.length > 35){
+          shortName = shortName.substring(0, 35) + "...";
+      }
     return {
       text: name,
       id: place.id,
       value: (
         <MenuItem
-          primaryText={name}
+          primaryText={shortName}
+          style={{fontSize: '0.8em'}}
           secondaryText={formatMessage({ id: place.topographicPlaceType })}
         />
       ),
@@ -344,6 +355,20 @@ class ReportPage extends React.Component {
     return name;
   }
 
+    getCode(searchWithCode){
+        let code = null;
+        let codeJSON = JSON.parse(this.props.code);
+        codeJSON = codeJSON.o.toLowerCase();
+
+        if(searchWithCode && codeJSON !== window.config.netexPrefix.toLowerCase()){
+            code = codeJSON;
+        }
+        else{
+            code = null;
+        }
+        return code;
+    }
+
   render() {
     const {
       stopTypeFilter,
@@ -354,7 +379,8 @@ class ReportPage extends React.Component {
       withDuplicateImportedIds,
       withNearbySimilarDuplicates,
       showFutureAndExpired,
-      withTags
+      withTags,
+      searchWithCode
     } = this.state;
     const { intl, topographicalPlaces, results, duplicateInfo } = this.props;
     const { locale, formatMessage } = intl;
@@ -403,7 +429,7 @@ class ReportPage extends React.Component {
                   filter={AutoComplete.caseInsensitiveFilter}
                   style={{
                     margin: 'auto',
-                    width: '50%',
+                    width: '60%',
                     textAlign: 'center',
                     marginTop: -10
                   }}
@@ -411,6 +437,8 @@ class ReportPage extends React.Component {
                   fullWidth={true}
                   ref="topoFilter"
                   onNewRequest={this.handleAddChip.bind(this)}
+                  menuStyle={{width: 500}}
+                  listStyle={{width: 500}}
                 />
                 <TopographicalFilter
                   topoiChips={topoiChips}
@@ -418,7 +446,7 @@ class ReportPage extends React.Component {
                 />
               </div>
             </ReportFilterBox>
-            <ReportFilterBox style={{ width: '50%' }}>
+            <ReportFilterBox style={{ width: '60%' }}>
               <div style={{ marginLeft: 5, paddingTop: 5 }}>
                 <div style={{fontWeight: 600, fontSize: 12, marginBottom: 10}}>{formatMessage({id: 'filter_by_tags'})}</div>
                 <TagFilterTray
@@ -445,7 +473,7 @@ class ReportPage extends React.Component {
                     this.handleSearchQueryChange(v);
                   }}
                 />
-                <div style={{display: 'flex', alignItems: 'center', marginTop: 2}}>
+                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap',  marginTop: 2}}>
                   <RaisedButton
                     style={{ marginTop: 10, marginLeft: 5, transform: 'scale(0.9)' }}
                     disabled={isLoading}
@@ -459,6 +487,7 @@ class ReportPage extends React.Component {
                     withDuplicateImportedIds={withDuplicateImportedIds}
                     withNearbySimilarDuplicates={withNearbySimilarDuplicates}
                     showFutureAndExpired={showFutureAndExpired}
+                    searchWithCode={searchWithCode}
                     withTags={withTags}
                     handleCheckboxChange={this.handleFilterChange.bind(this)}
                   />
@@ -515,7 +544,9 @@ class ReportPage extends React.Component {
 const mapStateToProps = state => ({
   topographicalPlaces: state.report.topographicalPlaces,
   results: state.report.results,
-  duplicateInfo: state.report.duplicateInfo
+  duplicateInfo: state.report.duplicateInfo,
+  code: state.user.searchFilters.code
+
 });
 
 export default withApollo(connect(mapStateToProps)(injectIntl(ReportPage)));
