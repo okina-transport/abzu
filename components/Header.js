@@ -202,7 +202,7 @@ class Header extends React.Component {
                 multiple
                 menuItems={[
                   <MenuItem
-                    style={{ fontSize: 12, padding: 0 }}
+                    style={{ fontSize: 12, padding: 0, display: 'none' }}
                     onClick={() =>
                       this.handleToggleMultiPolylines(!isMultiPolylinesEnabled)}
                     insetChildren

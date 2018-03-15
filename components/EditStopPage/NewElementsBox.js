@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import React from 'react';
+
+import React from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { StopPlaceActions } from '../../actions';
@@ -69,6 +70,17 @@ class NewElementsBox extends React.Component {
       margin: '10 15',
     };
 
+    const elementStyleDisabled = {
+        display: 'none'
+    };
+
+    const elementStyleCenterIcon = {
+        display: 'inline-block',
+        cursor: disabled ? 'not-allowed' : 'move',
+        margin: '10 15',
+        marginLeft: 100
+    };
+
     const titleStyle = {
       textTransform: 'capitalize',
       marginTop: 5,
@@ -123,7 +135,7 @@ class NewElementsBox extends React.Component {
                 <div style={titleStyle}>{newStopText}</div>
               </div>
             : null}
-          <div style={elementStyle}>
+          <div style={elementStyleCenterIcon}>
             <img
               id="drag1"
               data-type="quay"
@@ -134,7 +146,7 @@ class NewElementsBox extends React.Component {
             />
             <div style={titleStyle}>{quayText}</div>
           </div>
-          <div style={elementStyle}>
+          <div style={elementStyleDisabled} >
             <img
               ref="pathJunction"
               data-type="pathJunction"
@@ -145,7 +157,7 @@ class NewElementsBox extends React.Component {
             />
             <div style={titleStyle}>{pathJunctionText}</div>
           </div>
-          <div style={elementStyle}>
+          <div style={elementStyleDisabled}>
             <img
               ref="entrance"
               data-type="entrance"
