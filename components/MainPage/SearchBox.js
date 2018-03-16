@@ -442,8 +442,8 @@ class SearchBox extends React.Component {
           id: place.id,
           value: (
             <MenuItem
-              primaryText={name}
-              style={{ fontSize: '0.8em', overflow: 'hidden', whiteSpace: 'no-wrap', textOverflow: 'ellipsis' }}
+              primaryText={<span style={{ marginRight: 50 }}>{name}</span>}
+              style={{ fontSize: '0.8em', overflow: 'hidden', whiteSpace: 'no-wrap', textOverflow: 'ellipsis', lineHeight: '20px', paddingBottom: '15px', paddingTop: '15px' }}
               secondaryText={formatMessage({ id: place.topographicPlaceType })}
             />
           ),
@@ -537,7 +537,7 @@ class SearchBox extends React.Component {
                         floatingLabelText={formatMessage({
                           id: 'filter_by_topography'
                         })}
-                        floatingLabelStyle={{marginTop: -22, marginLeft: 5}}
+                        floatingLabelStyle={{marginTop: -22}}
                         dataSource={topographicalPlacesDataSource}
                         onUpdateInput={this.handleTopographicalPlaceInput.bind(
                             this
@@ -548,6 +548,7 @@ class SearchBox extends React.Component {
                           margin: 'auto',
                           width: '100%',
                           marginTop: -20,
+                          marginLeft: 5
                         }}
                         maxSearchResults={7}
                         ref="topoFilter"
