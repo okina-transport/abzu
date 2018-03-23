@@ -1,25 +1,32 @@
 ---
-- set_fact: build_home="/usr/src/jenkinsbuild/workspace/abzu"
-#- set_fact: build_home="/home/en/git/rutebanken/abzu"
-- set_fact: build_log_directory="/usr/src/log"
-- set_fact: logfile="{{build_log_directory}}/abzu.log"
+
+- set_fact: logfile="{{build_log_directory}}/chouette.log"
+
+- include_vars: ~/.naq-credentials.yml
 
 - name: Make log directory structure
-  file: path={{build_log_directory}} state=directory mode=0755 group=users
+  file: path={{build_log_directory}} state=directory mode=0755 group={{lookup('env', 'USER')}}
 
 - name: Make abzu target directory structure
-  file: path={{abzu_root}}/ state=directory mode=0755 group=users
+  file: path={{image_docker_root}}/ state=directory mode=0755 group={{lookup('env', 'USER')}}
 
 - name: Copy the abzu sources to staging directory
-  command: rsync -ar --delete {{ build_home }}/ {{abzu_root}}/source
+  command: rsync -ar --delete {{ build_home }}/ {{image_docker_root}}/source
 
 - name: Move Dockerfile
-  template: src=Dockerfile.j2 dest={{abzu_root}}/Dockerfile mode=0755
+  template: src=Dockerfile.j2 dest={{image_docker_root}}/Dockerfile mode=0755
+
+- name: Log into DockerHub
+  docker_login:
+    registry: registry.okina.fr
+    username: "{{okina_docker_registry_user}}"
+    password: "{{okina_docker_registry_password}}"
+    reauthorize: yes
 
 - name: Build the abzu docker image (this takes about 2 minutes)
-  shell: docker build --tag={{ abzu_docker_image|quote }} --force-rm=true {{abzu_root}} > {{logfile}} 2>&1
+  shell: docker build --tag={{ registry_image_name|quote }}:{{ version|quote }} --force-rm=true {{image_docker_root}} > {{logfile}} 2>&1
   register: image
 
 - name: Push abzu docker image if built
   when: image.changed
-  shell: docker push {{ abzu_docker_image|quote }}
+  shell: docker push {{ registry_image_name|quote }}:{{ version|quote }}
