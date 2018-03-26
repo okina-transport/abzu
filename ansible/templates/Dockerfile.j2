@@ -6,9 +6,12 @@ RUN wget --quiet https://github.com/Yelp/dumb-init/releases/download/v1.0.1/dumb
 RUN dpkg -i dumb-init_*.deb
 RUN npm set progress=false
 
+RUN ldconfig
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY source/ .
+
 
 EXPOSE 8000
 ENV port 8000
