@@ -39,7 +39,6 @@ module.exports = new Promise(function (resolve, reject) {
     },
     tiamatBaseUrl: {
       doc: 'Base URL for for tiamat graphql endpoint',
-      format: 'url',
 	    default: 'http://tiamat:8585/services/stop_places/graphql',
       env: 'TIAMAT_BASE_URL'
     },

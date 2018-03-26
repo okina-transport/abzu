@@ -110,7 +110,6 @@ convictPromise
     app.get(ENDPOINTBASE + '_health', function (req, res) {
       res.sendStatus(200);
     });
-
     app.get(ENDPOINTBASE + 'config/keycloak.json', function (req, res) {
       res.sendFile(__dirname + '/config/keycloak.json');
     });
