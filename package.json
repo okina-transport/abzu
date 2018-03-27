@@ -6,10 +6,10 @@
   "scripts": {
     "build": "BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
     "build-dev-local": "BABEL_ENV=development NODE_ENV=development TIAMAT_ENV=development TIAMAT_BASE_URL=http://localhost:8585/services/stop_places/graphql webpack --config ./webpack.prod.config.js",
-    "dev-with-integ-backend": "port=9000 NODE_ENV=development TIAMAT_ENV=test node server.js http://entur.okina.fr/services/stop_places/graphql",
+    "dev-local": "NODE_ENV=development TIAMAT_ENV=development TIAMAT_BASE_URL=http://localhost:8585/services/stop_places/graphql node server.js",
+    "dev-with-integ-backend": "NODE_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=http://entur.okina.fr/services/stop_places/graphql node server.js",
     "dev": "NODE_ENV=development TIAMAT_ENV=test node server.js",
-    "dev-local": "port=9000 NODE_ENV=development TIAMAT_ENV=development TIAMAT_BASE_URL=http://localhost:8585/services/stop_places/graphql node server.js",
-    "prod": "BABEL_ENV=production NODE_ENV=production TIAMAT_ENV=production AUTH_SERVER_URL=https://auth-rmr.nouvelle-aquitaine.pro/auth node server.js",
+    "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
   },
