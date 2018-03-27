@@ -1,7 +1,5 @@
 ---
 
-- set_fact: logfile="{{build_log_directory}}/chouette.log"
-
 - include_vars: ~/.naq-credentials.yml
 
 - name: Make log directory structure
