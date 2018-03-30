@@ -358,18 +358,17 @@ class SearchBox extends React.Component {
 
   findOrgCodeFilter() {
     const rolesToSearchIn = ['editStops', ''];
-    let orgCodeFilter = null;
-    let userRoles = JSON.parse(this.props.code);
 
-    let firstOrgFound = this.props.code.find(userRole => rolesToSearchIn.includes(userRole.o));
+    let firstOrgFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
 
     if (firstOrgFound !== undefined) {
-      userRoles = userRoles.o.toLowerCase();
-      if (userRoles !== window.config.netexPrefix.toLowerCase()) {
-        orgCodeFilter = userRoles;
+      let orgCode = JSON.parse(firstOrgFound).o.toLowerCase();
+      if (orgCode !== window.config.netexPrefix.toLowerCase()) {
+        return orgCode
       }
     }
-    return orgCodeFilter;
+    return null;
+
   }
 
   render() {
@@ -538,7 +537,7 @@ class SearchBox extends React.Component {
                         id: 'filter_by_topography'
                       })}
                       hintText={formatMessage({ id: 'filter_by_topography' })}
-                      floatingLabelStyle={{marginTop: -22, marginLeft: 5}}
+                      floatingLabelStyle={{ marginTop: -22, marginLeft: 5 }}
                       dataSource={topographicalPlacesDataSource}
                       onUpdateInput={this.handleTopographicalPlaceInput.bind(
                         this
@@ -754,7 +753,8 @@ const mapStateToProps = state => {
     newStopIsMultiModal: state.user.newStopIsMultiModal,
     showFutureAndExpired: state.user.searchFilters.showFutureAndExpired,
     filterByOrg: state.user.searchFilters.filterByOrg,
-    orgCode: state.user.searchFilters.orgCode
+    orgCode: state.user.searchFilters.orgCode,
+    roles: state.roles.kc.tokenParsed.roles
   };
 };
 

@@ -350,21 +350,19 @@ class ReportPage extends React.Component {
   }
 
   findOrgCodeFilter() {
-    const rolesToSearchIn = [ 'editStops', '' ];
-    let orgCodeFilter = null;
-    let userRoles = JSON.parse(this.props.code);
+    const rolesToSearchIn = ['editStops', ''];
 
-    let firstOrgFound = this.props.code.find(userRole => rolesToSearchIn.includes(userRole.o));
+    let firstOrgFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
 
     if (firstOrgFound !== undefined) {
-      userRoles = userRoles.o.toLowerCase();
-      if (userRoles !== window.config.netexPrefix.toLowerCase()) {
-        orgCodeFilter = userRoles;
+      let orgCode = JSON.parse(firstOrgFound).o.toLowerCase();
+      if (orgCode !== window.config.netexPrefix.toLowerCase()) {
+        return orgCode
       }
     }
-    return orgCodeFilter;
-  }
+    return null;
 
+  }
   render() {
     const {
       stopTypeFilter,
