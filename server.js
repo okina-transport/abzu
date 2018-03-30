@@ -169,7 +169,7 @@ convictPromise
           console.error(error);
         } else {
           console.info(
-            '==> Listening on port %s. Open up http://localhost:%s%s in your browser.',
+            '==> Listening on port %s. Open up http://127.0.0.1:%s%s in your browser.',
             port,
             port,
             ENDPOINTBASE

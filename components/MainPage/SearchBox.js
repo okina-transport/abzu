@@ -538,6 +538,7 @@ class SearchBox extends React.Component {
                         id: 'filter_by_topography'
                       })}
                       hintText={formatMessage({ id: 'filter_by_topography' })}
+                      floatingLabelStyle={{marginTop: -22, marginLeft: 5}}
                       dataSource={topographicalPlacesDataSource}
                       onUpdateInput={this.handleTopographicalPlaceInput.bind(
                         this
