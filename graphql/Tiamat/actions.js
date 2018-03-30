@@ -347,7 +347,7 @@ export const findEntitiesWithFilters = (client, query, stopPlaceType, chips, ign
       municipalityReference: municipalityReference ,
       countyReference: countyReference,
       pointInTime: ignorePointTime ? null : new Date().toISOString(),
-      codeSpace: orgCode
+      code: orgCode
     },
   });
 };
