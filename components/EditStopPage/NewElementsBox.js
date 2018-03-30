@@ -102,6 +102,9 @@ class NewElementsBox extends React.Component {
       shouldShowNewStop = false;
     }
 
+    // ROR-272: Hide this elements until they are supported by backend
+    const temporaryHidden =  {...elementStyle, display: 'none'};
+
     return (
       <div style={boxWrapperStyle}>
         <ConfirmDialog
@@ -146,7 +149,7 @@ class NewElementsBox extends React.Component {
             />
             <div style={titleStyle}>{quayText}</div>
           </div>
-          <div style={elementStyleDisabled} >
+          <div style={temporaryHidden}>
             <img
               ref="pathJunction"
               data-type="pathJunction"
@@ -157,7 +160,7 @@ class NewElementsBox extends React.Component {
             />
             <div style={titleStyle}>{pathJunctionText}</div>
           </div>
-          <div style={elementStyleDisabled}>
+          <div style={temporaryHidden}>
             <img
               ref="entrance"
               data-type="entrance"

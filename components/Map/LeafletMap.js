@@ -15,9 +15,16 @@ limitations under the Licence. */
 
 import React from 'react';
 import MarkerList from './MarkerList';
-import { LayersControl, Map as Lmap, ScaleControl, TileLayer, ZoomControl, } from 'react-leaflet';
+import {
+  Map as Lmap,
+  TileLayer,
+  ZoomControl,
+  LayersControl,
+  ScaleControl,
+} from 'react-leaflet';
 import { GoogleLayer } from 'react-leaflet-google';
 import MultiPolylineList from './PathLink';
+import WMTSLayer from './WMTSLayer';
 import MultimodalStopEdges from './MultimodalStopEdges';
 import StopPlaceGroupList from './StopPlaceGroupList';
 
@@ -32,11 +39,11 @@ export default class LeafLetMap extends React.Component {
 
   getCenterPosition(position) {
     if (!position) {
-      return [ 64.349421, 16.809082 ];
+      return [64.349421, 16.809082];
     }
     return Array.isArray(position)
       ? position.map(pos => Number(pos))
-      : [ Number(position.lat), Number(position.lng) ];
+      : [Number(position.lat), Number(position.lng)];
   }
 
   getLocalGKTToken() {
@@ -106,6 +113,16 @@ export default class LeafLetMap extends React.Component {
             />
           </BaseLayer>
           <BaseLayer
+            checked={this.getCheckedBaseLayerByValue('OpenStreetMap Transport')}
+            name="OpenStreetMap Transport"
+          >
+            <TileLayer
+              attribution="&copy; OpenStreetMap contributors"
+              url="//{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"
+              maxZoom="19"
+            />
+          </BaseLayer>
+          <BaseLayer
             checked={this.getCheckedBaseLayerByValue('Google Maps Satellite')}
             name="Google Maps Satellite">
             <GoogleLayer
@@ -136,8 +153,8 @@ export default class LeafLetMap extends React.Component {
         <MultimodalStopEdges
           stops={markers}
         />
-        <MultiPolylineList />
-        <StopPlaceGroupList />
+        <MultiPolylineList/>
+        <StopPlaceGroupList/>
       </Lmap>
     );
   }
