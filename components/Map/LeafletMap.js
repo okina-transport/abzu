@@ -15,137 +15,130 @@ limitations under the Licence. */
 
 import React from 'react';
 import MarkerList from './MarkerList';
-import {
-    Map as Lmap,
-    TileLayer,
-    ZoomControl,
-    LayersControl,
-    ScaleControl,
-} from 'react-leaflet';
-import {GoogleLayer} from 'react-leaflet-google';
+import { LayersControl, Map as Lmap, ScaleControl, TileLayer, ZoomControl, } from 'react-leaflet';
+import { GoogleLayer } from 'react-leaflet-google';
 import MultiPolylineList from './PathLink';
-import WMTSLayer from './WMTSLayer';
 import MultimodalStopEdges from './MultimodalStopEdges';
 import StopPlaceGroupList from './StopPlaceGroupList';
 
 export default class LeafLetMap extends React.Component {
-    getCheckedBaseLayerByValue(value) {
-        return this.props.activeBaselayer === value;
-    }
+  getCheckedBaseLayerByValue(value) {
+    return this.props.activeBaselayer === value;
+  }
 
-    handleBaselayerChanged(element) {
-        this.props.handleBaselayerChanged(element.name);
-    }
+  handleBaselayerChanged(element) {
+    this.props.handleBaselayerChanged(element.name);
+  }
 
-    getCenterPosition(position) {
-        if (!position) {
-            return [64.349421, 16.809082];
-        }
-        return Array.isArray(position)
-            ? position.map(pos => Number(pos))
-            : [Number(position.lat), Number(position.lng)];
+  getCenterPosition(position) {
+    if (!position) {
+      return [ 64.349421, 16.809082 ];
     }
+    return Array.isArray(position)
+      ? position.map(pos => Number(pos))
+      : [ Number(position.lat), Number(position.lng) ];
+  }
 
-    getLocalGKTToken() {
-        let localToken = JSON.parse(localStorage.getItem('ABZU::GKT_TOKEN'));
+  getLocalGKTToken() {
+    let localToken = JSON.parse(localStorage.getItem('ABZU::GKT_TOKEN'));
 
-        if (localToken && localToken.gkt) {
-            return localToken.gkt;
-        }
-        return null;
+    if (localToken && localToken.gkt) {
+      return localToken.gkt;
     }
+    return null;
+  }
 
   render() {
     // Okina API key
     const googleApiKey = 'AIzaSyBoGgXuwKIOMGp1hwUl0rl_DxMkjpSFH84';
 
-        const {
-            position,
-            zoom,
-            handleDragEnd,
-            handleChangeCoordinates,
-            handleOnClick,
-            minZoom,
-            handleSetCompassBearing,
-            markers,
-            dragableMarkers,
-            handleMapMoveEnd,
-            onDoubleClick,
-            handleZoomEnd
-        } = this.props;
+    const {
+      position,
+      zoom,
+      handleDragEnd,
+      handleChangeCoordinates,
+      handleOnClick,
+      minZoom,
+      handleSetCompassBearing,
+      markers,
+      dragableMarkers,
+      handleMapMoveEnd,
+      onDoubleClick,
+      handleZoomEnd
+    } = this.props;
 
-        const {BaseLayer} = LayersControl;
+    const { BaseLayer } = LayersControl;
 
-        const lmapStyle = {
-            border: '2px solid #eee',
-        };
+    const lmapStyle = {
+      border: '2px solid #eee',
+    };
 
-        const centerPosition = this.getCenterPosition(position);
+    const centerPosition = this.getCenterPosition(position);
 
-        return (
-            <Lmap
-                ref="map"
-                style={lmapStyle}
-                center={centerPosition}
-                className="leaflet-map"
-                onZoomEnd={e => handleZoomEnd && handleZoomEnd(e)}
-                zoom={zoom}
-                zoomControl={false}
-                minZoom={minZoom || null}
-                onDblclick={e => onDoubleClick && onDoubleClick(e, this.refs.map)}
-                onMoveEnd={event => {
-                    handleMapMoveEnd(event, this.refs.map);
-                }}
-                OnBaselayerChange={this.handleBaselayerChanged.bind(this)}
-                onclick={event => {
-                    handleOnClick && handleOnClick(event, this.refs.map);
-                }}
-            >
-                <LayersControl position="topright">
-                    <BaseLayer
-                        checked={this.getCheckedBaseLayerByValue('OpenStreetMap')}
-                        name="OpenStreetMap"
-                    >
-                        <TileLayer
-                            attribution="&copy; <a href=&quot;https://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                            url="//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            maxZoom="19"
-                        />
-                    </BaseLayer>
-                    <BaseLayer
-                        checked={this.getCheckedBaseLayerByValue('Google Maps Satellite')}
-                        name="Google Maps Satellite">
-                        <GoogleLayer
-                            maxZoom="19"
-                            googlekey={googleApiKey}
-                            maptype="HYBRID"
-                        />
-                    </BaseLayer>
-                    <BaseLayer
-                        checked={this.getCheckedBaseLayerByValue('Google Maps Route')}
-                        name="Google Maps Route">
-                        <GoogleLayer
-                            maxZoom="19"
-                            googlekey={googleApiKey}
-                            maptype="roadmap"
-                        />
-                    </BaseLayer>
-                </LayersControl>
-                <ScaleControl imperial={false} position="bottomright"/>
-                <ZoomControl position="bottomright"/>
-                <MarkerList
-                    changeCoordinates={handleChangeCoordinates}
-                    markers={markers}
-                    handleDragEnd={handleDragEnd}
-                    dragableMarkers={dragableMarkers}
-                    handleSetCompassBearing={handleSetCompassBearing}
-                />
-                <MultimodalStopEdges
-                    stops={markers}
-                />
-                <MultiPolylineList/>
-                <StopPlaceGroupList/>
-            </Lmap>
-        );
-    }
+    return (
+      <Lmap
+        ref="map"
+        style={lmapStyle}
+        center={centerPosition}
+        className="leaflet-map"
+        onZoomEnd={e => handleZoomEnd && handleZoomEnd(e)}
+        zoom={zoom}
+        zoomControl={false}
+        minZoom={minZoom || null}
+        onDblclick={e => onDoubleClick && onDoubleClick(e, this.refs.map)}
+        onMoveEnd={event => {
+          handleMapMoveEnd(event, this.refs.map);
+        }}
+        OnBaselayerChange={this.handleBaselayerChanged.bind(this)}
+        onclick={event => {
+          handleOnClick && handleOnClick(event, this.refs.map);
+        }}
+      >
+        <LayersControl position="topright">
+          <BaseLayer
+            checked={this.getCheckedBaseLayerByValue('OpenStreetMap')}
+            name="OpenStreetMap"
+          >
+            <TileLayer
+              attribution="&copy; <a href=&quot;https://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+              url="//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxZoom="19"
+            />
+          </BaseLayer>
+          <BaseLayer
+            checked={this.getCheckedBaseLayerByValue('Google Maps Satellite')}
+            name="Google Maps Satellite">
+            <GoogleLayer
+              maxZoom="19"
+              googlekey={googleApiKey}
+              maptype="HYBRID"
+            />
+          </BaseLayer>
+          <BaseLayer
+            checked={this.getCheckedBaseLayerByValue('Google Maps Route')}
+            name="Google Maps Route">
+            <GoogleLayer
+              maxZoom="19"
+              googlekey={googleApiKey}
+              maptype="roadmap"
+            />
+          </BaseLayer>
+        </LayersControl>
+        <ScaleControl imperial={false} position="bottomright" />
+        <ZoomControl position="bottomright" />
+        <MarkerList
+          changeCoordinates={handleChangeCoordinates}
+          markers={markers}
+          handleDragEnd={handleDragEnd}
+          dragableMarkers={dragableMarkers}
+          handleSetCompassBearing={handleSetCompassBearing}
+        />
+        <MultimodalStopEdges
+          stops={markers}
+        />
+        <MultiPolylineList />
+        <StopPlaceGroupList />
+      </Lmap>
+    );
+  }
 }
