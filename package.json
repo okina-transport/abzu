@@ -6,8 +6,8 @@
   "scripts": {
     "build": "BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
     "dev-local": "NODE_ENV=development TIAMAT_ENV=development TIAMAT_BASE_URL=http://localhost:8585/services/stop_places/graphql node server.js",
-    "dev-with-integ-backend": "NODE_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=http://entur.okina.fr/services/stop_places/graphql node server.js",
-    "integ": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=development TIAMAT_BASE_URL=https://entur.okina.fr/services/stop_places/graphql node server.js",
+    "dev-with-integ-backend": "NODE_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=https://entur.okina.fr/services/stop_places/graphql node server.js",
+    "integ": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=test TIAMAT_BASE_URL=https://entur.okina.fr/services/stop_places/graphql node server.js",
     "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://arrets-rmr.nouvelle-aquitaine.pro/services/stop_places/graphql node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
