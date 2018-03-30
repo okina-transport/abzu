@@ -35,14 +35,8 @@ import ColumnFilterPopover from '../components/EditStopPage/ColumnFilterPopover'
 import { getParkingForMultipleStopPlaces } from '../graphql/Tiamat/queries';
 import { reportReducer } from '../reducers/';
 import { injectIntl } from 'react-intl';
-import {
-  columnOptionsQuays,
-  columnOptionsStopPlace
-} from '../config/columnOptions';
-import {
-  buildReportSearchQuery,
-  extractQueryParamsFromUrl
-} from '../utils/URLhelpers';
+import { columnOptionsQuays, columnOptionsStopPlace } from '../config/columnOptions';
+import { buildReportSearchQuery, extractQueryParamsFromUrl } from '../utils/URLhelpers';
 import TagFilterTray from '../components/ReportPage/TagFilterTray';
 import AdvancedReportFilters from '../components/ReportPage/AdvancedReportFilters';
 
@@ -65,7 +59,7 @@ class ReportPage extends React.Component {
       showFutureAndExpired: false,
       withTags: false,
       tags: [],
-      searchWithCode: false
+      filterByOrg: false
     };
   }
 
@@ -121,7 +115,7 @@ class ReportPage extends React.Component {
 
   handleFilterChange(key, value) {
     this.setState({
-      [key]: value
+      [ key ]: value
     });
   };
 
@@ -129,10 +123,10 @@ class ReportPage extends React.Component {
     const columnOptions = this.state.columnOptionsStopPlace.slice();
 
     for (let i = 0; columnOptions.length > i; i++) {
-      let option = columnOptions[i];
+      let option = columnOptions[ i ];
       if (option.id === id) {
         option.checked = checked;
-        columnOptions[i] = option;
+        columnOptions[ i ] = option;
         break;
       }
     }
@@ -146,10 +140,10 @@ class ReportPage extends React.Component {
     const columnOptions = this.state.columnOptionsQuays.slice();
 
     for (let i = 0; columnOptions.length > i; i++) {
-      let option = columnOptions[i];
+      let option = columnOptions[ i ];
       if (option.id === id) {
         option.checked = checked;
-        columnOptions[i] = option;
+        columnOptions[ i ] = option;
         break;
       }
     }
@@ -196,8 +190,8 @@ class ReportPage extends React.Component {
           let menuItems = [];
 
           Object.keys(response.data).forEach(result => {
-            const place = response.data[result] && response.data[result].length
-              ? response.data[result][0]
+            const place = response.data[ result ] && response.data[ result ].length
+              ? response.data[ result ][ 0 ]
               : null;
 
             if (place) {
@@ -228,7 +222,7 @@ class ReportPage extends React.Component {
       withTags,
       showFutureAndExpired,
       tags,
-      searchWithCode
+      filterByOrg
     } = this.state;
     const { client } = this.props;
 
@@ -236,7 +230,7 @@ class ReportPage extends React.Component {
       isLoading: true
     });
 
-    let code = this.getCode(searchWithCode);
+    let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter(filterByOrg) : null;
 
     const queryVariables = {
       query: searchQuery,
@@ -255,7 +249,7 @@ class ReportPage extends React.Component {
       countyReference: topoiChips
         .filter(topos => topos.type === 'county')
         .map(topos => topos.id),
-      code
+      codeSpace: optionalOrgCodeFilter
     };
 
     client
@@ -355,19 +349,21 @@ class ReportPage extends React.Component {
     return name;
   }
 
-    getCode(searchWithCode){
-        let code = null;
-        let codeJSON = JSON.parse(this.props.code);
-        codeJSON = codeJSON.o.toLowerCase();
+  findOrgCodeFilter() {
+    const rolesToSearchIn = [ 'editStops', '' ];
+    let orgCodeFilter = null;
+    let userRoles = JSON.parse(this.props.code);
 
-        if(searchWithCode && codeJSON !== window.config.netexPrefix.toLowerCase()){
-            code = codeJSON;
-        }
-        else{
-            code = null;
-        }
-        return code;
+    let firstOrgFound = this.props.code.find(userRole => rolesToSearchIn.includes(userRole.o));
+
+    if (firstOrgFound !== undefined) {
+      userRoles = userRoles.o.toLowerCase();
+      if (userRoles !== window.config.netexPrefix.toLowerCase()) {
+        orgCodeFilter = userRoles;
+      }
     }
+    return orgCodeFilter;
+  }
 
   render() {
     const {
@@ -380,7 +376,7 @@ class ReportPage extends React.Component {
       withNearbySimilarDuplicates,
       showFutureAndExpired,
       withTags,
-      searchWithCode
+      filterByOrg
     } = this.state;
     const { intl, topographicalPlaces, results, duplicateInfo } = this.props;
     const { locale, formatMessage } = intl;
@@ -448,7 +444,7 @@ class ReportPage extends React.Component {
             </ReportFilterBox>
             <ReportFilterBox style={{ width: '60%' }}>
               <div style={{ marginLeft: 5, paddingTop: 5 }}>
-                <div style={{fontWeight: 600, fontSize: 12, marginBottom: 10}}>{formatMessage({id: 'filter_by_tags'})}</div>
+                <div style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>{formatMessage({ id: 'filter_by_tags' })}</div>
                 <TagFilterTray
                   tags={this.state.tags}
                   formatMessage={formatMessage}
@@ -466,7 +462,7 @@ class ReportPage extends React.Component {
                   floatingLabelText={formatMessage({
                     id: 'optional_search_string'
                   })}
-                  style={{width: 330}}
+                  style={{ width: 330 }}
                   value={this.state.searchQuery}
                   onKeyDown={this.handleOnKeyDown.bind(this)}
                   onChange={(e, v) => {
@@ -487,7 +483,7 @@ class ReportPage extends React.Component {
                     withDuplicateImportedIds={withDuplicateImportedIds}
                     withNearbySimilarDuplicates={withNearbySimilarDuplicates}
                     showFutureAndExpired={showFutureAndExpired}
-                    searchWithCode={searchWithCode}
+                    filterByOrg={filterByOrg}
                     withTags={withTags}
                     handleCheckboxChange={this.handleFilterChange.bind(this)}
                   />
@@ -545,7 +541,7 @@ const mapStateToProps = state => ({
   topographicalPlaces: state.report.topographicalPlaces,
   results: state.report.results,
   duplicateInfo: state.report.duplicateInfo,
-  code: state.user.searchFilters.code
+  orgCode: state.user.searchFilters.orgCode
 
 });
 
