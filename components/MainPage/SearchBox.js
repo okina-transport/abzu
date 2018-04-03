@@ -72,7 +72,7 @@ class SearchBox extends React.Component {
         ? filter.filterByOrg
         : this.props.filterByOrg;
 
-      let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter(filterByOrg) : null;
+      let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
       this.setState({ loading: true });
 
       findEntitiesWithFilters(
@@ -358,13 +358,16 @@ class SearchBox extends React.Component {
 
   findOrgCodeFilter() {
     const rolesToSearchIn = ['editStops', ''];
+    let orgCodeFilter = null;
+    if (this.props && this.props.orgCode) {
+      let userRoles = JSON.parse(this.props.orgCode);
+      let firstOrgFound = this.props.orgCode.find(userRole => rolesToSearchIn.includes(userRole.o));
 
-    let firstOrgFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
-
-    if (firstOrgFound !== undefined) {
-      let orgCode = JSON.parse(firstOrgFound).o.toLowerCase();
-      if (orgCode !== window.config.netexPrefix.toLowerCase()) {
-        return orgCode
+      if (firstOrgFound !== null && typeof firstOrgFound !== undefined) {
+        userRoles = userRoles.o.toLowerCase();
+        if (userRoles !== window.config.netexPrefix.toLowerCase()) {
+          orgCodeFilter = userRoles;
+        }
       }
     }
     return null;
