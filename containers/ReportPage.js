@@ -315,18 +315,12 @@ class ReportPage extends React.Component {
 
   createTopographicPlaceMenuItem(place, formatMessage) {
     let name = this.getTopographicalNames(place);
-    let shortName = this.getTopographicalNames(place);
-
-      if(shortName.length > 35){
-          shortName = shortName.substring(0, 35) + "...";
-      }
     return {
       text: name,
       id: place.id,
       value: (
         <MenuItem
-          primaryText={shortName}
-          style={{fontSize: '0.8em'}}
+          primaryText={name}
           secondaryText={formatMessage({ id: place.topographicPlaceType })}
         />
       ),
@@ -348,21 +342,19 @@ class ReportPage extends React.Component {
 
   findOrgCodeFilter() {
     const rolesToSearchIn = ['editStops', ''];
-    let orgCodeFilter = null;
-    if (this.props && this.props.orgCode) {
-      let userRoles = JSON.parse(this.props.orgCode);
-      let firstOrgFound = this.props.orgCode.find(userRole => rolesToSearchIn.includes(userRole.o));
-
-      if (firstOrgFound !== null && typeof firstOrgFound !== undefined) {
-        userRoles = userRoles.o.toLowerCase();
-        if (userRoles !== window.config.netexPrefix.toLowerCase()) {
-          orgCodeFilter = userRoles;
+    let firstOrgFound = null;
+    if (this.props.roles) {
+      let firstUserRoleFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
+      if (firstUserRoleFound !== undefined) {
+        firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
+        if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
+          return firstOrgFound;
         }
       }
     }
-    return null;
-
+    return firstOrgFound;
   }
+
   render() {
     const {
       stopTypeFilter,
@@ -423,7 +415,7 @@ class ReportPage extends React.Component {
                   filter={AutoComplete.caseInsensitiveFilter}
                   style={{
                     margin: 'auto',
-                    width: '60%',
+                    width: '50%',
                     textAlign: 'center',
                     marginTop: -10
                   }}
@@ -431,8 +423,6 @@ class ReportPage extends React.Component {
                   fullWidth={true}
                   ref="topoFilter"
                   onNewRequest={this.handleAddChip.bind(this)}
-                  menuStyle={{width: 500}}
-                  listStyle={{width: 500}}
                 />
                 <TopographicalFilter
                   topoiChips={topoiChips}
@@ -440,7 +430,7 @@ class ReportPage extends React.Component {
                 />
               </div>
             </ReportFilterBox>
-            <ReportFilterBox style={{ width: '60%' }}>
+            <ReportFilterBox style={{ width: '50%' }}>
               <div style={{ marginLeft: 5, paddingTop: 5 }}>
                 <div style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>{formatMessage({ id: 'filter_by_tags' })}</div>
                 <TagFilterTray
@@ -467,7 +457,7 @@ class ReportPage extends React.Component {
                     this.handleSearchQueryChange(v);
                   }}
                 />
-                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap',  marginTop: 2}}>
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: 2 }}>
                   <RaisedButton
                     style={{ marginTop: 10, marginLeft: 5, transform: 'scale(0.9)' }}
                     disabled={isLoading}

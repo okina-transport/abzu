@@ -358,20 +358,17 @@ class SearchBox extends React.Component {
 
   findOrgCodeFilter() {
     const rolesToSearchIn = ['editStops', ''];
-    let orgCodeFilter = null;
-    if (this.props && this.props.orgCode) {
-      let userRoles = JSON.parse(this.props.orgCode);
-      let firstOrgFound = this.props.orgCode.find(userRole => rolesToSearchIn.includes(userRole.o));
-
-      if (firstOrgFound !== null && typeof firstOrgFound !== undefined) {
-        userRoles = userRoles.o.toLowerCase();
-        if (userRoles !== window.config.netexPrefix.toLowerCase()) {
-          orgCodeFilter = userRoles;
+    let firstOrgFound = null;
+    if (this.props.roles) {
+      let firstUserRoleFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
+      if (firstUserRoleFound !== undefined) {
+        firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
+        if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
+          return firstOrgFound;
         }
       }
     }
-    return null;
-
+    return firstOrgFound;
   }
 
   render() {
@@ -756,8 +753,7 @@ const mapStateToProps = state => {
     newStopIsMultiModal: state.user.newStopIsMultiModal,
     showFutureAndExpired: state.user.searchFilters.showFutureAndExpired,
     filterByOrg: state.user.searchFilters.filterByOrg,
-    orgCode: state.user.searchFilters.orgCode,
-    roles: state.roles.kc.tokenParsed.roles
+    orgCode: state.user.searchFilters.orgCode
   };
 };
 
