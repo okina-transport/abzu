@@ -12,7 +12,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-
 import { connect } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -29,7 +28,10 @@ import MenuItem from 'material-ui/MenuItem';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import FavoriteManager from '../../singletons/FavoriteManager';
 import CoordinatesDialog from '../Dialogs/CoordinatesDialog';
-import { findEntitiesWithFilters, findTopographicalPlace } from '../../graphql/Tiamat/actions';
+import {
+  findEntitiesWithFilters,
+  findTopographicalPlace
+} from '../../graphql/Tiamat/actions';
 import { withApollo } from 'react-apollo';
 import FavoritePopover from './FavoritePopover';
 import ModalityFilter from '../EditStopPage/ModalityFilter';
@@ -48,9 +50,7 @@ import CheckBox from 'material-ui/Checkbox';
 import Routes from '../../routes/';
 import { Entities } from '../../models/Entities';
 
-
 class SearchBox extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -68,9 +68,7 @@ class SearchBox extends React.Component {
       const stopPlaceTypes = filter
         ? filter.stopType
         : this.props.stopTypeFilter;
-      const filterByOrg = filter
-        ? filter.filterByOrg
-        : this.props.filterByOrg;
+      const filterByOrg = filter ? filter.filterByOrg : this.props.filterByOrg;
 
       let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
       this.setState({ loading: true });
@@ -107,9 +105,10 @@ class SearchBox extends React.Component {
   }
 
   handleEdit(id, entityType) {
-    const route = entityType === Entities.STOP_PLACE
-      ? Routes.STOP_PLACE
-      : Routes.GROUP_OF_STOP_PLACE;
+    const route =
+      entityType === Entities.STOP_PLACE
+        ? Routes.STOP_PLACE
+        : Routes.GROUP_OF_STOP_PLACE;
     this.props.dispatch(UserActions.navigateTo(`/${route}/`, id));
   }
 
@@ -152,7 +151,12 @@ class SearchBox extends React.Component {
   }
 
   toggleSearchWithOrgCode(value) {
-    const { searchText, topoiChips, stopTypeFilter, showFutureAndExpired } = this.props;
+    const {
+      searchText,
+      topoiChips,
+      stopTypeFilter,
+      showFutureAndExpired
+    } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         filterByOrg: value,
@@ -190,7 +194,12 @@ class SearchBox extends React.Component {
   }
 
   handleApplyModalityFilters(filters) {
-    const { searchText, showFutureAndExpired, topoiChips, filterByOrg } = this.props;
+    const {
+      searchText,
+      showFutureAndExpired,
+      topoiChips,
+      filterByOrg
+    } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         showFutureAndExpired,
@@ -214,12 +223,20 @@ class SearchBox extends React.Component {
   }
 
   handleAddChip({ text, type, id }) {
-    const { searchText, stopTypeFilters, showFutureAndExpired, topoiChips, filterByOrg } = this.props;
+    const {
+      searchText,
+      stopTypeFilters,
+      showFutureAndExpired,
+      topoiChips,
+      filterByOrg
+    } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         showFutureAndExpired,
         topoiChips: topoiChips.concat({
-          text, type, value: id
+          text,
+          type,
+          value: id
         }),
         stopType: stopTypeFilters,
         filterByOrg
@@ -234,7 +251,14 @@ class SearchBox extends React.Component {
   }
 
   handleDeleteChip(chipValue) {
-    const { dispatch, searchText, stopTypeFilters, showFutureAndExpired, topoiChips, filterByOrg } = this.props;
+    const {
+      dispatch,
+      searchText,
+      stopTypeFilters,
+      showFutureAndExpired,
+      topoiChips,
+      filterByOrg
+    } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         showFutureAndExpired,
@@ -360,7 +384,9 @@ class SearchBox extends React.Component {
     const rolesToSearchIn = ['editStops', ''];
     let firstOrgFound = null;
     if (this.props.roles) {
-      let firstUserRoleFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
+      let firstUserRoleFound = this.props.roles.find(userRole =>
+        rolesToSearchIn.includes(JSON.parse(userRole).r)
+      );
       if (firstUserRoleFound !== undefined) {
         firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
         if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
@@ -442,7 +468,12 @@ class SearchBox extends React.Component {
           value: (
             <MenuItem
               primaryText={name}
-              style={{ fontSize: '0.8em', overflow: 'hidden', whiteSpace: 'no-wrap', textOverflow: 'ellipsis' }}
+              style={{
+                fontSize: '0.8em',
+                overflow: 'hidden',
+                whiteSpace: 'no-wrap',
+                textOverflow: 'ellipsis'
+              }}
               secondaryText={formatMessage({ id: place.topographicPlaceType })}
             />
           ),
@@ -521,9 +552,15 @@ class SearchBox extends React.Component {
                 stopTypeFilter={stopTypeFilter}
                 handleApplyFilters={this.handleApplyModalityFilters.bind(this)}
               />
-              {showMoreFilterOptions
-                ? <div>
-                  <div style={{ width: '100%', textAlign: 'center', marginBottom: 15 }}>
+              {showMoreFilterOptions ? (
+                <div>
+                  <div
+                    style={{
+                      width: '100%',
+                      textAlign: 'center',
+                      marginBottom: 15
+                    }}
+                  >
                     <FlatButton
                       onClick={() => this.handleToggleFilter(false)}
                       style={{ fontSize: 12 }}
@@ -547,25 +584,24 @@ class SearchBox extends React.Component {
                       style={{
                         margin: 'auto',
                         width: '100%',
-                        marginTop: -20,
+                        marginTop: -20
                       }}
                       maxSearchResults={7}
                       ref="topoFilter"
                       onNewRequest={this.handleAddChip.bind(this)}
                     />
-
                   </div>
                   <CheckBox
                     checked={showFutureAndExpired}
                     onCheck={(e, value) =>
-                      this.toggleShowFutureAndExpired(value)}
+                      this.toggleShowFutureAndExpired(value)
+                    }
                     label={formatMessage({ id: 'show_future_and_expired' })}
                     labelStyle={{ fontSize: '0.8em' }}
                   />
                   <CheckBox
                     checked={filterByOrg}
-                    onCheck={(e, value) =>
-                      this.toggleSearchWithOrgCode(value)}
+                    onCheck={(e, value) => this.toggleSearchWithOrgCode(value)}
                     label={formatMessage({ id: 'search_with_code' })}
                     labelStyle={{ fontSize: '0.8em' }}
                   />
@@ -574,14 +610,16 @@ class SearchBox extends React.Component {
                     handleDeleteChip={this.handleDeleteChip.bind(this)}
                   />
                 </div>
-                : <div style={{ width: '100%', textAlign: 'center' }}>
+              ) : (
+                <div style={{ width: '100%', textAlign: 'center' }}>
                   <FlatButton
                     style={{ fontSize: 12 }}
                     onClick={() => this.handleToggleFilter(true)}
                   >
                     {formatMessage({ id: 'filters_more' })}
                   </FlatButton>
-                </div>}
+                </div>
+              )}
             </div>
             <SearchIcon
               style={{
@@ -631,8 +669,8 @@ class SearchBox extends React.Component {
             </FlatButton>
           </div>
           <div key="searchbox-edit">
-            {chosenResult
-              ? <SearchBoxDetails
+            {chosenResult ? (
+              <SearchBoxDetails
                 handleEdit={this.handleEdit.bind(this)}
                 result={chosenResult}
                 handleChangeCoordinates={this.handleOpenCoordinatesDialog.bind(
@@ -646,75 +684,77 @@ class SearchBox extends React.Component {
                 canEdit={canEdit}
                 formatMessage={formatMessage}
               />
-              : null}
-            {!isGuest &&
-            <div style={{ marginTop: 10 }}>
-              {isCreatingNewStop
-                ? <NewStopPlace
-                  text={newStopText}
-                  onClose={() =>
-                    this.setState({ createNewStopOpen: false })}
-                />
-                : <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <RaisedButton
-                    onClick={this.handleOpenLookupCoordinatesDialog.bind(
-                      this
-                    )}
-                    icon={
-                      <MdLocationSearching
-                        style={{ width: 20, height: 20 }}
-                      />
-                    }
-                    primary={false}
-                    labelStyle={{ fontSize: 11 }}
-                    label={formatMessage({ id: 'lookup_coordinates' })}
+            ) : null}
+            {!isGuest && (
+              <div style={{ marginTop: 10 }}>
+                {isCreatingNewStop ? (
+                  <NewStopPlace
+                    text={newStopText}
+                    onClose={() => this.setState({ createNewStopOpen: false })}
                   />
-                  <RaisedButton
-                    onClick={e => {
-                      this.setState({
-                        createNewStopOpen: true,
-                        anchorEl: e.currentTarget
-                      });
-                    }}
-                    icon={<MdMore style={{ width: 20, height: 20 }} />}
-                    primary={true}
-                    labelStyle={{ fontSize: 11 }}
-                    label={formatMessage({ id: 'new_stop' })}
-                  />
-                  <Popover
-                    open={this.state.createNewStopOpen}
-                    anchorEl={this.state.anchorEl}
-                    anchorOrigin={{
-                      horizontal: 'left',
-                      vertical: 'bottom'
-                    }}
-                    targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-                    onRequestClose={() => {
-                      this.setState({ createNewStopOpen: false });
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between'
                     }}
                   >
-                    <Menu>
-                      <MenuItem
-                        onClick={() => this.handleNewStop(false)}
-                        style={{ fontSize: '0.9em' }}
-                        primaryText={formatMessage({ id: 'new_stop' })}
-                      />
-                      <MenuItem
-                        onClick={() => this.handleNewStop(true)}
-                        style={{ fontSize: '0.9em' }}
-                        primaryText={formatMessage({
-                          id: 'new__multi_stop'
-                        })}
-                      />
-                    </Menu>
-                  </Popover>
-                </div>}
-            </div>}
+                    <RaisedButton
+                      onClick={this.handleOpenLookupCoordinatesDialog.bind(
+                        this
+                      )}
+                      icon={
+                        <MdLocationSearching
+                          style={{ width: 20, height: 20 }}
+                        />
+                      }
+                      primary={false}
+                      labelStyle={{ fontSize: 11 }}
+                      label={formatMessage({ id: 'lookup_coordinates' })}
+                    />
+                    <RaisedButton
+                      onClick={e => {
+                        this.setState({
+                          createNewStopOpen: true,
+                          anchorEl: e.currentTarget
+                        });
+                      }}
+                      icon={<MdMore style={{ width: 20, height: 20 }} />}
+                      primary={true}
+                      labelStyle={{ fontSize: 11 }}
+                      label={formatMessage({ id: 'new_stop' })}
+                    />
+                    <Popover
+                      open={this.state.createNewStopOpen}
+                      anchorEl={this.state.anchorEl}
+                      anchorOrigin={{
+                        horizontal: 'left',
+                        vertical: 'bottom'
+                      }}
+                      targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+                      onRequestClose={() => {
+                        this.setState({ createNewStopOpen: false });
+                      }}
+                    >
+                      <Menu>
+                        <MenuItem
+                          onClick={() => this.handleNewStop(false)}
+                          style={{ fontSize: '0.9em' }}
+                          primaryText={formatMessage({ id: 'new_stop' })}
+                        />
+                        <MenuItem
+                          onClick={() => this.handleNewStop(true)}
+                          style={{ fontSize: '0.9em' }}
+                          primaryText={formatMessage({
+                            id: 'new__multi_stop'
+                          })}
+                        />
+                      </Menu>
+                    </Popover>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
