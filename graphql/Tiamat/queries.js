@@ -672,3 +672,8 @@ export const findTariffones = gql`
           value
       }}
 }`;
+
+export const getStopPlaceNameWithRecommendations = gql`
+   query getStopPlaceNameWithRecommendations($name: String!) {
+      stopPlaceNameRecommendations(name: $name)
+}`;
