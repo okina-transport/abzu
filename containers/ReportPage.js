@@ -415,7 +415,7 @@ class ReportPage extends React.Component {
                   filter={AutoComplete.caseInsensitiveFilter}
                   style={{
                     margin: 'auto',
-                    width: '50%',
+                    width: '60%',
                     textAlign: 'center',
                     marginTop: -10
                   }}
@@ -423,6 +423,8 @@ class ReportPage extends React.Component {
                   fullWidth={true}
                   ref="topoFilter"
                   onNewRequest={this.handleAddChip.bind(this)}
+                  menuStyle={{width: 500}}
+                  listStyle={{width: 500}}
                 />
                 <TopographicalFilter
                   topoiChips={topoiChips}
@@ -430,7 +432,7 @@ class ReportPage extends React.Component {
                 />
               </div>
             </ReportFilterBox>
-            <ReportFilterBox style={{ width: '50%' }}>
+            <ReportFilterBox style={{ width: '60%' }}>
               <div style={{ marginLeft: 5, paddingTop: 5 }}>
                 <div style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>{formatMessage({ id: 'filter_by_tags' })}</div>
                 <TagFilterTray
@@ -457,7 +459,7 @@ class ReportPage extends React.Component {
                     this.handleSearchQueryChange(v);
                   }}
                 />
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: 2 }}>
+                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap',  marginTop: 2}}>
                   <RaisedButton
                     style={{ marginTop: 10, marginLeft: 5, transform: 'scale(0.9)' }}
                     disabled={isLoading}
