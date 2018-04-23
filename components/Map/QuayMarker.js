@@ -234,7 +234,8 @@ class QuayMarker extends React.Component {
         compassBearing={this.props.compassBearing}
         isCompassBearingEnabled={this.props.isCompassBearingEnabled}
         belongsToNeighbourStop={belongsToNeighbourStop}
-      />
+        defaultValueIcon={translations.notAssigned}
+/>
     );
 
     let quayIcon = divIcon({
@@ -283,8 +284,8 @@ class QuayMarker extends React.Component {
               }}
             >
               <div>{formattedStopType}</div>
-                <Code type="publicCode" value={publicCode} />
-                <Code type="privateCode" value={privateCode} />
+                <Code type="publicCode" value={publicCode} defaultValue={translations.notAssigned} />
+                <Code type="privateCode" value={privateCode} defaultValue={translations.notAssigned}/>
             </div>
             <div
               style={{

@@ -21,28 +21,19 @@ import ModalityFilter from '../components/EditStopPage/ModalityFilter';
 import TopographicalFilter from '../components/MainPage/TopographicalFilter';
 import AutoComplete from 'material-ui/AutoComplete';
 import { withApollo } from 'react-apollo';
-import {
-  topopGraphicalPlacesReportQuery,
-  findStopForReport
-} from '../graphql/Queries';
-import { getTopographicPlaces } from '../graphql/Actions';
+import { topopGraphicalPlacesReportQuery, findStopForReport } from '../graphql/Tiamat/queries';
+import { getParkingForMultipleStopPlaces } from '../graphql/Tiamat/queries';
+import { getTopographicPlaces } from '../graphql/Tiamat/actions';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import MdSpinner from '../static/icons/spinner';
 import MdSearch from 'material-ui/svg-icons/action/search';
 import ColumnFilterPopover from '../components/EditStopPage/ColumnFilterPopover';
-import { getParkingForMultipleStopPlaces } from '../graphql/Queries';
 import { reportReducer } from '../reducers/';
 import { injectIntl } from 'react-intl';
-import {
-  columnOptionsQuays,
-  columnOptionsStopPlace
-} from '../config/columnOptions';
-import {
-  buildReportSearchQuery,
-  extractQueryParamsFromUrl
-} from '../utils/URLhelpers';
+import { columnOptionsQuays, columnOptionsStopPlace } from '../config/columnOptions';
+import { buildReportSearchQuery, extractQueryParamsFromUrl } from '../utils/URLhelpers';
 import TagFilterTray from '../components/ReportPage/TagFilterTray';
 import AdvancedReportFilters from '../components/ReportPage/AdvancedReportFilters';
 
@@ -65,6 +56,7 @@ class ReportPage extends React.Component {
       showFutureAndExpired: false,
       withTags: false,
       tags: [],
+      filterByOrg: false
     };
   }
 
@@ -97,7 +89,7 @@ class ReportPage extends React.Component {
     this.setState({ searchQuery });
   }
 
-  handleItemOnCheck(name, checked) {
+  handleItemOnCheck(name, checked) {
     let nextTags = this.state.tags.slice();
     if (checked) {
       nextTags.push(name);
@@ -226,13 +218,16 @@ class ReportPage extends React.Component {
       withNearbySimilarDuplicates,
       withTags,
       showFutureAndExpired,
-      tags
+      tags,
+      filterByOrg
     } = this.state;
     const { client } = this.props;
 
     this.setState({
       isLoading: true
     });
+
+    let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
 
     const queryVariables = {
       query: searchQuery,
@@ -250,7 +245,8 @@ class ReportPage extends React.Component {
         .map(topos => topos.id),
       countyReference: topoiChips
         .filter(topos => topos.type === 'county')
-        .map(topos => topos.id)
+        .map(topos => topos.id),
+      code: optionalOrgCodeFilter
     };
 
     client
@@ -344,6 +340,21 @@ class ReportPage extends React.Component {
     return name;
   }
 
+  findOrgCodeFilter() {
+    const rolesToSearchIn = ['editStops', ''];
+    let firstOrgFound = null;
+    if (this.props.roles) {
+      let firstUserRoleFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
+      if (firstUserRoleFound !== undefined) {
+        firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
+        if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
+          return firstOrgFound;
+        }
+      }
+    }
+    return firstOrgFound;
+  }
+
   render() {
     const {
       stopTypeFilter,
@@ -354,7 +365,8 @@ class ReportPage extends React.Component {
       withDuplicateImportedIds,
       withNearbySimilarDuplicates,
       showFutureAndExpired,
-      withTags
+      withTags,
+      filterByOrg
     } = this.state;
     const { intl, topographicalPlaces, results, duplicateInfo } = this.props;
     const { locale, formatMessage } = intl;
@@ -403,7 +415,7 @@ class ReportPage extends React.Component {
                   filter={AutoComplete.caseInsensitiveFilter}
                   style={{
                     margin: 'auto',
-                    width: '50%',
+                    width: '60%',
                     textAlign: 'center',
                     marginTop: -10
                   }}
@@ -411,6 +423,8 @@ class ReportPage extends React.Component {
                   fullWidth={true}
                   ref="topoFilter"
                   onNewRequest={this.handleAddChip.bind(this)}
+                  menuStyle={{width: 500}}
+                  listStyle={{width: 500}}
                 />
                 <TopographicalFilter
                   topoiChips={topoiChips}
@@ -418,9 +432,9 @@ class ReportPage extends React.Component {
                 />
               </div>
             </ReportFilterBox>
-            <ReportFilterBox style={{ width: '50%' }}>
+            <ReportFilterBox style={{ width: '60%' }}>
               <div style={{ marginLeft: 5, paddingTop: 5 }}>
-                <div style={{fontWeight: 600, fontSize: 12, marginBottom: 10}}>{formatMessage({id: 'filter_by_tags'})}</div>
+                <div style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>{formatMessage({ id: 'filter_by_tags' })}</div>
                 <TagFilterTray
                   tags={this.state.tags}
                   formatMessage={formatMessage}
@@ -438,14 +452,14 @@ class ReportPage extends React.Component {
                   floatingLabelText={formatMessage({
                     id: 'optional_search_string'
                   })}
-                  style={{width: 330}}
+                  style={{ width: 330 }}
                   value={this.state.searchQuery}
                   onKeyDown={this.handleOnKeyDown.bind(this)}
                   onChange={(e, v) => {
                     this.handleSearchQueryChange(v);
                   }}
                 />
-                <div style={{display: 'flex', alignItems: 'center', marginTop: 2}}>
+                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap',  marginTop: 2}}>
                   <RaisedButton
                     style={{ marginTop: 10, marginLeft: 5, transform: 'scale(0.9)' }}
                     disabled={isLoading}
@@ -459,6 +473,7 @@ class ReportPage extends React.Component {
                     withDuplicateImportedIds={withDuplicateImportedIds}
                     withNearbySimilarDuplicates={withNearbySimilarDuplicates}
                     showFutureAndExpired={showFutureAndExpired}
+                    filterByOrg={filterByOrg}
                     withTags={withTags}
                     handleCheckboxChange={this.handleFilterChange.bind(this)}
                   />
@@ -515,7 +530,9 @@ class ReportPage extends React.Component {
 const mapStateToProps = state => ({
   topographicalPlaces: state.report.topographicalPlaces,
   results: state.report.results,
-  duplicateInfo: state.report.duplicateInfo
+  duplicateInfo: state.report.duplicateInfo,
+  orgCode: state.user.searchFilters.orgCode,
+  roles: state.roles.kc.tokenParsed.roles
 });
 
 export default withApollo(connect(mapStateToProps)(injectIntl(ReportPage)));

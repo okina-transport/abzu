@@ -1,13 +1,14 @@
 {
   "name": "Abzu",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Nasjonalt stoppestedregister",
   "main": "index.js",
   "scripts": {
     "build": "BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
-    "dev": "port=9000 NODE_ENV=development TIAMAT_ENV=test node server.js",
     "dev-local": "port=9000 NODE_ENV=development TIAMAT_ENV=development TIAMAT_BASE_URL=http://localhost:8585/services/stop_places/graphql node server.js",
-    "prod": "BABEL_ENV=production NODE_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://tiamat-rmr.nouvelle-aquitaine.pro/services/stop_places/graphql AUTH_SERVER_URL=https://auth-rmr.nouvelle-aquitaine.pro/auth node server.js",
+    "dev-with-integ-backend": "port=9000 NODE_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=https://entur.okina.fr/services/stop_places/graphql node server.js",
+    "integ": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=test TIAMAT_BASE_URL=https://entur.okina.fr/services/stop_places/graphql AUTH_SERVER_URL=https://auth.okina.fr/auth/ node server.js",
+    "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://arrets-rmr.nouvelle-aquitaine.pro/services/stop_places/graphql node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
   },
@@ -48,7 +49,7 @@
     "leaflet": "1.2.0",
     "lodash.debounce": "4.0.8",
     "material-ui": "0.19.4",
-    "moment": "2.18.1",
+    "moment": "2.19.3",
     "promise-polyfill": "6.0.2",
     "prop-types": "^15.5.10",
     "raven": "^2.2.0",

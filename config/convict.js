@@ -39,9 +39,14 @@ module.exports = new Promise(function (resolve, reject) {
     },
     tiamatBaseUrl: {
       doc: 'Base URL for for tiamat graphql endpoint',
-      format: 'url',
-	    default: 'https://entur.okina.fr/services/stop_places/graphql',
+	    default: 'http://tiamat:8585/services/stop_places/graphql',
       env: 'TIAMAT_BASE_URL'
+    },
+    OTPUrl: {
+      doc: 'URL for for OTP / Journey planner graphql endpoint',
+      format: 'url',
+      default: 'https://api-test.entur.org/journeyplanner/2.0/index/graphql',
+      env: 'OTP_URL'
     },
     endpointBase: {
       doc: 'Base URL for for timat including slash',
@@ -49,16 +54,10 @@ module.exports = new Promise(function (resolve, reject) {
       default: '/',
       env: 'ENDPOINTBASE'
     },
-    OSMUrl: {
-      doc: 'URL for OSM map',
-      format: String,
-      default: 'https://api-test.entur.org/map/1.0/{z}/{x}/{y}.png',
-      env: 'OSM_URL'
-    },
     authServerUrl: {
       doc: 'URL to keycloak auth server',
       format: String,
-      default: 'https://auth-rmr.nouvelle-aquitaine.pro/auth',
+      default: 'https://auth-rmr.nouvelle-aquitaine.pro/auth/',
       env: 'AUTH_SERVER_URL'
     },
     authRealmName: {

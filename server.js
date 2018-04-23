@@ -7,7 +7,7 @@ var globSync = require('glob').sync;
 var path = require('path');
 var fs = require('fs');
 var axios = require('axios');
-var introspectionQuery = require('./graphql/introspection').introspectionQuery;
+var introspectionQuery = require('./graphql/Tiamat/introspection').introspectionQuery;
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 const Routes = require('./routes/');
@@ -23,7 +23,7 @@ convictPromise
     const assetsEndpoints = getRouteEntries(ENDPOINTBASE, '/public/');
 
     app.use(
-      [ENDPOINTBASE + 'public/', ...assetsEndpoints],
+      [ ENDPOINTBASE + 'public/', ...assetsEndpoints ],
       express.static(__dirname + '/public')
     );
 
@@ -31,7 +31,7 @@ convictPromise
 
     app.get(ENDPOINTBASE + 'token', (req, res) => {
       const remoteAddress =
-        req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        req.headers[ 'x-forwarded-for' ] || req.connection.remoteAddress;
 
       axios
         .post(
@@ -63,11 +63,11 @@ convictPromise
       app.use(require('webpack-hot-middleware')(compiler));
     } else {
       // expose build bundle for production
-      app.get(ENDPOINTBASE + 'public/bundle.js', function(req, res) {
+      app.get(ENDPOINTBASE + 'public/bundle.js', function (req, res) {
         res.sendFile(__dirname + '/public/bundle.js');
       });
 
-      app.get(ENDPOINTBASE + 'public/react.bundle.js', function(req, res) {
+      app.get(ENDPOINTBASE + 'public/react.bundle.js', function (req, res) {
         res.sendFile(__dirname + '/public/react.bundle.js');
       });
     }
@@ -75,13 +75,13 @@ convictPromise
     const configEndpoints = getRouteEntries(ENDPOINTBASE, '/config.json');
 
     app.get(
-      [ENDPOINTBASE + 'config.json', [...configEndpoints]],
-      function(req, res) {
+      [ ENDPOINTBASE + 'config.json', [ ...configEndpoints ] ],
+      function (req, res) {
 
-        var cfg = {
+        const cfg = {
           tiamatBaseUrl: convict.get('tiamatBaseUrl'),
           endpointBase: convict.get('endpointBase'),
-          OSMUrl: convict.get('OSMUrl'),
+          OTPUrl: convict.get('OTPUrl'),
           tiamatEnv: convict.get('tiamatEnv'),
           netexPrefix: convict.get('netexPrefix'),
           // Pod ID used in req header for Tiamat
@@ -94,29 +94,28 @@ convictPromise
       }
     );
 
-    app.get(ENDPOINTBASE + Routes.STOP_PLACE + '/:id', function(req, res) {
+    app.get(ENDPOINTBASE + Routes.STOP_PLACE + '/:id', function (req, res) {
       res.send(getPage());
     });
 
-    app.get(ENDPOINTBASE + Routes.GROUP_OF_STOP_PLACE + '/:id', function(req, res) {
+    app.get(ENDPOINTBASE + Routes.GROUP_OF_STOP_PLACE + '/:id', function (req, res) {
       res.send(getPage());
     });
 
-    app.get(ENDPOINTBASE + 'reports', function(req, res) {
+    app.get(ENDPOINTBASE + 'reports', function (req, res) {
       res.send(getPage());
     });
 
-    app.get(ENDPOINTBASE + '_health', function(req, res) {
+    app.get(ENDPOINTBASE + '_health', function (req, res) {
       res.sendStatus(200);
     });
-
-    app.get(ENDPOINTBASE + 'config/keycloak.json', function(req, res) {
+    app.get(ENDPOINTBASE + 'config/keycloak.json', function (req, res) {
       res.sendFile(__dirname + '/config/keycloak.json');
     });
 
     app.use(favicon(path.join(__dirname, 'static/icons', 'favicon.ico')))
 
-    app.post(ENDPOINTBASE + 'timeOffset', function(req, res) {
+    app.post(ENDPOINTBASE + 'timeOffset', function (req, res) {
       if (req.body.clientTime) {
         res.send({
           offset: new Date().getTime() - req.body.clientTime,
@@ -131,27 +130,27 @@ convictPromise
     app.get(
       [
         ENDPOINTBASE + 'translation.json',
-        [...translationEndpoints]
+        [ ...translationEndpoints ]
       ],
-      function(req, res) {
+      function (req, res) {
         let translations = getTranslations(req);
         res.send(translations);
       }
     );
 
-    app.get(ENDPOINTBASE + 'static/icons/svg-sprite.svg', function(req, res) {
+    app.get(ENDPOINTBASE + 'static/icons/svg-sprite.svg', function (req, res) {
       res.sendFile(__dirname + '/static/icons/svg-sprite.svg');
     });
 
-    app.get(ENDPOINTBASE + 'doc', function(req, res) {
+    app.get(ENDPOINTBASE + 'doc', function (req, res) {
       res.sendFile(__dirname + '/doc/MAN-NA-RMRPA-V2.0.pdf');
     });
 
-    app.get(ENDPOINTBASE, function(req, res) {
+    app.get(ENDPOINTBASE, function (req, res) {
       res.send(getPage());
     });
 
-    app.get(ENDPOINTBASE + '*', function(req, res) {
+    app.get(ENDPOINTBASE + '*', function (req, res) {
       res.redirect(ENDPOINTBASE);
     });
 
@@ -160,12 +159,12 @@ convictPromise
     fetch(introspectionQuery).then(response => {
 
       fs.writeFileSync(
-        './graphql/schema.json',
+        './graphql/Tiamat/schema.json',
         JSON.stringify(response.data),
         'utf8'
       );
 
-      app.listen(port, function(error) {
+      app.listen(port, function (error) {
         if (error) {
           console.error(error);
         } else {
@@ -177,7 +176,7 @@ convictPromise
           );
         }
       });
-    }).catch( err => {
+    }).catch(err => {
       console.log("Unable to fetch schema, server exited with error");
       process.exit(1);
     });
@@ -199,15 +198,15 @@ convictPromise
     };
 
     const getTranslations = req => {
-      const supportedLanguages = ['en', 'nb', 'fr'];
+      const supportedLanguages = [ 'en', 'nb', 'fr' ];
 
       const translations = globSync(__dirname + '/static/lang/*.json')
         .map(filename => [
           path.basename(filename, '.json'),
           fs.readFileSync(filename, 'utf8')
         ])
-        .reduce((messages, [namespace, collection]) => {
-          messages[namespace] = collection;
+        .reduce((messages, [ namespace, collection ]) => {
+          messages[ namespace ] = collection;
           return messages;
         }, {});
 
@@ -221,8 +220,8 @@ convictPromise
       } else {
         if (req.acceptsLanguages()) {
           for (let i = 0; i < req.acceptsLanguages().length; i++) {
-            if (translations[req.acceptsLanguages()[i]]) {
-              locale = req.acceptsLanguages()[i];
+            if (translations[ req.acceptsLanguages()[ i ] ]) {
+              locale = req.acceptsLanguages()[ i ];
               break;
             }
           }
@@ -231,7 +230,7 @@ convictPromise
 
       return {
         locale: locale,
-        messages: translations[locale]
+        messages: translations[ locale ]
       };
     };
 
@@ -262,7 +261,7 @@ convictPromise
       return `<script src="${ENDPOINTBASE}public/bundle.js"></script>`;
     };
   })
-  .catch(function(err) {
+  .catch(function (err) {
     console.error('Unable to load convict configuration', err);
   });
 

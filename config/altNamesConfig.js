@@ -12,7 +12,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-
 // Used for altNamesDialog
 
 export const supportedNameTypes = [
@@ -21,15 +20,23 @@ export const supportedNameTypes = [
     name: {
       en: 'Alias',
       nb: 'Alias',
-      fr: 'Alias',
-    },
+      fr: 'Alias'
+    }
   },
   {
     value: 'translation',
     name: {
       en: 'Translation',
       nb: 'Oversettelse',
-      fr: 'Traduction',
+      fr: 'Traduction'
+    }
+  },
+  {
+    value: 'other',
+    name: {
+      en: 'Other',
+      nb: 'Annet',
+      fr: 'Autre',
     },
   },
 ];
@@ -38,22 +45,22 @@ export const allNameTypes = {
   alias: {
     en: 'Alias',
     nb: 'Alias',
-    fr: 'Alias',
+    fr: 'Alias'
   },
   translation: {
     en: 'Translation',
     nb: 'Oversettelse',
-    fr: 'Traduction',
+    fr: 'Traduction'
   },
   label: {
     en: 'Label',
     nb: 'Merkelapp',
-    fr: 'Libellé',
+    fr: 'Libellé'
   },
   copy: {
     en: 'Copy',
     nb: 'Kopi',
-    fr: 'Copie',
+    fr: 'Copie'
   },
   other: {
     en: 'Other',
@@ -75,17 +82,22 @@ export const languages = {
   nor: {
     en: 'Norwegian',
     nb: 'Norsk',
-    fr: 'Norvégien',
+    fr: 'Norvégien'
+  },
+  swe: {
+    en: 'Swedish',
+    nb: 'Svensk',
+    fr: 'Suédois'
   },
   eng: {
     en: 'English',
     nb: 'Engelsk',
-    fr: 'Anglais',
+    fr: 'Anglais'
   },
   est: {
     en: 'Estonian',
     nb: 'Estisk',
-    fr: 'Estonien',
+    fr: 'Estonien'
   },
   fin: {
     en: 'Finnish',
@@ -100,16 +112,16 @@ export const languages = {
   rus: {
     en: 'Russian',
     nb: 'Russisk',
-    fr: 'Russe',
+    fr: 'Russe'
   },
   fkv: {
     en: 'Kven language',
     nb: 'Kvensk',
-    fr: 'Kven',
+    fr: 'Kven'
   },
   fra: {
     en: 'French',
     nb: 'Fransk',
-    fr: 'Français',
+    fr: 'Français'
   }
 };

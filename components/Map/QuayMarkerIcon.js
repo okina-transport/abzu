@@ -27,7 +27,7 @@ class QuayMarkerIcon extends React.Component {
       compassBearing
     } = this.props;
 
-    let markerIconStyle = { };
+    let markerIconStyle = {};
 
     if (belongsToNeighbourStop) {
       markerIconStyle.filter = 'grayscale(100%)';
@@ -59,8 +59,8 @@ class QuayMarkerIcon extends React.Component {
   }
 
   render() {
-    const { displayCode, compassBearing, isCompassBearingEnabled } = this.props;
-    const quayShortName = getShortQuayName(displayCode) || 'N/A';
+    const { displayCode, compassBearing, isCompassBearingEnabled, defaultValueIcon } = this.props;
+    const quayShortName = getShortQuayName(displayCode) || defaultValueIcon;
     const nameLen = quayShortName.length;
 
     const quayStyle = {

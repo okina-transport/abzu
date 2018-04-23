@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import React, { Component } from 'react';
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Marker, Popup } from 'react-leaflet';
 import L, { divIcon } from 'leaflet';
@@ -25,7 +26,7 @@ class JunctionMarker extends React.Component {
     type: PropTypes.string.isRequired,
     handleDragEnd: PropTypes.func.isRequired,
     text: PropTypes.object.isRequired,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
   };
 
   componentDidUpdate() {
@@ -65,7 +66,7 @@ class JunctionMarker extends React.Component {
       position,
       index,
       type,
-      handleDragEnd,
+      handleDragEnd
     } = this.props;
     const { text, name } = this.props;
 
@@ -90,7 +91,7 @@ class JunctionMarker extends React.Component {
                 fontSize: '1.1em',
               }}
             >
-              {name || 'N/A'}
+              {name || text.notAssigned}
             </div>
             <div
               className="quay-marker-title"

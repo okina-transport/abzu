@@ -14,7 +14,7 @@ limitations under the Licence. */
 
 
 import gql from 'graphql-tag';
-import Fragments from './Fragments';
+import Fragments from './fragments';
 
 export const mutateParentStopPlace = gql`
   mutation mutateParentStopPlace($id: String, $name: String, $description: String, $validBetween: ValidBetweenInput, $versionComment: String, $coordinates: Coordinates!) {
@@ -243,3 +243,10 @@ export const deleteGroupMutation = gql`
     deleteGroupOfStopPlaces(id: $id)
   }
 `;
+
+export const deleteParkingMutation = gql`
+  mutation deleteParking($id: String!) {
+    deleteParking(parkingId: $id)
+  }
+`;
+
