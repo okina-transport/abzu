@@ -21,28 +21,19 @@ import ModalityFilter from '../components/EditStopPage/ModalityFilter';
 import TopographicalFilter from '../components/MainPage/TopographicalFilter';
 import AutoComplete from 'material-ui/AutoComplete';
 import { withApollo } from 'react-apollo';
-import {
-  topopGraphicalPlacesReportQuery,
-  findStopForReport
-} from '../graphql/Queries';
-import { getTopographicPlaces } from '../graphql/Actions';
+import { topopGraphicalPlacesReportQuery, findStopForReport } from '../graphql/Tiamat/queries';
+import { getParkingForMultipleStopPlaces } from '../graphql/Tiamat/queries';
+import { getTopographicPlaces } from '../graphql/Tiamat/actions';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import MdSpinner from '../static/icons/spinner';
 import MdSearch from 'material-ui/svg-icons/action/search';
 import ColumnFilterPopover from '../components/EditStopPage/ColumnFilterPopover';
-import { getParkingForMultipleStopPlaces } from '../graphql/Queries';
 import { reportReducer } from '../reducers/';
 import { injectIntl } from 'react-intl';
-import {
-  columnOptionsQuays,
-  columnOptionsStopPlace
-} from '../config/columnOptions';
-import {
-  buildReportSearchQuery,
-  extractQueryParamsFromUrl
-} from '../utils/URLhelpers';
+import { columnOptionsQuays, columnOptionsStopPlace } from '../config/columnOptions';
+import { buildReportSearchQuery, extractQueryParamsFromUrl } from '../utils/URLhelpers';
 import TagFilterTray from '../components/ReportPage/TagFilterTray';
 import AdvancedReportFilters from '../components/ReportPage/AdvancedReportFilters';
 
@@ -65,7 +56,7 @@ class ReportPage extends React.Component {
       showFutureAndExpired: false,
       withTags: false,
       tags: [],
-      searchWithCode: false
+      filterByOrg: false
     };
   }
 
@@ -98,7 +89,7 @@ class ReportPage extends React.Component {
     this.setState({ searchQuery });
   }
 
-  handleItemOnCheck(name, checked) {
+  handleItemOnCheck(name, checked) {
     let nextTags = this.state.tags.slice();
     if (checked) {
       nextTags.push(name);
@@ -228,7 +219,7 @@ class ReportPage extends React.Component {
       withTags,
       showFutureAndExpired,
       tags,
-      searchWithCode
+      filterByOrg
     } = this.state;
     const { client } = this.props;
 
@@ -236,7 +227,7 @@ class ReportPage extends React.Component {
       isLoading: true
     });
 
-    let code = this.getCode(searchWithCode);
+    let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
 
     const queryVariables = {
       query: searchQuery,
@@ -255,7 +246,7 @@ class ReportPage extends React.Component {
       countyReference: topoiChips
         .filter(topos => topos.type === 'county')
         .map(topos => topos.id),
-      code
+      code: optionalOrgCodeFilter
     };
 
     client
@@ -324,18 +315,12 @@ class ReportPage extends React.Component {
 
   createTopographicPlaceMenuItem(place, formatMessage) {
     let name = this.getTopographicalNames(place);
-    let shortName = this.getTopographicalNames(place);
-
-      if(shortName.length > 35){
-          shortName = shortName.substring(0, 35) + "...";
-      }
     return {
       text: name,
       id: place.id,
       value: (
         <MenuItem
-          primaryText={shortName}
-          style={{fontSize: '0.8em'}}
+          primaryText={name}
           secondaryText={formatMessage({ id: place.topographicPlaceType })}
         />
       ),
@@ -355,19 +340,20 @@ class ReportPage extends React.Component {
     return name;
   }
 
-    getCode(searchWithCode){
-        let code = null;
-        let codeJSON = JSON.parse(this.props.code);
-        codeJSON = codeJSON.o.toLowerCase();
-
-        if(searchWithCode && codeJSON !== window.config.netexPrefix.toLowerCase()){
-            code = codeJSON;
+  findOrgCodeFilter() {
+    const rolesToSearchIn = ['editStops', ''];
+    let firstOrgFound = null;
+    if (this.props.roles) {
+      let firstUserRoleFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
+      if (firstUserRoleFound !== undefined) {
+        firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
+        if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
+          return firstOrgFound;
         }
-        else{
-            code = null;
-        }
-        return code;
+      }
     }
+    return firstOrgFound;
+  }
 
   render() {
     const {
@@ -380,7 +366,7 @@ class ReportPage extends React.Component {
       withNearbySimilarDuplicates,
       showFutureAndExpired,
       withTags,
-      searchWithCode
+      filterByOrg
     } = this.state;
     const { intl, topographicalPlaces, results, duplicateInfo } = this.props;
     const { locale, formatMessage } = intl;
@@ -448,7 +434,7 @@ class ReportPage extends React.Component {
             </ReportFilterBox>
             <ReportFilterBox style={{ width: '60%' }}>
               <div style={{ marginLeft: 5, paddingTop: 5 }}>
-                <div style={{fontWeight: 600, fontSize: 12, marginBottom: 10}}>{formatMessage({id: 'filter_by_tags'})}</div>
+                <div style={{ fontWeight: 600, fontSize: 12, marginBottom: 10 }}>{formatMessage({ id: 'filter_by_tags' })}</div>
                 <TagFilterTray
                   tags={this.state.tags}
                   formatMessage={formatMessage}
@@ -466,7 +452,7 @@ class ReportPage extends React.Component {
                   floatingLabelText={formatMessage({
                     id: 'optional_search_string'
                   })}
-                  style={{width: 330}}
+                  style={{ width: 330 }}
                   value={this.state.searchQuery}
                   onKeyDown={this.handleOnKeyDown.bind(this)}
                   onChange={(e, v) => {
@@ -487,7 +473,7 @@ class ReportPage extends React.Component {
                     withDuplicateImportedIds={withDuplicateImportedIds}
                     withNearbySimilarDuplicates={withNearbySimilarDuplicates}
                     showFutureAndExpired={showFutureAndExpired}
-                    searchWithCode={searchWithCode}
+                    filterByOrg={filterByOrg}
                     withTags={withTags}
                     handleCheckboxChange={this.handleFilterChange.bind(this)}
                   />
@@ -545,8 +531,8 @@ const mapStateToProps = state => ({
   topographicalPlaces: state.report.topographicalPlaces,
   results: state.report.results,
   duplicateInfo: state.report.duplicateInfo,
-  code: state.user.searchFilters.code
-
+  orgCode: state.user.searchFilters.orgCode,
+  roles: state.roles.kc.tokenParsed.roles
 });
 
 export default withApollo(connect(mapStateToProps)(injectIntl(ReportPage)));

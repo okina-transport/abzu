@@ -12,7 +12,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-
 import { connect } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -29,7 +28,10 @@ import MenuItem from 'material-ui/MenuItem';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import FavoriteManager from '../../singletons/FavoriteManager';
 import CoordinatesDialog from '../Dialogs/CoordinatesDialog';
-import { findEntitiesWithFilters, findTopographicalPlace } from '../../graphql/Actions';
+import {
+  findEntitiesWithFilters,
+  findTopographicalPlace
+} from '../../graphql/Tiamat/actions';
 import { withApollo } from 'react-apollo';
 import FavoritePopover from './FavoritePopover';
 import ModalityFilter from '../EditStopPage/ModalityFilter';
@@ -47,7 +49,6 @@ import Menu from 'material-ui/Menu';
 import CheckBox from 'material-ui/Checkbox';
 import Routes from '../../routes/';
 import { Entities } from '../../models/Entities';
-
 
 class SearchBox extends React.Component {
   constructor(props) {
@@ -67,11 +68,9 @@ class SearchBox extends React.Component {
       const stopPlaceTypes = filter
         ? filter.stopType
         : this.props.stopTypeFilter;
-      const searchWithCode = filter
-        ? filter.searchWithCode
-        : this.props.searchWithCode;
+      const filterByOrg = filter ? filter.filterByOrg : this.props.filterByOrg;
 
-      let code = this.getCode(searchWithCode);
+      let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
       this.setState({ loading: true });
 
       findEntitiesWithFilters(
@@ -80,7 +79,7 @@ class SearchBox extends React.Component {
         stopPlaceTypes,
         chips,
         showFutureAndExpired,
-        code
+        optionalOrgCodeFilter
       ).then(() => {
         this.setState({ loading: false });
       });
@@ -106,9 +105,10 @@ class SearchBox extends React.Component {
   }
 
   handleEdit(id, entityType) {
-    const route = entityType === Entities.STOP_PLACE
-      ? Routes.STOP_PLACE
-      : Routes.GROUP_OF_STOP_PLACE;
+    const route =
+      entityType === Entities.STOP_PLACE
+        ? Routes.STOP_PLACE
+        : Routes.GROUP_OF_STOP_PLACE;
     this.props.dispatch(UserActions.navigateTo(`/${route}/`, id));
   }
 
@@ -150,17 +150,22 @@ class SearchBox extends React.Component {
     this.props.dispatch(UserActions.toggleShowFutureAndExpired(value));
   }
 
-  toggleSearchWithCode(value) {
-    const { searchText, topoiChips, stopTypeFilter, showFutureAndExpired } = this.props;
+  toggleSearchWithOrgCode(value) {
+    const {
+      searchText,
+      topoiChips,
+      stopTypeFilter,
+      showFutureAndExpired
+    } = this.props;
     if (searchText) {
-        this.handleSearchUpdate(searchText, null, null, {
-           searchWithCode: value,
-           topoiChips,
-           stopType: stopTypeFilter,
-           showFutureAndExpired
-        });
+      this.handleSearchUpdate(searchText, null, null, {
+        filterByOrg: value,
+        topoiChips,
+        stopType: stopTypeFilter,
+        showFutureAndExpired
+      });
     }
-    this.props.dispatch(UserActions.toggleSearchWithCode(value));
+    this.props.dispatch(UserActions.toggleSearchWithOrgCode(value));
   }
 
   handleTopographicalPlaceInput(searchText) {
@@ -189,13 +194,18 @@ class SearchBox extends React.Component {
   }
 
   handleApplyModalityFilters(filters) {
-    const { searchText, showFutureAndExpired, topoiChips, searchWithCode } = this.props;
+    const {
+      searchText,
+      showFutureAndExpired,
+      topoiChips,
+      filterByOrg
+    } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         showFutureAndExpired,
         topoiChips,
         stopType: filters,
-        searchWithCode
+        filterByOrg
       });
     }
     this.props.dispatch(UserActions.applyStopTypeSearchFilter(filters));
@@ -213,15 +223,23 @@ class SearchBox extends React.Component {
   }
 
   handleAddChip({ text, type, id }) {
-    const { searchText, stopTypeFilters, showFutureAndExpired, topoiChips, searchWithCode } = this.props;
+    const {
+      searchText,
+      stopTypeFilters,
+      showFutureAndExpired,
+      topoiChips,
+      filterByOrg
+    } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         showFutureAndExpired,
         topoiChips: topoiChips.concat({
-          text, type, value: id
+          text,
+          type,
+          value: id
         }),
         stopType: stopTypeFilters,
-        searchWithCode
+        filterByOrg
       });
     }
     this.props.dispatch(
@@ -233,13 +251,20 @@ class SearchBox extends React.Component {
   }
 
   handleDeleteChip(chipValue) {
-    const { dispatch, searchText, stopTypeFilters, showFutureAndExpired, topoiChips, searchWithCode } = this.props;
+    const {
+      dispatch,
+      searchText,
+      stopTypeFilters,
+      showFutureAndExpired,
+      topoiChips,
+      filterByOrg
+    } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         showFutureAndExpired,
         topoiChips: topoiChips.filter(chip => chip.value !== chipValue),
         stopType: stopTypeFilters,
-        searchWithCode
+        filterByOrg
       });
     }
     dispatch(UserActions.deleteChip(chipValue));
@@ -347,7 +372,7 @@ class SearchBox extends React.Component {
       };
 
       if (menuItems.length > 6) {
-        menuItems[ 6 ] = filterNotification;
+        menuItems[6] = filterNotification;
       } else {
         menuItems.push(filterNotification);
       }
@@ -355,18 +380,21 @@ class SearchBox extends React.Component {
     return menuItems;
   }
 
-  getCode(searchWithCode){
-      let code = null;
-      let codeJSON = JSON.parse(this.props.code);
-      codeJSON = codeJSON.o.toLowerCase();
-
-      if(searchWithCode && codeJSON !== window.config.netexPrefix.toLowerCase()){
-          code = codeJSON;
+  findOrgCodeFilter() {
+    const rolesToSearchIn = ['editStops', ''];
+    let firstOrgFound = null;
+    if (this.props.roles) {
+      let firstUserRoleFound = this.props.roles.find(userRole =>
+        rolesToSearchIn.includes(JSON.parse(userRole).r)
+      );
+      if (firstUserRoleFound !== undefined) {
+        firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
+        if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
+          return firstOrgFound;
+        }
       }
-      else{
-          code = null;
-      }
-      return code;
+    }
+    return firstOrgFound;
   }
 
   render() {
@@ -385,7 +413,7 @@ class SearchBox extends React.Component {
       newStopIsMultiModal,
       dataSource,
       showFutureAndExpired,
-      searchWithCode
+      filterByOrg
     } = this.props;
     const {
       coordinatesDialogOpen,
@@ -440,7 +468,12 @@ class SearchBox extends React.Component {
           value: (
             <MenuItem
               primaryText={name}
-              style={{ fontSize: '0.8em', overflow: 'hidden', whiteSpace: 'no-wrap', textOverflow: 'ellipsis' }}
+              style={{
+                fontSize: '0.8em',
+                overflow: 'hidden',
+                whiteSpace: 'no-wrap',
+                textOverflow: 'ellipsis'
+              }}
               secondaryText={formatMessage({ id: place.topographicPlaceType })}
             />
           ),
@@ -519,66 +552,74 @@ class SearchBox extends React.Component {
                 stopTypeFilter={stopTypeFilter}
                 handleApplyFilters={this.handleApplyModalityFilters.bind(this)}
               />
-              {showMoreFilterOptions
-                ? <div>
-                    <div style={{ width: '100%', textAlign: 'center', marginBottom: 15 }}>
-                      <FlatButton
-                        onClick={() => this.handleToggleFilter(false)}
-                        style={{ fontSize: 12 }}
-                      >
-                        {formatMessage({ id: 'filters_less' })}
-                      </FlatButton>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <AutoComplete
-                        floatingLabelText={formatMessage({
-                          id: 'filter_by_topography'
-                        })}
-                        floatingLabelStyle={{marginTop: -22, marginLeft: 5}}
-                        dataSource={topographicalPlacesDataSource}
-                        onUpdateInput={this.handleTopographicalPlaceInput.bind(
-                            this
-                        )}
-                        listStyle={{ width: 'auto', minWidth: 300 }}
-                        filter={AutoComplete.caseInsensitiveFilter}
-                        style={{
-                          margin: 'auto',
-                          width: '100%',
-                          marginTop: -20,
-                        }}
-                        maxSearchResults={7}
-                        ref="topoFilter"
-                        onNewRequest={this.handleAddChip.bind(this)}
-                      />
-
-                    </div>
+              {showMoreFilterOptions ? (
+                <div>
+                  <div
+                    style={{
+                      width: '100%',
+                      textAlign: 'center',
+                      marginBottom: 15
+                    }}
+                  >
+                    <FlatButton
+                      onClick={() => this.handleToggleFilter(false)}
+                      style={{ fontSize: 12 }}
+                    >
+                      {formatMessage({ id: 'filters_less' })}
+                    </FlatButton>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <AutoComplete
+                      floatingLabelText={formatMessage({
+                        id: 'filter_by_topography'
+                      })}
+                      hintText={formatMessage({ id: 'filter_by_topography' })}
+                      floatingLabelStyle={{ marginTop: -22, marginLeft: 5 }}
+                      dataSource={topographicalPlacesDataSource}
+                      onUpdateInput={this.handleTopographicalPlaceInput.bind(
+                        this
+                      )}
+                      listStyle={{ width: 'auto', minWidth: 300 }}
+                      filter={AutoComplete.caseInsensitiveFilter}
+                      style={{
+                        margin: 'auto',
+                        width: '100%',
+                        marginTop: -20
+                      }}
+                      maxSearchResults={7}
+                      ref="topoFilter"
+                      onNewRequest={this.handleAddChip.bind(this)}
+                    />
+                  </div>
                   <CheckBox
                     checked={showFutureAndExpired}
                     onCheck={(e, value) =>
-                      this.toggleShowFutureAndExpired(value)}
+                      this.toggleShowFutureAndExpired(value)
+                    }
                     label={formatMessage({ id: 'show_future_and_expired' })}
                     labelStyle={{ fontSize: '0.8em' }}
                   />
                   <CheckBox
-                    checked={searchWithCode}
-                    onCheck={(e, value) =>
-                      this.toggleSearchWithCode(value)}
+                    checked={filterByOrg}
+                    onCheck={(e, value) => this.toggleSearchWithOrgCode(value)}
                     label={formatMessage({ id: 'search_with_code' })}
                     labelStyle={{ fontSize: '0.8em' }}
                   />
-                    <TopographicalFilter
-                      topoiChips={topoiChips}
-                      handleDeleteChip={this.handleDeleteChip.bind(this)}
-                    />
-                  </div>
-                : <div style={{ width: '100%', textAlign: 'center' }}>
+                  <TopographicalFilter
+                    topoiChips={topoiChips}
+                    handleDeleteChip={this.handleDeleteChip.bind(this)}
+                  />
+                </div>
+              ) : (
+                <div style={{ width: '100%', textAlign: 'center' }}>
                   <FlatButton
                     style={{ fontSize: 12 }}
                     onClick={() => this.handleToggleFilter(true)}
                   >
                     {formatMessage({ id: 'filters_more' })}
                   </FlatButton>
-                </div>}
+                </div>
+              )}
             </div>
             <SearchIcon
               style={{
@@ -628,8 +669,8 @@ class SearchBox extends React.Component {
             </FlatButton>
           </div>
           <div key="searchbox-edit">
-            {chosenResult
-              ? <SearchBoxDetails
+            {chosenResult ? (
+              <SearchBoxDetails
                 handleEdit={this.handleEdit.bind(this)}
                 result={chosenResult}
                 handleChangeCoordinates={this.handleOpenCoordinatesDialog.bind(
@@ -637,81 +678,83 @@ class SearchBox extends React.Component {
                 )}
                 userSuppliedCoordinates={
                   missingCoordinatesMap &&
-                  missingCoordinatesMap[ chosenResult.id ]
+                  missingCoordinatesMap[chosenResult.id]
                 }
                 text={text}
                 canEdit={canEdit}
                 formatMessage={formatMessage}
               />
-              : null}
-            {!isGuest &&
-            <div style={{ marginTop: 10 }}>
-              {isCreatingNewStop
-                ? <NewStopPlace
-                  text={newStopText}
-                  onClose={() =>
-                    this.setState({ createNewStopOpen: false })}
-                />
-                : <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <RaisedButton
-                    onClick={this.handleOpenLookupCoordinatesDialog.bind(
-                      this
-                    )}
-                    icon={
-                      <MdLocationSearching
-                        style={{ width: 20, height: 20 }}
-                      />
-                    }
-                    primary={false}
-                    labelStyle={{ fontSize: 11 }}
-                    label={formatMessage({ id: 'lookup_coordinates' })}
+            ) : null}
+            {!isGuest && (
+              <div style={{ marginTop: 10 }}>
+                {isCreatingNewStop ? (
+                  <NewStopPlace
+                    text={newStopText}
+                    onClose={() => this.setState({ createNewStopOpen: false })}
                   />
-                  <RaisedButton
-                    onClick={e => {
-                      this.setState({
-                        createNewStopOpen: true,
-                        anchorEl: e.currentTarget
-                      });
-                    }}
-                    icon={<MdMore style={{ width: 20, height: 20 }} />}
-                    primary={true}
-                    labelStyle={{ fontSize: 11 }}
-                    label={formatMessage({ id: 'new_stop' })}
-                  />
-                  <Popover
-                    open={this.state.createNewStopOpen}
-                    anchorEl={this.state.anchorEl}
-                    anchorOrigin={{
-                      horizontal: 'left',
-                      vertical: 'bottom'
-                    }}
-                    targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-                    onRequestClose={() => {
-                      this.setState({ createNewStopOpen: false });
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between'
                     }}
                   >
-                    <Menu>
-                      <MenuItem
-                        onClick={() => this.handleNewStop(false)}
-                        style={{ fontSize: '0.9em' }}
-                        primaryText={formatMessage({ id: 'new_stop' })}
-                      />
-                      <MenuItem
-                        onClick={() => this.handleNewStop(true)}
-                        style={{ fontSize: '0.9em' }}
-                        primaryText={formatMessage({
-                          id: 'new__multi_stop'
-                        })}
-                      />
-                    </Menu>
-                  </Popover>
-                </div>}
-            </div>}
+                    <RaisedButton
+                      onClick={this.handleOpenLookupCoordinatesDialog.bind(
+                        this
+                      )}
+                      icon={
+                        <MdLocationSearching
+                          style={{ width: 20, height: 20 }}
+                        />
+                      }
+                      primary={false}
+                      labelStyle={{ fontSize: 11 }}
+                      label={formatMessage({ id: 'lookup_coordinates' })}
+                    />
+                    <RaisedButton
+                      onClick={e => {
+                        this.setState({
+                          createNewStopOpen: true,
+                          anchorEl: e.currentTarget
+                        });
+                      }}
+                      icon={<MdMore style={{ width: 20, height: 20 }} />}
+                      primary={true}
+                      labelStyle={{ fontSize: 11 }}
+                      label={formatMessage({ id: 'new_stop' })}
+                    />
+                    <Popover
+                      open={this.state.createNewStopOpen}
+                      anchorEl={this.state.anchorEl}
+                      anchorOrigin={{
+                        horizontal: 'left',
+                        vertical: 'bottom'
+                      }}
+                      targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+                      onRequestClose={() => {
+                        this.setState({ createNewStopOpen: false });
+                      }}
+                    >
+                      <Menu>
+                        <MenuItem
+                          onClick={() => this.handleNewStop(false)}
+                          style={{ fontSize: '0.9em' }}
+                          primaryText={formatMessage({ id: 'new_stop' })}
+                        />
+                        <MenuItem
+                          onClick={() => this.handleNewStop(true)}
+                          style={{ fontSize: '0.9em' }}
+                          primaryText={formatMessage({
+                            id: 'new__multi_stop'
+                          })}
+                        />
+                      </Menu>
+                    </Popover>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -742,15 +785,16 @@ const mapStateToProps = state => {
     topographicalPlaces: state.stopPlace.topographicalPlaces || [],
     canEdit: getIn(
       state.roles,
-      [ 'allowanceInfoSearchResult', 'canEdit' ],
+      ['allowanceInfoSearchResult', 'canEdit'],
       false
     ),
     isGuest: state.roles.isGuest,
     lookupCoordinatesOpen: state.user.lookupCoordinatesOpen,
     newStopIsMultiModal: state.user.newStopIsMultiModal,
     showFutureAndExpired: state.user.searchFilters.showFutureAndExpired,
-    searchWithCode: state.user.searchFilters.searchWithCode,
-    code: state.user.searchFilters.code
+    filterByOrg: state.user.searchFilters.filterByOrg,
+    orgCode: state.user.searchFilters.orgCode,
+    roles: state.roles.kc.tokenParsed.roles
   };
 };
 

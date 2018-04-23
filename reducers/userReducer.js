@@ -42,6 +42,10 @@ export const initialState = {
   newStopIsMultiModal: false,
   isCreatingNewStop: false,
   serverTimeDiff: 0,
+  deleteStopDialogWarning: {
+    warning: false,
+    stopPlaceId: null
+  }
 };
 
 const userReducer = (state = initialState, action) => {
@@ -54,6 +58,10 @@ const userReducer = (state = initialState, action) => {
         showEditStopAdditional: false,
         isCreatingNewStop: false,
         keyValuesDialogOpen: false,
+        deleteStopDialogWarning: {
+          warning: false,
+          stopPlaceId: null
+        }
       });
 
     case types.TOGGLED_IS_CREATING_NEW_STOP:
@@ -149,12 +157,12 @@ const userReducer = (state = initialState, action) => {
         }
       });
 
-      case types.TOGGLE_SEARCH_WITH_CODE:
+    case types.TOGGLE_SEARCH_WITH_ORG_CODE:
       return Object.assign({}, state, {
-          searchFilters: {
-            ...state.searchFilters,
-            searchWithCode: action.payLoad
-          }
+        searchFilters: {
+          ...state.searchFilters,
+          filterByOrg: action.payLoad
+        }
       });
 
     case types.SET_SEARCH_TEXT:
@@ -273,7 +281,10 @@ const userReducer = (state = initialState, action) => {
         showPublicCode: action.payLoad
       });
 
-      break;
+    case types.TERMINATE_DELETE_STOP_DIALOG_WARNING:
+      return Object.assign({}, state, {
+        deleteStopDialogWarning: action.payLoad
+      });
 
     default:
       return state;
