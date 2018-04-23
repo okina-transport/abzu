@@ -59,7 +59,10 @@ import { getIn, getIsCurrentVersionMax } from '../../utils/';
 import VersionsPopover from './VersionsPopover';
 import RequiredFieldsMissingDialog from '../Dialogs/RequiredFieldsMissingDialog';
 import Routes from '../../routes/';
-import { shouldMutateParking, shouldMutatePathLinks } from '../../modelUtils/shouldMutate';
+import {
+  shouldMutateParking,
+  shouldMutatePathLinks
+} from '../../modelUtils/shouldMutate';
 
 class EditStopGeneral extends React.Component {
   constructor(props) {
@@ -266,7 +269,11 @@ class EditStopGeneral extends React.Component {
       pathLink
     );
 
-    const savePathLinks = shouldMutatePathLinks(pathLinkVariables, pathLink, originalPathLink);
+    const savePathLinks = shouldMutatePathLinks(
+      pathLinkVariables,
+      pathLink,
+      originalPathLink
+    );
 
     let id = null;
 
