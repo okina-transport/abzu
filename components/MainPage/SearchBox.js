@@ -54,7 +54,7 @@ class SearchBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showMoreFilterOptions: false,
+      showMoreFilterOptions: null,
       createNewStopOpen: false,
       coordinatesDialogOpen: false,
       loading: false
@@ -148,6 +148,7 @@ class SearchBox extends React.Component {
       });
     }
     this.props.dispatch(UserActions.toggleShowFutureAndExpired(value));
+    this.changeStateShowMoreFilterOptions();
   }
 
   toggleSearchWithOrgCode(value) {
@@ -166,6 +167,7 @@ class SearchBox extends React.Component {
       });
     }
     this.props.dispatch(UserActions.toggleSearchWithOrgCode(value));
+    this.changeStateShowMoreFilterOptions();
   }
 
   handleTopographicalPlaceInput(searchText) {
@@ -209,6 +211,9 @@ class SearchBox extends React.Component {
       });
     }
     this.props.dispatch(UserActions.applyStopTypeSearchFilter(filters));
+    if(filters.length === 0){
+        this.changeStateShowMoreFilterOptions();
+    }
   }
 
   handleSubmitCoordinates(position) {
@@ -268,6 +273,7 @@ class SearchBox extends React.Component {
       });
     }
     dispatch(UserActions.deleteChip(chipValue));
+    this.changeStateShowMoreFilterOptions();
   }
 
   handleNewStop(isMultiModal) {
@@ -397,6 +403,23 @@ class SearchBox extends React.Component {
     return firstOrgFound;
   }
 
+  displayMoreFilters(){
+      if(this.state.showMoreFilterOptions === null){
+          if(this.props.showFutureAndExpired || this.props.searchWithCode || this.props.topoiChips.length > 0 || this.props.stopTypeFilter.length > 0){
+              return true;
+          }
+          else{
+              return null;
+          }
+      }
+  }
+
+  changeStateShowMoreFilterOptions(){
+      if(this.state.showMoreFilterOptions === null){
+          this.setState({ showMoreFilterOptions: true});
+      }
+  }
+
   render() {
     const {
       chosenResult,
@@ -467,12 +490,19 @@ class SearchBox extends React.Component {
           id: place.id,
           value: (
             <MenuItem
-              primaryText={name}
+              primaryText={
+                  <span style={{ marginRight: 50 }}>
+                      {name}
+                  </span>
+              }
               style={{
-                fontSize: '0.8em',
-                overflow: 'hidden',
-                whiteSpace: 'no-wrap',
-                textOverflow: 'ellipsis'
+                  fontSize: '0.8em',
+                  overflow: 'hidden',
+                  whiteSpace: 'no-wrap',
+                  textOverflow: 'ellipsis',
+                  lineHeight: '20px',
+                  paddingBottom: '15px',
+                  paddingTop: '15px'
               }}
               secondaryText={formatMessage({ id: place.topographicPlaceType })}
             />
@@ -552,7 +582,7 @@ class SearchBox extends React.Component {
                 stopTypeFilter={stopTypeFilter}
                 handleApplyFilters={this.handleApplyModalityFilters.bind(this)}
               />
-              {showMoreFilterOptions ? (
+              {this.displayMoreFilters() || showMoreFilterOptions ? (
                 <div>
                   <div
                     style={{
@@ -584,7 +614,8 @@ class SearchBox extends React.Component {
                       style={{
                         margin: 'auto',
                         width: '100%',
-                        marginTop: -20
+                        marginTop: -20,
+                        marginLeft: 5
                       }}
                       maxSearchResults={7}
                       ref="topoFilter"

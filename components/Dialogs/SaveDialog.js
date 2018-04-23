@@ -29,6 +29,7 @@ import {
   isDateRangeLegal,
   getEarliestFromDate
 } from '../../utils/saveDialogUtils';
+import Warning from 'material-ui/svg-icons/alert/warning';
 
 let DateTimeFormat;
 
@@ -141,7 +142,8 @@ class SaveDialog extends React.Component {
       handleClose,
       errorMessage,
       currentValidBetween,
-      serverTimeDiff
+      serverTimeDiff,
+      severalDataProducers
     } = this.props;
     const { formatMessage } = intl;
     const {
@@ -172,7 +174,8 @@ class SaveDialog extends React.Component {
       do_you_want_to_specify_expirary: formatMessage({
         id: 'do_you_want_to_specify_expirary'
       }),
-      comment: formatMessage({ id: 'comment' })
+      comment: formatMessage({ id: 'comment' }),
+      commentSeveralDataProducers: formatMessage({ id: 'comment_several_data_producers'})
     };
 
     const { timeLegal, dateLegal } = isDateRangeLegal(
@@ -323,6 +326,15 @@ class SaveDialog extends React.Component {
             rowsMax={4}
           />
         </div>
+          {severalDataProducers &&
+          <div style={{width: '90%', margin: 'auto', marginBottom: 20, color: '#bb271c', display: 'flex', alignItems: 'center'}}>
+              <Warning
+                  color="#bb271c"
+                  style={{width: 30, height: 30, marginRight: 10}}
+              />
+              {translations.commentSeveralDataProducers}
+          </div>
+          }
         <div style={{ color: '#bb271c' }}>{errorMessageLabel}</div>
       </Dialog>
     );
