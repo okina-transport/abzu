@@ -63,6 +63,7 @@
   "close": "Lukk",
   "column_filter_label_quays": "Kolonner for quayer",
   "column_filter_label_stop_place": "Kolonner for stoppested",
+  "comment_several_data_producers" : "Be careful, you will modify a stop place used by several data producers.",
   "comment_missing": "<Mangler kommentar>",
   "comment": "Kommentar",
   "compass_bearing": "Kompassretning",
@@ -288,6 +289,7 @@
   "set_centroid": "Sett koordinater",
   "set_coordinates_prompt" : "Sett koordinater for stopp",
   "settings": "Innstillinger",
+  "several_data_producers": "Be careful, this stop place is used by several data producers.",
   "show_compass_bearing" : "Vis kompassretninger",
   "show_expired_stops": "Vis nedlagte stoppesteder",
   "show_future_and_expired": "Vis nedlagte og fremtidige",
@@ -368,5 +370,8 @@
   "checking_stop_place_usage": "Sjekker bruk av stoppested",
   "failed_checking_stop_place_usage": "Feilet å finne bruk.",
   "stop_place_usages_found": "Advarsel: Dette stoppestedet er i bruk!",
-  "important_stop_place_usages_found": "Det er trafikk på stoppestedet etter nedleggelsesdato!"
+  "important_stop_place_usages_found": "Det er trafikk på stoppestedet etter nedleggelsesdato. Brukes av:",
+  "checking_quay_usage": "Sjekker bruk av kilde-quay",
+  "quay_usages_found": "Advarsel: Kildequayen er i bruk!",
+  "important_quay_usages_found": "Det er trafikk på kildequayen. Brukes av:"
 }

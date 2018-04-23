@@ -81,7 +81,6 @@ convictPromise
         const cfg = {
           tiamatBaseUrl: convict.get('tiamatBaseUrl'),
           endpointBase: convict.get('endpointBase'),
-          OSMUrl: convict.get('OSMUrl'),
           OTPUrl: convict.get('OTPUrl'),
           tiamatEnv: convict.get('tiamatEnv'),
           netexPrefix: convict.get('netexPrefix'),
@@ -110,7 +109,6 @@ convictPromise
     app.get(ENDPOINTBASE + '_health', function (req, res) {
       res.sendStatus(200);
     });
-
     app.get(ENDPOINTBASE + 'config/keycloak.json', function (req, res) {
       res.sendFile(__dirname + '/config/keycloak.json');
     });
