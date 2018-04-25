@@ -4,12 +4,18 @@
   "description": "Nasjonalt stoppestedregister",
   "main": "index.js",
   "scripts": {
-    "build": "BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
-    "dev-local": "port=9000 NODE_ENV=development AUTH_SERVER_URL=https://auth.okina.fr/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://127.0.0.1:8585/services/stop_places/graphql node server.js",
-    "dev-swarm": "port=9000 NODE_ENV=development AUTH_SERVER_URL=https://auth.okina.fr/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://0.0.0.0:8000/api/stop_places/1.0/graphql node server.js",
-    "dev-with-integ-backend": "port=9000 NODE_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=https://entur.okina.fr/services/stop_places/graphql node server.js",
-    "integ": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=test TIAMAT_BASE_URL=https://entur.okina.fr/services/stop_places/graphql AUTH_SERVER_URL=https://auth.okina.fr/auth/ node server.js",
-    "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://arrets-rmr.nouvelle-aquitaine.pro/services/stop_places/graphql node server.js",
+    "build":
+      "BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
+    "dev-local":
+      "port=9000 NODE_ENV=development AUTH_SERVER_URL=https://auth.na.okina.fr/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://0.0.0.0:8585/services/stop_places/graphql node server.js",
+    "dev-local-swarm":
+      "NODE_ENV=production  BABEL_ENV=production NODE_ENV=development AUTH_SERVER_URL=https://auth.na.okina.fr/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://kong:8000/api/stop_places/1.0/graphql node server.js",
+    "dev-with-integ-backend":
+      "port=9000 NODE_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=https://entur.okina.fr/services/stop_places/graphql node server.js",
+    "integ":
+      "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=test TIAMAT_BASE_URL=https://api.na.okina.fr/api/services/stop_places/graphql AUTH_SERVER_URL=https://auth.na.okina.fr/auth/ node server.js",
+    "prod":
+      "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://arrets-rmr.nouvelle-aquitaine.pro/services/stop_places/graphql node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
   },
