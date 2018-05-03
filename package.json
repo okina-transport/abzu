@@ -15,7 +15,7 @@
     "integ":
       "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=test TIAMAT_BASE_URL=https://api.na.okina.fr/api/stop_places/1.0/graphql AUTH_SERVER_URL=https://auth.na.okina.fr/auth/ node server.js",
     "prod":
-      "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://tiamat-rmr.nouvelle-aquitaine.pro/services/stop_places/1.0/graphql node server.js",
+      "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://tiamat-rmr.nouvelle-aquitaine.pro/api/services/stop_places/1.0/graphql node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
   },
