@@ -43,11 +43,12 @@ class ErrorBoundry extends React.Component {
           onClick={() => Raven.lastEventId() && Raven.showReportDialog()}
         >
           <div>
-            <h3>Noe har gått galt, og vi beklager ulempene dette måtte medføre!</h3>
+            <h3>Quelque chose s'est mal passé, veuillez nous excuser pour ce désagrément.</h3>
           </div>
-          <p>Våre utviklere er blitt informert om problemet, men fyll gjerne ut en rapport her for å komme med tilleggsinformasjon ved å klikke her.</p>
-          <p>Tusen takk for din hjelp!</p>
-          <a href={location.protocol + '//' + location.host}>Gå tilbake</a>
+          <p>Nos développeurs ont été informés du problème, mais pouvez-vous les aider en remplissant rapidement un rapport d'erreur pour fournir quelqus
+            informations complémentaires svp ?</p>
+          <p>Merci d'avance de votre aide.</p>
+          <a href={location.protocol + '//' + location.host}>Retour</a>
         </div>
       );
     } else {
