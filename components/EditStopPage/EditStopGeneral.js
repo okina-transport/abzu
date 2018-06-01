@@ -457,12 +457,14 @@ class EditStopGeneral extends React.Component {
     const {stopPlace} = this.props;
     let importerIdDataProducer = [];
     let severalDP = false;
+    if(stopPlace.importedId !== undefined) {
     stopPlace.importedId.forEach((element) => {
         if(importerIdDataProducer[stopPlace.importedId.indexOf(element) - 1] && importerIdDataProducer[stopPlace.importedId.indexOf(element) - 1] !== element.substring(0,3)){
             severalDP = true;
         }
         importerIdDataProducer.push(element.substring(0, 3));
     });
+    }
     return severalDP;
   }
 
