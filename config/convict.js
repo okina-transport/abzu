@@ -71,6 +71,18 @@ module.exports = new Promise(function (resolve, reject) {
       format: String,
       default: 'NAQ',
       env: 'NETEX_PREFIX'
+    },
+    mapboxAccessToken: {
+      doc: 'Mapbox Access Token',
+      format: String,
+      default: undefined,
+      env: 'MAPBOX_ACCESS_TOKEN'
+    },
+    mapboxTariffZonesStyle: {
+      doc: 'Mapbox Style for Tariff Zones',
+      format: String,
+      default: undefined,
+      env: 'MAPBOX_TARIFF_ZONES_STYLE'
     }
   });
 

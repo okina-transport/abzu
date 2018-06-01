@@ -25,6 +25,7 @@ import {
 import { GoogleLayer } from 'react-leaflet-google';
 import MultiPolylineList from './PathLink';
 import WMTSLayer from './WMTSLayer';
+import MapboxLayer from './MapboxLayer';
 import MultimodalStopEdges from './MultimodalStopEdges';
 import StopPlaceGroupList from './StopPlaceGroupList';
 
@@ -55,6 +56,14 @@ export default class LeafLetMap extends React.Component {
     return null;
   }
 
+  getMapboxAccessToken() {
+    return `${window.config.mapboxAccessToken}`;
+  }
+
+  getMapboxTariffZoneStyle() {
+    return `${window.config.mapboxTariffZonesStyle}`;
+  }
+
   render() {
     // Okina API key
     const googleApiKey = 'AIzaSyBoGgXuwKIOMGp1hwUl0rl_DxMkjpSFH84';
@@ -81,6 +90,8 @@ export default class LeafLetMap extends React.Component {
     };
 
     const centerPosition = this.getCenterPosition(position);
+    const mapboxAccessToken = this.getMapboxAccessToken();
+    const mapboxTariffZonesStyle = this.getMapboxTariffZoneStyle();
 
     return (
       <Lmap
@@ -140,6 +151,15 @@ export default class LeafLetMap extends React.Component {
               maptype="roadmap"
             />
           </BaseLayer>
+          {mapboxAccessToken && mapboxTariffZonesStyle ? (<BaseLayer
+              checked={this.getCheckedBaseLayerByValue('Takstsoner')}
+              name="Takstsoner" >
+              <MapboxLayer
+                accessToken={mapboxAccessToken}
+                style={mapboxTariffZonesStyle}
+               />
+            </BaseLayer>
+        ) : ( null )}
         </LayersControl>
         <ScaleControl imperial={false} position="bottomright" />
         <ZoomControl position="bottomright" />

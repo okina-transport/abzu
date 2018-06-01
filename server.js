@@ -85,7 +85,9 @@ convictPromise
           tiamatEnv: convict.get('tiamatEnv'),
           netexPrefix: convict.get('netexPrefix'),
           // Pod ID used in req header for Tiamat
-          hostname: process.env.HOSTNAME
+          hostname: process.env.HOSTNAME,
+          mapboxTariffZonesStyle: convict.get("mapboxTariffZonesStyle"),
+          mapboxAccessToken: convict.get("mapboxAccessToken")          
         };
 
         createKeyCloakConfig(convict.get('authServerUrl'));
@@ -240,6 +242,8 @@ convictPromise
         <title>Référentiel Multimodal Régional</title>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="favicon.ico">
@@ -264,4 +268,3 @@ convictPromise
   .catch(function (err) {
     console.error('Unable to load convict configuration', err);
   });
-
