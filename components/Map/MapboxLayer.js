@@ -16,7 +16,7 @@ import L from 'leaflet'
 import React from 'react';
 import PropTypes from 'prop-types';
 import { GridLayer } from 'react-leaflet';
-import { mapboxgl } from 'mapbox-gl-leaflet';
+import './LeafletMapboxGL.js'
 
 export default class MapboxLayer extends GridLayer {
 
@@ -27,6 +27,6 @@ export default class MapboxLayer extends GridLayer {
 
   createLeafletElement() {
     const { accessToken, style } = this.props;
-    return L.mapboxGL({accessToken, style});
+    return L.mapboxGL({ accessToken, style });
   };
 }
