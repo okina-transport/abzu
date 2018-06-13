@@ -13,6 +13,7 @@
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
   },
+
   "author": "Sean Erik Scully",
   "license": "EUPL-1.2 with modifications",
   "dependencies": {
