@@ -4,23 +4,16 @@
   "description": "Nasjonalt stoppestedregister",
   "main": "index.js",
   "scripts": {
-    "build":
-      "BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
-    "dev-local":
-      "port=9000 NODE_ENV=development AUTH_SERVER_URL=https://auth.na.okina.fr/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://172.18.0.1:8000/api/stop_places/1.0/graphql node server.js",
-    "dev-local-swarm":
-      "NODE_ENV=production  BABEL_ENV=production NODE_ENV=development AUTH_SERVER_URL=https://auth.na.okina.fr/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://kong:8000/api/stop_places/1.0/graphql node server.js",
-    "dev-with-integ-backend":
-      "NODE_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=https://api.na.okina.fr/api/stop_places/1.0/graphql AUTH_SERVER_URL=https://auth-rmr.nouvelle-aquitaine.pro/auth/ node server.js",
-    "integ":
-      "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=test TIAMAT_BASE_URL=https://api.na.okina.fr/api/stop_places/1.0/graphql node server.js",
-    "integTEST":
-      "port=9000 NODE_ENV=development BABEL_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=https://api.na.okina.fr/api/stop_places/1.0/graphql node server.js",
-    "prod":
-      "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://tiamat-rmr.nouvelle-aquitaine.pro/api/stop_places/1.0/graphql node server.js",
+    "build": "BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
+    "dev-local": "port=9000 NODE_ENV=development BABEL_ENV=production  AUTH_SERVER_URL=https://auth-rmr.nouvelle-aquitaine.pro/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://localhost:8777/services/stop_places/graphql node server.js",
+    "dev-local-swarm": "NODE_ENV=production  BABEL_ENV=production NODE_ENV=development AUTH_SERVER_URL=https://auth-rmr.nouvelle-aquitaine.pro/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://kong:8000/api/stop_places/1.0/graphql node server.js",
+    "dev-with-integ-backend": "NODE_ENV=development TIAMAT_ENV=test TIAMAT_BASE_URL=https://api.na.okina.fr/api/stop_places/1.0/graphql AUTH_SERVER_URL=https://auth.na.okina.fr/auth/ node server.js",
+    "integ": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=test TIAMAT_BASE_URL=https://api.na.okina.fr/api/stop_places/1.0/graphql node server.js",
+    "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://tiamat-rmr.nouvelle-aquitaine.pro/api/stop_places/1.0/graphql node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
   },
+
   "author": "Sean Erik Scully",
   "license": "EUPL-1.2 with modifications",
   "dependencies": {
@@ -42,16 +35,16 @@
     "convict": "4.0.0",
     "css-loader": "0.28.7",
     "detect-browser": "^2.0.0",
-    "express": "4.15.3",
+    "express": "^4.16.3",
     "file-loader": "^0.11.1",
     "glob": "7.1.2",
     "google-maps": "^3.2.1",
     "graphql-fetch": "1.0.1",
     "graphql-tag": "2.4.2",
-    "image-webpack-loader": "3.4.2",
+    "image-webpack-loader": "^4.2.0",
     "intl": "1.2.5",
     "intl-locales-supported": "1.0.0",
-    "jest": "21.2.1",
+    "jest": "^22.4.3",
     "jsdom": "11.1.0",
     "jsdom-global": "3.0.2",
     "keycloak-js": "3.2.1",
@@ -80,7 +73,7 @@
     "request": "2.81.0",
     "serve-favicon": "^2.4.5",
     "style-loader": "0.18.2",
-    "webpack": "3.6.0",
+    "webpack": "3.7.0",
     "webpack-dev-middleware": "1.12.0",
     "webpack-hot-middleware": "2.19.1"
   },
