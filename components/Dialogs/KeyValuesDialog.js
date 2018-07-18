@@ -107,7 +107,7 @@ class KeyValuesDialog extends React.Component {
       padding: 5
     };
 
-    const disabledTemporary = true;
+    const disabledTemporary = false;
 
     return (
       <div style={style}>
