@@ -200,7 +200,7 @@ class KeyValuesDialog extends React.Component {
             onClick={this.handleOpenCreateValues.bind(this)}
             mini={true}
             style={{ marginLeft: 20, marginBottom: 10 }}
-            disabled={true}
+            disabled={false}
           >
             <ContentAdd />
           </FloatingActionButton>}
