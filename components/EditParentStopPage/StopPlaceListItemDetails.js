@@ -20,17 +20,28 @@ import IconButton from 'material-ui/IconButton';
 import MdWarning from 'material-ui/svg-icons/alert/warning';
 import StopPlaceListItemQuays from './StopPlaceListItemQuays';
 import StopPlaceChildrenItems from './StopPlaceChildrenItems';
+import AdjacentStopList from './AdjacentStopList';
+import PropTypes from 'prop-types';
 
 class StopPlaceListItemDetails extends Component {
 
   render() {
 
-    const { stopPlace, intl, disabled } = this.props;
+    const { stopPlace, intl, disabled, handleRemoveAdjacentConnection } = this.props;
     const { notSaved } = stopPlace;
     const { formatMessage } = intl;
 
     return (
       <div style={{marginTop: 10}}>
+        {handleRemoveAdjacentConnection &&
+        <div style={{width: '90%', margin: 'auto'}}>
+          <AdjacentStopList
+            handleRemoveAdjacentConnection={handleRemoveAdjacentConnection}
+            stopPlace={stopPlace}
+          />
+        </div>
+        }
+
         { stopPlace.isParent
           ? <StopPlaceChildrenItems children={stopPlace.children} formatMessage={formatMessage}/>
           : <StopPlaceListItemQuays quays={stopPlace.quays} formatMessage={formatMessage}/>
@@ -45,7 +56,7 @@ class StopPlaceListItemDetails extends Component {
             </div>
           }
           <div style={{display: 'flex', alignItems: 'center'}}>
-            <div style={{fontSize: '0.8em'}}>{formatMessage({id: 'remove_stop_place'})}</div>
+            <div style={{fontSize: '0.8em'}}>{formatMessage({id: 'remove_stop_from_parent_title'})}</div>
             <IconButton
               disabled={disabled}
               onClick={() => this.props.handleRemoveStopPlace(stopPlace.id, notSaved)}
@@ -58,4 +69,9 @@ class StopPlaceListItemDetails extends Component {
     );
   }
 }
+
+StopPlaceListItemDetails.propTypes = {
+  stopPlace: PropTypes.object.isRequired
+};
+
 export default injectIntl(StopPlaceListItemDetails);

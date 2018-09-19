@@ -311,6 +311,18 @@ StopPlaceActions.clearLastMutatedStopPlaceId = () => dispatch => {
   );
 };
 
+StopPlaceActions.addAdjacentConnection = (stopPlaceId1, stopPlaceId2) => dispatch => {
+  dispatch(
+    createThunk(types.ADD_ADJACENT_SITE, { stopPlaceId1, stopPlaceId2 })
+  );
+};
+
+StopPlaceActions.removeAdjacentConnection = (stopPlaceId, adjacentStopPlaceRef) => dispatch => {
+  dispatch(
+    createThunk(types.REMOVE_ADJACENT_SITE, {stopPlaceId, adjacentStopPlaceRef})
+  );
+};
+
 StopPlaceActions.adjustCentroid = () => (dispatch, getState) => {
   const state = getState();
   const stopPlace = state.stopPlace.current;

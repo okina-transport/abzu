@@ -37,8 +37,8 @@ export const getUniqueStopPlaceTypes = modalities => {
 };
 
 /* Following the NeTEx placeEquipment model, all placeEquipment sub-items contains at least one item.
-  An abstraction of this concept in UI and in the client model (a clearly pragmatic approach) has been chosen in Abzu.
-*/
+ *  An abstraction of this concept in UI and in the client model (a clearly pragmatic approach) has been chosen in Abzu.
+ */
 export const simplifyPlaceEquipment = placeEquipments => {
   if (placeEquipments !== null) {
     let simpleRepresentation = {};
@@ -55,14 +55,23 @@ export const simplifyPlaceEquipment = placeEquipments => {
   return null;
 };
 
-
+/*
+ * Simplify place equipment before sending it to the GraphQL API
+ * Please note that the GraphQL API is not strictly Netex, so the method name is misleading.
+ * This method removes id fields from place equipments, as this is not supported by the GraphQL APIs input type. (ROR-467)
+ */
 export const netexifyPlaceEquipment = placeEquipments => {
   if (placeEquipments) {
     let netexRepresentation = {};
-    netexRepresentation.id = placeEquipments.id;
+
     Object.keys(placeEquipments).forEach(key => {
-      if (placeEquipments[key]) {
+      if (placeEquipments[key] && key !== 'id') {
         netexRepresentation[key] = [placeEquipments[key]]
+
+        // Do not send ID as the Graphql API Input type does not accept this.
+        if(Array.isArray(netexRepresentation[key]) && netexRepresentation[key].length > 0) {
+          delete netexRepresentation[key][0].id;
+        }
       }
     });
     return netexRepresentation;

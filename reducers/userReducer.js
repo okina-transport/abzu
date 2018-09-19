@@ -184,6 +184,17 @@ const userReducer = (state = initialState, action) => {
         removedFavorites: state.removedFavorites.concat(action.payLoad)
       });
 
+    case types.REQUESTED_ADJACENT_SITE_DIALOG:
+      return Object.assign({}, state, {
+        adjacentStopDialogOpen: true,
+        adjacentStopDialogStopPlace: action.payLoad
+      });
+
+    case types.CLOSED_ADJACENT_SITE_DIALOG:
+      return Object.assign({}, state, {
+        adjacentStopDialogOpen: false
+      });
+
     case types.CHANGED_ACTIVE_BASELAYER:
       return Object.assign({}, state, { activeBaselayer: action.payLoad });
 

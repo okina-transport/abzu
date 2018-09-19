@@ -24,6 +24,7 @@ import MdSave from 'material-ui/svg-icons/content/save';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
 import { StopPlaceActions, UserActions } from '../../actions/';
 import SaveDialog from '../Dialogs/SaveDialog';
+import AddAdjacentStopsDialog from '../Dialogs/AddAdjacentStopsDialog';
 import { withApollo } from 'react-apollo';
 import mapToMutationVariables from '../../modelUtils/mapToQueryVariables';
 import {
@@ -41,6 +42,7 @@ import { stopPlaceAndPathLinkByVersion } from '../../graphql/Tiamat/queries';
 import RemoveStopFromParentDialog from '../Dialogs/RemoveStopFromParentDialog';
 import TerminateStopPlaceDialog from '../Dialogs/TerminateStopPlaceDialog';
 import { getIn, getIsCurrentVersionMax } from '../../utils/';
+import StopPlace from '../../models/StopPlace';
 
 class EditParentGeneral extends React.Component {
   constructor(props) {
@@ -74,6 +76,10 @@ class EditParentGeneral extends React.Component {
 
   handleCloseRemoveStopFromParent() {
     this.props.dispatch(UserActions.hideRemoveStopPlaceFromParent());
+  }
+
+  handleCloseAddAdjacentStop() {
+    this.props.dispatch(UserActions.hideAddAdjacentStopDialog());
   }
 
   handleTerminateStop(shouldHardDelete, comment, dateTime) {
@@ -272,6 +278,11 @@ class EditParentGeneral extends React.Component {
     return stopHasBeenModified;
   }
 
+  addAdjacentStopReference(stopPlaceId1, stopPlaceId2) {
+    this.props.dispatch(StopPlaceActions.addAdjacentConnection(stopPlaceId1, stopPlaceId2));
+    this.handleCloseAddAdjacentStop();
+  }
+
   render() {
     const {
       stopPlace,
@@ -281,7 +292,8 @@ class EditParentGeneral extends React.Component {
       disabled,
       removingStopPlaceFromParentId,
       removeStopPlaceFromParentOpen,
-      originalStopPlace
+      originalStopPlace,
+      adjacentStopDialogOpen
     } = this.props;
 
     if (!stopPlace) return null;
@@ -430,6 +442,12 @@ class EditParentGeneral extends React.Component {
             isLastChild={isLastChild}
             isLoading={this.state.isLoading}
           />}
+        <AddAdjacentStopsDialog
+          open={adjacentStopDialogOpen}
+          handleClose={this.handleCloseAddAdjacentStop.bind(this)}
+          handleConfirm={this.addAdjacentStopReference.bind(this)}
+        />
+
         <ConfirmDialog
           open={this.state.confirmGoBack}
           handleClose={() => {
@@ -470,6 +488,7 @@ const mapStateToProps = ({ stopPlace, mapUtils, roles, user }) => ({
   stopHasBeenModified: stopPlace.stopHasBeenModified,
   removeStopPlaceFromParentOpen: mapUtils.removeStopPlaceFromParentOpen,
   removingStopPlaceFromParentId: mapUtils.removingStopPlaceFromParentId,
+  adjacentStopDialogOpen: user.adjacentStopDialogOpen,
   canDeleteStop: getIn(roles, ['allowanceInfo', 'canDeleteStop'], false),
   deleteStopDialogOpen: mapUtils.deleteStopDialogOpen,
   originalStopPlace: stopPlace.originalCurrent,

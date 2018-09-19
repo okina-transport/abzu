@@ -20,6 +20,8 @@ import * as types from '../actions/Types';
 import formatHelpers from '../modelUtils/mapToClient';
 import limitationHelpers from '../modelUtils/limitationHelpers';
 import equipmentHelpers from '../modelUtils/equipmentHelpers';
+import AdjacentStopRemover from '../modelUtils/adjacentStopRemover';
+import AdjacentStopAdder from '../modelUtils/adjacentStopAdder';
 import { setDecimalPrecision } from '../utils/';
 
 const stopPlaceReducer = (state = {}, action) => {
@@ -80,6 +82,25 @@ const stopPlaceReducer = (state = {}, action) => {
         stopHasBeenModified: false,
         current: JSON.parse(JSON.stringify(state.originalCurrent)),
         pathLink: JSON.parse(JSON.stringify(state.originalPathLink)),
+      });
+
+    case types.ADD_ADJACENT_SITE:
+      const stopPlaceId1 = action.payLoad.stopPlaceId1;
+      const stopPlaceId2 = action.payLoad.stopPlaceId2;
+      AdjacentStopAdder.addAdjacentStopReference(state.current, stopPlaceId1, stopPlaceId2,)
+
+      return Object.assign({}, state, {
+        stopHasBeenModified: true
+      });
+
+    case types.REMOVE_ADJACENT_SITE:
+      const adjacentStopPlaceRef = action.payLoad.adjacentStopPlaceRef;
+      const stopPlaceIdForRemovingAdjacentSite = action.payLoad.stopPlaceId;
+      const changedStopPlace = AdjacentStopRemover.removeAdjacentStop(state.current, adjacentStopPlaceRef, stopPlaceIdForRemovingAdjacentSite);
+
+      return Object.assign({}, state, {
+        stopHasBeenModified: true,
+        current: changedStopPlace
       });
 
     case types.SET_CENTER_AND_ZOOM:

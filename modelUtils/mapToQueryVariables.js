@@ -46,6 +46,7 @@ helpers.mapQuayToVariables = quay => {
       type: 'Point'
     };
   }
+  helpers.removeTypeNameRecursively(quayVariables);
   return quayVariables;
 };
 
@@ -103,17 +104,19 @@ helpers.mapChildStopToVariables = (original, userInput) => {
 
     variables.versionComment = comment;
   }
-
+  helpers.removeTypeNameRecursively(variables);
   return variables;
 }
 
 helpers.mapParentStopToVariables = (original, userInput) => {
   const stop = JSON.parse(JSON.stringify(original));
+  const children = stop.children.map(child => helpers.mapDeepStopToVariables(child, null));
 
   let parentStopVariables = {
     name: stop.name,
     description: stop.description || null,
-    alternativeNames: stop.alternativeNames || null
+    alternativeNames: stop.alternativeNames || null,
+    children: children
   };
 
   if (stop.id) {
@@ -143,7 +146,7 @@ helpers.mapParentStopToVariables = (original, userInput) => {
 
     parentStopVariables.versionComment = comment;
   }
-
+  helpers.removeTypeNameRecursively(parentStopVariables);
   return parentStopVariables;
 };
 
@@ -168,6 +171,15 @@ helpers.mapDeepStopToVariables = original => {
   return stopPlace;
 }
 
+helpers.removeTypeNameRecursively = (variablesObject) => {
+  for(var property in variablesObject) {
+    if (property === '__typename')
+      delete variablesObject[property];
+    else if (typeof variablesObject[property] === 'object')
+      helpers.removeTypeNameRecursively(variablesObject[property]);
+  }
+}
+
 helpers.mapStopToVariables = (original, userInput) => {
   const stop = JSON.parse(JSON.stringify(original));
 
@@ -181,14 +193,15 @@ helpers.mapStopToVariables = (original, userInput) => {
       stop.accessibilityAssessment
     ),
     keyValues: stop.keyValues,
-    placeEquipments: stop.placeEquipments,
+    placeEquipments: netexifyPlaceEquipment(stop.placeEquipments),
     alternativeNames: stop.alternativeNames,
     weighting: stop.weighting,
     submode: stop.submode,
     transportMode: stop.transportMode,
     tariffZones: (stop.tariffZones || []).map(tz => ({
       ref: tz.id
-    }))
+    })),
+    adjacentSites: stop.adjacentSites
   };
 
   if (userInput) {
@@ -212,6 +225,7 @@ helpers.mapStopToVariables = (original, userInput) => {
   if (stop.location) {
     stopVariables.coordinates = [[stop.location[1], stop.location[0]]];
   }
+  helpers.removeTypeNameRecursively(stopVariables);
   return stopVariables;
 };
 
@@ -243,6 +257,7 @@ helpers.mapPathLinkToVariables = pathLinks => {
         coordinates: pathLink.inBetween.map(latlng => latlng.reverse())
       };
     }
+    helpers.removeTypeNameRecursively(pathLink);
     return stripRedundantFields(pathLink);
   });
 };
@@ -282,7 +297,7 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
     } else {
       parking.geometry = null;
     }
-
+    helpers.removeTypeNameRecursively(parking);
     return parking;
   });
 };
