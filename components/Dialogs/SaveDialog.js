@@ -150,7 +150,7 @@ class SaveDialog extends React.Component {
       errorMessage,
       currentValidBetween,
       serverTimeDiff,
-      severalDataProducers
+      severalDataProducers,
       canTerminateValidBetween
     } = this.props;
     const { formatMessage } = intl;
