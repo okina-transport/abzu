@@ -123,7 +123,7 @@ export const allEntities = gql`
         pathLink(stopPlaceId: $id) {
             ...VerbosePathLink
         },
-        stopPlace(id: $id) {
+        stopPlace(id: $id, versionValidity: MAX_VERSION) {
             ...VerboseStopPlace
             ...VerboseParentStopPlace
         }
