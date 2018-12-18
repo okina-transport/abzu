@@ -246,7 +246,8 @@ class ReportPage extends React.Component {
       countyReference: topoiChips
         .filter(topos => topos.type === 'county')
         .map(topos => topos.id),
-      code: optionalOrgCodeFilter
+      code: optionalOrgCodeFilter,
+      versionValidity: showFutureAndExpired ? "MAX_VERSION" : null
     };
 
     client
