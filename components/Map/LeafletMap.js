@@ -123,16 +123,16 @@ export default class LeafLetMap extends React.Component {
               maxZoom="19"
             />
           </BaseLayer>
-          <BaseLayer
-            checked={this.getCheckedBaseLayerByValue('OpenStreetMap Transport')}
-            name="OpenStreetMap Transport"
-          >
-            <TileLayer
-              attribution="&copy; OpenStreetMap contributors"
-              url="//{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"
-              maxZoom="19"
-            />
-          </BaseLayer>
+          {/*<BaseLayer*/}
+            {/*checked={this.getCheckedBaseLayerByValue('OpenStreetMap Transport')}*/}
+            {/*name="OpenStreetMap Transport"*/}
+          {/*>*/}
+            {/*<TileLayer*/}
+              {/*attribution="&copy; OpenStreetMap contributors"*/}
+              {/*url="//{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"*/}
+              {/*maxZoom="19"*/}
+            {/*/>*/}
+          {/*</BaseLayer>*/}
           <BaseLayer
             checked={this.getCheckedBaseLayerByValue('Google Maps Satellite')}
             name="Google Maps Satellite">
@@ -151,15 +151,15 @@ export default class LeafLetMap extends React.Component {
               maptype="roadmap"
             />
           </BaseLayer>
-          {mapboxAccessToken && mapboxTariffZonesStyle ? (<BaseLayer
-              checked={this.getCheckedBaseLayerByValue('Takstsoner')}
-              name="Takstsoner" >
-              <MapboxLayer
-                accessToken={mapboxAccessToken}
-                style={mapboxTariffZonesStyle}
-               />
-            </BaseLayer>
-        ) : ( null )}
+          {/*{mapboxAccessToken && mapboxTariffZonesStyle ? (<BaseLayer*/}
+              {/*checked={this.getCheckedBaseLayerByValue('Takstsoner')}*/}
+              {/*name="Takstsoner" >*/}
+              {/*<MapboxLayer*/}
+                {/*accessToken={mapboxAccessToken}*/}
+                {/*style={mapboxTariffZonesStyle}*/}
+               {/*/>*/}
+            {/*</BaseLayer>*/}
+        {/*) : ( null )}*/}
         </LayersControl>
         <ScaleControl imperial={false} position="bottomright" />
         <ZoomControl position="bottomright" />
