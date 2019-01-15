@@ -68,8 +68,8 @@ export default function configureStore(kc) {
 
   const initialState = {
     stopPlace: {
-      centerPosition: [64.349421, 16.809082],
-      zoom: 6,
+      centerPosition: [45.0135951, 0.4833627],
+      zoom: 7,
       minZoom: 14,
       isCompassBearingEnabled: Settings.getShowCompassBearing(),
       isCreatingPolylines: false,
@@ -87,7 +87,8 @@ export default function configureStore(kc) {
         stopType: [],
         topoiChips: [],
         text: '',
-        showFutureAndExpired: false
+        showFutureAndExpired: false,
+        filterByOrg: false
       },
       snackbarOptions: {
         isOpen: false,

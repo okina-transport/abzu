@@ -53,6 +53,7 @@ class NewElementsBox extends React.Component {
     const { activeStopPlace, missingCoordsMap, disabled } = this.props;
 
     const boxWrapperStyle = {
+      width: 'auto',
       zIndex: 999,
       fontSize: 10,
       textAlign: 'center',
@@ -67,6 +68,17 @@ class NewElementsBox extends React.Component {
       display: 'inline-block',
       cursor: disabled ? 'not-allowed' : 'move',
       margin: '10 15',
+    };
+
+    const elementStyleDisabled = {
+        display: 'none'
+    };
+
+    const elementStyleCenterIcon = {
+        display: 'inline-block',
+        cursor: disabled ? 'not-allowed' : 'move',
+        margin: '10 15',
+        marginLeft: 100
     };
 
     const titleStyle = {
@@ -126,7 +138,7 @@ class NewElementsBox extends React.Component {
                 <div style={titleStyle}>{newStopText}</div>
               </div>
             : null}
-          <div style={elementStyle}>
+          <div style={elementStyleCenterIcon}>
             <img
               id="drag1"
               data-type="quay"

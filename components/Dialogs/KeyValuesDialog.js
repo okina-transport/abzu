@@ -107,6 +107,8 @@ class KeyValuesDialog extends React.Component {
       padding: 5
     };
 
+    const disabledTemporary = false;
+
     return (
       <div style={style}>
         <DialogHeader
@@ -158,7 +160,7 @@ class KeyValuesDialog extends React.Component {
                         }}
                       >
                         <span>{kvp.key}</span>
-                        {!disabled &&
+                        {!disabledTemporary &&
                           <div style={{ display: 'flex' }}>
                             <MdEdit
                               style={{
@@ -198,6 +200,7 @@ class KeyValuesDialog extends React.Component {
             onClick={this.handleOpenCreateValues.bind(this)}
             mini={true}
             style={{ marginLeft: 20, marginBottom: 10 }}
+            disabled={false}
           >
             <ContentAdd />
           </FloatingActionButton>}

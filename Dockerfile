@@ -8,7 +8,16 @@ RUN npm set progress=false
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-COPY . .
+COPY source/ .
+
+#Building inside container - avoid libpng issues
+RUN npm prune
+RUN npm install -g yarn
+RUN yarn install
+RUN npm run test
+RUN npm run build
+
+
 
 EXPOSE 8000
 ENV port 8000

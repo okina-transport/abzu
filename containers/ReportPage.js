@@ -57,6 +57,7 @@ class ReportPage extends React.Component {
             showFutureAndExpired: false,
             withTags: false,
             tags: [],
+            filterByOrg: false
         };
     }
 
@@ -220,7 +221,8 @@ class ReportPage extends React.Component {
             hasParking,
             withTags,
             showFutureAndExpired,
-            tags
+            tags,
+            filterByOrg
         } = this.state;
         const {client} = this.props;
 
@@ -228,7 +230,7 @@ class ReportPage extends React.Component {
             isLoading: true
         });
 
-        const queryVariables = {
+        let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;const queryVariables = {
             query: searchQuery,
             withoutLocationOnly,
             withDuplicateImportedIds,
@@ -245,8 +247,10 @@ class ReportPage extends React.Component {
                 .map(topos => topos.id),
             countyReference: topoiChips
                 .filter(topos => topos.type === 'county')
-                .map(topos => topos.id)
-        };
+                .map(topos => topos.id),
+            code: optionalOrgCodeFilter,
+            versionValidity: showFutureAndExpired ? "MAX_VERSION" : null
+    };
 
         client
             .query({
@@ -349,25 +353,41 @@ class ReportPage extends React.Component {
         return name;
     }
 
-    render() {
-        const {
-            stopTypeFilter,
-            topoiChips,
-            activePageIndex,
-            isLoading,
-            withoutLocationOnly,
-            withDuplicateImportedIds,
-            withNearbySimilarDuplicates,
-            hasParking,
-            showFutureAndExpired,
-            withTags
-        } = this.state;
-        const {intl, topographicalPlaces, results: dataSource, duplicateInfo} = this.props;
-        const {locale, formatMessage} = intl;
-        const results = hasParking ? dataSource.filter(stopPlace => stopPlace.parking && stopPlace.parking.length) : dataSource;
+    findOrgCodeFilter() {
+        const rolesToSearchIn = ['editStops', ''];
+        let firstOrgFound = null;
+        if (this.props.roles) {
+            let firstUserRoleFound = this.props.roles.find(userRole => rolesToSearchIn.includes(JSON.parse(userRole).r));
+            if (firstUserRoleFound !== undefined) {
+                firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
+                if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
+                    return firstOrgFound;
+                }
+            }
+        }
+        return firstOrgFound;
+    }
 
-        const topographicalPlacesDataSource = topographicalPlaces
-            .filter(
+  render() {
+    const {
+      stopTypeFilter,
+      topoiChips,
+      activePageIndex,
+      isLoading,
+      withoutLocationOnly,
+      withDuplicateImportedIds,
+      withNearbySimilarDuplicates,
+      hasParking,
+      showFutureAndExpired,
+      withTags
+    } = this.state;
+    const { intl, topographicalPlaces, results: dataSource, duplicateInfo } = this.props;
+    const { locale, formatMessage } = intl;
+    const results = hasParking ? dataSource.filter(stopPlace => stopPlace.parking && stopPlace.parking.length) : dataSource;
+
+
+    const topographicalPlacesDataSource = topographicalPlaces
+           .filter(
                 place =>
                     place.topographicPlaceType === 'county' ||
                     place.topographicPlaceType === 'municipality'
@@ -410,7 +430,7 @@ class ReportPage extends React.Component {
                                     filter={AutoComplete.caseInsensitiveFilter}
                                     style={{
                                         margin: 'auto',
-                                        width: '50%',
+                                        width: '60%',
                                         textAlign: 'center',
                                         marginTop: -10
                                     }}
@@ -418,14 +438,15 @@ class ReportPage extends React.Component {
                                     fullWidth={true}
                                     ref="topoFilter"
                                     onNewRequest={this.handleAddChip.bind(this)}
-                                />
+                                menuStyle={{width: 500}}
+                  listStyle={{width: 500}}/>
                                 <TopographicalFilter
                                     topoiChips={topoiChips}
                                     handleDeleteChip={chip => this.handleDeleteChipById(chip)}
                                 />
                             </div>
                         </ReportFilterBox>
-                        <ReportFilterBox style={{width: '50%'}}>
+                        <ReportFilterBox style={{width: '60%'}}>
                             <div style={{marginLeft: 5, paddingTop: 5}}>
                                 <div style={{fontWeight: 600, fontSize: 12, marginBottom: 10}}>{formatMessage({id: 'filter_by_tags'})}</div>
                                 <TagFilterTray
@@ -452,7 +473,7 @@ class ReportPage extends React.Component {
                                         this.handleSearchQueryChange(v);
                                     }}
                                 />
-                                <div style={{display: 'flex', alignItems: 'center', marginTop: 2}}>
+                                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap',marginTop: 2}}>
                                     <RaisedButton
                                         style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
                                         disabled={isLoading}
@@ -470,7 +491,7 @@ class ReportPage extends React.Component {
                                         withoutLocationOnly={withoutLocationOnly}
                                         withDuplicateImportedIds={withDuplicateImportedIds}
                                         withNearbySimilarDuplicates={withNearbySimilarDuplicates}
-                                        showFutureAndExpired={showFutureAndExpired}
+                                        showFutureAndExpired={showFutureAndExpired}filterByOrg={filterByOrg}
                                         withTags={withTags}
                                         handleCheckboxChange={this.handleFilterChange.bind(this)}
                                     />
@@ -527,7 +548,9 @@ class ReportPage extends React.Component {
 const mapStateToProps = state => ({
     topographicalPlaces: state.report.topographicalPlaces,
     results: state.report.results,
-    duplicateInfo: state.report.duplicateInfo
+    duplicateInfo: state.report.duplicateInfo,
+    orgCode: state.user.searchFilters.orgCode,
+    roles: state.roles.kc.tokenParsed.roles
 });
 
 export default withApollo(connect(mapStateToProps)(injectIntl(ReportPage)));

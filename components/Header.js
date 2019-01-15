@@ -169,7 +169,7 @@ class Header extends React.Component {
           iconElementLeft={
             <img
               src={logo}
-              style={{ width: 40, height: 'auto', cursor: 'pointer' }}
+              style={{ width: 150, height: 'auto', cursor: 'pointer' }}
               onClick={() =>
                 this.handleConfirmChangeRoute(
                   this.goToMain.bind(this),
@@ -184,7 +184,7 @@ class Header extends React.Component {
               anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
               <MenuItem
-                leftIcon={<MdReport color="#41c0c4" />}
+                leftIcon={<MdReport color="#c52433" />}
                 primaryText={reportSite}
                 onClick={() =>
                   this.handleConfirmChangeRoute(
@@ -196,13 +196,13 @@ class Header extends React.Component {
               <MenuItem
                 primaryText={mapSettings}
                 rightIcon={<ArrowDropRight />}
-                leftIcon={<MdSettings color="#41c0c4" />}
+                leftIcon={<MdSettings color="#c52433" />}
                 style={{ fontSize: 12, padding: 0 }}
                 desktop={true}
                 multiple
                 menuItems={[
                   <MenuItem
-                    style={{ fontSize: 12, padding: 0 }}
+                    style={{ fontSize: 12, padding: 0, display: 'none' }}
                     onClick={() =>
                       this.handleToggleMultiPolylines(!isMultiPolylinesEnabled)}
                     insetChildren
@@ -267,7 +267,7 @@ class Header extends React.Component {
               <MenuItem
                 primaryText={language}
                 rightIcon={<ArrowDropRight />}
-                leftIcon={<MdLanguage color="#41c0c4" />}
+                leftIcon={<MdLanguage color="#c52433" />}
                 style={{ fontSize: 12, padding: 0 }}
                 menuItems={[
                   <MenuItem
@@ -294,14 +294,14 @@ class Header extends React.Component {
                 ]}
               />
               <MenuItem
-                leftIcon={<MdHelp color="#41c0c4" />}
-                href="https://enturas.atlassian.net/wiki/spaces/PUBLIC/pages/637370663"
+                leftIcon={<MdHelp color="#c52433" />}
+                href="doc"
                 target="_blank"
                 primaryText={userGuide}
                 style={{ fontSize: 12, padding: 0 }}
               />
               <MenuItem
-                leftIcon={<MdAccount color="#41c0c4" />}
+                leftIcon={<MdAccount color="#c52433" />}
                 primaryText={`${logOut} ${username}`}
                 onClick={() => this.handleLogOut()}
                 style={{ fontSize: 12, padding: 0 }}

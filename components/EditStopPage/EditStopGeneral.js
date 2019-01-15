@@ -59,7 +59,12 @@ import { getIn, getIsCurrentVersionMax } from '../../utils/';
 import VersionsPopover from './VersionsPopover';
 import RequiredFieldsMissingDialog from '../Dialogs/RequiredFieldsMissingDialog';
 import Routes from '../../routes/';
-import { shouldMutateParking, shouldMutatePathLinks } from '../../modelUtils/shouldMutate';
+import {
+  shouldMutateParking,
+  shouldMutatePathLinks
+} from '../../modelUtils/shouldMutate';
+import ToolTippable from "./ToolTippable";
+import Warning from 'material-ui/svg-icons/alert/warning';
 
 class EditStopGeneral extends React.Component {
   constructor(props) {
@@ -266,7 +271,11 @@ class EditStopGeneral extends React.Component {
       pathLink
     );
 
-    const savePathLinks = shouldMutatePathLinks(pathLinkVariables, pathLink, originalPathLink);
+    const savePathLinks = shouldMutatePathLinks(
+      pathLinkVariables,
+      pathLink,
+      originalPathLink
+    );
 
     let id = null;
 
@@ -444,6 +453,21 @@ class EditStopGeneral extends React.Component {
     }
   }
 
+  severalDataProducers(){
+    const {stopPlace} = this.props;
+    let importerIdDataProducer = [];
+    let severalDP = false;
+    if(stopPlace.importedId !== undefined) {
+    stopPlace.importedId.forEach((element) => {
+        if(importerIdDataProducer[stopPlace.importedId.indexOf(element) - 1] && importerIdDataProducer[stopPlace.importedId.indexOf(element) - 1] !== element.substring(0,3)){
+            severalDP = true;
+        }
+        importerIdDataProducer.push(element.substring(0, 3));
+    });
+    }
+    return severalDP;
+  }
+
   render() {
     const {
       stopPlace,
@@ -485,7 +509,8 @@ class EditStopGeneral extends React.Component {
       elements: formatMessage({ id: 'elements' }),
       versions: formatMessage({ id: 'versions' }),
       validBetween: formatMessage({ id: 'valid_between' }),
-      notAssigned: formatMessage({ id: 'not_assigned' })
+      notAssigned: formatMessage({ id: 'not_assigned' }),
+      severalDataProducers: formatMessage({ id: 'several_data_producers' })
     };
 
     const stopPlaceLabel = this.getTitleText(
@@ -550,6 +575,15 @@ class EditStopGeneral extends React.Component {
               onClick={() => this.handleAllowUserToGoBack()}
             />
             <div>{stopPlaceLabel}</div>
+              {this.severalDataProducers() &&
+              <ToolTippable
+                  toolTipText={translations.severalDataProducers}
+              >
+                  <Warning
+                      color="orange"
+                      style={{ width: 20, height: 20, marginRight: 25 }}
+                  />
+              </ToolTippable>}
           </div>
           <VersionsPopover
             versions={versions}
@@ -668,6 +702,7 @@ class EditStopGeneral extends React.Component {
               intl={intl}
               serverTimeDiff={this.props.serverTimeDiff}
               currentValidBetween={stopPlace.validBetween}
+              severalDataProducers={this.severalDataProducers()}
               canTerminateValidBetween={this.props.canEditParentStop}
             />
           ) : null}

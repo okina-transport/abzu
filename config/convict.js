@@ -39,8 +39,7 @@ module.exports = new Promise(function (resolve, reject) {
     },
     tiamatBaseUrl: {
       doc: 'Base URL for for tiamat graphql endpoint',
-      format: 'url',
-      default: 'https://api-test.entur.org/stop_places/1.0/graphql',
+	    default: 'http://tiamat:8585/services/stop_places/graphql',
       env: 'TIAMAT_BASE_URL'
     },
     OTPUrl: {
@@ -58,19 +57,19 @@ module.exports = new Promise(function (resolve, reject) {
     authServerUrl: {
       doc: 'URL to keycloak auth server',
       format: String,
-      default: 'https://kc-dev.devstage.entur.io/auth',
+      default: 'https://auth-rmr.nouvelle-aquitaine.pro/auth/',
       env: 'AUTH_SERVER_URL'
     },
     authRealmName: {
       doc: 'Authentication realm name',
       format: String,
-      default: 'rutebanken',
+      default: 'Naq',
       env: 'AUTH_REALM_NAME'
     },
     netexPrefix: {
       doc: 'Netex Prefix to be used',
       format: String,
-      default: 'NSR',
+      default: 'NAQ',
       env: 'NETEX_PREFIX'
     },
     mapboxAccessToken: {

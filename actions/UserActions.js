@@ -48,6 +48,10 @@ UserActions.toggleShowFutureAndExpired = value => dispatch => {
   dispatch(createThunk(types.TOGGLE_SHOW_FUTURE_AND_EXPIRED, value));
 };
 
+UserActions.toggleSearchWithOrgCode = value => dispatch => {
+  dispatch(createThunk(types.TOGGLE_SEARCH_WITH_ORG_CODE, value));
+};
+
 UserActions.navigateToMainAfterDelete = () => dispatch => {
   dispatch(createThunk(types.NAVIGATE_TO_MAIN_AFTER_DELETE, null));
   goToRoute('/', '');
@@ -178,7 +182,8 @@ UserActions.saveSearchAsFavorite = title => (dispatch, getState) => {
     searchFilters.text,
     searchFilters.stopType,
     searchFilters.topoiChips,
-    searchFilters.showFutureAndExpired
+    searchFilters.showFutureAndExpired,
+    searchFilters.filterByOrg
   );
   favoriteManager.save(savableContent);
   dispatch(UserActions.closeFavoriteNameDialog());

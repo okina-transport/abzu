@@ -32,6 +32,14 @@ export const supportedNameTypes = [
     }
   },
   {
+    value: 'other',
+    name: {
+      en: 'Other',
+      nb: 'Annet',
+      fr: 'Autre',
+    },
+  },
+  {
     value: 'label',
     name: {
       en: 'Label',
@@ -65,8 +73,16 @@ export const allNameTypes = {
   other: {
     en: 'Other',
     nb: 'Annet',
-    fr: 'Autre'
+    fr: 'Autre',
+  },
+};
+
+export const getSupportedLocale = locale => {
+  const supportedLocales = ['nb', 'en', 'fr'];
+  if (supportedLocales.indexOf(locale) > -1) {
+    return locale;
   }
+  return 'en';
 };
 
 

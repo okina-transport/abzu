@@ -65,8 +65,8 @@ export default class LeafLetMap extends React.Component {
   }
 
   render() {
-    // NB: this key is owned by rutebanken.official
-    const googleApiKey = 'AIzaSyBIobnzsLdanPxsH6n1tlySXeeUuMfMM8E';
+    // Okina API key
+    const googleApiKey = 'AIzaSyBoGgXuwKIOMGp1hwUl0rl_DxMkjpSFH84';
 
     const {
       position,
@@ -123,55 +123,43 @@ export default class LeafLetMap extends React.Component {
               maxZoom="19"
             />
           </BaseLayer>
+          {/*<BaseLayer*/}
+            {/*checked={this.getCheckedBaseLayerByValue('OpenStreetMap Transport')}*/}
+            {/*name="OpenStreetMap Transport"*/}
+          {/*>*/}
+            {/*<TileLayer*/}
+              {/*attribution="&copy; OpenStreetMap contributors"*/}
+              {/*url="//{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"*/}
+              {/*maxZoom="19"*/}
+            {/*/>*/}
+          {/*</BaseLayer>*/}
           <BaseLayer
-            checked={this.getCheckedBaseLayerByValue('OpenStreetMap Transport')}
-            name="OpenStreetMap Transport"
-          >
-            <TileLayer
-              attribution="&copy; OpenStreetMap contributors"
-              url="//{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"
-              maxZoom="19"
-            />
-          </BaseLayer>
-          <BaseLayer
-            checked={this.getCheckedBaseLayerByValue('Kartverket topografisk')}
-            name="Kartverket topografisk"
-          >
-            <TileLayer
-              attribution="&copy; <a href=&quot;http://www.kartverket.no&quot;>Kartverket"
-              url="https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
-              maxZoom="19"
-            />
-          </BaseLayer>
-          <BaseLayer
-            checked={this.getCheckedBaseLayerByValue('Kartverket flyfoto')}
-            name="Kartverket flyfoto"
-          >
-            <WMTSLayer
-              gkt={this.getLocalGKTToken()}
-              baseURL="https://gatekeeper1.geonorge.no/BaatGatekeeper/gk/gk.nib_web_mercator_wmts_v2"
-              zoom={zoom}
-            />
-          </BaseLayer>
-          <BaseLayer
-            checked={this.getCheckedBaseLayerByValue('Google Maps Hydrid')}
-            name="Google Maps Hydrid"
-          >
+            checked={this.getCheckedBaseLayerByValue('Google Maps Satellite')}
+            name="Google Maps Satellite">
             <GoogleLayer
               maxZoom="19"
               googlekey={googleApiKey}
               maptype="HYBRID"
             />
           </BaseLayer>
-          {mapboxAccessToken && mapboxTariffZonesStyle ? (<BaseLayer
-              checked={this.getCheckedBaseLayerByValue('Takstsoner')}
-              name="Takstsoner" >
-              <MapboxLayer
-                accessToken={mapboxAccessToken}
-                style={mapboxTariffZonesStyle}
-               />
-            </BaseLayer>
-        ) : ( null )}
+          <BaseLayer
+            checked={this.getCheckedBaseLayerByValue('Google Maps Route')}
+            name="Google Maps Route">
+            <GoogleLayer
+              maxZoom="19"
+              googlekey={googleApiKey}
+              maptype="roadmap"
+            />
+          </BaseLayer>
+          {/*{mapboxAccessToken && mapboxTariffZonesStyle ? (<BaseLayer*/}
+              {/*checked={this.getCheckedBaseLayerByValue('Takstsoner')}*/}
+              {/*name="Takstsoner" >*/}
+              {/*<MapboxLayer*/}
+                {/*accessToken={mapboxAccessToken}*/}
+                {/*style={mapboxTariffZonesStyle}*/}
+               {/*/>*/}
+            {/*</BaseLayer>*/}
+        {/*) : ( null )}*/}
         </LayersControl>
         <ScaleControl imperial={false} position="bottomright" />
         <ZoomControl position="bottomright" />

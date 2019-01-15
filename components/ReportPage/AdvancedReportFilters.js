@@ -37,7 +37,8 @@ class AdvancedReportFilters extends Component {
       hasParking,
       handleCheckboxChange,
       withTags,
-      showFutureAndExpired
+      showFutureAndExpired,
+      filterByOrg
     } = this.props;
 
     const { open, anchorEl } = this.state;
@@ -74,6 +75,17 @@ class AdvancedReportFilters extends Component {
                   handleCheckboxChange('showFutureAndExpired', value);
                 }}
               />
+            </MenuItem>
+            <MenuItem style={menuItemsStyle}>
+              <Checkbox
+                 label={formatMessage({ id: 'search_with_code' })}
+                 labelPosition="right"
+                 labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                 checked={filterByOrg}
+                 onCheck={(e, value) => {
+                   handleCheckboxChange('filterByOrg', value);
+                 }}
+               />
             </MenuItem>
             <MenuItem style={menuItemsStyle}>
               <Checkbox
