@@ -230,7 +230,8 @@ class ReportPage extends React.Component {
             isLoading: true
         });
 
-        let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;const queryVariables = {
+        let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
+        const queryVariables = {
             query: searchQuery,
             withoutLocationOnly,
             withDuplicateImportedIds,
@@ -379,7 +380,8 @@ class ReportPage extends React.Component {
       withNearbySimilarDuplicates,
       hasParking,
       showFutureAndExpired,
-      withTags
+      withTags,
+      filterByOrg
     } = this.state;
     const { intl, topographicalPlaces, results: dataSource, duplicateInfo } = this.props;
     const { locale, formatMessage } = intl;
@@ -491,7 +493,8 @@ class ReportPage extends React.Component {
                                         withoutLocationOnly={withoutLocationOnly}
                                         withDuplicateImportedIds={withDuplicateImportedIds}
                                         withNearbySimilarDuplicates={withNearbySimilarDuplicates}
-                                        showFutureAndExpired={showFutureAndExpired}filterByOrg={filterByOrg}
+                                        showFutureAndExpired={showFutureAndExpired}
+                                        filterByOrg={filterByOrg}
                                         withTags={withTags}
                                         handleCheckboxChange={this.handleFilterChange.bind(this)}
                                     />
