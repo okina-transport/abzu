@@ -169,7 +169,7 @@ class Header extends React.Component {
           iconElementLeft={
             <img
               src={logo}
-              style={{ width: 150, height: 'auto', cursor: 'pointer' }}
+              style={{ width: 50, height: 50, cursor: 'pointer' }}
               onClick={() =>
                 this.handleConfirmChangeRoute(
                   this.goToMain.bind(this),
@@ -184,7 +184,7 @@ class Header extends React.Component {
               anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
               <MenuItem
-                leftIcon={<MdReport color="#c52433" />}
+                leftIcon={<MdReport color="#005A82" />}
                 primaryText={reportSite}
                 onClick={() =>
                   this.handleConfirmChangeRoute(
@@ -196,7 +196,7 @@ class Header extends React.Component {
               <MenuItem
                 primaryText={mapSettings}
                 rightIcon={<ArrowDropRight />}
-                leftIcon={<MdSettings color="#c52433" />}
+                leftIcon={<MdSettings color="#005A82" />}
                 style={{ fontSize: 12, padding: 0 }}
                 desktop={true}
                 multiple
@@ -267,7 +267,7 @@ class Header extends React.Component {
               <MenuItem
                 primaryText={language}
                 rightIcon={<ArrowDropRight />}
-                leftIcon={<MdLanguage color="#c52433" />}
+                leftIcon={<MdLanguage color="#005A82" />}
                 style={{ fontSize: 12, padding: 0 }}
                 menuItems={[
                   <MenuItem
@@ -294,14 +294,14 @@ class Header extends React.Component {
                 ]}
               />
               <MenuItem
-                leftIcon={<MdHelp color="#c52433" />}
+                leftIcon={<MdHelp color="#005A82" />}
                 href="doc"
                 target="_blank"
                 primaryText={userGuide}
                 style={{ fontSize: 12, padding: 0 }}
               />
               <MenuItem
-                leftIcon={<MdAccount color="#c52433" />}
+                leftIcon={<MdAccount color="#005A82" />}
                 primaryText={`${logOut} ${username}`}
                 onClick={() => this.handleLogOut()}
                 style={{ fontSize: 12, padding: 0 }}

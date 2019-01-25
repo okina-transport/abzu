@@ -63,13 +63,13 @@ module.exports = new Promise(function (resolve, reject) {
     authRealmName: {
       doc: 'Authentication realm name',
       format: String,
-      default: 'Naq',
+      default: 'Lro',
       env: 'AUTH_REALM_NAME'
     },
     netexPrefix: {
       doc: 'Netex Prefix to be used',
       format: String,
-      default: 'NAQ',
+      default: 'LRO',
       env: 'NETEX_PREFIX'
     },
     mapboxAccessToken: {
