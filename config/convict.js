@@ -39,7 +39,7 @@ module.exports = new Promise(function (resolve, reject) {
     },
     tiamatBaseUrl: {
       doc: 'Base URL for for tiamat graphql endpoint',
-	    default: 'http://tiamat:8585/services/stop_places/graphql',
+      default: 'http://tiamat:8585/services/stop_places/graphql',
       env: 'TIAMAT_BASE_URL'
     },
     OTPUrl: {
@@ -49,7 +49,7 @@ module.exports = new Promise(function (resolve, reject) {
       env: 'OTP_URL'
     },
     endpointBase: {
-      doc: 'Base URL for for timat including slash',
+      doc: 'Base URL for for tiamat including slash',
       format: String,
       default: '/',
       env: 'ENDPOINTBASE'
@@ -57,7 +57,7 @@ module.exports = new Promise(function (resolve, reject) {
     authServerUrl: {
       doc: 'URL to keycloak auth server',
       format: String,
-      default: 'https://auth-rmr.nouvelle-aquitaine.pro/auth/',
+      default: 'https://auth.mobilites.agglo-larochelle.fr/auth/',
       env: 'AUTH_SERVER_URL'
     },
     authRealmName: {
@@ -85,10 +85,10 @@ module.exports = new Promise(function (resolve, reject) {
       env: 'MAPBOX_TARIFF_ZONES_STYLE'
     },
     sentryDSN: {
-      doc: 'SENTRY_DSN - found in https://sentry.io/settings/{organisation_slug}/{project_slug}/keys/',
-      format: String,
-      default: undefined,
-      env: 'SENTRY_DSN'
+    doc: 'SENTRY_DSN - found in https://sentry.io/settings/{organisation_slug}/{project_slug}/keys/',
+    format: String,
+    default: 'https://c322757d8c2e489f871243039e874c7e@sentry.io/231116',
+    env: 'SENTRY_DSN'
     }
   });
 
@@ -96,36 +96,37 @@ module.exports = new Promise(function (resolve, reject) {
   var configUrl = conf.get('configUrl');
 
   if (configUrl.indexOf('do_not_read') == -1) {
-      // Read contents from configUrl if it is given
+    // Read contents from configUrl if it is given
 
-      if (configUrl.indexOf("http") == -1) {
-          fs.readFile(configUrl, (error, data) => {
-              if (!error) {
-                  data = JSON.parse(data)
-                  conf.load(data);
-                  conf.validate();
-                  resolve(conf)
-              } else {
-                  reject("Could not load data from " + configUrl, error)
-              }
-          });
+    if (configUrl.indexOf("http") == -1) {
+      fs.readFile(configUrl, (error, data) => {
+        if (!error) {
+        data = JSON.parse(data)
+        conf.load(data);
+        conf.validate();
+        resolve(conf)
       } else {
-          request(configUrl, function (error, response, body) {
-              if (!error && response.statusCode == 200) {
-                  body = JSON.parse(body)
-                  conf.load(body);
-                  conf.validate();
-                  resolve(conf)
-              } else {
-                  reject("Could not load data from " + configUrl, error)
-              }
-          });
+        reject("Could not load data from " + configUrl, error)
       }
-  } else {
-    console.log(
-      'The CONFIG_URL element has not been set, so you use the default dev-mode configuration'
-    );
-    conf.validate();
-    resolve(conf);
-  }
+    });
+    } else {
+      request(configUrl, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          body = JSON.parse(body)
+          conf.load(body);
+          conf.validate();
+          resolve(conf)
+        } else {
+          reject("Could not load data from " + configUrl, error)
+        }
+      });
+    }
+    } else {
+        console.log(
+            'The CONFIG_URL element has not been set, so you use the default dev-mode configuration'
+        );
+        conf.validate();
+        resolve(conf);
+    }
 });
+
