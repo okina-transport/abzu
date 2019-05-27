@@ -146,7 +146,7 @@ convictPromise
     });
 
     app.get(ENDPOINTBASE + 'doc', function (req, res) {
-      res.sendFile(__dirname + '/doc/MAN-NA-RMRPA-V2.0.pdf');
+      res.sendFile(__dirname + '/doc/MAN-CAdLR-RIMPA-V1.0.pdf');
     });
 
     app.get(ENDPOINTBASE, function (req, res) {
