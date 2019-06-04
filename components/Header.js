@@ -169,7 +169,7 @@ class Header extends React.Component {
           iconElementLeft={
             <img
               src={logo}
-              style={{ width: 50, height: 50, cursor: 'pointer', backgroundColor: 'white', padding: 2 }}
+              style={{ width: 150, height: 50, cursor: 'pointer', backgroundColor: 'white', padding: 2 }}
               onClick={() =>
                 this.handleConfirmChangeRoute(
                   this.goToMain.bind(this),
