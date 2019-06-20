@@ -57,19 +57,19 @@ module.exports = new Promise(function (resolve, reject) {
     authServerUrl: {
       doc: 'URL to keycloak auth server',
       format: String,
-      default: 'https://auth.mobilites.agglo-larochelle.fr/auth/',
+      default: 'https://auth.dev-2.okina.fr/auth/',
       env: 'AUTH_SERVER_URL'
     },
     authRealmName: {
       doc: 'Authentication realm name',
       format: String,
-      default: 'Mos',
+      default: 'Mosaic',
       env: 'AUTH_REALM_NAME'
     },
     netexPrefix: {
       doc: 'Netex Prefix to be used',
       format: String,
-      default: 'MOS',
+      default: 'MOSAIC',
       env: 'NETEX_PREFIX'
     },
     mapboxAccessToken: {
