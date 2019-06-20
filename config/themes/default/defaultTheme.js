@@ -15,9 +15,9 @@ limitations under the Licence. */
 import { fade } from 'material-ui/utils/colorManipulator';
 import { getTiamatEnv } from '../../themeConfig';
 
-export const primary = '#009FC6';
-export const primaryDarker = '#204093';
-export const darkColor = '#009FC6';
+export const primary = '#1C2691';
+export const primaryDarker = '#101E5F';
+export const darkColor = '#1C2691';
 const cyan700 = '#5AC39A';
 const grey100 = '#f5f5f5';
 const grey300 = '#e0e0e0';

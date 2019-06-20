@@ -6,6 +6,7 @@
   "scripts": {
     "build": "GENERATE_SOURCEMAPS=true BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
     "dev-local-test": "NODE_ENV=development BABEL_ENV=production  AUTH_SERVER_URL=http://keycloak.docker/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://kong.docker/api/stop_places/1.0/graphql node server.js",
+    "integ": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://api.dev-2.okina.fr/api/stop_places/1.0/graphql node server.js",
     "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://api.mobilites.agglo-larochelle.fr/api/stop_places/1.0/graphql node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
