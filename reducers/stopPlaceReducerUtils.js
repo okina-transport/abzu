@@ -46,6 +46,9 @@ export const getStateByOperation = (state, action) => {
     case 'mutateParentStopPlace':
       return updateStopPlaceStateAfterMutate(state, action, 'mutateParentStopPlace');
 
+    case 'mutateAddToMultiModalStopPlace':
+      return updateStopPlaceStateAfterMutate(state, action, 'addToMultiModalStopPlace');
+
     case 'getTagsQuery':
       return Object.assign({}, state, {
         current: formatHelpers.updateStopWithTags(

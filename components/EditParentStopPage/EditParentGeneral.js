@@ -137,7 +137,13 @@ class EditParentGeneral extends React.Component {
           stopPlace.id,
           childrenToAdd
         ).then(response => {
-          this.saveParentStop(stopPlaceVariables);
+          // this.saveParentStop(stopPlaceVariables);
+          this.handleSaveSuccess(stopPlace.id);
+          this.setState({ isLoading: false });
+        })
+         .catch(err => {
+          this.handleSaveError(MutationErrorCodes.ERROR_STOP_PLACE);
+          this.setState({ isLoading: false });
         });
       } else {
         this.saveParentStop(stopPlaceVariables);
