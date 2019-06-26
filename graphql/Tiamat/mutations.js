@@ -107,9 +107,10 @@ export const mutateAddToMultiModalStopPlace = gql`
       addToMultiModalStopPlace(input: {
           parentSiteRef: $parentSiteRef, stopPlaceIds: $stopPlaceIds
       }) {
-          id
+          ...VerboseParentStopPlace
       }
-  }
+  },
+  ${Fragments.parentStopPlace.verbose}
 `;
 
 export const mutateStopPlace = gql`
