@@ -9,7 +9,8 @@
     "integ": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://api.dev-2.okina.fr/api/stop_places/1.0/graphql node server.js",
     "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://api.mobilites.agglo-larochelle.fr/api/stop_places/1.0/graphql node server.js",
     "test": "jest",
-    "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
+    "stats": "webpack --config ./webpack.prod.config.js --json > stats.json",
+    "recette-ratpdev": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://172.16.1.120:8001/api/stop_places/1.0/graphql AUTH_SERVER_URL=https://172.16.1.120:18080/auth node server.js",
   },
   "author": "Sean Erik Scully",
   "license": "EUPL-1.2 with modifications",
