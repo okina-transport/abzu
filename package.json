@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "GENERATE_SOURCEMAPS=true BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
-    "dev": "NODE_ENV=development BABEL_ENV=development  AUTH_SERVER_URL=http://keycloak.docker/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://kong.docker/api/stop_places/1.0/graphql node server.js",
-    "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://api.mobilites.agglo-larochelle.fr/api/stop_places/1.0/graphql node server.js",
+    "dev": "NODE_ENV=development BABEL_ENV=development  TIAMAT_ENV=development node server.js",
+    "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
-    "recette-ratpdev": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://172.16.1.120:8001/api/stop_places/1.0/graphql AUTH_SERVER_URL=https://172.16.1.120:18080/auth node server.js"
   },
   "author": "Sean Erik Scully",
   "license": "EUPL-1.2 with modifications",
