@@ -157,7 +157,9 @@ convictPromise
       res.redirect(ENDPOINTBASE);
     });
 
-    const fetch = require('graphql-fetch')(convict.get('tiamatBaseUrl'));
+    let tiamatBaseUrl = convict.get('tiamatBaseUrl');
+    console.log("Fetching schema at : " + tiamatBaseUrl);
+    const fetch = require('graphql-fetch')(tiamatBaseUrl);
 
     fetch(introspectionQuery).then(response => {
 
