@@ -29,7 +29,7 @@ const localization = locale => {
     }
 
     axios
-      .get(process.env.ABZU_ENDPOINT_BASE + 'translation.json' + queryParams)
+      .get(window.config.endpointBase + 'translation.json' + queryParams)
       .then(({ data }) => {
         const locale = data.locale;
         const messages = JSON.parse(data.messages);
