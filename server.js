@@ -17,7 +17,7 @@ const getRouteEntries = require('./routes/entries').getRouteEntries;
 convictPromise
   .then(convict => {
 
-    const ENDPOINTBASE = process.env.ABZU_ENDPOINT_BASE;
+    const ENDPOINTBASE = convict.get('endpointBase');
     console.info('ENDPOINTBASE is set to', ENDPOINTBASE);
 
     const assetsEndpoints = getRouteEntries(ENDPOINTBASE, '/public/');
@@ -65,7 +65,7 @@ convictPromise
 
         const cfg = {
           tiamatBaseUrl: convict.get('tiamatBaseUrl'),
-          endpointBase: process.env.ABZU_ENDPOINT_BASE,
+          endpointBase: JSON.stringify(process.env.ABZU_ENDPOINT_BASE),
           OTPUrl: convict.get('OTPUrl'),
           tiamatEnv: convict.get('tiamatEnv'),
           netexPrefix: convict.get('netexPrefix'),
