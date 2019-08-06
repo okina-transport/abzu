@@ -17,7 +17,7 @@ const getRouteEntries = require('./routes/entries').getRouteEntries;
 convictPromise
   .then(convict => {
 
-    const ENDPOINTBASE = JSON.stringify(process.env.ABZU_ENDPOINT_BASE)
+    const ENDPOINTBASE = JSON.stringify(process.env.ABZU_ENDPOINT_BASE);
     console.info('ENDPOINTBASE is set to', ENDPOINTBASE);
 
     const assetsEndpoints = getRouteEntries(ENDPOINTBASE, '/public/');
