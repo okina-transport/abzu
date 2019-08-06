@@ -82,6 +82,7 @@ cfgreader.readConfig(
 );
 
 function authWithKeyCloak(path) {
+  console.info(">>> Inside index.js  -  path userd : " + path)
   let kc = new Keycloak(path + 'config/keycloak.json');
 
   kc
