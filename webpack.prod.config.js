@@ -33,7 +33,8 @@ module.exports = {
         'VERSION': JSON.stringify(require('./package.json').version),
         'THEME': JSON.stringify(process.env.THEME),
         'AUTH_SERVER_URL': JSON.stringify(process.env.AUTH_SERVER_URL),
-        'TIAMAT_BASE_URL': JSON.stringify(process.env.TIAMAT_BASE_URL) // Marduk
+        'TIAMAT_BASE_URL': JSON.stringify(process.env.TIAMAT_BASE_URL), // Marduk
+        'ENDPOINTBASE': JSON.stringify(process.env.ABZU_ENDPOINT_BASE) // Marduk
       },
     }),
     new webpack.optimize.AggressiveMergingPlugin({ minSizeReduce: 1.2 }),
