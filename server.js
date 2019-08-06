@@ -17,7 +17,7 @@ const getRouteEntries = require('./routes/entries').getRouteEntries;
 convictPromise
   .then(convict => {
 
-    const ENDPOINTBASE = convict.get('endpointBase');
+    const ENDPOINTBASE = JSON.stringify(process.env.ABZU_ENDPOINT_BASE)
     console.info('ENDPOINTBASE is set to', ENDPOINTBASE);
 
     const assetsEndpoints = getRouteEntries(ENDPOINTBASE, '/public/');
@@ -28,22 +28,6 @@ convictPromise
     );
 
     app.use(bodyParser.json());
-
-    app.get(ENDPOINTBASE + 'token', (req, res) => {
-      const remoteAddress =
-        req.headers[ 'x-forwarded-for' ] || req.connection.remoteAddress;
-
-      axios
-        .post(
-          `http://gatekeeper1.geonorge.no/BaatGatekeeper/gktoken?ip=${remoteAddress}&min=400`
-        )
-        .then(gkt => {
-          res.send({
-            gkt: gkt.data,
-            expires: new Date(Date.now() + 60 * 1000 * 399).getTime()
-          });
-        });
-    });
 
     if (process.env.NODE_ENV !== 'production') {
       let config = require('./webpack.dev.config');
