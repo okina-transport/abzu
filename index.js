@@ -80,7 +80,7 @@ cfgreader.readConfig(
 );
 
 function authWithKeyCloak(path) {
-  let kc = new Keycloak(config.endpointBase + 'config/keycloak.json');
+  let kc = new Keycloak(process.env.ABZU_ENDPOINT_BASE + 'config/keycloak.json');
 
   kc
     .init({ onLoad: 'login-required', checkLoginIframe: false })
