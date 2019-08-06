@@ -49,6 +49,7 @@ convictPromise
       let config = require('./webpack.dev.config');
 
       config.output.publicPath = ENDPOINTBASE + 'public/';
+      console.info("config.output.publicPath : " + config.output.publicPath);
 
       var compiler = new webpack(config);
 
