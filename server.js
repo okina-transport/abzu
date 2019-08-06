@@ -65,7 +65,7 @@ convictPromise
 
         const cfg = {
           tiamatBaseUrl: convict.get('tiamatBaseUrl'),
-          endpointBase: convict.get('endpointBase'),
+          endpointBase: process.env.ABZU_ENDPOINT_BASE,
           OTPUrl: convict.get('OTPUrl'),
           tiamatEnv: convict.get('tiamatEnv'),
           netexPrefix: convict.get('netexPrefix'),
@@ -73,7 +73,7 @@ convictPromise
           hostname: process.env.HOSTNAME,
           mapboxTariffZonesStyle: convict.get("mapboxTariffZonesStyle"),
           mapboxAccessToken: convict.get("mapboxAccessToken"),
-          sentryDSN: convict.get('sentryDSN')
+          sentryDSN: convict.get('sentryDSN'),
         };
 
         createKeyCloakConfig(convict.get('authServerUrl'));
