@@ -4,9 +4,9 @@
   "description": "Registre national d'arrêt",
   "main": "index.js",
   "scripts": {
-    "build": "NODE_OPTIONS=--max-old-space-size=8192 GENERATE_SOURCEMAPS=true BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
+    "build": "NODE_OPTIONS=--max-old-space-size=8192 BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
     "dev": "NODE_ENV=development BABEL_ENV=development  TIAMAT_ENV=development node server.js",
-    "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
+    "prod": "ENDPOINTBASE='/arrets' NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
   },

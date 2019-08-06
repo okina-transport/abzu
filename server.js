@@ -29,18 +29,31 @@ convictPromise
 
     app.use(bodyParser.json());
 
+    app.get(ENDPOINTBASE + 'token', (req, res) => {
+      const remoteAddress =
+        req.headers[ 'x-forwarded-for' ] || req.connection.remoteAddress;
+
+      axios
+        .post(
+          `http://gatekeeper1.geonorge.no/BaatGatekeeper/gktoken?ip=${remoteAddress}&min=400`
+        )
+        .then(gkt => {
+          res.send({
+            gkt: gkt.data,
+            expires: new Date(Date.now() + 60 * 1000 * 399).getTime()
+          });
+        });
+    });
+
     if (process.env.NODE_ENV !== 'production') {
       let config = require('./webpack.dev.config');
-
-      config.output.publicPath = ENDPOINTBASE + 'public/';
-      console.info("config.output.publicPath : " + config.output.publicPath);
 
       var compiler = new webpack(config);
 
       app.use(
         require('webpack-dev-middleware')(compiler, {
           noInfo: true,
-          publicPath: config.output.publicPath,
+          publicPath: ENDPOINTBASE + 'public/',
           stats: { colors: true }
         })
       );
@@ -65,7 +78,7 @@ convictPromise
 
         const cfg = {
           tiamatBaseUrl: convict.get('tiamatBaseUrl'),
-          endpointBase: JSON.stringify(process.env.ABZU_ENDPOINT_BASE),
+          endpointBase: convict.get('endpointBase'),
           OTPUrl: convict.get('OTPUrl'),
           tiamatEnv: convict.get('tiamatEnv'),
           netexPrefix: convict.get('netexPrefix'),
@@ -73,7 +86,7 @@ convictPromise
           hostname: process.env.HOSTNAME,
           mapboxTariffZonesStyle: convict.get("mapboxTariffZonesStyle"),
           mapboxAccessToken: convict.get("mapboxAccessToken"),
-          sentryDSN: convict.get('sentryDSN'),
+          sentryDSN: convict.get('sentryDSN')
         };
 
         createKeyCloakConfig(convict.get('authServerUrl'));
@@ -142,9 +155,7 @@ convictPromise
       res.redirect(ENDPOINTBASE);
     });
 
-    let tiamatBaseUrl = convict.get('tiamatBaseUrl');
-    console.log("Fetching schema at : " + tiamatBaseUrl);
-    const fetch = require('graphql-fetch')(tiamatBaseUrl);
+    const fetch = require('graphql-fetch')(convict.get('tiamatBaseUrl'));
 
     fetch(introspectionQuery).then(response => {
 
