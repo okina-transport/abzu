@@ -7,7 +7,6 @@
     "build": "NODE_OPTIONS=--max-old-space-size=8192 GENERATE_SOURCEMAPS=true BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
     "dev": "NODE_ENV=development BABEL_ENV=development  TIAMAT_ENV=development node server.js",
     "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
-    "dev-mat": " ABZU_ENDPOINT_BASE=/arrets/ TIAMAT_BASE_URL=http://some-domain:8000/api/stop_places/1.0/graphql  NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json"
   },

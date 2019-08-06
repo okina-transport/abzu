@@ -63,7 +63,7 @@ cfgreader.readConfig(
       authWithKeyCloak(config.endpointBase);
     } else {
       axios
-        .get(config.endpointBase + 'token')
+        .get(config.endpointBase + '/arrets/token')
         .then(response => {
           let token = JSON.stringify(response.data);
           localStorage.setItem('ABZU::GKT_TOKEN', token);
@@ -80,8 +80,7 @@ cfgreader.readConfig(
 );
 
 function authWithKeyCloak(path) {
-
-  let kc = new Keycloak('/arrets/config/keycloak.json');
+  let kc = new Keycloak(process.env.ABZU_ENDPOINT_BASE + 'config/keycloak.json');
 
   kc
     .init({ onLoad: 'login-required', checkLoginIframe: false })

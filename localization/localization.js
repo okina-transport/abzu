@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import { addLocaleData } from 'react-intl';
+
+import { addLocaleData } from 'react-intl';
 import axios from 'axios';
 
 const localization = locale => {
@@ -28,7 +29,7 @@ const localization = locale => {
     }
 
     axios
-      .get(window.config.endpointBase + 'translation.json' + queryParams)
+      .get(process.env.ABZU_ENDPOINT_BASE + 'translation.json' + queryParams)
       .then(({ data }) => {
         const locale = data.locale;
         const messages = JSON.parse(data.messages);
