@@ -53,6 +53,8 @@ cfgreader.readConfig(
   function(config) {
     window.config = config;
 
+    const ABZU_SUB_URI = process.env.ABZU_ENDPOINT_BASE;
+
     let token = JSON.parse(localStorage.getItem('ABZU::GKT_TOKEN'));
 
     /* Renews token if it expires within 30 minutes to be on the safer side*/
@@ -60,10 +62,10 @@ cfgreader.readConfig(
       token != null &&
       token.expires > new Date(Date.now() + 60 * 1000 * 30).getTime()
     ) {
-      authWithKeyCloak(config.endpointBase);
+      authWithKeyCloak(ABZU_SUB_URI);
     } else {
       axios
-        .get(config.endpointBase + '/arrets/token')
+        .get(config.endpointBase + 'token')
         .then(response => {
           let token = JSON.stringify(response.data);
           localStorage.setItem('ABZU::GKT_TOKEN', token);
@@ -74,13 +76,13 @@ cfgreader.readConfig(
             err,
           );
         });
-      authWithKeyCloak(config.endpointBase);
+      authWithKeyCloak(ABZU_SUB_URI);
     }
   }.bind(this),
 );
 
 function authWithKeyCloak(path) {
-  let kc = new Keycloak(process.env.ABZU_ENDPOINT_BASE + 'config/keycloak.json');
+  let kc = new Keycloak(path + 'config/keycloak.json');
 
   kc
     .init({ onLoad: 'login-required', checkLoginIframe: false })
