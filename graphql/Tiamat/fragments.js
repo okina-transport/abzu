@@ -176,6 +176,10 @@ Fragments.stopPlace = {
                 lang
             }
         }
+        publicCode
+        privateCode {
+            value
+        }
         description {
             value
         }
@@ -214,7 +218,7 @@ Fragments.stopPlace = {
             name {
                 value
             }
-            id 
+            id
         }
         topographicPlace {
             name {
@@ -237,6 +241,7 @@ Fragments.stopPlace = {
             fromDate
             toDate
         }
+        modificationEnumeration
     }
     ${Fragments.quay.verbose},
     ${Fragments.placeEquipments.verbose},
@@ -429,7 +434,7 @@ Fragments.pathLink = {
               coordinates
           }
           from {
-              placeRef {    
+              placeRef {
                   version
                   ref
                   addressablePlace {
@@ -465,7 +470,7 @@ Fragments.parking = {
           totalCapacity
           name {
               value
-          } 
+          }
           geometry {
               coordinates
           }
@@ -473,6 +478,16 @@ Fragments.parking = {
           validBetween {
               fromDate
               toDate
+          }
+          parkingLayout
+          parkingPaymentProcess
+          rechargingAvailable
+          parkingProperties {
+              spaces {
+                  parkingUserType
+                  numberOfSpaces
+                  numberOfSpacesWithRechargePoint
+              }
           }
       }
     `

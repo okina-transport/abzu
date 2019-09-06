@@ -249,9 +249,12 @@ class ReportPage extends React.Component {
             countyReference: topoiChips
                 .filter(topos => topos.type === 'county')
                 .map(topos => topos.id),
+            countryReference: topoiChips
+                .filter(topos => topos.type === 'country')
+                .map(topos => topos.id),
             code: optionalOrgCodeFilter,
             versionValidity: showFutureAndExpired ? "MAX_VERSION" : null
-    };
+        };
 
         client
             .query({
@@ -392,7 +395,8 @@ class ReportPage extends React.Component {
            .filter(
                 place =>
                     place.topographicPlaceType === 'county' ||
-                    place.topographicPlaceType === 'municipality'
+                    place.topographicPlaceType === 'municipality' ||
+                    place.topographicPlaceType === 'country'
             )
             .filter(
                 place => topoiChips.map(chip => chip.value).indexOf(place.id) == -1

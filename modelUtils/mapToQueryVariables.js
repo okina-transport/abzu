@@ -182,10 +182,10 @@ helpers.removeTypeNameRecursively = (variablesObject) => {
 
 helpers.mapStopToVariables = (original, userInput) => {
   const stop = JSON.parse(JSON.stringify(original));
-
   let stopVariables = {
     id: stop.id,
     name: stop.name,
+    publicCode: stop.publicCode,
     description: stop.description || null,
     stopPlaceType: stop.stopPlaceType,
     quays: stop.quays.map(quay => helpers.mapQuayToVariables(quay)),
@@ -202,6 +202,10 @@ helpers.mapStopToVariables = (original, userInput) => {
       ref: tz.id
     })),
     adjacentSites: stop.adjacentSites
+  };
+
+  stopVariables.privateCode = {
+    value: stop.privateCode || '',
   };
 
   if (userInput) {
@@ -273,6 +277,34 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
 
     if (source.id) {
       parking.id = source.id;
+    }
+
+    if (source.parkingLayout) {
+      parking.parkingLayout = source.parkingLayout;
+    }
+
+    if (source.parkingPaymentProcess) {
+      parking.parkingPaymentProcess = source.parkingPaymentProcess;
+    }
+
+    if (source.rechargingAvailable !== undefined) {
+      parking.rechargingAvailable = source.rechargingAvailable;
+    }
+
+    if (source.numberOfSpaces || source.numberOfSpacesWithRechargePoint || source.numberOfSpacesForRegisteredDisabledUserType) {
+      parking.parkingProperties = [{
+        spaces: [
+          {
+            parkingUserType: 'allUsers',
+            numberOfSpaces: source.numberOfSpaces,
+            numberOfSpacesWithRechargePoint: source.numberOfSpacesWithRechargePoint
+          },
+          {
+            parkingUserType: 'registeredDisabled',
+            numberOfSpaces: source.numberOfSpacesForRegisteredDisabledUserType
+          }
+        ]
+      }];
     }
 
     parking.name = {

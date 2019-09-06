@@ -129,4 +129,3 @@ module.exports = new Promise(function (resolve, reject) {
         resolve(conf);
     }
 });
-

@@ -204,6 +204,7 @@ export const getStopById = gql`
                     wheelchairAccess
                 }
             }
+            modificationEnumeration
             topographicPlace {
                 name {
                     value
@@ -251,7 +252,7 @@ export const getStopById = gql`
 `;
 
 export const findStop = gql`
-    query findStop($query: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $pointInTime: DateTime, $versionValidity: VersionValidity, $code: String) {
+    query findStop($query: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $countryReference: [String], $pointInTime: DateTime, $versionValidity: VersionValidity, $code: String) {
         groupOfStopPlaces(query: $query, size: 7) {
             id
             name {
@@ -283,7 +284,7 @@ export const findStop = gql`
                 }
             }
         }
-        stopPlace(query: $query, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, size: 7, pointInTime: $pointInTime, versionValidity: $versionValidity, code: $code) {
+        stopPlace(query: $query, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, countryReference: $countryReference, size: 7, pointInTime: $pointInTime, versionValidity: $versionValidity, code: $code) {
             id
             groups {
                 id
@@ -328,6 +329,7 @@ export const findStop = gql`
                     }
                 }
             }
+            modificationEnumeration
             ... on StopPlace {
               stopPlaceType
               submode
@@ -361,8 +363,8 @@ export const findStop = gql`
 `;
 
 export const findStopForReport = gql`
-    query findStopForReport($query: String, $importedId: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $withoutLocationOnly: Boolean!, $withDuplicateImportedIds: Boolean!, $pointInTime: DateTime, $withNearbySimilarDuplicates: Boolean, $hasParking: Boolean, $tags: [String], $withTags: Boolean, $code: String, $versionValidity: VersionValidity) {
-        stopPlace(query: $query, importedId: $importedId, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, withoutLocationOnly: $withoutLocationOnly, withDuplicatedQuayImportedIds: $withDuplicateImportedIds, pointInTime: $pointInTime, size: 300, withNearbySimilarDuplicates: $withNearbySimilarDuplicates, hasParking:$hasParking, tags: $tags, withTags: $withTags, code: $code, versionValidity: $versionValidity) {
+    query findStopForReport($query: String, $importedId: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $countryReference: [String], $withoutLocationOnly: Boolean!, $withDuplicateImportedIds: Boolean!, $pointInTime: DateTime, $withNearbySimilarDuplicates: Boolean, $hasParking: Boolean, $tags: [String], $withTags: Boolean, $code: String, $versionValidity: VersionValidity) {
+        stopPlace(query: $query, importedId: $importedId, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, countryReference: $countryReference, withoutLocationOnly: $withoutLocationOnly, withDuplicatedQuayImportedIds: $withDuplicateImportedIds, pointInTime: $pointInTime, size: 300, withNearbySimilarDuplicates: $withNearbySimilarDuplicates, hasParking:$hasParking, tags: $tags, withTags: $withTags, code: $code, versionValidity: $versionValidity) {
             ...on StopPlace {
                 ...ReportStopPlace
             }

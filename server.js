@@ -7,12 +7,10 @@ var globSync = require('glob').sync;
 var path = require('path');
 var fs = require('fs');
 var axios = require('axios');
-var introspectionQuery = require('./graphql/Tiamat/introspection').introspectionQuery;
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 const Routes = require('./routes/');
 const getRouteEntries = require('./routes/entries').getRouteEntries;
-
 
 convictPromise
   .then(convict => {
@@ -183,7 +181,6 @@ convictPromise
       console.log("Unable to fetch schema, server exited with error");
       process.exit(1);
     });
-
 
     const createKeyCloakConfig = authServerUrl => {
       let config = {

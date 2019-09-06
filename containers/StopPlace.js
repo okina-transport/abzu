@@ -124,7 +124,7 @@ class StopPlace extends React.Component {
     const actions = [
       <FlatButton
         label={formatMessage({ id: 'cancel' })}
-        onTouchTap={this.handleCloseErrorDialog.bind(this)}
+        onClick={this.handleCloseErrorDialog.bind(this)}
       />,
     ];
 
@@ -178,7 +178,7 @@ class StopPlace extends React.Component {
 const mapStateToProps = state => ({
   isCreatingPolylines: state.stopPlace.isCreatingPolylines,
   stopPlace: state.stopPlace.current || state.stopPlace.newStop,
-  disabled: !getIn(state.roles, ['allowanceInfo', 'canEdit'], false),
+  disabled: (state.stopPlace.current && state.stopPlace.current.permanentlyTerminated) || !getIn(state.roles, ['allowanceInfo', 'canEdit'], false),
   newStopCreated: state.user.newStopCreated,
   originalStopPlace: state.stopPlace.originalCurrent
 });

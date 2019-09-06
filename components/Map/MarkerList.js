@@ -39,8 +39,7 @@ import { Entities } from '../../models/Entities';
 import { doesStopTypeAllowEdit } from '../../roles/rolesParser';
 
 class MarkerList extends React.Component {
-  static PropTypes = {
-    stops: PropTypes.array.isRequired,
+  static propTypes = {
     handleDragEnd: PropTypes.func.isRequired
   };
 
@@ -404,7 +403,7 @@ class MarkerList extends React.Component {
                     key={'parking-' + index}
                     totalCapacity={parking.totalCapacity}
                     translations={{
-                      title: formatMessage({ id: 'parking' }),
+                      title: formatMessage({ id: 'parking_item_title_parkAndRide' }),
                       totalCapacity: formatMessage({ id: 'total_capacity' }),
                       parkingExpired: formatMessage({ id: 'parking_expired' }),
                       totalCapacityUnknown: formatMessage({
@@ -426,7 +425,7 @@ class MarkerList extends React.Component {
                     draggable={!disabled}
                     type="parking"
                     translations={{
-                      title: formatMessage({ id: 'parking_bike' }),
+                      title: formatMessage({ id: 'parking_item_title_bikeParking' }),
                       totalCapacity: formatMessage({ id: 'total_capacity' }),
                       parkingExpired: formatMessage({ id: 'parking_expired' }),
                       totalCapacityUnknown: formatMessage({
@@ -624,7 +623,7 @@ const mapStateToProps = state => ({
   activeMap: state.mapUtils.activeMap,
   pathLink: state.stopPlace.pathLink,
   showExpiredStops: state.stopPlace.showExpiredStops,
-  disabled: !getIn(state.roles, ['allowanceInfo', 'canEdit'], false),
+  disabled: (state.stopPlace.current && state.stopPlace.current.permanentlyTerminated) || !getIn(state.roles, ['allowanceInfo', 'canEdit'], false),
   disabledForSearch: !getIn(
     state.roles,
     ['allowanceInfoSearchResult', 'canEdit'],

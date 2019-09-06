@@ -65,6 +65,14 @@ StopPlaceActions.changeStopName = name => dispatch => {
   dispatch(createThunk(types.CHANGED_STOP_NAME, name));
 };
 
+StopPlaceActions.changeStopPublicCode = publicCode => dispatch => {
+  dispatch(createThunk(types.CHANGED_STOP_PUBLIC_CODE, publicCode));
+}
+
+StopPlaceActions.changeStopPrivateCode = privateCode => dispatch => {
+  dispatch(createThunk(types.CHANGED_STOP_PRIVATE_CODE, privateCode));
+}
+
 StopPlaceActions.changeStopDescription = description => dispatch => {
   dispatch(createThunk(types.CHANGED_STOP_DESCRIPTION, description));
 };
@@ -304,6 +312,60 @@ StopPlaceActions.changeParkingName = (index, name) => dispatch => {
     }),
   );
 };
+
+StopPlaceActions.changeParkingLayout = (index, parkingLayout) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_LAYOUT, {
+      index,
+      parkingLayout
+    }),
+  );
+};
+
+StopPlaceActions.changeParkingPaymentProcess = (index, parkingPaymentProcess) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_PAYMENT_PROCESS, {
+      index,
+      parkingPaymentProcess
+    }),
+  );
+};
+
+StopPlaceActions.changeParkingRechargingAvailable = (index, rechargingAvailable) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_RECHARGING_AVAILABLE, {
+      index,
+      rechargingAvailable
+    }),
+  );
+};
+
+StopPlaceActions.changeParkingNumberOfSpaces = (index, numberOfSpaces) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES, {
+      index,
+      numberOfSpaces
+    }),
+  );
+}
+
+StopPlaceActions.changeParkingNumberOfSpacesWithRechargePoint = (index, numberOfSpacesWithRechargePoint) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_WITH_RECHARGE_POINT, {
+      index,
+      numberOfSpacesWithRechargePoint
+    }),
+  );
+}
+
+StopPlaceActions.changeParkingNumberOfSpacesForRegisteredDisabledUserType = (index, numberOfSpacesForRegisteredDisabledUserType) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_FOR_REGISTERED_DISABLED_USER_TYPE, {
+      index,
+      numberOfSpacesForRegisteredDisabledUserType
+    }),
+  );
+}
 
 StopPlaceActions.clearLastMutatedStopPlaceId = () => dispatch => {
   dispatch(
