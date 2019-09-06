@@ -527,6 +527,36 @@ const stopPlaceReducer = (state = {}, action) => {
         stopHasBeenModified: true,
       });
 
+    case types.CHANGED_RECHARGING_AVAILABLE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeRechargingAvailable(state.current, action.payLoad),
+        stopHasBeenModified: true,
+      });
+
+    case types.CHANGED_NUMBER_OF_RECHARGING_PLACES:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeNumberOfRechargingPlaces(state.current, action.payLoad),
+        stopHasBeenModified: true,
+      });
+
+    case types.CHANGE_CARPOOLING_AVAILABLE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeCarpoolingAvailable(state.current, action.payLoad),
+        stopHasBeenModified: true,
+      });
+
+    case types.CHANGE_CARSHARING_AVAILABLE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeCarsharingAvailable(state.current, action.payLoad),
+        stopHasBeenModified: true,
+      });
+
+      case types.CHANGE_NUMBER_OF_CARSHARING_PLACES:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeNumberOfCarsharingPlaces(state.current, action.payLoad),
+        stopHasBeenModified: true,
+      });
+
     case types.OPENED_MERGE_STOP_DIALOG:
       return Object.assign({}, state, {
         mergeStopDialog: {

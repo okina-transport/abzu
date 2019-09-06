@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import { getIn } from '../utils/';
+
+import { getIn } from '../utils/';
 import { hasExpired } from '../modelUtils/validBetween';
 
 class Parking {
@@ -30,7 +31,12 @@ class Parking {
       totalCapacity: parking.totalCapacity,
       parkingVehicleTypes: parking.parkingVehicleTypes,
       hasExpired: hasExpired(parking.validBetween),
-      validBetween: parking.validBetween
+      validBetween: parking.validBetween,
+      rechargingAvailable: parking.rechargingAvailable,
+      numberOfRechargingPlaces: parking.numberOfRechargingPlaces,
+      carpoolingAvailable: parking.carpoolingAvailable,
+      carsharingAvailable: parking.carsharingAvailable,
+      numberOfCarsharingPlaces: parking.numberOfCarsharingPlaces
     };
     let coordinates = getIn(parking, ['geometry', 'coordinates'], null);
 

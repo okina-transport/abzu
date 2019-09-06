@@ -32,7 +32,7 @@ helpers.mapQuayToVariables = quay => {
     placeEquipments: netexifyPlaceEquipment(quay.placeEquipments),
     description: {
       value: quay.description,
-      lang: 'nor'
+      lang: 'fr'
     }
   };
 
@@ -152,7 +152,7 @@ helpers.mapParentStopToVariables = (original, userInput) => {
 
 const createEmbeddableMultilingualString = string => ({
   value: string || '',
-  lang: 'nor'
+  lang: 'fr'
 });
 
 // properly maps object when Object is used as InputObject and not shallow variables for query
@@ -268,7 +268,12 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       totalCapacity: Number(source.totalCapacity) || 0,
       parentSiteRef: parentRef,
       parkingVehicleTypes: source.parkingVehicleTypes,
-      validBetween: source.validBetween
+      validBetween: source.validBetween,
+      rechargingAvailable: source.rechargingAvailable,
+      numberOfRechargingPlaces: Number(source.numberOfRechargingPlaces) || 0,
+      carpoolingAvailable: source.carpoolingAvailable,
+      carsharingAvailable: source.carsharingAvailable,
+      numberOfCarsharingPlaces: Number(source.numberOfCarsharingPlaces) || 0
     };
 
     if (source.id) {
@@ -277,7 +282,7 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
 
     parking.name = {
       value: source.name,
-      lang: 'nor'
+      lang: 'fr'
     };
 
     if (source.location) {

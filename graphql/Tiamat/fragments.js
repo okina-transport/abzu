@@ -474,6 +474,13 @@ Fragments.parking = {
               fromDate
               toDate
           }
+          
+          rechargingAvailable
+          numberOfRechargingPlaces
+          carpoolingAvailable
+          carsharingAvailable
+          numberOfCarsharingPlaces
+          
       }
     `
 };

@@ -5,7 +5,7 @@ image_name: "abzu"
 docker_build_root: "/var/lib/jenkins/docker"
 build_home: "/var/lib/jenkins/workspace/Lro-Docker-Abzu"
 registry_image_name: "registry.okina.fr/lro/{{image_name}}"
-version: "1.0.5-SNAPSHOT"
+version: "1.0.6-SNAPSHOT"
 
 build_log_directory: "{{docker_build_root}}/logs"
 image_docker_root: "{{docker_build_root}}/{{image_name}}"

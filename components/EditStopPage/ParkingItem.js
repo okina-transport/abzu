@@ -18,7 +18,6 @@ import NavigationExpandMore from 'material-ui/svg-icons/navigation/expand-more';
 import NavigationExpandLess from 'material-ui/svg-icons/navigation/expand-less';
 import TextField from 'material-ui/TextField';
 import MapsMyLocation from 'material-ui/svg-icons/maps/my-location';
-import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 import { StopPlaceActions, UserActions } from '../../actions/';
 import Warning from 'material-ui/svg-icons/alert/warning';
@@ -30,6 +29,7 @@ import { withApollo } from 'react-apollo';
 import { deleteParking } from '../../graphql/Tiamat/actions';
 import * as types from "../../actions/Types";
 import {FlatButton} from "material-ui";
+import Checkbox from "material-ui/Checkbox";
 
 class ParkingItem extends React.Component {
 
@@ -52,6 +52,37 @@ class ParkingItem extends React.Component {
   handleSetName(value) {
     const { dispatch, index } = this.props;
     dispatch(StopPlaceActions.changeParkingName(index, value));
+  }
+
+  handleSetRechargingAvailable(value) {
+    const { dispatch, index } = this.props;
+    if(value === false){
+      dispatch(StopPlaceActions.changeNumberOfRechargingPlaces(index, 0));
+    }
+    dispatch(StopPlaceActions.changeRechargingAvailable(index, value));
+  }
+
+  handleSetNumberOfRechargingPlaces(value) {
+    const { dispatch, index } = this.props;
+    dispatch(StopPlaceActions.changeNumberOfRechargingPlaces(index, value));
+  }
+
+  handleSetCarpoolingAvailable(value) {
+    const { dispatch, index } = this.props;
+    dispatch(StopPlaceActions.changeCarpoolingAvailable(index, value));
+  }
+
+  handleSetCarsharingAvailable(value) {
+    const { dispatch, index } = this.props;
+    if(value === false){
+      dispatch(StopPlaceActions.changeNumberOfCarsharingPlaces(index, 0));
+    }
+    dispatch(StopPlaceActions.changeCarsharingAvailable(index, value));
+  }
+
+  handleSetNumberOfCarsharingPlaces(value) {
+    const { dispatch, index } = this.props;
+    dispatch(StopPlaceActions.changeNumberOfCarsharingPlaces(index, value));
   }
 
   handleDeleteParking() {
@@ -169,6 +200,52 @@ class ParkingItem extends React.Component {
                 value={parking.totalCapacity}
                 type="number"
                 style={{ width: '95%', marginTop: -10 }}
+              />
+              <Checkbox
+                      checked={parking.rechargingAvailable}
+                      label={formatMessage({id : 'recharging_available'})}
+                      onCheck={(event, checked) => {
+                        this.handleSetRechargingAvailable(checked);
+                      }}
+                      style={{ marginTop: 10, fontSize: 12 }}
+              />
+              <TextField
+                  hintText={formatMessage({id : 'number_of_recharging_places'})}
+                  disabled={ !parking.rechargingAvailable }
+                  floatingLabelText={formatMessage({id : 'number_of_recharging_places'})}
+                  onChange={(e, v) => {
+                    this.handleSetNumberOfRechargingPlaces(v);
+                  }}
+                  value={parking.numberOfRechargingPlaces}
+                  type="number"
+                  style={{ width: '95%', marginTop: -10 }}
+              />
+              <Checkbox
+                  checked={parking.carpoolingAvailable}
+                  label={formatMessage({id : 'carpooling_available'})}
+                  onCheck={(event, checked) => {
+                    this.handleSetCarpoolingAvailable(checked);
+                  }}
+                  style={{ marginTop: 10, fontSize: 12 }}
+              />
+              <Checkbox
+                  checked={parking.carsharingAvailable}
+                  label={formatMessage({id : 'carsharing_available'})}
+                  onCheck={(event, checked) => {
+                    this.handleSetCarsharingAvailable(checked);
+                  }}
+                  style={{ marginTop: 10, fontSize: 12 }}
+              />
+              <TextField
+                  hintText={formatMessage({id : 'number_of_carsharing_places'})}
+                  disabled={ !parking.carsharingAvailable }
+                  floatingLabelText={formatMessage({id : 'number_of_carsharing_places'})}
+                  onChange={(e, v) => {
+                    this.handleSetNumberOfCarsharingPlaces(v);
+                  }}
+                  value={parking.numberOfCarsharingPlaces}
+                  type="number"
+                  style={{ width: '95%', marginTop: -10 }}
               />
               <div style={{ width: '100%', textAlign: 'right' }}>
                   <ToolTippable

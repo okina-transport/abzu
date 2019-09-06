@@ -356,4 +356,49 @@ StopPlaceActions.removeTariffZone = tariffZoneId => dispatch => {
   );
 };
 
+StopPlaceActions.changeRechargingAvailable = (index, rechargingAvailable) => dispatch => {
+  dispatch(
+      createThunk(types.CHANGED_RECHARGING_AVAILABLE, {
+        index,
+        rechargingAvailable,
+      }),
+  );
+};
+
+StopPlaceActions.changeNumberOfRechargingPlaces = (index, numberOfRechargingPlaces) => dispatch => {
+  dispatch(
+      createThunk(types.CHANGED_NUMBER_OF_RECHARGING_PLACES, {
+        index,
+        numberOfRechargingPlaces,
+      }),
+  );
+};
+
+StopPlaceActions.changeCarpoolingAvailable = (index, carpoolingAvailable) => dispatch => {
+  dispatch(
+      createThunk(types.CHANGE_CARPOOLING_AVAILABLE, {
+        index,
+        carpoolingAvailable,
+      }),
+  );
+};
+
+StopPlaceActions.changeCarsharingAvailable = (index, carsharingAvailable) => dispatch => {
+  dispatch(
+      createThunk(types.CHANGE_CARSHARING_AVAILABLE, {
+        index,
+        carsharingAvailable,
+      }),
+  );
+};
+
+StopPlaceActions.changeNumberOfCarsharingPlaces = (index, numberOfCarsharingPlaces) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGE_NUMBER_OF_CARSHARING_PLACES, {
+            index,
+            numberOfCarsharingPlaces,
+        }),
+    );
+};
+
 export default StopPlaceActions;

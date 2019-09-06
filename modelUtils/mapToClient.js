@@ -580,7 +580,12 @@ helpers.updateCurrentWithNewElement = (current, payLoad) => {
         totalCapacity: null,
         parkingVehicleTypes: ['car'],
         hasExpired: false,
-        validBetween: null
+        validBetween: null,
+        rechargingAvailable: false,
+        numberOfRechargingPlaces: null,
+        carpoolingAvailable: false,
+        carsharingAvailable: false,
+        numberOfCarsharingPlaces: null
       });
       break;
     case 'bikeParking':
@@ -823,6 +828,41 @@ helpers.changeParkingTotalCapacity = (original, payLoad) => {
   const { index, totalCapacity } = payLoad;
   const copy = JSON.parse(JSON.stringify(original));
   copy.parking[index].totalCapacity = Number(totalCapacity);
+  return copy;
+};
+
+helpers.changeRechargingAvailable = (original, payLoad) => {
+  const { index, rechargingAvailable } = payLoad;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].rechargingAvailable = rechargingAvailable;
+  return copy;
+};
+
+helpers.changeNumberOfRechargingPlaces = (original, payLoad) => {
+  const { index, numberOfRechargingPlaces } = payLoad;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].numberOfRechargingPlaces = Number(numberOfRechargingPlaces);
+  return copy;
+};
+
+helpers.changeCarpoolingAvailable = (original, payLoad) => {
+  const { index, carpoolingAvailable } = payLoad;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].carpoolingAvailable = carpoolingAvailable;
+  return copy;
+};
+
+helpers.changeCarsharingAvailable = (original, payLoad) => {
+  const { index, carsharingAvailable } = payLoad;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].carsharingAvailable = carsharingAvailable;
+  return copy;
+};
+
+helpers.changeNumberOfCarsharingPlaces = (original, payLoad) => {
+  const { index, numberOfCarsharingPlaces } = payLoad;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].numberOfCarsharingPlaces = Number(numberOfCarsharingPlaces);
   return copy;
 };
 
