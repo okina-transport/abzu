@@ -272,7 +272,8 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       totalCapacity: Number(source.totalCapacity) || 0,
       parentSiteRef: parentRef,
       parkingVehicleTypes: source.parkingVehicleTypes,
-      validBetween: source.validBetween
+      validBetween: source.validBetween,
+      parkingProperties: []
     };
 
     if (source.id) {
@@ -291,13 +292,22 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       parking.rechargingAvailable = source.rechargingAvailable;
     }
 
-    if (source.numberOfSpaces || source.numberOfSpacesWithRechargePoint || source.numberOfSpacesForRegisteredDisabledUserType) {
+    if (source.carpoolingAvailable !== undefined) {
+      parking.carpoolingAvailable = source.carpoolingAvailable;
+    }
+
+    if (source.carsharingAvailable !== undefined) {
+      parking.carsharingAvailable = source.carsharingAvailable;
+    }
+
+    if (source.numberOfSpaces || source.numberOfSpacesWithRechargePoint || source.numberOfSpacesForRegisteredDisabledUserType || source.numberOfCarsharingSpaces) {
       parking.parkingProperties = [{
         spaces: [
           {
             parkingUserType: 'allUsers',
             numberOfSpaces: source.numberOfSpaces,
-            numberOfSpacesWithRechargePoint: source.numberOfSpacesWithRechargePoint
+            numberOfSpacesWithRechargePoint: source.numberOfSpacesWithRechargePoint,
+            numberOfCarsharingSpaces: source.numberOfCarsharingSpaces
           },
           {
             parkingUserType: 'registeredDisabled',

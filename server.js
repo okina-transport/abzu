@@ -155,32 +155,18 @@ convictPromise
       res.redirect(ENDPOINTBASE);
     });
 
-    const fetch = require('graphql-fetch')(convict.get('tiamatBaseUrl'));
-
-    fetch(introspectionQuery).then(response => {
-
-      fs.writeFileSync(
-        './graphql/Tiamat/schema.json',
-        JSON.stringify(response.data),
-        'utf8'
-      );
-
-      app.listen(port, function (error) {
-        if (error) {
-          console.error(error);
-        } else {
-          console.info(
-            '==> Listening on port %s. Open up http://localhost:%s%s in your browser.',
-            port,
-            port,
-            ENDPOINTBASE
-          );
-        }
+      app.listen(port, function(error) {
+          if (error) {
+              console.error(error);
+          } else {
+              console.info(
+                  '==> Listening on port %s. Open up http://localhost:%s%s in your browser.',
+                  port,
+                  port,
+                  ENDPOINTBASE
+              );
+          }
       });
-    }).catch(err => {
-      console.log("Unable to fetch schema, server exited with error");
-      process.exit(1);
-    });
 
     const createKeyCloakConfig = authServerUrl => {
       let config = {

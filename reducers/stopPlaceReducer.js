@@ -559,6 +559,18 @@ const stopPlaceReducer = (state = {}, action) => {
         stopHasBeenModified: true
       });
 
+    case types.CHANGED_PARKING_CARPOOLING_AVAILABLE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingCarpoolingAvailable(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
+    case types.CHANGED_PARKING_CARSHARING_AVAILABLE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingCarsharingAvailable(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
     case types.CHANGED_PARKING_NUMBER_OF_SPACES:
       return Object.assign({}, state, {
         current: formatHelpers.changeParkingNumberOfSpaces(state.current, action.payLoad),
@@ -568,6 +580,12 @@ const stopPlaceReducer = (state = {}, action) => {
     case types.CHANGED_PARKING_NUMBER_OF_SPACES_WITH_RECHARGE_POINT:
       return Object.assign({}, state, {
         current: formatHelpers.changeParkingNumberOfSpacesWithRechargePoint(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
+    case types.CHANGED_PARKING_NUMBER_OF_CARSHARING_SPACES:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingNumberOfCarsharingSpaces(state.current, action.payLoad),
         stopHasBeenModified: true
       });
 

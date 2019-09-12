@@ -1,12 +1,12 @@
 {
   "name": "Abzu",
-  "version": "1.0.5-SNAPSHOT",
+  "version": "1.0.6-SNAPSHOT",
   "description": "Registre national d'arrêt",
   "main": "index.js",
   "scripts": {
     "prebuild": "npm run fetch-schema",
-    "build": "GENERATE_SOURCEMAPS=true BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
-    "dev-local-test": "NODE_ENV=development BABEL_ENV=production  AUTH_SERVER_URL=http://keycloak.docker/auth/ TIAMAT_ENV=development TIAMAT_BASE_URL=http://kong.docker/api/stop_places/1.0/graphql node server.js",
+    "build": "GENERATE_SOURCEMAPS=true BABEL_ENV=production NODE_ENV=production webpack -p --config ./webpack.prod.config.js",
+    "dev-local-test": "NODE_ENV=development BABEL_ENV=production TIAMAT_ENV=development TIAMAT_BASE_URL=http://api.lro/api/stop_places/1.0/graphql node server.js",
     "prod": "NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production TIAMAT_BASE_URL=https://api.mobilites.agglo-larochelle.fr/api/stop_places/1.0/graphql node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json",
@@ -31,7 +31,7 @@
     "babel-register": "6.26.0",
     "babel-runtime": "6.26.0",
     "body-parser": "1.18.2",
-    "convict": "^4.4.1",
+    "convict": "4.0.0",
     "css-loader": "^1.0.1",
     "detect-browser": "^2.5.1",
     "express": "^4.17.1",
@@ -53,8 +53,8 @@
     "moment": "2.19.3",
     "promise-polyfill": "6.0.2",
     "prop-types": "^15.7.2",
-    "raven": "^2.6.4",
-    "raven-js": "^3.27.2",
+    "raven": "^2.2.0",
+    "raven-js": "^3.18.1",
     "react": "^16.8.6",
     "react-apollo": "1.4.15",
     "react-dom": "^16.8.6",
@@ -64,6 +64,7 @@
     "react-redux": "5.0.6",
     "react-router": "3.0.5",
     "react-router-redux": "4.0.8",
+    "react-tap-event-plugin": "3.0.2",
     "redux": "3.7.2",
     "redux-logger": "3.0.6",
     "redux-raven-middleware": "1.2.0",
@@ -77,6 +78,6 @@
     "webpack-hot-middleware": "2.19.1"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "^0.1.19"
+    "clean-webpack-plugin": "^0.1.16"
   }
 }

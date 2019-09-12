@@ -35,7 +35,7 @@ class Parking {
 
   get numberOfSpaces() {
     if (this.parking.parkingProperties.length) {
-      return this.findNumberOfSpaces('allUsers', 'numberOfSpaces')
+      return this.findNumberOfSpaces('allUsers', 'numberOfSpaces');
     } else {
       return this.parking.totalCapacity;
     }
@@ -43,6 +43,10 @@ class Parking {
 
   get numberOfSpacesWithRechargePoint() {
     return this.findNumberOfSpaces('allUsers', 'numberOfSpacesWithRechargePoint');
+  }
+
+  get numberOfCarsharingSpaces() {
+    return this.findNumberOfSpaces('allUsers', 'numberOfCarsharingSpaces');
   }
 
   get numberOfSpacesForRegisteredDisabledUserType() {
@@ -78,8 +82,11 @@ class Parking {
       parkingType: this.parkingType,
       parkingPaymentProcess: parking.parkingPaymentProcess,
       rechargingAvailable: parking.rechargingAvailable,
+      carpoolingAvailable: parking.carpoolingAvailable,
+      carsharingAvailable: parking.carsharingAvailable,
       numberOfSpaces: this.isParkAndRide ? this.numberOfSpaces : null,
       numberOfSpacesWithRechargePoint: this.isParkAndRide ? this.numberOfSpacesWithRechargePoint : null,
+      numberOfCarsharingSpaces: this.isParkAndRide ? this.numberOfCarsharingSpaces : null,
       numberOfSpacesForRegisteredDisabledUserType: this.isParkAndRide ? this.numberOfSpacesForRegisteredDisabledUserType : null,
       parkingLayout: this.isParkAndRide ? this.parking.parkingLayout : null,
       totalCapacity: parking.totalCapacity,

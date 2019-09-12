@@ -844,6 +844,20 @@ helpers.changeParkingRechargingAvailable = (original, payload) => {
   return copy;
 }
 
+helpers.changeParkingCarpoolingAvailable = (original, payload) => {
+  const { index, carpoolingAvailable } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].carpoolingAvailable = carpoolingAvailable;
+  return copy;
+}
+
+helpers.changeParkingCarsharingAvailable = (original, payload) => {
+  const { index, carsharingAvailable } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].carsharingAvailable = carsharingAvailable;
+  return copy;
+}
+
 helpers.changeParkingNumberOfSpaces = (original, payload) => {
   const { index, numberOfSpaces } = payload;
   const copy = JSON.parse(JSON.stringify(original));
@@ -855,6 +869,13 @@ helpers.changeParkingNumberOfSpacesWithRechargePoint = (original, payload) => {
   const { index, numberOfSpacesWithRechargePoint } = payload;
   const copy = JSON.parse(JSON.stringify(original));
   copy.parking[index].numberOfSpacesWithRechargePoint = numberOfSpacesWithRechargePoint;
+  return copy;
+}
+
+helpers.changeParkingNumberOfCarsharingSpaces = (original, payload) => {
+  const { index, numberOfCarsharingSpaces } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].numberOfCarsharingSpaces = numberOfCarsharingSpaces;
   return copy;
 }
 

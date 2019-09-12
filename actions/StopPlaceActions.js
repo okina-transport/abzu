@@ -340,6 +340,24 @@ StopPlaceActions.changeParkingRechargingAvailable = (index, rechargingAvailable)
   );
 };
 
+StopPlaceActions.changeParkingCarpoolingAvailable = (index, carpoolingAvailable) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_CARPOOLING_AVAILABLE, {
+      index,
+      carpoolingAvailable
+    }),
+  );
+};
+
+StopPlaceActions.changeParkingCarsharingAvailable = (index, carsharingAvailable) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_CARSHARING_AVAILABLE, {
+      index,
+      carsharingAvailable
+    }),
+  );
+};
+
 StopPlaceActions.changeParkingNumberOfSpaces = (index, numberOfSpaces) => dispatch => {
   dispatch(
     createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES, {
@@ -354,6 +372,16 @@ StopPlaceActions.changeParkingNumberOfSpacesWithRechargePoint = (index, numberOf
     createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_WITH_RECHARGE_POINT, {
       index,
       numberOfSpacesWithRechargePoint
+    }),
+  );
+}
+
+
+StopPlaceActions.changeParkingNumberOfCarsharingSpaces = (index, numberOfCarsharingSpaces) => dispatch => {
+  dispatch(
+    createThunk(types.CHANGED_PARKING_NUMBER_OF_CARSHARING_SPACES, {
+      index,
+      numberOfCarsharingSpaces
     }),
   );
 }

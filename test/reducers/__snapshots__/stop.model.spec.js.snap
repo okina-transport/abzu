@@ -194,6 +194,7 @@ Array [
       "value": "park&ride example",
     },
     "parentSiteRef": "NSR:StopPlace:1",
+    "parkingProperties": Array [],
     "parkingVehicleTypes": Array [
       "car",
     ],

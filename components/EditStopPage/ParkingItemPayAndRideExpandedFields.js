@@ -30,6 +30,7 @@ import Payment from 'material-ui/svg-icons/action/payment';
 import Box from '@material-ui/core/Box';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const useStyles = makeStyles(() => ({
   mainGrid: {
@@ -91,15 +92,21 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
     parkingLayout,
     parkingPaymentProcess,
     rechargingAvailable,
+    carpoolingAvailable,
+    carsharingAvailable,
     totalCapacity,
     numberOfSpaces,
     numberOfSpacesWithRechargePoint,
+    numberOfCarsharingSpaces,
     numberOfSpacesForRegisteredDisabledUserType,
     handleSetParkingLayout,
     handleSetParkingPaymentProcess,
     handleSetRechargingAvailable,
+    handleSetCarpoolingAvailable,
+    handleSetCarsharingAvailable,
     handleSetNumberOfSpaces,
     handleSetNumberOfSpacesWithRechargePoint,
+    handleSetNumberOfCarsharingSpaces,
     handleSetNumberOfSpacesForRegisteredDisabledUserType,
   } = props;
 
@@ -227,6 +234,55 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
             type="number"
             fullWidth
             className={classes.textField} />
+        </Box>
+      </Grid>
+      <Grid item>
+        <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+            <FormControlLabel
+                label={formatMessage({id : 'carpooling_available'})}
+                style={{ marginTop: 10 }}
+                control={
+                    <Checkbox
+                        checked={carpoolingAvailable}
+                        label={formatMessage({id: 'carpooling_available'})}
+                        onChange={(event, checked) => {
+                            handleSetCarpoolingAvailable(checked);
+                        }}
+                    />
+                }
+        />
+        </Box>
+      </Grid>
+      <Grid item>
+        <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+            <FormControlLabel
+                label={formatMessage({id : 'carsharing_available'})}
+                style={{ marginTop: 10 }}
+                control={
+                    <Checkbox
+                        checked={carsharingAvailable}
+                        label={formatMessage({id : 'carsharing_available'})}
+                        onChange={(event, checked) => {
+                            handleSetCarsharingAvailable(checked);
+                        }}
+                    />
+                }
+            />
+        </Box>
+      </Grid>
+      <Grid item>
+        <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+          <TextField
+              hintText={formatMessage({id : 'number_of_carsharing_places'})}
+              disabled={ !carsharingAvailable }
+              floatingLabelText={formatMessage({id : 'number_of_carsharing_places'})}
+              onChange={(e, value) => {
+                handleSetNumberOfCarsharingSpaces(value);
+              }}
+              value={numberOfCarsharingSpaces || ''}
+              type="number"
+              style={{ width: '95%', marginTop: -10 }}
+          />
         </Box>
       </Grid>
     </Grid>

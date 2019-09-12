@@ -482,11 +482,14 @@ Fragments.parking = {
           parkingLayout
           parkingPaymentProcess
           rechargingAvailable
+          carpoolingAvailable
+          carsharingAvailable
           parkingProperties {
               spaces {
                   parkingUserType
                   numberOfSpaces
                   numberOfSpacesWithRechargePoint
+                  numberOfCarsharingSpaces
               }
           }
       }

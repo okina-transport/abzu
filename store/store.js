@@ -47,6 +47,7 @@ export default function configureStore(kc) {
       )
     );
   } else {
+    console.log("sentry dsn : " + window.config.sentryDSN);
     Raven.config(window.config.sentryDSN, {
       release: process.env.VERSION,
       stacktrace: true,

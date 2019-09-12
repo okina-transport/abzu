@@ -70,6 +70,19 @@ class ParkingItem extends React.Component {
     dispatch(StopPlaceActions.changeParkingRechargingAvailable(index, value));
   }
 
+  handleSetCarpoolingAvailable(value) {
+    const { dispatch, index } = this.props;
+    dispatch(StopPlaceActions.changeParkingCarpoolingAvailable(index, value));
+  }
+
+  handleSetCarsharingAvailable(value) {
+    const { dispatch, index } = this.props;
+    if(!value){
+      this.handleSetNumberOfCarsharingSpaces(0);
+    }
+    dispatch(StopPlaceActions.changeParkingCarsharingAvailable(index, value));
+  }
+
   handleSetNumberOfSpaces(value) {
     const { dispatch, index } = this.props;
     dispatch(StopPlaceActions.changeParkingNumberOfSpaces(index, value));
@@ -78,6 +91,11 @@ class ParkingItem extends React.Component {
   handleSetNumberOfSpacesWithRechargePoint(value) {
     const { dispatch, index } = this.props;
     dispatch(StopPlaceActions.changeParkingNumberOfSpacesWithRechargePoint(index, value));
+  }
+
+  handleSetNumberOfCarsharingSpaces(value) {
+    const { dispatch, index } = this.props;
+    dispatch(StopPlaceActions.changeParkingNumberOfCarsharingSpaces(index, value));
   }
 
   handleSetNumberOfSpacesForRegisteredDisabledUserType(value) {
@@ -200,15 +218,21 @@ class ParkingItem extends React.Component {
                 parkingLayout={parking.parkingLayout}
                 parkingPaymentProcess={parking.parkingPaymentProcess}
                 rechargingAvailable={parking.rechargingAvailable}
+                carpoolingAvailable={parking.carpoolingAvailable}
+                carsharingAvailable={parking.carsharingAvailable}
                 totalCapacity={totalCapacity}
                 numberOfSpaces={parking.numberOfSpaces}
                 numberOfSpacesWithRechargePoint={parking.numberOfSpacesWithRechargePoint}
+                numberOfCarsharingSpaces={parking.numberOfCarsharingSpaces}
                 numberOfSpacesForRegisteredDisabledUserType={parking.numberOfSpacesForRegisteredDisabledUserType}
                 handleSetParkingLayout={this.handleSetParkingLayout.bind(this)}
                 handleSetParkingPaymentProcess={this.handleSetParkingPaymentProcess.bind(this)}
                 handleSetRechargingAvailable={this.handleSetRechargingAvailable.bind(this)}
+                handleSetCarpoolingAvailable={this.handleSetCarpoolingAvailable.bind(this)}
+                handleSetCarsharingAvailable={this.handleSetCarsharingAvailable.bind(this)}
                 handleSetNumberOfSpaces={this.handleSetNumberOfSpaces.bind(this)}
                 handleSetNumberOfSpacesWithRechargePoint={this.handleSetNumberOfSpacesWithRechargePoint.bind(this)}
+                handleSetNumberOfCarsharingSpaces={this.handleSetNumberOfCarsharingSpaces.bind(this)}
                 handleSetNumberOfSpacesForRegisteredDisabledUserType={this.handleSetNumberOfSpacesForRegisteredDisabledUserType.bind(this)} />
             ) : (
               <TextField
