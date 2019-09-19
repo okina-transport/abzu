@@ -25,6 +25,9 @@ import { getLogo } from '../config/themeConfig';
 import MdAccount from 'material-ui/svg-icons/action/account-circle';
 import MdLanguage from 'material-ui/svg-icons/action/language';
 import MdSettings from 'material-ui/svg-icons/action/settings';
+import MdLocalOffer from 'material-ui/svg-icons/maps/local-offer';
+import MdSupervisorAccount from 'material-ui/svg-icons/action/supervisor-account';
+import MdImportExport from 'material-ui/svg-icons/communication/import-export';
 import { UserActions } from '../actions/';
 import { getIn } from '../utils';
 import MdReport from 'material-ui/svg-icons/content/report';
@@ -145,6 +148,9 @@ class Header extends React.Component {
     const showPublicCodeLabel = formatMessage({id: 'show_public_code'});
     const showPrivateCodeLabel = formatMessage({id: 'show_private_code'});
     const quayCodeShowingLabel = formatMessage({id: 'quay_marker_label'});
+    const portalAdmin = formatMessage({id: 'portal_admin'});
+    const portalImport = formatMessage({id: 'portal_import'});
+    const portalOffers = formatMessage({id: 'portal_offers'});
 
     const tiamatEnv = getTiamatEnv();
     const logo = getLogo();
@@ -183,6 +189,27 @@ class Header extends React.Component {
               targetOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
+              <MenuItem
+                  leftIcon={<MdSupervisorAccount color="#005A82" />}
+                  primaryText={portalAdmin}
+                  href="/admin"
+                  target="_blank"
+                  style={{ fontSize: 12, padding: 0 }}
+              />
+              <MenuItem
+                  leftIcon={<MdLocalOffer color="#005A82" />}
+                  primaryText={portalOffers}
+                  href="/offre"
+                  target="_blank"
+                  style={{ fontSize: 12, padding: 0 }}
+              />
+              <MenuItem
+                  leftIcon={<MdImportExport color="#005A82" />}
+                  primaryText={portalImport}
+                  href="/import"
+                  target="_blank"
+                  style={{ fontSize: 12, padding: 0 }}
+              />
               <MenuItem
                 leftIcon={<MdReport color="#005A82" />}
                 primaryText={reportSite}
