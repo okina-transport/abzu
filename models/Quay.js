@@ -14,7 +14,7 @@ limitations under the Licence. */
 
 
 import { setDecimalPrecision } from '../utils/';
-import { getImportedId, simplifyPlaceEquipment } from './stopPlaceUtils';
+import {getImportedId, getImportedStopCode, simplifyPlaceEquipment} from './stopPlaceUtils';
 
 class Quay {
   constructor(quay, accessibilityAssessment) {
@@ -38,6 +38,7 @@ class Quay {
 
     if (quay.keyValues) {
       clientQuay.importedId = getImportedId(quay.keyValues);
+      clientQuay.importedId = getImportedStopCode(quay.keyValues);
       clientQuay.keyValues = quay.keyValues;
     }
 

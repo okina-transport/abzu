@@ -24,6 +24,10 @@ export const columnOptionsQuays = [
     checked: true
   },
   {
+    id: 'importedStopCode',
+    checked: true
+  },
+  {
     id: 'position',
     checked: true
   },
@@ -92,7 +96,7 @@ export const columnOptionsStopPlace = [
   },
   {
     id: 'parking',
-    checked: true
+    checked: false
   },
   {
     id: 'wheelchairAccess',

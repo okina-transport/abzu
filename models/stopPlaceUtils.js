@@ -31,6 +31,17 @@ export const getImportedId = keyValues => {
   return [];
 };
 
+export const getImportedStopCode = keyValues => {
+  if (!keyValues) return [];
+
+  for (let i = 0; i < keyValues.length; i++) {
+    if (keyValues[i].key === "imported-stopcode") {
+      return keyValues[i].values;
+    }
+  }
+  return [];
+};
+
 export const getUniqueStopPlaceTypes = modalities => {
   const stopPlaceTypes = modalities.map(child => JSON.stringify(child));
   return [...new Set(stopPlaceTypes)].map(child => JSON.parse(child));
