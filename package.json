@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "NODE_OPTIONS=--max-old-space-size=8192 BABEL_ENV=production NODE_ENV=production webpack --config ./webpack.prod.config.js",
+    "dev-local": "port=9001 NODE_ENV=development AUTH_SERVER_URL=https://mosaic.dev-2.okina.fr/auth/ BABEL_ENV=production TIAMAT_ENV=development TIAMAT_BASE_URL=http://0.0.0.0:8585/services/stop_places/graphql node server.js",
     "dev": "NODE_ENV=development BABEL_ENV=development  TIAMAT_ENV=development node server.js",
     "prod": "ENDPOINTBASE=/arrets/ NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
     "test": "jest",
