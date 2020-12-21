@@ -63,13 +63,13 @@ module.exports = new Promise(function (resolve, reject) {
     authRealmName: {
       doc: 'Authentication realm name',
       format: String,
-      default: 'Mosaic',
+      default: 'Mobiiti',
       env: 'AUTH_REALM_NAME'
     },
     netexPrefix: {
       doc: 'Netex Prefix to be used',
       format: String,
-      default: 'MOSAIC',
+      default: 'MOBIITI',
       env: 'NETEX_PREFIX'
     },
     mapboxAccessToken: {
