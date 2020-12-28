@@ -51,25 +51,21 @@ module.exports = new Promise(function (resolve, reject) {
     endpointBase: {
       doc: 'Base URL for for tiamat including slash',
       format: String,
-      default: '/',
       env: 'ENDPOINTBASE'
     },
     authServerUrl: {
       doc: 'URL to keycloak auth server',
       format: String,
-      default: 'https://auth.dev-2.okina.fr/auth/',
       env: 'AUTH_SERVER_URL'
     },
     authRealmName: {
       doc: 'Authentication realm name',
       format: String,
-      default: 'Mobiiti',
       env: 'AUTH_REALM_NAME'
     },
     netexPrefix: {
       doc: 'Netex Prefix to be used',
       format: String,
-      default: 'MOBIITI',
       env: 'NETEX_PREFIX'
     },
     mapboxAccessToken: {
@@ -87,7 +83,7 @@ module.exports = new Promise(function (resolve, reject) {
     sentryDSN: {
     doc: 'SENTRY_DSN - found in https://sentry.io/settings/{organisation_slug}/{project_slug}/keys/',
     format: String,
-    default: 'https://c322757d8c2e489f871243039e874c7e@sentry.io/231116',
+    default: 'https://f321fe0dec4f462b9563b2232d76763a@sentry.okina.fr/8',
     env: 'SENTRY_DSN'
     }
   });
