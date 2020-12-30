@@ -63,6 +63,7 @@ module.exports = new Promise(function (resolve, reject) {
     authRealmName: {
       doc: 'Authentication realm name',
       format: String,
+      default: '/Mobi-iti',
       env: 'AUTH_REALM_NAME'
     },
     netexPrefix: {
