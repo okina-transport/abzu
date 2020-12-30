@@ -58,6 +58,7 @@ module.exports = new Promise(function (resolve, reject) {
     authServerUrl: {
       doc: 'URL to keycloak auth server',
       format: String,
+      default: 'http://keycloak:8080/auth/',
       env: 'AUTH_SERVER_URL'
     },
     authRealmName: {
