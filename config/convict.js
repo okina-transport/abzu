@@ -49,8 +49,10 @@ module.exports = new Promise(function (resolve, reject) {
       env: 'OTP_URL'
     },
     endpointBase: {
-      doc: 'Base URL for for tiamat including slash',
+      doc: 'Where th application resides, in development defaulting\n' +
+        '  to `/` but in other environment `/arrets`',
       format: String,
+      default: '/arrets',
       env: 'ENDPOINTBASE'
     },
     authServerUrl: {
