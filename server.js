@@ -178,7 +178,8 @@ convictPromise
         }
       });
     }).catch(err => {
-      console.log("Unable to fetch schema, server exited with error");
+      console.error("Unable to fetch schema, server exited with error");
+      console.error("TIAMAT_BASE_URL : " + convict.get('tiamatBaseUrl'));
       process.exit(1);
     });
 
@@ -238,7 +239,7 @@ convictPromise
     const getPage = () =>
       `<html>
       <head>
-        <title>Référentiel Multimodal Régional</title>
+        <title>Mobi-iti - Arrêts</title>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <script src='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
