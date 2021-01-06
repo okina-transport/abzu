@@ -85,10 +85,16 @@ module.exports = new Promise(function (resolve, reject) {
       env: 'MAPBOX_TARIFF_ZONES_STYLE'
     },
     sentryDSN: {
-    doc: 'SENTRY_DSN - found in https://sentry.io/settings/{organisation_slug}/{project_slug}/keys/',
-    format: String,
-    default: 'https://f321fe0dec4f462b9563b2232d76763a@sentry.okina.fr/8',
-    env: 'SENTRY_DSN'
+      doc: 'SENTRY_DSN - found in https://sentry.io/settings/{organisation_slug}/{project_slug}/keys/',
+      format: String,
+      default: 'https://f321fe0dec4f462b9563b2232d76763a@sentry.okina.fr/8',
+      env: 'SENTRY_DSN'
+    },
+    defaultMapCentroid: {
+      doc: 'Default centroid for map. Center of france if not specified',
+      format: String,
+      default: "[46.7541751,0.0682244]",
+      env: 'DEFAULT_MAP_CENTROID'
     }
   });
 

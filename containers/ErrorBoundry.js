@@ -45,9 +45,7 @@ class ErrorBoundry extends React.Component {
           <div>
             <h3>Quelque chose s'est mal passé, veuillez nous excuser pour ce désagrément.</h3>
           </div>
-          <p>Nos développeurs ont été informés du problème, mais pouvez-vous les aider en remplissant rapidement un rapport d'erreur pour fournir quelqus
-            informations complémentaires svp ?</p>
-          <p>Merci d'avance de votre aide.</p>
+          <p>Nos développeurs ont été informés du problème</p>
           <a href={location.protocol + '//' + location.host}>Retour</a>
         </div>
       );

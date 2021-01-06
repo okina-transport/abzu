@@ -68,8 +68,8 @@ export default function configureStore(kc) {
 
   const initialState = {
     stopPlace: {
-      centerPosition: [46.161313, -1.176175],
-      zoom: 8,
+      centerPosition: window.config.defaultMapCentroid,
+      zoom: 7,
       minZoom: 14,
       isCompassBearingEnabled: Settings.getShowCompassBearing(),
       isCreatingPolylines: false,

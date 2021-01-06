@@ -40,7 +40,7 @@ export default class LeafLetMap extends React.Component {
 
   getCenterPosition(position) {
     if (!position) {
-      return [64.349421, 16.809082];
+      return window.config.defaultMapCentroid;
     }
     return Array.isArray(position)
       ? position.map(pos => Number(pos))

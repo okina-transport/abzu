@@ -86,7 +86,8 @@ convictPromise
           hostname: process.env.HOSTNAME,
           mapboxTariffZonesStyle: convict.get("mapboxTariffZonesStyle"),
           mapboxAccessToken: convict.get("mapboxAccessToken"),
-          sentryDSN: convict.get('sentryDSN')
+          sentryDSN: convict.get('sentryDSN'),
+          defaultMapCentroid: JSON.parse(convict.get('defaultMapCentroid'))
         };
 
         createKeyCloakConfig(convict.get('authServerUrl'));
