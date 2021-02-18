@@ -47,6 +47,7 @@ export default function configureStore(kc) {
       )
     );
   } else {
+    console.log("sentry dsn : " + window.config.sentryDSN);
     Raven.config(window.config.sentryDSN, {
       release: process.env.VERSION,
       stacktrace: true,
@@ -73,6 +74,7 @@ export default function configureStore(kc) {
       minZoom: 14,
       isCompassBearingEnabled: Settings.getShowCompassBearing(),
       isCreatingPolylines: false,
+      enablePublicCodePrivateCodeOnStopPlaces: Settings.getEnablePublicCodePrivateCodeOnStopPlaces(),
       enablePolylines: Settings.getShowPathLinks(),
       showExpiredStops: Settings.getShowExpiredStops(),
       showMultimodalEdges: Settings.getShowMultimodalEdges(),

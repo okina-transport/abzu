@@ -31,6 +31,7 @@ Object {
   "parentTopographicPlace": "Østfold",
   "parking": Array [],
   "pathJunctions": Array [],
+  "permanentlyTerminated": false,
   "quays": Array [
     Object {
       "accessibilityAssessment": Object {
@@ -114,6 +115,10 @@ Object {
   "keyValues": Array [],
   "name": "Aspelundsveien",
   "placeEquipments": null,
+  "privateCode": Object {
+    "value": "private",
+  },
+  "publicCode": "public",
   "quays": Array [
     Object {
       "accessibilityAssessment": undefined,
@@ -189,6 +194,7 @@ Array [
       "value": "park&ride example",
     },
     "parentSiteRef": "NSR:StopPlace:1",
+    "parkingProperties": Array [],
     "parkingVehicleTypes": Array [
       "car",
     ],

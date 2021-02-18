@@ -50,6 +50,7 @@ class StopPlace {
         weighting: stop.weighting,
         adjacentSites: stop.adjacentSites,
         entityType: Entities.STOP_PLACE,
+        permanentlyTerminated: stop.modificationEnumeration === 'delete',
       };
 
       if (stop.groups && stop.groups.length) {
@@ -98,6 +99,15 @@ class StopPlace {
       clientStop.accessibilityAssessment = stop.accessibilityAssessment
         ? stop.accessibilityAssessment
         : getAssessmentSetBasedOnQuays(stop.quays);
+
+
+      if (stop.publicCode) {
+        clientStop.publicCode = stop.publicCode;
+      }
+
+      if (stop.privateCode) {
+        clientStop.privateCode = stop.privateCode.value;
+      }
 
       if (stop.description) {
         clientStop.description = stop.description.value;

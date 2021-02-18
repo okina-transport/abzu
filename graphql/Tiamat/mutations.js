@@ -20,8 +20,8 @@ export const mutateParentStopPlace = gql`
   mutation mutateParentStopPlace($id: String, $name: String, $description: String, $validBetween: ValidBetweenInput, $versionComment: String, $coordinates: Coordinates!, $alternativeNames: [AlternativeNameInput], $children: [StopPlaceInput]) {
       mutateParentStopPlace(ParentStopPlace: {
           id: $id
-          name: { value: $name, lang: "nor" }
-          description: { value: $description, lang: "nor" }
+          name: { value: $name, lang: "fr" }
+          description: { value: $description, lang: "fr" }
           versionComment: $versionComment
           validBetween: $validBetween
           geometry: {
@@ -49,8 +49,8 @@ export const updateChildOfParentStop = gql`
     mutation updateChildOfParentStop($id: String, $name: String, $description: String, $validBetween: ValidBetweenInput, $versionComment: String, $coordinates: Coordinates!, $children: [StopPlaceInput]) {
         mutateParentStopPlace(ParentStopPlace: {
             id: $id
-            name: { value: $name, lang: "no" }
-            description: { value: $description, lang: "no" }
+            name: { value: $name, lang: "fr" }
+            description: { value: $description, lang: "fr" }
             versionComment: $versionComment
             validBetween: $validBetween
             geometry: {
@@ -70,12 +70,12 @@ export const mutateCreateMultiModalStopPlace = gql`
       createMultiModalStopPlace(input: {
           name: {
               value: $name
-              lang: "no"
+              lang: "fr"
           }
           stopPlaceIds: $stopPlaceIds
           description: {
               value: $description
-              lang: "no"
+              lang: "fr"
           }
           geometry: {
               type: Point
@@ -92,8 +92,8 @@ export const mutateCreateMultiModalStopPlace = gql`
 
 
 export const mutateTerminateStopPlace = gql`
-  mutation mutateTerminateStopPlace($stopPlaceId: String!, $versionComment: String!, $toDate: DateTime!) {
-      terminateStopPlace(stopPlaceId: $stopPlaceId, versionComment: $versionComment, toDate: $toDate) {
+  mutation mutateTerminateStopPlace($stopPlaceId: String!, $versionComment: String!, $toDate: DateTime!, $modificationEnumeration: ModificationEnumerationType) {
+      terminateStopPlace(stopPlaceId: $stopPlaceId, versionComment: $versionComment, toDate: $toDate, modificationEnumeration: $modificationEnumeration) {
           ...VerboseStopPlace
           ...VerboseParentStopPlace
       }
@@ -107,21 +107,24 @@ export const mutateAddToMultiModalStopPlace = gql`
       addToMultiModalStopPlace(input: {
           parentSiteRef: $parentSiteRef, stopPlaceIds: $stopPlaceIds
       }) {
-          id
+          ...VerboseParentStopPlace
       }
-  }
+  },
+  ${Fragments.parentStopPlace.verbose}
 `;
 
 export const mutateStopPlace = gql`
-    mutation mutateStopPlace($id: String, $name: String, $description: String, $coordinates: Coordinates!, $stopPlaceType: StopPlaceType, $quays: [QuayInput], $validBetween: ValidBetweenInput, $accessibilityAssessment: AccessibilityAssessmentInput, $placeEquipments: PlaceEquipmentsInput, $alternativeNames: [AlternativeNameInput], $versionComment: String, $weighting: InterchangeWeightingType, $keyValues: [KeyValuesInput], $submode: SubmodeType, $transportMode: TransportModeType, $tariffZones: [VersionLessEntityRefInput]) {
-        mutateStopPlace(StopPlace: { 
+    mutation mutateStopPlace($id: String, $name: String, $publicCode: String, $privateCode: PrivateCodeInput, $description: String, $coordinates: Coordinates!, $stopPlaceType: StopPlaceType, $quays: [QuayInput], $validBetween: ValidBetweenInput, $accessibilityAssessment: AccessibilityAssessmentInput, $placeEquipments: PlaceEquipmentsInput, $alternativeNames: [AlternativeNameInput], $versionComment: String, $weighting: InterchangeWeightingType, $keyValues: [KeyValuesInput], $submode: SubmodeType, $transportMode: TransportModeType, $tariffZones: [VersionLessEntityRefInput]) {
+        mutateStopPlace(StopPlace: {
             id: $id
             keyValues: $keyValues
             submode: $submode
             transportMode: $transportMode
             weighting: $weighting
-            name: { value: $name, lang: "no" }
-            description: { value: $description, lang: "no" }
+            name: { value: $name, lang: "fr" }
+            publicCode: $publicCode
+            privateCode: $privateCode
+            description: { value: $description, lang: "fr" }
             geometry: {
                 type: Point
                 coordinates: $coordinates

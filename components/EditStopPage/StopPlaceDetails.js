@@ -61,42 +61,50 @@ import MenuItem from 'material-ui/MenuItem';
 import MdSpinner from '../../static/icons/spinner';
 
 class StopPlaceDetails extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            stopTypeOpen: false,
-            weightingOpen: false,
-            name: props.stopPlace.name || '',
-            description: props.stopPlace.description || '',
-            altNamesDialogOpen: false,
-            tariffZoneOpen: false,
-            tagsOpen: false,
-            loading: false,
-            currentStopPlaceName: props.stopPlace.name || ''
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      stopTypeOpen: false,
+      weightingOpen: false,
+      name: props.stopPlace.name || '',
+      publicCode: props.stopPlace.publicCode || '',
+      privateCode: props.stopPlace.privateCode || '',
+      description: props.stopPlace.description || '',
+      altNamesDialogOpen: false,
+      tariffZoneOpen: false,
+      tagsOpen: false,
+      loading: false,
+      currentStopPlaceName: props.stopPlace.name || ''
+    };
 
-        this.updateStopName = debounce(value => {
-            this.setState({loading: true});
-            this.props.dispatch(StopPlaceActions.changeStopName(value));
-        }, 5);
+    this.updateStopName = debounce(value => {
+        this.setState({loading: true});
+        this.props.dispatch(StopPlaceActions.changeStopName(value));
+    }, 5);
 
-        this.updateStopDescription = debounce(value => {
-            this.props.dispatch(StopPlaceActions.changeStopDescription(value));
-        }, 200);
+    this.updateStopPublicCode = debounce(value => {
+      this.props.dispatch(StopPlaceActions.changeStopPublicCode(value));
+    }, 200);
 
+    this.updateStopPrivateCode = debounce(value => {
+      this.props.dispatch(StopPlaceActions.changeStopPrivateCode(value));
+    }, 200);
 
-        const searchStopName = (searchText) => {
-            getStopPlaceName(this.props.client, searchText).then(result => {
-                this.setState({
-                    dataSource: result.data.stopPlaceNameRecommendations,
-                    loading: false
-                });
-            });
+    this.updateStopDescription = debounce(value => {
+      this.props.dispatch(StopPlaceActions.changeStopDescription(value));
+    }, 200);
+      const searchStopName = (searchText) => {
+          getStopPlaceName(this.props.client, searchText).then(result => {
+              this.setState({
+                  dataSource: result.data.stopPlaceNameRecommendations,
+                  loading: false
+              });
+          });
 
-        };
+      };
 
-        this.debouncedSearchStopName = debounce(searchStopName, 1000);
-    }
+      this.debouncedSearchStopName = debounce(searchStopName, 1000);
+  }
 
     handleOpenTags() {
         this.setState({
@@ -111,25 +119,27 @@ class StopPlaceDetails extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            description: nextProps.stopPlace.description || '',
-            name: nextProps.stopPlace.name || ''
-        });
-        if (
-            nextProps.keyValuesDialogOpen &&
-            this.props.keyValuesDialogOpen !== nextProps.keyValuesDialogOpen
-        ) {
-            this.setState({
-                stopTypes: false,
-                wheelChairOpen: false,
-                altNamesDialogOpen: false,
-                weightingOpen: false,
-                tariffZoneOpen: false,
-                tagsOpen: false
-            });
-        }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      name: nextProps.stopPlace.name || '',
+      publicCode: nextProps.stopPlace.publicCode || '',
+      privateCode: nextProps.stopPlace.privateCode || '',
+      description: nextProps.stopPlace.description || ''
+    });
+    if (
+      nextProps.keyValuesDialogOpen &&
+      this.props.keyValuesDialogOpen !== nextProps.keyValuesDialogOpen
+    ) {
+      this.setState({
+        stopTypes: false,
+        wheelChairOpen: false,
+        altNamesDialogOpen: false,
+        weightingOpen: false,
+        tariffZoneOpen: false,
+        tagsOpen: false
+      });
     }
+  }
 
     handleCloseStopPlaceTypePopover() {
         this.setState({
@@ -227,11 +237,29 @@ class StopPlaceDetails extends React.Component {
         this.updateStopName(name);
     }
 
-    handleStopDescriptionChange(event) {
-        const description = event.target.value;
-        this.setState({
-            description: description
-        });
+  handleStopPublicCodeChange(event) {
+    const publicCode = event.target.value;
+    this.setState({
+      publicCode
+    });
+
+    this.updateStopPublicCode(publicCode);
+  }
+
+  handleStopPrivateCodeChange(event) {
+    const privateCode = event.target.value;
+    this.setState({
+      privateCode
+    });
+
+    this.updateStopPrivateCode(privateCode);
+  }
+
+  handleStopDescriptionChange(event) {
+    const description = event.target.value;
+    this.setState({
+      description: description
+    });
 
         this.updateStopDescription(description);
     }
@@ -397,22 +425,24 @@ class StopPlaceDetails extends React.Component {
             display: 'block'
         };
 
-        const {stopPlace, intl, expanded, disabled} = this.props;
-        const {formatMessage, locale} = intl;
+    const { stopPlace, intl, expanded, disabled, isPublicCodePrivateCodeEnabled } = this.props;
+    const { formatMessage, locale } = intl;
 
         const isChildOfParent = stopPlace.isChildOfParent;
 
-        const {
-            name,
-            description,
-            altNamesDialogOpen,
-            weightingOpen,
-            weightingAnchorEl,
-            tariffZoneOpen,
-            loading,
-            dataSource,
-            currentStopPlaceName
-        } = this.state;
+    const {
+      name,
+      publicCode,
+      privateCode,
+      description,
+      altNamesDialogOpen,
+      weightingOpen,
+      weightingAnchorEl,
+      tariffZoneOpen,
+      loading,
+      dataSource,
+      currentStopPlaceName
+    } = this.state;
 
         const wheelchairAccess = getIn(
             stopPlace,
@@ -430,15 +460,16 @@ class StopPlaceDetails extends React.Component {
             stopPlace.alternativeNames && stopPlace.alternativeNames.length
         );
 
-        const stopTypeHint = this.getStopTypeTranslation(
-            locale,
-            stopPlace.stopPlaceType,
-            stopPlace.submode
-        );
-        const weightingStateHint = this.getNameForWeightingState(stopPlace, locale);
-        const expirationText = formatMessage({id: 'stop_has_expired'});
-        const versionLabel = formatMessage({id: 'version'});
-        const keyValuesHint = formatMessage({id: 'key_values_hint'});
+    const stopTypeHint = this.getStopTypeTranslation(
+      locale,
+      stopPlace.stopPlaceType,
+      stopPlace.submode
+    );
+    const weightingStateHint = this.getNameForWeightingState(stopPlace, locale);
+    const expirationText = formatMessage({ id: 'stop_has_expired' });
+    const permanentlyTerminatedText = formatMessage({ id: 'stop_has_been_permanently_terminated' });
+    const versionLabel = formatMessage({ id: 'version' });
+    const keyValuesHint = formatMessage({ id: 'key_values_hint' });
 
         const wheelChairHint =
             accessibilityAssessments.wheelchairAccess.values[locale][
@@ -508,121 +539,121 @@ class StopPlaceDetails extends React.Component {
                 <span style={{fontWeight: 600}}>
                   {versionLabel} {stopPlace.version}
                 </span>
-                            {stopPlace.hasExpired &&
-                            <div style={{display: 'flex', alignItems: 'center', flex: 2}}>
-                                <MdWarning
-                                    color="orange"
-                                    style={{marginTop: -5, marginLeft: 10}}
-                                />
-                                <span style={{color: '#bb271c', marginLeft: 5, fontSize: '0.8em'}}>
-                      {expirationText}
+                {stopPlace.hasExpired &&
+                  <div style={{ display: 'flex', alignItems: 'center', flex: 2 }}>
+                    <MdWarning
+                      color="orange"
+                      style={{ marginTop: -5, marginLeft: 10 }}
+                    />
+                    <span style={{ color: '#bb271c', marginLeft: 5, fontSize: '0.8em' }}>
+                      {stopPlace.permanentlyTerminated ? permanentlyTerminatedText: expirationText}
                     </span>
-                            </div>}
-                            <FlatButton onClick={this.handleOpenTags.bind(this)} style={{marginTop: -8}} label={formatMessage({id: 'tags'})}/>
-                        </div>}
-                        <div style={{padding: 5}}>
-                            <TagTray
-                                tags={stopPlace.tags}
-                                textSize={'0.7em'}
-                                style={{display: 'flex', flexWrap: 'wrap'}}
-                            />
-                        </div>
-                        <div style={{display: 'flex'}}>
-                            <ImportedId
-                                id={stopPlace.importedId}
-                                text={formatMessage({id: 'local_reference'})}
-                            />
-                            <div style={{display: 'flex', marginLeft: 'auto'}}>
-                                <ToolTippable toolTipText={keyValuesHint}>
-                                    <IconButton
-                                        style={{
-                                            borderBottom: disabled ? 'none' : '1px dotted grey'
-                                        }}
-                                        onClick={this.handleOpenKeyValues.bind(this)}
-                                    >
-                                        <MdKey
-                                            color={
-                                                (stopPlace.keyValues || []).length
-                                                    ? primaryDarker
-                                                    : '#000'
-                                            }
-                                        />
-                                    </IconButton>
-                                </ToolTippable>
-                                <ToolTippable toolTipText={stopTypeHint}>
-                                    <IconButton
-                                        style={{
-                                            borderBottom: disabled ? 'none' : '1px dotted grey',
-                                            marginLeft: 5
-                                        }}
-                                        onTouchTap={e => {
-                                            this.handleOpenStopPlaceTypePopover(e);
-                                        }}
-                                    >
-                                        <ModalityIconSvg type={stopPlace.stopPlaceType} submode={stopPlace.submode}/>
-                                    </IconButton>
-                                </ToolTippable>
-                                <Popover
-                                    open={this.state.stopTypeOpen}
-                                    anchorEl={this.state.stopTypeAnchorEl}
-                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                                    onRequestClose={this.handleCloseStopPlaceTypePopover.bind(
-                                        this
-                                    )}
-                                    animation={PopoverAnimationVertical}
-                                    style={{overflowY: 'none'}}
-                                    animated={true}
-                                >
-                                    <ModalitiesMenuItems
-                                        handleSubModeTypeChange={this.handleSubModeTypeChange.bind(this)}
-                                        handleStopTypeChange={this.handleStopTypeChange.bind(this)}
-                                        stopPlaceTypeChosen={stopPlace.stopPlaceType}
-                                        submodeChosen={stopPlace.submode}
-                                        stopTypes={stopTypes[locale]}
-                                    />
-                                </Popover>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {stopPlace.belongsToGroup && (
-                    <BelongsToGroup
-                        formatMessage={formatMessage}
-                        groups={stopPlace.groups}
-                        style={{marginTop: 5}}
+                  </div>}
+                <FlatButton onClick={this.handleOpenTags.bind(this)} style={{marginTop: -8}} label={formatMessage({id: 'tags'})}/>
+              </div>}
+              <div style={{padding: 5}}>
+                <TagTray
+                  tags={stopPlace.tags}
+                  textSize={'0.7em'}
+                  style={{display: 'flex', flexWrap: 'wrap'}}
+                />
+              </div>
+            <div style={{ display: 'flex'}}>
+              <ImportedId
+                id={stopPlace.importedId}
+                text={formatMessage({ id: 'local_reference' })}
+              />
+              <div style={{display: 'flex', marginLeft: 'auto'}}>
+                <ToolTippable toolTipText={keyValuesHint}>
+                  <IconButton
+                    style={{
+                      borderBottom: disabled ? 'none' : '1px dotted grey'
+                    }}
+                    onClick={this.handleOpenKeyValues.bind(this)}
+                  >
+                    <MdKey
+                      color={
+                        (stopPlace.keyValues || []).length
+                          ? primaryDarker
+                          : '#000'
+                      }
                     />
-                )}
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    <AutoComplete
-                        textFieldStyle={{width: 300}}
-                        animated={false}
-                        openOnFocus
-                        hintText={formatMessage({id: 'name'})}
-                        dataSource={
-                            loading ? Loading : menuItems || []
-                        }
-                        filter={(searchText, key) => searchText !== ''}
-                        onUpdateInput={this.handleUpdateStopName.bind(this)}
-                        searchText={this.props.searchText || name}
-                        ref="searchText"
-                        onNewRequest={this.handleStopNameSelected.bind(this)}
-                        listStyle={{width: 'auto'}}
-                        errorText={(name && name.trim().length) ? '' : formatMessage({id: 'name_is_required'})}
-                        style={{marginTop: -10, width: 300}}
-                    />
-                    <div style={{display: 'flex', alignItems: 'center'}}>
-                        <ToolTippable toolTipText={tariffZonesHint}>
-                            <div
-                                onClick={this.handleOpenTZDialog.bind(this)}
-                                style={{
-                                    borderBottom: '1px dotted',
-                                    marginTop: 13,
-                                    paddingBottom: 4,
-                                    marginLeft: 8,
-                                    cursor: 'pointer'
-                                }}
-                            >
+                  </IconButton>
+                </ToolTippable>
+                <ToolTippable toolTipText={stopTypeHint}>
+                  <IconButton
+                    style={{
+                      borderBottom: disabled ? 'none' : '1px dotted grey',
+                      marginLeft: 5
+                    }}
+                    onClick={e => {
+                      this.handleOpenStopPlaceTypePopover(e);
+                    }}
+                  >
+                    <ModalityIconSvg type={stopPlace.stopPlaceType} submode={stopPlace.submode}/>
+                  </IconButton>
+                </ToolTippable>
+                <Popover
+                  open={this.state.stopTypeOpen}
+                  anchorEl={this.state.stopTypeAnchorEl}
+                  anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                  targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+                  onRequestClose={this.handleCloseStopPlaceTypePopover.bind(
+                    this
+                  )}
+                  animation={PopoverAnimationVertical}
+                  style={{ overflowY: 'none' }}
+                  animated={true}
+                >
+                  <ModalitiesMenuItems
+                    handleSubModeTypeChange={this.handleSubModeTypeChange.bind(this)}
+                    handleStopTypeChange={this.handleStopTypeChange.bind(this)}
+                    stopPlaceTypeChosen={stopPlace.stopPlaceType}
+                    submodeChosen={stopPlace.submode}
+                    stopTypes={stopTypes[locale]}
+                  />
+                </Popover>
+              </div>
+            </div>
+          </div>
+        </div>
+        {stopPlace.belongsToGroup && (
+          <BelongsToGroup
+            formatMessage={formatMessage}
+            groups={stopPlace.groups}
+            style={{marginTop: 5}}
+            />
+        )}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <AutoComplete
+                textFieldStyle={{width: 300}}
+                animated={false}
+                openOnFocus
+                hintText={formatMessage({id: 'name'})}
+                dataSource={
+                    loading ? Loading : menuItems || []
+                }
+                filter={(searchText, key) => searchText !== ''}
+                onUpdateInput={this.handleUpdateStopName.bind(this)}
+                searchText={this.props.searchText || name}
+                ref="searchText"
+                onNewRequest={this.handleStopNameSelected.bind(this)}
+                listStyle={{width: 'auto'}}
+                errorText={(name && name.trim().length) ? '' : formatMessage({id: 'name_is_required'})}
+                style={{marginTop: -10, width: 300}}
+            />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ToolTippable toolTipText={tariffZonesHint}>
+              <div
+                onClick={this.handleOpenTZDialog.bind(this)}
+                style={{
+                  borderBottom: '1px dotted',
+                  marginTop: 13,
+                  paddingBottom: 4,
+                  marginLeft: 8,
+                  cursor: 'pointer'
+                }}
+              >
                 <span
                     style={{
                         fontSize: 18,
@@ -633,197 +664,217 @@ class StopPlaceDetails extends React.Component {
                 >
                   Tz
                 </span>
-                            </div>
-                        </ToolTippable>
-                        <div
-                            style={{
-                                borderBottom: '1px dotted',
-                                marginLeft: 19,
-                                marginTop: -3
-                            }}
-                        >
-                            <ToolTippable toolTipText={altNamesHint}>
-                                <IconButton onClick={this.handleOpenAltNames.bind(this)}>
-                                    <MdLanguage
-                                        color={hasAltNames ? primaryDarker : '#000'}
-                                    />
-                                </IconButton>
-                            </ToolTippable>
-                        </div>
-                    </div>
-                </div>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    <TextField
-                        hintText={formatMessage({id: 'description'})}
-                        floatingLabelText={formatMessage({id: 'description'})}
-                        style={{width: 340, marginTop: -10}}
-                        disabled={disabled}
-                        value={description}
-                        onChange={this.handleStopDescriptionChange.bind(this)}
-                    />
-                    <ToolTippable
-                        toolTipText={weightingStateHint}
-                        style={{marginLeft: 6, borderBottom: '1px dotted', marginTop: -3}}
-                    >
-                        <IconButton
-                            onTouchTap={e => {
-                                this.handleOpenWeightPopover(e);
-                            }}
-                        >
-                            <MdTransfer color={this.getWeightingStateColor(stopPlace)}/>
-                        </IconButton>
-                        <WeightingPopover
-                            open={!disabled && weightingOpen}
-                            anchorEl={this.state.weightingAnchorEl}
-                            handleChange={v => this.handleWeightChange(v)}
-                            locale={locale}
-                            handleClose={() => {
-                                this.setState({weightingOpen: false});
-                            }}
-                        />
-                    </ToolTippable>
-                </div>
-                {expanded
-                    ? null
-                    : <div
-                        style={{
-                            marginTop: 10,
-                            marginBottom: 10,
-                            height: 15,
-                            display: 'flex',
-                            justifyContent: 'space-around',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <ToolTippable toolTipText={wheelChairHint}>
-                            <WheelChairPopover
-                                intl={intl}
-                                handleChange={this.handleHandleWheelChair.bind(this)}
-                                wheelchairAccess={wheelchairAccess}
-                            />
-                        </ToolTippable>
-                        <ToolTippable toolTipText={ticketMachineHint}>
-                            <Checkbox
-                                checkedIcon={<TicketMachine/>}
-                                uncheckedIcon={
-                                    <TicketMachine
-                                        style={{fill: '#8c8c8c', opacity: '0.8'}}
-                                    />
-                                }
-                                style={{width: 'auto'}}
-                                checked={ticketMachine}
-                                onCheck={(e, v) => {
-                                    this.handleTicketMachineChange(v);
-                                }}
-                            />
-                        </ToolTippable>
-                        <ToolTippable toolTipText={busShelterHint}>
-                            <Checkbox
-                                checkedIcon={<BusShelter/>}
-                                uncheckedIcon={
-                                    <BusShelter style={{fill: '#8c8c8c', opacity: '0.8'}}/>
-                                }
-                                style={{width: 'auto'}}
-                                checked={busShelter}
-                                onCheck={(e, v) => {
-                                    this.handleBusShelterChange(v);
-                                }}
-                            />
-                        </ToolTippable>
-                        <ToolTippable toolTipText={WCHint}>
-                            <Checkbox
-                                checkedIcon={<MdWC/>}
-                                uncheckedIcon={
-                                    <MdWC style={{fill: '#8c8c8c', opacity: '0.8'}}/>
-                                }
-                                style={{width: 'auto'}}
-                                checked={WC}
-                                onCheck={(e, v) => {
-                                    this.handleWCChange(v);
-                                }}
-                            />
-                        </ToolTippable>
-                        <ToolTippable toolTipText={waitingRoomHint}>
-                            <Checkbox
-                                checkedIcon={<WaitingRoom/>}
-                                uncheckedIcon={
-                                    <WaitingRoom style={{fill: '#8c8c8c', opacity: '0.8'}}/>
-                                }
-                                style={{width: 'auto'}}
-                                checked={waitingRoom}
-                                onCheck={(e, v) => {
-                                    this.handleWaitingRoomChange(v);
-                                }}
-                            />
-                        </ToolTippable>
-                        <ToolTippable toolTipText={transportSignHint}>
-                            <Checkbox
-                                checkedIcon={
-                                    <Sign512
-                                        style={{
-                                            transform:
-                                                'scale(1) translateY(-12px) translateX(-12px)'
-                                        }}
-                                    />
-                                }
-                                uncheckedIcon={
-                                    <Sign512
-                                        style={{
-                                            transform:
-                                                'scale(1) translateY(-12px) translateX(-12px)',
-                                            fill: '#8c8c8c',
-                                            opacity: '0.8'
-                                        }}
-                                    />
-                                }
-                                style={{width: 'auto'}}
-                                checked={sign512}
-                                onCheck={(e, v) => {
-                                    this.handleChangeSign512(v);
-                                }}
-                            />
-                        </ToolTippable>
-                    </div>}
-                <AltNamesDialog
-                    open={altNamesDialogOpen}
-                    altNames={stopPlace.alternativeNames}
-                    intl={intl}
-                    disabled={disabled}
-                    handleClose={() => {
-                        this.setState({altNamesDialogOpen: false});
-                    }}
-                />
-                <TagsDialog
-                    open={this.state.tagsOpen}
-                    tags={stopPlace.tags}
-                    intl={intl}
-                    disabled={disabled}
-                    handleClose={() => {
-                        this.setState({tagsOpen: false});
-                    }}
-                />
-                <TariffZonesDialog
-                    open={tariffZoneOpen}
-                    tariffZones={stopPlace.tariffZones}
-                    intl={intl}
-                    disabled={disabled}
-                    handleClose={() => {
-                        this.setState({tariffZoneOpen: false});
-                    }}
-                />
-                <KeyValuesDialog
-                    intl={intl}
-                    disabled={disabled}
-                />
+              </div>
+            </ToolTippable>
+            <div
+              style={{
+                borderBottom: '1px dotted',
+                marginLeft: 19,
+                marginTop: -3
+              }}
+            >
+              <ToolTippable toolTipText={altNamesHint}>
+                <IconButton onClick={this.handleOpenAltNames.bind(this)}>
+                  <MdLanguage
+                    color={hasAltNames ? primaryDarker : '#000'}
+                  />
+                </IconButton>
+              </ToolTippable>
             </div>
-        );
-    }
+          </div>
+        </div>
+                {isPublicCodePrivateCodeEnabled && (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <TextField
+                            hintText={formatMessage({ id: 'publicCode' })}
+                            floatingLabelText={formatMessage({ id: 'publicCode' })}
+                            style={{ width: 170, marginTop: -10, marginRight: 25 }}
+                            disabled={disabled}
+                            value={publicCode}
+                            onChange={this.handleStopPublicCodeChange.bind(this)} />
+                        <TextField
+                            hintText={formatMessage({ id: 'privateCode' })}
+                            floatingLabelText={formatMessage({ id: 'privateCode' })}
+                            style={{ width: 170, marginTop: -10, marginRight: 25 }}
+                            disabled={disabled}
+                            value={privateCode}
+                            onChange={this.handleStopPrivateCodeChange.bind(this)} />
+                    </div>
+                )}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <TextField
+            hintText={formatMessage({ id: 'description' })}
+            floatingLabelText={formatMessage({ id: 'description' })}
+            style={{ width: 340, marginTop: -10 }}
+            disabled={disabled}
+            value={description}
+            onChange={this.handleStopDescriptionChange.bind(this)}
+          />
+          <ToolTippable
+            toolTipText={weightingStateHint}
+            style={{ marginLeft: 6, borderBottom: '1px dotted', marginTop: -3 }}
+          >
+            <IconButton
+              onClick={e => {
+                this.handleOpenWeightPopover(e);
+              }}
+            >
+              <MdTransfer color={this.getWeightingStateColor(stopPlace)} />
+            </IconButton>
+            <WeightingPopover
+              open={!disabled && weightingOpen}
+              anchorEl={this.state.weightingAnchorEl}
+              handleChange={v => this.handleWeightChange(v)}
+              locale={locale}
+              handleClose={() => {
+                this.setState({ weightingOpen: false });
+              }}
+            />
+          </ToolTippable>
+        </div>
+        {expanded
+          ? null
+          : <div
+              style={{
+                marginTop: 10,
+                marginBottom: 10,
+                height: 15,
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'center'
+              }}
+            >
+              <ToolTippable toolTipText={wheelChairHint}>
+                <WheelChairPopover
+                  intl={intl}
+                  handleChange={this.handleHandleWheelChair.bind(this)}
+                  wheelchairAccess={wheelchairAccess}
+                />
+              </ToolTippable>
+              <ToolTippable toolTipText={ticketMachineHint}>
+                <Checkbox
+                  checkedIcon={<TicketMachine />}
+                  uncheckedIcon={
+                    <TicketMachine
+                      style={{ fill: '#8c8c8c', opacity: '0.8' }}
+                    />
+                  }
+                  style={{ width: 'auto' }}
+                  checked={ticketMachine}
+                  onCheck={(e, v) => {
+                    this.handleTicketMachineChange(v);
+                  }}
+                />
+              </ToolTippable>
+              <ToolTippable toolTipText={busShelterHint}>
+                <Checkbox
+                  checkedIcon={<BusShelter />}
+                  uncheckedIcon={
+                    <BusShelter style={{ fill: '#8c8c8c', opacity: '0.8' }} />
+                  }
+                  style={{ width: 'auto' }}
+                  checked={busShelter}
+                  onCheck={(e, v) => {
+                    this.handleBusShelterChange(v);
+                  }}
+                />
+              </ToolTippable>
+              <ToolTippable toolTipText={WCHint}>
+                <Checkbox
+                  checkedIcon={<MdWC />}
+                  uncheckedIcon={
+                    <MdWC style={{ fill: '#8c8c8c', opacity: '0.8' }} />
+                  }
+                  style={{ width: 'auto' }}
+                  checked={WC}
+                  onCheck={(e, v) => {
+                    this.handleWCChange(v);
+                  }}
+                />
+              </ToolTippable>
+              <ToolTippable toolTipText={waitingRoomHint}>
+                <Checkbox
+                  checkedIcon={<WaitingRoom />}
+                  uncheckedIcon={
+                    <WaitingRoom style={{ fill: '#8c8c8c', opacity: '0.8' }} />
+                  }
+                  style={{ width: 'auto' }}
+                  checked={waitingRoom}
+                  onCheck={(e, v) => {
+                    this.handleWaitingRoomChange(v);
+                  }}
+                />
+              </ToolTippable>
+              <ToolTippable toolTipText={transportSignHint}>
+                <Checkbox
+                  checkedIcon={
+                    <Sign512
+                      style={{
+                        transform:
+                          'scale(1) translateY(-12px) translateX(-12px)'
+                      }}
+                    />
+                  }
+                  uncheckedIcon={
+                    <Sign512
+                      style={{
+                        transform:
+                          'scale(1) translateY(-12px) translateX(-12px)',
+                        fill: '#8c8c8c',
+                        opacity: '0.8'
+                      }}
+                    />
+                  }
+                  style={{ width: 'auto' }}
+                  checked={sign512}
+                  onCheck={(e, v) => {
+                    this.handleChangeSign512(v);
+                  }}
+                />
+              </ToolTippable>
+            </div>}
+        <AltNamesDialog
+          open={altNamesDialogOpen}
+          altNames={stopPlace.alternativeNames}
+          intl={intl}
+          disabled={disabled}
+          handleClose={() => {
+            this.setState({ altNamesDialogOpen: false });
+          }}
+        />
+        <TagsDialog
+          open={this.state.tagsOpen}
+          tags={stopPlace.tags}
+          intl={intl}
+          disabled={disabled}
+          handleClose={() => {
+            this.setState({ tagsOpen: false });
+          }}
+        />
+        <TariffZonesDialog
+          open={tariffZoneOpen}
+          tariffZones={stopPlace.tariffZones}
+          intl={intl}
+          disabled={disabled}
+          handleClose={() => {
+            this.setState({ tariffZoneOpen: false });
+          }}
+        />
+        <KeyValuesDialog
+          intl={intl}
+          disabled={disabled}
+        />
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = state => ({
-    stopPlace: state.stopPlace.current,
-    keyValuesDialogOpen: state.user.keyValuesDialogOpen,
-    client: state.user.client
+  stopPlace: state.stopPlace.current,
+  isPublicCodePrivateCodeEnabled: state.stopPlace.enablePublicCodePrivateCodeOnStopPlaces,
+  keyValuesDialogOpen: state.user.keyValuesDialogOpen,
+  client: state.user.client
+
 });
 
 export default connect(mapStateToProps)(StopPlaceDetails);

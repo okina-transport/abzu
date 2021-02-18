@@ -12,21 +12,83 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import { getIn } from '../utils/';
+
+import { getIn } from '../utils/';
 import { hasExpired } from '../modelUtils/validBetween';
+import PARKING_TYPE from './parkingType';
+import PARKING_VEHICLE_TYPE from './parkingVehicleType';
 
 class Parking {
   constructor(parking) {
     this.parking = parking;
   }
 
-  toClient() {
+  findNumberOfSpaces(userType, lookupKey) {
+    return this.parking.parkingProperties.length > 0
+      ? this.parking.parkingProperties
+          .slice()
+          .shift()
+          .spaces
+          .find(v => v.parkingUserType === userType)[lookupKey]
+      : 0;
+  }
 
+  get numberOfSpaces() {
+    if (this.parking.parkingProperties.length) {
+      return this.findNumberOfSpaces('allUsers', 'numberOfSpaces');
+    } else {
+      return this.parking.totalCapacity;
+    }
+  }
+
+  get numberOfSpacesWithRechargePoint() {
+    return this.findNumberOfSpaces('allUsers', 'numberOfSpacesWithRechargePoint');
+  }
+
+  get numberOfCarsharingSpaces() {
+    return this.findNumberOfSpaces('allUsers', 'numberOfCarsharingSpaces');
+  }
+
+  get numberOfSpacesForRegisteredDisabledUserType() {
+    return this.findNumberOfSpaces('registeredDisabled', 'numberOfSpaces');
+  }
+
+  get parkingType() {
+    if (this.parking.parkingType) {
+      return this.parking.parkingType;
+    }
+
+    if (this.parking.parkingVehicleTypes.includes(PARKING_VEHICLE_TYPE.CAR)) {
+      return PARKING_TYPE.PARK_AND_RIDE;
+    }
+
+    if (this.parking.parkingVehicleTypes.includes(PARKING_VEHICLE_TYPE.PEDAL_CYCLE)) {
+      return PARKING_TYPE.BIKE_PARKING;
+    }
+
+    return PARKING_TYPE.UNKNOWN;
+  }
+
+  get isParkAndRide() {
+    return this.parkingType === PARKING_TYPE.PARK_AND_RIDE;
+  }
+
+  toClient() {
     const { parking } = this;
 
     let clientParking = {
       id: parking.id,
       name: getIn(parking, ['name', 'value'], ''),
+      parkingType: this.parkingType,
+      parkingPaymentProcess: parking.parkingPaymentProcess,
+      rechargingAvailable: parking.rechargingAvailable,
+      carpoolingAvailable: parking.carpoolingAvailable,
+      carsharingAvailable: parking.carsharingAvailable,
+      numberOfSpaces: this.isParkAndRide ? this.numberOfSpaces : null,
+      numberOfSpacesWithRechargePoint: this.isParkAndRide ? this.numberOfSpacesWithRechargePoint : null,
+      numberOfCarsharingSpaces: this.isParkAndRide ? this.numberOfCarsharingSpaces : null,
+      numberOfSpacesForRegisteredDisabledUserType: this.isParkAndRide ? this.numberOfSpacesForRegisteredDisabledUserType : null,
+      parkingLayout: this.isParkAndRide ? this.parking.parkingLayout : null,
       totalCapacity: parking.totalCapacity,
       parkingVehicleTypes: parking.parkingVehicleTypes,
       hasExpired: hasExpired(parking.validBetween),

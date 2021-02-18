@@ -232,7 +232,7 @@ class EditStopGeneral extends React.Component {
       });
   }
 
-  handleTerminateStop(shouldHardDelete, comment, dateTime) {
+  handleTerminateStop(shouldHardDelete, shouldTerminatePermanently, comment, dateTime) {
     const { client, stopPlace, dispatch } = this.props;
     this.setState({ isLoading: true });
 
@@ -250,7 +250,7 @@ class EditStopGeneral extends React.Component {
           dispatch(UserActions.hideDeleteStopDialog(true));
         });
     } else {
-      terminateStop(client, stopPlace.id, comment, dateTime)
+      terminateStop(client, stopPlace.id, shouldTerminatePermanently, comment, dateTime)
         .then(result => {
           this.setState({ isLoading: false });
           this.handleSaveSuccess(stopPlace.id);
@@ -503,8 +503,8 @@ class EditStopGeneral extends React.Component {
       quayItemName: this.getQuayItemName(locale, stopPlace),
       capacity: formatMessage({ id: 'total_capacity' }),
       parking: formatMessage({ id: 'parking_general' }),
-      parkAndRide: formatMessage({ id: 'parking' }),
-      bikeParking: formatMessage({ id: 'bike_parking' }),
+      parkAndRide: formatMessage({ id: 'parking_item_title_parkAndRide' }),
+      bikeParking: formatMessage({ id: 'parking_item_title_bikeParking' }),
       unknown: formatMessage({ id: 'uknown_parking_type' }),
       elements: formatMessage({ id: 'elements' }),
       versions: formatMessage({ id: 'versions' }),
@@ -796,7 +796,7 @@ class EditStopGeneral extends React.Component {
             justifyContent: 'space-around'
           }}
         >
-          {!stopPlace.isChildOfParent &&
+          {!stopPlace.permanentlyTerminated && !stopPlace.isChildOfParent &&
             isCurrentVersionMax && (
               <FlatButton
                 disabled={disableTerminate}
@@ -817,7 +817,7 @@ class EditStopGeneral extends React.Component {
             icon={<MdUndo style={{ height: '1.3em', width: '1.3em' }} />}
             disabled={!stopHasBeenModified}
             label={formatMessage({ id: 'undo_changes' })}
-            style={{ margin: '8 5', zIndex: 999 }}
+            style={{ margin: '8 5', zIndex: 999, minWidth: '120px' }}
             labelStyle={{ fontSize: '0.7em' }}
             onClick={() => {
               this.setState({ confirmUndoOpen: true });

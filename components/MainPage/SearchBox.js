@@ -314,9 +314,9 @@ class SearchBox extends React.Component {
     const { dataSource, topoiChips, stopTypeFilter } = nextProps;
     const { formatMessage } = nextProps.intl;
     let menuItems = [];
-
+console.log({ dataSource });
     if (dataSource && dataSource.length) {
-      menuItems = dataSource.map(element =>
+      menuItems = dataSource.filter(v => !v.permanentlyTerminated).map(element =>
         createSearchMenuItem(element, formatMessage)
       );
     } else {
@@ -478,7 +478,8 @@ class SearchBox extends React.Component {
       .filter(
         place =>
           place.topographicPlaceType === 'county' ||
-          place.topographicPlaceType === 'municipality'
+          place.topographicPlaceType === 'municipality' ||
+          place.topographicPlaceType === 'country'
       )
       .filter(
         place => topoiChips.map(chip => chip.value).indexOf(place.id) == -1

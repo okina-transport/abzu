@@ -228,6 +228,26 @@ const stopPlaceReducer = (state = {}, action) => {
         stopHasBeenModified: true,
       };
 
+    case types.CHANGED_STOP_PUBLIC_CODE:
+      return {
+        ...state,
+        current: {
+          ...state.current,
+          publicCode: action.payLoad,
+        },
+        stopHasBeenModified: true,
+      }
+
+    case types.CHANGED_STOP_PRIVATE_CODE:
+        return {
+          ...state,
+          current: {
+            ...state.current,
+            privateCode: action.payLoad,
+          },
+          stopHasBeenModified: true,
+        }
+
     case types.CHANGED_STOP_DESCRIPTION:
       return {
         ...state,
@@ -409,6 +429,9 @@ const stopPlaceReducer = (state = {}, action) => {
         ),
       });
 
+    case types.TOGGLED_ENABLE_PUBLIC_CODE_PRIVATE_CODE_ON_STOP_PLACES:
+      return Object.assign({}, state, { enablePublicCodePrivateCodeOnStopPlaces: action.payLoad });
+
     case types.TOGGLED_IS_MULTIPOLYLINES_ENABLED:
       return Object.assign({}, state, { enablePolylines: action.payLoad });
 
@@ -516,6 +539,60 @@ const stopPlaceReducer = (state = {}, action) => {
       return Object.assign({}, state, {
         current: formatHelpers.changeParkingName(state.current, action.payLoad),
         stopHasBeenModified: true,
+      });
+
+    case types.CHANGED_PARKING_LAYOUT:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingLayout(state.current, action.payLoad),
+        stopHasBeenModified: true,
+      });
+
+    case types.CHANGED_PARKING_PAYMENT_PROCESS:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingPaymentProcess(state.current, action.payLoad),
+        stopHasBeenModified: true,
+      });
+
+    case types.CHANGED_PARKING_RECHARGING_AVAILABLE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingRechargingAvailable(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
+    case types.CHANGED_PARKING_CARPOOLING_AVAILABLE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingCarpoolingAvailable(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
+    case types.CHANGED_PARKING_CARSHARING_AVAILABLE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingCarsharingAvailable(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
+    case types.CHANGED_PARKING_NUMBER_OF_SPACES:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingNumberOfSpaces(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
+    case types.CHANGED_PARKING_NUMBER_OF_SPACES_WITH_RECHARGE_POINT:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingNumberOfSpacesWithRechargePoint(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
+    case types.CHANGED_PARKING_NUMBER_OF_CARSHARING_SPACES:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingNumberOfCarsharingSpaces(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
+    case types.CHANGED_PARKING_NUMBER_OF_SPACES_FOR_REGISTERED_DISABLED_USER_TYPE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingNumberOfSpacesForRegisteredDisabledUserType(state.current, action.payLoad),
+        stopHasBeenModified: true
       });
 
     case types.CHANGED_PARKING_TOTAL_CAPACITY:

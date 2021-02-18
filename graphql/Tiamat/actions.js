@@ -170,13 +170,14 @@ export const deleteStopPlace = (client, stopPlaceId) =>
         fetchPolicy: 'network-only'
     });
 
-export const terminateStop = (client, stopPlaceId, versionComment, toDate) =>
+export const terminateStop = (client, stopPlaceId, shouldTerminatePermanently, versionComment, toDate) =>
     client.mutate({
         mutation: mutateTerminateStopPlace,
         variables: {
             stopPlaceId,
             versionComment,
-            toDate
+            toDate,
+      modificationEnumeration: shouldTerminatePermanently ? 'delete' : null
         }
     })
 
@@ -337,6 +338,9 @@ export const findEntitiesWithFilters = (client, query, stopPlaceType, chips, sho
   const countyReference = chips
     .filter(topos => topos.type === 'county')
     .map(topos => topos.value);
+  const countryReference = chips
+        .filter(topos => topos.type === 'country')
+        .map(topos => topos.value);
 
   return client.query({
     query: findStop,
@@ -346,6 +350,7 @@ export const findEntitiesWithFilters = (client, query, stopPlaceType, chips, sho
       stopPlaceType,
       municipalityReference: municipalityReference ,
       countyReference: countyReference,
+      countryReference: countryReference,
       pointInTime: showFutureAndExpired ? null : new Date().toISOString(),
       versionValidity: showFutureAndExpired ? "MAX_VERSION" : null,
       code: orgCode

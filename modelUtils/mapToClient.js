@@ -31,6 +31,8 @@ import PathLink from '../models/PathLink';
 import Parking from '../models/Parking';
 import ChildOfParentStopPlace from '../models/ChildOfParentStopPlace';
 import { Entities } from '../models/Entities';
+import PARKING_TYPE from '../models/parkingType';
+import PARKING_VEHICLE_TYPE from '../models/parkingVehicleType';
 
 const helpers = {};
 
@@ -574,20 +576,22 @@ helpers.updateCurrentWithNewElement = (current, payLoad) => {
     case 'pathJunction':
       copy.pathJunctions = copy.pathJunctions.concat(newElement);
       break;
-    case 'parkAndRide':
+    case PARKING_TYPE.PARK_AND_RIDE:
       copy.parking = copy.parking.concat({
         ...newElement,
         totalCapacity: null,
-        parkingVehicleTypes: ['car'],
+        parkingType: type,
+        parkingVehicleTypes: [PARKING_VEHICLE_TYPE.CAR],
         hasExpired: false,
         validBetween: null
       });
       break;
-    case 'bikeParking':
+    case PARKING_TYPE.BIKE_PARKING:
       copy.parking = copy.parking.concat({
         ...newElement,
         totalCapacity: null,
-        parkingVehicleTypes: ['pedalCycle'],
+        parkingType: type,
+        parkingVehicleTypes: [PARKING_VEHICLE_TYPE.PEDAL_CYCLE],
         hasExpired: false,
         validBetween: null
       });
@@ -818,6 +822,69 @@ helpers.changeParkingName = (original, payLoad) => {
   copy.parking[index].name = name;
   return copy;
 };
+
+helpers.changeParkingLayout = (original, payLoad) => {
+  const { index, parkingLayout } = payLoad;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].parkingLayout = parkingLayout;
+  return copy;
+}
+
+helpers.changeParkingPaymentProcess = (original, payLoad) => {
+  const { index, parkingPaymentProcess } = payLoad;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].parkingPaymentProcess = parkingPaymentProcess;
+  return copy;
+}
+
+helpers.changeParkingRechargingAvailable = (original, payload) => {
+  const { index, rechargingAvailable } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].rechargingAvailable = rechargingAvailable;
+  return copy;
+}
+
+helpers.changeParkingCarpoolingAvailable = (original, payload) => {
+  const { index, carpoolingAvailable } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].carpoolingAvailable = carpoolingAvailable;
+  return copy;
+}
+
+helpers.changeParkingCarsharingAvailable = (original, payload) => {
+  const { index, carsharingAvailable } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].carsharingAvailable = carsharingAvailable;
+  return copy;
+}
+
+helpers.changeParkingNumberOfSpaces = (original, payload) => {
+  const { index, numberOfSpaces } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].numberOfSpaces = numberOfSpaces;
+  return copy;
+}
+
+helpers.changeParkingNumberOfSpacesWithRechargePoint = (original, payload) => {
+  const { index, numberOfSpacesWithRechargePoint } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].numberOfSpacesWithRechargePoint = numberOfSpacesWithRechargePoint;
+  return copy;
+}
+
+helpers.changeParkingNumberOfCarsharingSpaces = (original, payload) => {
+  const { index, numberOfCarsharingSpaces } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].numberOfCarsharingSpaces = numberOfCarsharingSpaces;
+  return copy;
+}
+
+helpers.changeParkingNumberOfSpacesForRegisteredDisabledUserType = (original, payload) => {
+  const { index, numberOfSpacesForRegisteredDisabledUserType } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.parking[index].numberOfSpacesForRegisteredDisabledUserType = numberOfSpacesForRegisteredDisabledUserType;
+  return copy;
+}
 
 helpers.changeParkingTotalCapacity = (original, payLoad) => {
   const { index, totalCapacity } = payLoad;
