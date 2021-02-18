@@ -4,7 +4,8 @@
   "description": "Registre national d'arrêt",
   "main": "index.js",
   "scripts": {
-    "prebuild": "npm run fetch-schema",
+    "dev": "NODE_ENV=development BABEL_ENV=development TIAMAT_ENV=development ENDPOINTBASE=/ TIAMAT_BASE_URL=http://0.0.0.0:8080/services/stop_places/graphql AUTH_SERVER_URL=https://mobi-iti-lro.dev.okina.fr/auth node server.js",
+    "prebuild": "TIAMAT_BASE_URL=http://0.0.0.0:8080/services/stop_places/graphql npm run fetch-schema",
     "build": "GENERATE_SOURCEMAPS=true BABEL_ENV=production NODE_ENV=production webpack -p --config ./webpack.prod.config.js",
     "prod": "ENDPOINTBASE=/arrets/ NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
     "test": "jest",

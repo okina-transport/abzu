@@ -39,7 +39,7 @@ module.exports = new Promise(function (resolve, reject) {
     },
     tiamatBaseUrl: {
       doc: 'Base URL for for tiamat graphql endpoint',
-      default: 'https://api.mobilites.agglo-larochelle.fr/api/stop_places/1.0/graphql',
+      default: 'http://tiamat:8585/services/stop_places/graphql',
       env: 'TIAMAT_BASE_URL'
     },
     OTPUrl: {
