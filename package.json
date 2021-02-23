@@ -10,7 +10,7 @@
     "prod": "ENDPOINTBASE=/arrets/ NODE_ENV=production BABEL_ENV=production TIAMAT_ENV=production node server.js",
     "test": "jest",
     "stats": "webpack --config ./webpack.prod.config.js --json > stats.json",
-    "fetch-schema": "TIAMAT_BASE_URL=http ./fetchSchema.js"
+    "fetch-schema": "./fetchSchema.js"
   },
   "author": "Sean Erik Scully",
   "license": "EUPL-1.2 with modifications",
