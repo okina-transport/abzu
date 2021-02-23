@@ -1,1 +1,7 @@
-{"realm":"Mobi-iti","tokens-not-before":1490857383,"public-client":true,"auth-server-url":"https://mobi-iti-lro.dev.okina.fr/auth","resource":"neti-frontend"}
+{
+  "realm": "Mobi-iti",
+  "tokens-not-before": 1490857383,
+  "public-client": true,
+  "auth-server-url": "https://mobi-iti-lro.dev.okina.fr/auth",
+  "resource": "neti-frontend"
+}
