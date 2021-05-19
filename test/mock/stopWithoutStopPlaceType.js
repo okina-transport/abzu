@@ -270,6 +270,7 @@ const mockBusStop = {
             escalatorFreeAccess: 'UNKNOWN',
             liftFreeAccess: 'UNKNOWN',
             audibleSignalsAvailable: 'UNKNOWN',
+            visualSignsAvailable: 'UNKNOWN',
             __typename: 'AccessibilityLimitations'
           },
           __typename: 'AccessibilityAssessment'

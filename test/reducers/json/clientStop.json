@@ -24,7 +24,8 @@
       "stepFreeAccess": "UNKNOWN",
       "escalatorFreeAccess": "UNKNOWN",
       "liftFreeAccess": "UNKNOWN",
-      "audibleSignalsAvailable": "UNKNOWN"
+      "audibleSignalsAvailable": "UNKNOWN",
+      "visualSignsAvailable": "UNKNOWN"
     }
   },
   "quays": [

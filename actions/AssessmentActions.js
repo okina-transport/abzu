@@ -19,6 +19,9 @@ import { createThunk } from './';
 
 var AssessmentActions = {};
 
+/////////////////////
+// StopPlace actions
+/////////////////////
 AssessmentActions.setStopWheelchairAccess = value => dispatch => {
   dispatch(
     createThunk(types.CHANGED_STOP_ACCESSIBLITY_ASSESSMENT, {
@@ -37,6 +40,46 @@ AssessmentActions.setStopStepFreeAccess = value => dispatch => {
   );
 };
 
+AssessmentActions.setStopEscalatorFreeAccess = value => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_STOP_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            limitationType: limitations.escalatorFreeAccess,
+        }),
+    );
+};
+
+AssessmentActions.setStopLiftFreeAccess = value => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_STOP_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            limitationType: limitations.liftFreeAccess,
+        }),
+    );
+};
+
+AssessmentActions.setStopAudibleSignalsAvailable = value => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_STOP_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            limitationType: limitations.audibleSignalsAvailable,
+        }),
+    );
+};
+
+AssessmentActions.setStopVisualSignsAvailable = value => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_STOP_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            limitationType: limitations.visualSignsAvailable,
+        }),
+    );
+};
+
+
+/////////////////////
+// Quay actions
+/////////////////////
 AssessmentActions.setQuayWheelchairAccess = (value, index) => dispatch => {
   dispatch(
     createThunk(types.CHANGED_QUAY_ACCESSIBLITY_ASSESSMENT, {
@@ -55,6 +98,46 @@ AssessmentActions.setQuayStepFreeAccess = (value, index) => dispatch => {
       limitationType: limitations.stepFreeAccess,
     }),
   );
+};
+
+AssessmentActions.setQuayEscalatorFreeAccess = (value, index) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_QUAY_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            index: index,
+            limitationType: limitations.escalatorFreeAccess,
+        }),
+    );
+};
+
+AssessmentActions.setQuayLiftFreeAccess = (value, index) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_QUAY_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            index: index,
+            limitationType: limitations.liftFreeAccess,
+        }),
+    );
+};
+
+AssessmentActions.setQuayAudibleSignalsAvailable = (value, index) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_QUAY_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            index: index,
+            limitationType: limitations.audibleSignalsAvailable,
+        }),
+    );
+};
+
+AssessmentActions.setQuayVisualSignsAvailable = (value, index) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_QUAY_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            index: index,
+            limitationType: limitations.visualSignsAvailable,
+        }),
+    );
 };
 
 export default AssessmentActions;

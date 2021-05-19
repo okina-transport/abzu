@@ -47,6 +47,10 @@ import { getPrimaryDarkerColor } from '../../config/themeConfig';
 import Code from './Code';
 import ItemHeader from './ItemHeader';
 import Item from './Item';
+import EscalatorFreePopover from "./EscalatorFreePopover";
+import LiftFreePopover from "./LiftFreePopover";
+import AudibleSignalsAvailablePopover from "./AudibleSignalsAvailablePopover";
+import VisualSignsAvailablePopover from "./VisualSignsAvailablePopover";
 
 
 class QuayItem extends React.Component {
@@ -106,6 +110,26 @@ class QuayItem extends React.Component {
     dispatch(AssessmentActions.setQuayStepFreeAccess(value, index));
   }
 
+  handleEscalatorFreeChange(value) {
+    const { index, dispatch } = this.props;
+    dispatch(AssessmentActions.setQuayEscalatorFreeAccess(value, index));
+  }
+
+  handleLiftFreeChange(value) {
+    const { index, dispatch } = this.props;
+    dispatch(AssessmentActions.setQuayLiftFreeAccess(value, index));
+  }
+
+  handleAudibleSignalsAvailableChange(value) {
+    const { index, dispatch } = this.props;
+    dispatch(AssessmentActions.setQuayAudibleSignalsAvailable(value, index));
+  }
+
+  handleVisualSignsAvailableChange(value) {
+    const { index, dispatch } = this.props;
+    dispatch(AssessmentActions.setQuayVisualSignsAvailable(value, index));
+  }
+
   handleTicketMachineChange(value) {
     const { dispatch, disabled, index } = this.props;
     if (!disabled) {
@@ -159,6 +183,27 @@ class QuayItem extends React.Component {
       ['accessibilityAssessment', 'limitations', 'stepFreeAccess'],
       'UNKNOWN',
     );
+    const escalatorFreeAccess = getIn(
+        quay,
+        ['accessibilityAssessment', 'limitations', 'escalatorFreeAccess'],
+        'UNKNOWN',
+    );
+    const liftFreeAccess = getIn(
+        quay,
+        ['accessibilityAssessment', 'limitations', 'liftFreeAccess'],
+        'UNKNOWN',
+    );
+    const audibleSignalsAvailable = getIn(
+        quay,
+        ['accessibilityAssessment', 'limitations', 'audibleSignalsAvailable'],
+        'UNKNOWN',
+    );
+    const visualSignsAvailable = getIn(
+        quay,
+        ['accessibilityAssessment', 'limitations', 'visualSignsAvailable'],
+        'UNKNOWN',
+    );
+
     const ticketMachine = equipmentHelpers.getTicketMachineState(quay);
     const busShelter = equipmentHelpers.getShelterEquipmentState(quay);
     const sign512 = equipmentHelpers.get512SignEquipment(quay);
@@ -178,6 +223,26 @@ class QuayItem extends React.Component {
       : formatMessage({ id: 'transport_sign_no' });
     const stepFreeHint =
       accessibilityAssessments.stepFreeAccess.values[locale][stepFreeAccess];
+
+    const escalatorFreeHint =
+        accessibilityAssessments.EscalatorFreeAccess.values[locale][
+            escalatorFreeAccess
+            ];
+
+    const liftFreeHint =
+        accessibilityAssessments.LiftFreeAccess.values[locale][
+            liftFreeAccess
+            ];
+
+    const audibleSignalsAvailableHint =
+        accessibilityAssessments.AudibleSignalsAvailable.values[locale][
+            audibleSignalsAvailable
+            ];
+
+    const visualSignsAvailableHint =
+        accessibilityAssessments.VisualSignsAvailable.values[locale][
+            visualSignsAvailable
+            ];
 
     let quayItemName = null;
 
@@ -201,6 +266,14 @@ class QuayItem extends React.Component {
       noStepFreeAccess: formatMessage({ id: 'step_free_access_no' }),
       wheelchairAccess: formatMessage({ id: 'wheelchairAccess' }),
       noWheelchairAccess: formatMessage({ id: 'wheelchairAccess_no' }),
+      escalatorFreeAccess: formatMessage({ id: 'escalator_free_access' }),
+      noEscalatorFreeAccess: formatMessage({ id: 'escalator_free_access_no' }),
+      liftFreeAccess: formatMessage({ id: 'lift_free_access' }),
+      noLiftFreeAccess: formatMessage({ id: 'lift_free_access_no' }),
+      audibleSignalsAvailable: formatMessage({ id: 'audible_signals_available' }),
+      audibleSignalsNotAvailable: formatMessage({ id: 'audible_signals_not_available' }),
+      visualSignsAvailable: formatMessage({ id: 'visual_signs_available' }),
+      visualSignsNotAvailable: formatMessage({ id: 'visual_signs_not_available' }),
       ticketMachine: formatMessage({ id: 'ticketMachine' }),
       noTicketMachine: formatMessage({ id: 'ticketMachine_no' }),
       busShelter: formatMessage({ id: 'busShelter' }),
@@ -315,6 +388,43 @@ class QuayItem extends React.Component {
                         handleChange={this.handleStepFreeChange.bind(this)}
                       />
                     </ToolTippable>
+
+                    <ToolTippable toolTipText={escalatorFreeHint}>
+                      <EscalatorFreePopover
+                          intl={intl}
+                          disabled={disabled}
+                          escalatorFree={escalatorFreeAccess}
+                          handleChange={this.handleEscalatorFreeChange.bind(this)}
+                      />
+                    </ToolTippable>
+
+                    <ToolTippable toolTipText={liftFreeHint}>
+                      <LiftFreePopover
+                          intl={intl}
+                          disabled={disabled}
+                          liftFree={liftFreeAccess}
+                          handleChange={this.handleLiftFreeChange.bind(this)}
+                      />
+                    </ToolTippable>
+
+                    <ToolTippable toolTipText={audibleSignalsAvailableHint}>
+                      <AudibleSignalsAvailablePopover
+                          intl={intl}
+                          disabled={disabled}
+                          audibleSignalsAvailable={audibleSignalsAvailable}
+                          handleChange={this.handleAudibleSignalsAvailableChange.bind(this)}
+                      />
+                    </ToolTippable>
+
+                    <ToolTippable toolTipText={visualSignsAvailableHint}>
+                      <VisualSignsAvailablePopover
+                          intl={intl}
+                          disabled={disabled}
+                          visualSignsAvailable={visualSignsAvailable}
+                          handleChange={this.handleVisualSignsAvailableChange.bind(this)}
+                      />
+                    </ToolTippable>
+
                     <ToolTippable toolTipText={ticketMachineHint}>
                       <Checkbox
                         checkedIcon={<TicketMachine />}

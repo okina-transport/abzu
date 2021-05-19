@@ -15,7 +15,7 @@ limitations under the Licence. */
 
 const accessibilityAssements = {
   wheelchairAccess: {
-    options: ['TRUE', 'FALSE', 'UNKNOWN'],
+    options: ['TRUE','FALSE','PARTIAL','UNKNOWN'],
     values: {
       nb: {
         UNKNOWN: 'Ukjent rullestolvennlighet',
@@ -38,7 +38,7 @@ const accessibilityAssements = {
     },
   },
   stepFreeAccess: {
-    options: ['TRUE', 'FALSE', 'UNKNOWN'],
+    options: ['TRUE', 'FALSE','PARTIAL', 'UNKNOWN'],
     values: {
       nb: {
         UNKNOWN: 'Ukjent trinnadgang',
@@ -57,6 +57,98 @@ const accessibilityAssements = {
         TRUE: 'Accès de plain-pied',
         FALSE: 'Accessible uniquement par des marches',
         PARTIAL: 'Accès plain-pied partiel',
+      },
+    },
+  },
+  EscalatorFreeAccess: {
+    options: ['TRUE', 'FALSE','PARTIAL', 'UNKNOWN'],
+    values: {
+      nb: {
+        UNKNOWN: 'Rulletrapp fri ukjent',
+        TRUE: 'Rulletrapp fri tilgangg',
+        FALSE: 'Bare tilgjengelig med rulletrapp',
+        PARTIAL: 'Delvis rulletrapp gratis tilgang',
+      },
+      en: {
+        UNKNOWN: 'Unknown escalator free access',
+        TRUE: 'escalator free access',
+        FALSE: 'Accessable only by escalator',
+        PARTIAL: 'Partial escalator free access',
+      },
+      fr: {
+        UNKNOWN: 'Accès sans escalator inconnu',
+        TRUE: 'Accès sans escalator',
+        FALSE: 'Accessible uniquement par escalator',
+        PARTIAL: 'Accès sans escalator partiel',
+      },
+    },
+  },
+  LiftFreeAccess: {
+    options: ['TRUE', 'FALSE','PARTIAL', 'UNKNOWN'],
+    values: {
+      nb: {
+        UNKNOWN: 'Ukjent heisfri tilgang',
+        TRUE: 'løft gratis tilgang',
+        FALSE: 'Kun tilgjengelig med heis',
+        PARTIAL: 'Delvis heis gratis tilgang',
+      },
+      en: {
+        UNKNOWN: 'Unknown lift free access',
+        TRUE: 'lift free access',
+        FALSE: 'Accessable only by lift',
+        PARTIAL: 'Partial lift free access',
+      },
+      fr: {
+        UNKNOWN: 'Accès sans ascenseur inconnu',
+        TRUE: 'Accès sans ascenseur',
+        FALSE: 'Accessible uniquement par ascenseur',
+        PARTIAL: 'Accès sans ascenseur partiel',
+      },
+    },
+  },
+  AudibleSignalsAvailable: {
+    options: ['TRUE', 'FALSE','PARTIAL', 'UNKNOWN'],
+    values: {
+      nb: {
+        UNKNOWN: 'Ukjente hørbare signaler',
+        TRUE: 'Hørbare signaler tilgjengelig',
+        FALSE: 'Hørbare signaler utilgjengelige',
+        PARTIAL: 'Delvis hørbare signaler',
+      },
+      en: {
+        UNKNOWN: 'Unknown audible signals',
+        TRUE: 'Audible signals available',
+        FALSE: 'Audible signals unavailable',
+        PARTIAL: 'Partial audible signals',
+      },
+      fr: {
+        UNKNOWN: 'Signalétique auditive inconnue',
+        TRUE: 'Signalétique auditive disponible',
+        FALSE: 'Signalétique auditive indisponible',
+        PARTIAL: 'Signalétique auditive disponible partiellement',
+      },
+    },
+  },
+  VisualSignsAvailable: {
+    options: ['TRUE', 'FALSE','PARTIAL', 'UNKNOWN'],
+    values: {
+      nb: {
+        UNKNOWN: 'Ukjente visuelle tegn',
+        TRUE: 'Visuelle tegn tilgjengelig',
+        FALSE: 'Visuelle tegn utilgjengelige',
+        PARTIAL: 'Delvise visuelle tegn',
+      },
+      en: {
+        UNKNOWN: 'Unknown visual signs',
+        TRUE: 'Visual signs available',
+        FALSE: 'Visual signs unavailable',
+        PARTIAL: 'Partial visual signs',
+      },
+      fr: {
+        UNKNOWN: 'Signalétique visuelle inconnue',
+        TRUE: 'Signalétique visuelle disponible',
+        FALSE: 'Signalétique visuelle indisponible',
+        PARTIAL: 'Signalétique visuelle disponible partiellement',
       },
     },
   },

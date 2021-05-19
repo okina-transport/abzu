@@ -5,6 +5,7 @@ Object {
   "accessibilityAssessment": Object {
     "limitations": Object {
       "audibleSignalsAvailable": "UNKNOWN",
+      "visualSignsAvailable": 'UNKNOWN',
       "escalatorFreeAccess": "UNKNOWN",
       "liftFreeAccess": "UNKNOWN",
       "stepFreeAccess": "UNKNOWN",
@@ -37,6 +38,7 @@ Object {
       "accessibilityAssessment": Object {
         "limitations": Object {
           "audibleSignalsAvailable": "UNKNOWN",
+          "visualSignsAvailable": 'UNKNOWN',
           "escalatorFreeAccess": "UNKNOWN",
           "liftFreeAccess": "UNKNOWN",
           "stepFreeAccess": "UNKNOWN",
@@ -58,6 +60,7 @@ Object {
       "accessibilityAssessment": Object {
         "limitations": Object {
           "audibleSignalsAvailable": "UNKNOWN",
+          "visualSignsAvailable": 'UNKNOWN',
           "escalatorFreeAccess": "UNKNOWN",
           "liftFreeAccess": "UNKNOWN",
           "stepFreeAccess": "UNKNOWN",
@@ -96,6 +99,7 @@ Object {
   "accessibilityAssessment": Object {
     "limitations": Object {
       "audibleSignalsAvailable": "UNKNOWN",
+      "visualSignsAvailable": 'UNKNOWN',
       "escalatorFreeAccess": "UNKNOWN",
       "liftFreeAccess": "UNKNOWN",
       "stepFreeAccess": "UNKNOWN",

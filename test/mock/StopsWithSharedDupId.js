@@ -30,6 +30,7 @@ export default [
         escalatorFreeAccess: null,
         liftFreeAccess: null,
         audibleSignalsAvailable: null,
+        visualSignsAvailable: 'UNKNOWN',
         __typename: 'AccessibilityLimitations'
       },
       __typename: 'AccessibilityAssessment'
@@ -69,6 +70,7 @@ export default [
             escalatorFreeAccess: null,
             liftFreeAccess: null,
             audibleSignalsAvailable: null,
+            visualSignsAvailable: 'UNKNOWN',
             __typename: 'AccessibilityLimitations'
           },
           __typename: 'AccessibilityAssessment'
@@ -114,6 +116,7 @@ export default [
             escalatorFreeAccess: null,
             liftFreeAccess: null,
             audibleSignalsAvailable: null,
+            visualSignsAvailable: 'UNKNOWN',
             __typename: 'AccessibilityLimitations'
           },
           __typename: 'AccessibilityAssessment'
@@ -222,6 +225,7 @@ export default [
             escalatorFreeAccess: 'UNKNOWN',
             liftFreeAccess: 'UNKNOWN',
             audibleSignalsAvailable: 'UNKNOWN',
+            visualSignsAvailable: 'UNKNOWN',
             __typename: 'AccessibilityLimitations'
           },
           __typename: 'AccessibilityAssessment'

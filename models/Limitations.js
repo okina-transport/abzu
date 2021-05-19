@@ -12,8 +12,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-export const wheelchairAccess = 'wheelchairAccess';
+
+export const wheelchairAccess = 'wheelchairAccess';
 export const stepFreeAccess = 'stepFreeAccess';
+export const escalatorFreeAccess = 'escalatorFreeAccess';
+export const liftFreeAccess = 'liftFreeAccess';
+export const audibleSignalsAvailable = 'audibleSignalsAvailable';
+export const visualSignsAvailable = 'visualSignsAvailable';
 
 export const defaultLimitations = {
   wheelchairAccess: 'UNKNOWN',
@@ -21,7 +26,9 @@ export const defaultLimitations = {
   escalatorFreeAccess: 'UNKNOWN',
   liftFreeAccess: 'UNKNOWN',
   audibleSignalsAvailable: 'UNKNOWN',
+  visualSignsAvailable: 'UNKNOWN',
 };
+
 export const availableTypes = {
   UNKNOWN: 'UNKNOWN',
   TRUE: 'TRUE',

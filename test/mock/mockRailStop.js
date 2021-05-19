@@ -222,6 +222,7 @@ const mockRailStop = {
             escalatorFreeAccess: null,
             liftFreeAccess: null,
             audibleSignalsAvailable: null,
+            visualSignsAvailable: null,
             __typename: 'AccessibilityLimitations'
           },
           __typename: 'AccessibilityAssessment'

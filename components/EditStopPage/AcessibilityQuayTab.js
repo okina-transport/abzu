@@ -12,9 +12,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import React from 'react';
+
+import React from 'react';
 import WheelChairPopover from './WheelChairPopover';
 import StepFreePopover from './StepFreePopover';
+import EscalatorFreePopover from './EscalatorFreePopover';
+import LiftFreePopover from './LiftFreePopover';
+import AudibleSignalsAvailablePopover from './AudibleSignalsAvailablePopover';
+import VisualSignsAvailablePopover from './VisualSignsAvailablePopover';
+
+
 import ToolTipIcon from './ToolTipIcon';
 import Divider from 'material-ui/Divider';
 import { getIn } from '../../utils/';
@@ -41,6 +48,30 @@ class AcessibilityQuayTab extends React.Component {
     );
   }
 
+  handleEscalatorFreeChange(value) {
+    this.props.dispatch(
+        AssessmentActions.setQuayEscalatorFreeAccess(value, this.props.index),
+    );
+  }
+
+  handleLiftFreeChange(value) {
+    this.props.dispatch(
+        AssessmentActions.setQuayLiftFreeAccess(value, this.props.index),
+    );
+  }
+
+  handleAudibleSignalsAvailableChange(value) {
+    this.props.dispatch(
+        AssessmentActions.setQuayAudibleSignalsAvailable(value, this.props.index),
+    );
+  }
+
+  handleVisualSignsAvailableChange(value) {
+    this.props.dispatch(
+        AssessmentActions.setQuayVisualSignsAvailable(value, this.props.index),
+    );
+  }
+
   render() {
     const { intl, quay, disabled } = this.props;
     const { formatMessage } = intl;
@@ -54,6 +85,26 @@ class AcessibilityQuayTab extends React.Component {
       quay,
       ['accessibilityAssessment', 'limitations', 'stepFreeAccess'],
       'UNKNOWN',
+    );
+    const escalatorFreeAccess = getIn(
+        quay,
+        ['accessibilityAssessment', 'limitations', 'escalatorFreeAccess'],
+        'UNKNOWN',
+    );
+    const liftFreeAccess = getIn(
+        quay,
+        ['accessibilityAssessment', 'limitations', 'liftFreeAccess'],
+        'UNKNOWN',
+    );
+    const audibleSignalsAvailable = getIn(
+        quay,
+        ['accessibilityAssessment', 'limitations', 'audibleSignalsAvailable'],
+        'UNKNOWN',
+    );
+    const visualSignsAvailable = getIn(
+        quay,
+        ['accessibilityAssessment', 'limitations', 'visualSignsAvailable'],
+        'UNKNOWN',
     );
 
     return (
@@ -73,6 +124,7 @@ class AcessibilityQuayTab extends React.Component {
           </div>
           <Divider style={{ marginTop: 10, marginBottom: 10 }} />
         </div>
+
         <div style={{ marginTop: 10 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <StepFreePopover
@@ -88,6 +140,74 @@ class AcessibilityQuayTab extends React.Component {
           </div>
           <Divider style={{ marginTop: 10, marginBottom: 10 }} />
         </div>
+
+        <div style={{ marginTop: 10 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <EscalatorFreePopover
+                disabled={disabled}
+                displayLabel={true}
+                intl={intl}
+                escalatorFree={escalatorFreeAccess}
+                handleChange={this.handleEscalatorFreeChange.bind(this)}
+            />
+            <ToolTipIcon
+                title={formatMessage({ id: 'escalator_free_access_quay_hint' })}
+            />
+          </div>
+          <Divider style={{ marginTop: 10, marginBottom: 10 }} />
+        </div>
+
+        <div style={{ marginTop: 10 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <LiftFreePopover
+                disabled={disabled}
+                displayLabel={true}
+                intl={intl}
+                liftFree={liftFreeAccess}
+                handleChange={this.handleLiftFreeChange.bind(this)}
+            />
+            <ToolTipIcon
+                title={formatMessage({ id: 'lift_free_access_quay_hint' })}
+            />
+          </div>
+          <Divider style={{ marginTop: 10, marginBottom: 10 }} />
+        </div>
+
+        <div style={{ marginTop: 10 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <AudibleSignalsAvailablePopover
+                disabled={disabled}
+                displayLabel={true}
+                intl={intl}
+                audibleSignalsAvailable={audibleSignalsAvailable}
+                handleChange={this.handleAudibleSignalsAvailableChange.bind(this)}
+            />
+            <ToolTipIcon
+                title={formatMessage({ id: 'audible_signals_available_quay_hint' })}
+            />
+          </div>
+          <Divider style={{ marginTop: 10, marginBottom: 10 }} />
+        </div>
+
+
+        <div style={{ marginTop: 10 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <VisualSignsAvailablePopover
+                disabled={disabled}
+                displayLabel={true}
+                intl={intl}
+                visualSignsAvailable={visualSignsAvailable}
+                handleChange={this.handleVisualSignsAvailableChange.bind(this)}
+            />
+            <ToolTipIcon
+                title={formatMessage({ id: 'visual_signs_available_quay_hint' })}
+            />
+          </div>
+          <Divider style={{ marginTop: 10, marginBottom: 10 }} />
+        </div>
+
+
+
       </div>
     );
   }

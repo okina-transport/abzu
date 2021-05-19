@@ -44,6 +44,22 @@ export const columnOptionsQuays = [
     checked: false
   },
   {
+    id: 'escalatorFreeAccess',
+    checked: false
+  },
+  {
+    id: 'liftFreeAccess',
+    checked: false
+  },
+  {
+    id: 'audibleSignalsAvailable',
+    checked: false
+  },
+  {
+    id: 'visualSignsAvailable',
+    checked: false
+  },
+  {
     id: 'shelterEquipment',
     checked: false
   },
