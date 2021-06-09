@@ -157,6 +157,7 @@ const accessibilityAssements = {
     TRUE: '#181C56',
     FALSE: '#F44336',
     PARTIAL: '#FF9800',
+    null : '#e8e3e3',
   },
 };
 
