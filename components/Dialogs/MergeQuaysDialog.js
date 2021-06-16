@@ -162,7 +162,7 @@ class MergeQuaysDialog extends React.Component {
         contentStyle={{ width: '40%', minWidth: '40%', margin: 'auto' }}
       >
         <div>
-          {this.getUsageWarning()}
+          {/*{this.getUsageWarning()}*/}
           <MergeQuaysDetails merginQuays={mergingQuays} />
           <div style={{ marginLeft: 0, fontSize: 14 }}>{translations.info}</div>
           {hasStopBeenModified && (

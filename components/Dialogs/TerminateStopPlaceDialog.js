@@ -65,9 +65,9 @@ class TerminateStopPlaceDialog extends React.Component {
     const { shouldHardDelete } = this.state;
 
     // complete OTP usage check first
-    if (warningInfo && warningInfo.loading) {
-      return true;
-    }
+    // if (warningInfo && warningInfo.loading) {
+    //   return true;
+    // }
 
     // only possible to delete stop if stop has expired
     const expiredNotDeleteCondition = hasExpired
@@ -94,22 +94,22 @@ class TerminateStopPlaceDialog extends React.Component {
       const infoStyle = { fontSize: '1.1em' };
       const alertStyle = { ...infoStyle, color: '#cc0000' };
 
-      if (loading) {
-        return (
-          <div style={{ ...infoStyle, display: 'flex', alignItems: 'center' }}>
-            <Spinner />
-            <div style={{marginLeft: 5}}>{formatMessage({ id: 'checking_stop_place_usage' })}</div>
-          </div>
-        );
-      }
-
-      if (error) {
-        return (
-          <div style={alertStyle}>
-            {formatMessage({ id: 'failed_checking_stop_place_usage' })}
-          </div>
-        );
-      }
+      // if (loading) {
+      //   return (
+      //     <div style={{ ...infoStyle, display: 'flex', alignItems: 'center' }}>
+      //       <Spinner />
+      //       <div style={{marginLeft: 5}}>{formatMessage({ id: 'checking_stop_place_usage' })}</div>
+      //     </div>
+      //   );
+      // }
+      //
+      // if (error) {
+      //   return (
+      //     <div style={alertStyle}>
+      //       {formatMessage({ id: 'failed_checking_stop_place_usage' })}
+      //     </div>
+      //   );
+      // }
 
       if (
         warning &&
