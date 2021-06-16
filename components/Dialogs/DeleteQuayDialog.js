@@ -163,7 +163,7 @@ class DeleteQuayDialog extends React.Component {
           <div style={{ fontSize: '1.3em', color: '#000', marginBottom: 5 }}>
             {translations.important_notice}
           </div>
-          {this.getUsageWarning()}
+          {/*{this.getUsageWarning()}*/}
           <div
             style={{
               marginLeft: 0,
