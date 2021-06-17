@@ -10,7 +10,7 @@ RUN npm set progress=false
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY source/ .
+COPY . .
 
 #Building inside container - avoid libpng issues
 RUN npm prune
