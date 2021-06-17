@@ -143,7 +143,7 @@ class MergeQuaysDialog extends React.Component {
         onClick={() => {
           handleConfirm(versionComment);
         }}
-        disabled={!enableConfirm || isLoading || OTPFetchIsLoading }
+        disabled={!enableConfirm || isLoading }
         primary={true}
         keyboardFocused={true}
         icon={isLoading ? <Spinner /> : <MdMerge />}
