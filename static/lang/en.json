@@ -241,6 +241,8 @@
   "ok": "OK",
   "one_merged_quay": "A quay merged.",
   "only_duplicate_importedIds": "Only with duplicate importedId on quays",
+  "nearby_stop_places": "Nearby stop places",
+  "nearby_radius": "Nearby radius(m)",
   "only_with_tags": "Only stops with tags",
   "only_without_coordinates": "Only without coordinates",
   "open_question": "Do you want to edit this now?",

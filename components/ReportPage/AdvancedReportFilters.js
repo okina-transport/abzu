@@ -33,6 +33,7 @@ class AdvancedReportFilters extends Component {
       formatMessage,
       withoutLocationOnly,
       withDuplicateImportedIds,
+      nearbyStopPlaces,
       withNearbySimilarDuplicates,
       hasParking,
       handleCheckboxChange,
@@ -110,6 +111,22 @@ class AdvancedReportFilters extends Component {
                 style={{ marginTop: 10 }}
               />
             </MenuItem>
+
+
+              <MenuItem style={menuItemsStyle}>
+                  <Checkbox
+                      label={formatMessage({ id: 'nearby_stop_places' })}
+                      labelPosition="right"
+                      labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                      checked={nearbyStopPlaces}
+                      onCheck={(e, value) => {
+                          handleCheckboxChange('nearbyStopPlaces', value);
+                      }}
+                      style={{ marginTop: 10 }}
+                  />
+              </MenuItem>
+
+
             <MenuItem style={menuItemsStyle}>
               <Checkbox
                 label={formatMessage({ id: 'with_nearby_similar_duplicates' })}

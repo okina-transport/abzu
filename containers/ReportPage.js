@@ -36,6 +36,7 @@ import {buildReportSearchQuery, extractQueryParamsFromUrl} from '../utils/URLhel
 import TagFilterTray from '../components/ReportPage/TagFilterTray';
 import AdvancedReportFilters from '../components/ReportPage/AdvancedReportFilters';
 import GeneralReportFilters from '../components/ReportPage/GeneralReportFilters';
+import NearbyStopPlaceResultView from "../components/ReportPage/NearbyStopPlaceResultView";
 
 class ReportPage extends React.Component {
     constructor(props) {
@@ -47,16 +48,19 @@ class ReportPage extends React.Component {
             topoiChips: [],
             activePageIndex: 0,
             searchQuery: '',
+            nearbyRadius:50,
             isLoading: false,
             columnOptionsQuays: columnOptionsQuays,
             columnOptionsStopPlace: columnOptionsStopPlace,
             withoutLocationOnly: false,
             withDuplicateImportedIds: false,
+            nearbyStopPlaces: false,
             withNearbySimilarDuplicates: false,
             hasParking: false,
             showFutureAndExpired: false,
             withTags: false,
             tags: [],
+            regexp : /^[0-9\b]+$/,
             filterByOrg: false
         };
     }
@@ -90,6 +94,12 @@ class ReportPage extends React.Component {
         this.setState({searchQuery});
     }
 
+    handleNearbyRadiusChange(nearbyRadius) {
+        if (nearbyRadius === '' || this.state.regexp.test(nearbyRadius)) {
+            this.setState({nearbyRadius});
+        }
+    }
+
     handleItemOnCheck(name, checked) {
         let nextTags = this.state.tags.slice();
         if (checked) {
@@ -112,6 +122,43 @@ class ReportPage extends React.Component {
     };
 
     handleFilterChange(key, value) {
+        // nearby stop place report needs a specific result page, incompatible with normal result page
+        // So, if user select nearby stop places report, other choices are un-checked
+        if (key === 'nearbyStopPlaces' && value){
+            this.setState({
+                ['withDuplicateImportedIds']: false
+            });
+
+            this.setState({
+                ['showFutureAndExpired']: false
+            });
+
+            this.setState({
+                ['filterByOrg']: false
+            });
+
+            this.setState({
+                ['withoutLocationOnly']: false
+            });
+
+            this.setState({
+                ['withNearbySimilarDuplicates']: false
+            });
+
+            this.setState({
+                ['withTags']: false
+            });
+        }
+
+
+        // And if user selects another filter, nearby Stop place result is un-checked
+        if (key !== 'nearbyStopPlaces' && value){
+            this.setState({
+                ['nearbyStopPlaces']: false
+            });
+        }
+
+
         this.setState({
             [key]: value
         });
@@ -158,10 +205,12 @@ class ReportPage extends React.Component {
         const fromURL = extractQueryParamsFromUrl();
         this.setState({
             searchQuery: fromURL.query || '',
+            nearbyRadius: fromURL.nearbyRadius || 50,
             withoutLocationOnly: fromURL.withoutLocationOnly == 'true',
             withNearbySimilarDuplicates: fromURL.withNearbySimilarDuplicates == 'true',
             hasParking: fromURL.hasParking == 'true',
             withDuplicateImportedIds: fromURL.withDuplicateImportedIds == 'true',
+            nearbyStopPlaces: fromURL.nearbyStopPlaces == 'true',
             showFutureAndExpired: fromURL.showFutureAndExpired == 'true',
             withTags: fromURL.withTags == 'true',
             tags: fromURL.tags ? fromURL.tags.split(',') : [],
@@ -211,12 +260,14 @@ class ReportPage extends React.Component {
     }
 
     handleSearch() {
-        const {
+        let {
             searchQuery,
+            nearbyRadius,
             topoiChips,
             stopTypeFilter,
             withoutLocationOnly,
             withDuplicateImportedIds,
+            nearbyStopPlaces,
             withNearbySimilarDuplicates,
             hasParking,
             withTags,
@@ -227,14 +278,23 @@ class ReportPage extends React.Component {
         const {client} = this.props;
 
         this.setState({
-            isLoading: true
+            isLoading: true,
+            lastSearchNearbyRadius:nearbyRadius
         });
 
         let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
+
+
+        if (nearbyRadius === ''){
+            nearbyRadius = null;
+        }
+
         const queryVariables = {
             query: searchQuery,
+            nearbyRadius,
             withoutLocationOnly,
             withDuplicateImportedIds,
+            nearbyStopPlaces,
             pointInTime: (withDuplicateImportedIds || withNearbySimilarDuplicates || !showFutureAndExpired)
                 ? new Date().toISOString()
                 : null,
@@ -380,6 +440,7 @@ class ReportPage extends React.Component {
       isLoading,
       withoutLocationOnly,
       withDuplicateImportedIds,
+      nearbyStopPlaces,
       withNearbySimilarDuplicates,
       hasParking,
       showFutureAndExpired,
@@ -389,6 +450,75 @@ class ReportPage extends React.Component {
     const { intl, topographicalPlaces, results: dataSource, duplicateInfo } = this.props;
     const { locale, formatMessage } = intl;
     const results = hasParking ? dataSource.filter(stopPlace => stopPlace.parking && stopPlace.parking.length) : dataSource;
+
+    let resultPage;
+    let resultHeader;
+
+      if (nearbyStopPlaces) {
+          resultPage =    <NearbyStopPlaceResultView
+              activePageIndex={activePageIndex}
+              intl={intl}
+              results={results}
+              stopPlaceColumnOptions={this.state.columnOptionsStopPlace}
+              quaysColumnOptions={this.state.columnOptionsQuays}
+              duplicateInfo={duplicateInfo}
+              nearbyRadius={this.state.lastSearchNearbyRadius}
+          />;
+
+          resultHeader =
+              <div style={{display: 'flex'}}>
+                  <TextField
+                      floatingLabelText={formatMessage({
+                          id: 'nearby_radius'
+                      })}
+                      style={{width: 330}}
+                      value={this.state.nearbyRadius}
+                      onKeyDown={this.handleOnKeyDown.bind(this)}
+                      onChange={(e, v) => {
+                          this.handleNearbyRadiusChange(v);
+                      }}
+                  />
+              </div>;
+
+
+      } else {
+          resultPage =
+              <ReportResultView
+              activePageIndex={activePageIndex}
+              intl={intl}
+              results={results}
+              stopPlaceColumnOptions={this.state.columnOptionsStopPlace}
+              quaysColumnOptions={this.state.columnOptionsQuays}
+              duplicateInfo={duplicateInfo}
+          />;
+
+          resultHeader =
+              <div style={{display: 'flex'}}>
+                  <ColumnFilterPopover
+                      style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
+                      columnOptions={this.state.columnOptionsStopPlace}
+                      handleColumnCheck={this.handleColumnStopPlaceCheck.bind(this)}
+                      buttonLabel={formatMessage({
+                          id: 'column_filter_label_stop_place'
+                      })}
+                      captionLabel={formatMessage({id: 'stop_place'})}
+                      locale={locale}
+                      handleCheckAll={this.handleCheckAllColumnStops.bind(this)}
+                      selectAllLabel={formatMessage({id: 'all'})}
+                  />
+                  <ColumnFilterPopover
+                      style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
+                      columnOptions={this.state.columnOptionsQuays}
+                      handleColumnCheck={this.handleColumnQuaysCheck.bind(this)}
+                      buttonLabel={formatMessage({id: 'column_filter_label_quays'})}
+                      captionLabel={formatMessage({id: 'quays'})}
+                      locale={locale}
+                      handleCheckAll={this.handleCheckAllColumnQuays.bind(this)}
+                      selectAllLabel={formatMessage({id: 'all'})}
+                  />
+              </div>;
+
+      }
 
 
     const topographicalPlacesDataSource = topographicalPlaces
@@ -496,6 +626,7 @@ class ReportPage extends React.Component {
                                         formatMessage={formatMessage}
                                         withoutLocationOnly={withoutLocationOnly}
                                         withDuplicateImportedIds={withDuplicateImportedIds}
+                                        nearbyStopPlaces={nearbyStopPlaces}
                                         withNearbySimilarDuplicates={withNearbySimilarDuplicates}
                                         showFutureAndExpired={showFutureAndExpired}
                                         filterByOrg={filterByOrg}
@@ -507,38 +638,13 @@ class ReportPage extends React.Component {
                         </ReportFilterBox>
                     </div>
                 </div>
-                <div style={{display: 'flex'}}>
-                    <ColumnFilterPopover
-                        style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
-                        columnOptions={this.state.columnOptionsStopPlace}
-                        handleColumnCheck={this.handleColumnStopPlaceCheck.bind(this)}
-                        buttonLabel={formatMessage({
-                            id: 'column_filter_label_stop_place'
-                        })}
-                        captionLabel={formatMessage({id: 'stop_place'})}
-                        locale={locale}
-                        handleCheckAll={this.handleCheckAllColumnStops.bind(this)}
-                        selectAllLabel={formatMessage({id: 'all'})}
-                    />
-                    <ColumnFilterPopover
-                        style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
-                        columnOptions={this.state.columnOptionsQuays}
-                        handleColumnCheck={this.handleColumnQuaysCheck.bind(this)}
-                        buttonLabel={formatMessage({id: 'column_filter_label_quays'})}
-                        captionLabel={formatMessage({id: 'quays'})}
-                        locale={locale}
-                        handleCheckAll={this.handleCheckAllColumnQuays.bind(this)}
-                        selectAllLabel={formatMessage({id: 'all'})}
-                    />
-                </div>
-                <ReportResultView
-                    activePageIndex={activePageIndex}
-                    intl={intl}
-                    results={results}
-                    stopPlaceColumnOptions={this.state.columnOptionsStopPlace}
-                    quaysColumnOptions={this.state.columnOptionsQuays}
-                    duplicateInfo={duplicateInfo}
-                />
+
+                {resultHeader}
+
+                {resultPage}
+
+
+
                 <ReportPageFooter
                     results={results}
                     intl={intl}

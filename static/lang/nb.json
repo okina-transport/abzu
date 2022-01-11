@@ -241,6 +241,8 @@
   "ok": "OK",
   "one_merged_quay": "Én quay flettet.",
   "only_duplicate_importedIds": "Kun stopp med duplikate lokalID-er på quayer",
+  "nearby_stop_places": "nabijgelegen stopplaatsen",
+  "nearby_radius": "nabije straal(m)",
   "only_with_tags": "Kun stopp med tagger",
   "only_without_coordinates": "Kun stopp uten koordinater",
   "open_question": "Ønsker du å redigere dette nå?",
