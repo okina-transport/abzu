@@ -102,6 +102,7 @@
   "delete_stop_not_allowed": "Ce point d'arrêt fait partie d'un point d'arrêt multimodal et ne peut pas être supprimé",
   "delete_stop_place": "Supprimer le point d'arrêt",
   "delete_stop_title": "Vous vous apprêtes à supprimer ce point d'arrêt",
+  "detect_multi_modal_points" : "Détection des points multimodaux",
   "description": "Description pour les voyageurs",
   "discard_changes_body": "Des modifications sur ce point d'arrêt ne sont pas enregistrées",
   "discard_changes_cancel": "Annuler l'action en cours et poursuivre mes modifications",

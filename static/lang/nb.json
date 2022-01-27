@@ -102,6 +102,7 @@
   "delete_stop_not_allowed": "Dette stoppested tilhører et multimodalt stoppested og kan derfor ikke slettes",
   "delete_stop_place": "Slett stoppested",
   "delete_stop_title": "Du er i ferd med å slette dette stoppestedet",
+  "detect_multi_modal_points" : "Oppdag multimodale punkter",
   "description" : "Beskrivelse for reisende",
   "discard_changes_body" : "Du har gjort endringer på dette stoppet som ikke er lagret.",
   "discard_changes_cancel" : "Avbryt",

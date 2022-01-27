@@ -35,6 +35,7 @@ class AdvancedReportFilters extends Component {
       withDuplicateImportedIds,
       nearbyStopPlaces,
       withNearbySimilarDuplicates,
+      detectMultiModalPoints,
       hasParking,
       handleCheckboxChange,
       withTags,
@@ -44,10 +45,10 @@ class AdvancedReportFilters extends Component {
 
     const { open, anchorEl } = this.state;
 
-    const menuItemsStyle = {display: 'flex', alignItems: 'center'};
+    const menuItemsStyle = { display: 'flex', alignItems: 'center' };
 
     return (
-      <div style={{marginTop: 10, marginLeft: 5}}>
+      <div style={{ marginTop: 10, marginLeft: 5 }}>
         <RaisedButton
           onClick={e => {
             this.setState({
@@ -55,8 +56,8 @@ class AdvancedReportFilters extends Component {
               anchorEl: e.currentTarget
             })
           }}
-          style={{transform: 'scale(0.9)'}}
-          label={formatMessage({id: 'filters_more'})}
+          style={{ transform: 'scale(0.9)' }}
+          label={formatMessage({ id: 'filters_more' })}
         />
         <Popover
           open={open}
@@ -79,14 +80,14 @@ class AdvancedReportFilters extends Component {
             </MenuItem>
             <MenuItem style={menuItemsStyle}>
               <Checkbox
-                 label={formatMessage({ id: 'search_with_code' })}
-                 labelPosition="right"
-                 labelStyle={{ width: 'auto', fontSize: '0.9em' }}
-                 checked={filterByOrg}
-                 onCheck={(e, value) => {
-                   handleCheckboxChange('filterByOrg', value);
-                 }}
-               />
+                label={formatMessage({ id: 'search_with_code' })}
+                labelPosition="right"
+                labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                checked={filterByOrg}
+                onCheck={(e, value) => {
+                  handleCheckboxChange('filterByOrg', value);
+                }}
+              />
             </MenuItem>
             <MenuItem style={menuItemsStyle}>
               <Checkbox
@@ -113,20 +114,31 @@ class AdvancedReportFilters extends Component {
             </MenuItem>
 
 
-              <MenuItem style={menuItemsStyle}>
-                  <Checkbox
-                      label={formatMessage({ id: 'nearby_stop_places' })}
-                      labelPosition="right"
-                      labelStyle={{ width: 'auto', fontSize: '0.9em' }}
-                      checked={nearbyStopPlaces}
-                      onCheck={(e, value) => {
-                          handleCheckboxChange('nearbyStopPlaces', value);
-                      }}
-                      style={{ marginTop: 10 }}
-                  />
-              </MenuItem>
+            <MenuItem style={menuItemsStyle}>
+              <Checkbox
+                label={formatMessage({ id: 'nearby_stop_places' })}
+                labelPosition="right"
+                labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                checked={nearbyStopPlaces}
+                onCheck={(e, value) => {
+                  handleCheckboxChange('nearbyStopPlaces', value);
+                }}
+                style={{ marginTop: 10 }}
+              />
+            </MenuItem>
 
-
+            <MenuItem style={menuItemsStyle}>
+              <Checkbox
+                label={formatMessage({ id: 'detect_multi_modal_points' })}
+                labelPosition="right"
+                labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                checked={detectMultiModalPoints}
+                onCheck={(e, value) => {
+                  handleCheckboxChange('detectMultiModalPoints', value);
+                }}
+                style={{ marginTop: 10 }}
+              />
+            </MenuItem>
             <MenuItem style={menuItemsStyle}>
               <Checkbox
                 label={formatMessage({ id: 'with_nearby_similar_duplicates' })}

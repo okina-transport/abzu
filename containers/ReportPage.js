@@ -55,6 +55,7 @@ class ReportPage extends React.Component {
             withoutLocationOnly: false,
             withDuplicateImportedIds: false,
             nearbyStopPlaces: false,
+            detectMultiModalPoints: false,
             withNearbySimilarDuplicates: false,
             hasParking: false,
             showFutureAndExpired: false,
@@ -122,9 +123,18 @@ class ReportPage extends React.Component {
     };
 
     handleFilterChange(key, value) {
-        // nearby stop place report needs a specific result page, incompatible with normal result page
+        // nearby stop place report & detect multi modal points report need a specific result page, incompatible with normal result page
         // So, if user select nearby stop places report, other choices are un-checked
-        if (key === 'nearbyStopPlaces' && value){
+        if ((key === 'nearbyStopPlaces' || key === 'detectMultiModalPoints') && value){
+            debugger
+            if(key === 'nearbyStopPlaces'){
+                this.setState({['detectMultiModalPoints']: false});
+                this.setState({['nearbyRadius']: 50});
+            }else{
+                this.setState({['nearbyStopPlaces']: false});
+                this.setState({['nearbyRadius']: 200});
+            }
+
             this.setState({
                 ['withDuplicateImportedIds']: false
             });
@@ -152,9 +162,13 @@ class ReportPage extends React.Component {
 
 
         // And if user selects another filter, nearby Stop place result is un-checked
-        if (key !== 'nearbyStopPlaces' && value){
+        if ((key !== 'nearbyStopPlaces' || key !== 'detectMultiModalPoints') && value){
             this.setState({
                 ['nearbyStopPlaces']: false
+            });
+
+            this.setState({
+                ['detectMultiModalPoints'] : false
             });
         }
 
@@ -205,12 +219,13 @@ class ReportPage extends React.Component {
         const fromURL = extractQueryParamsFromUrl();
         this.setState({
             searchQuery: fromURL.query || '',
-            nearbyRadius: fromURL.nearbyRadius || 50,
+            nearbyRadius: fromURL.nearbyRadius || this.state.nearbyRadius,
             withoutLocationOnly: fromURL.withoutLocationOnly == 'true',
             withNearbySimilarDuplicates: fromURL.withNearbySimilarDuplicates == 'true',
             hasParking: fromURL.hasParking == 'true',
             withDuplicateImportedIds: fromURL.withDuplicateImportedIds == 'true',
             nearbyStopPlaces: fromURL.nearbyStopPlaces == 'true',
+            detectMultiModalPoints: fromURL.detectMultiModalPoints || true,
             showFutureAndExpired: fromURL.showFutureAndExpired == 'true',
             withTags: fromURL.withTags == 'true',
             tags: fromURL.tags ? fromURL.tags.split(',') : [],
@@ -268,6 +283,7 @@ class ReportPage extends React.Component {
             withoutLocationOnly,
             withDuplicateImportedIds,
             nearbyStopPlaces,
+            detectMultiModalPoints,
             withNearbySimilarDuplicates,
             hasParking,
             withTags,
@@ -275,6 +291,7 @@ class ReportPage extends React.Component {
             tags,
             filterByOrg
         } = this.state;
+
         const {client} = this.props;
 
         this.setState({
@@ -295,6 +312,7 @@ class ReportPage extends React.Component {
             withoutLocationOnly,
             withDuplicateImportedIds,
             nearbyStopPlaces,
+            detectMultiModalPoints,
             pointInTime: (withDuplicateImportedIds || withNearbySimilarDuplicates || !showFutureAndExpired)
                 ? new Date().toISOString()
                 : null,
@@ -441,6 +459,7 @@ class ReportPage extends React.Component {
       withoutLocationOnly,
       withDuplicateImportedIds,
       nearbyStopPlaces,
+      detectMultiModalPoints,
       withNearbySimilarDuplicates,
       hasParking,
       showFutureAndExpired,
@@ -454,7 +473,7 @@ class ReportPage extends React.Component {
     let resultPage;
     let resultHeader;
 
-      if (nearbyStopPlaces) {
+      if (nearbyStopPlaces || detectMultiModalPoints) {
           resultPage =    <NearbyStopPlaceResultView
               activePageIndex={activePageIndex}
               intl={intl}
@@ -463,6 +482,7 @@ class ReportPage extends React.Component {
               quaysColumnOptions={this.state.columnOptionsQuays}
               duplicateInfo={duplicateInfo}
               nearbyRadius={this.state.lastSearchNearbyRadius}
+              isDetectMultiModalPoints = {detectMultiModalPoints? true:false }
           />;
 
           resultHeader =
@@ -481,7 +501,7 @@ class ReportPage extends React.Component {
               </div>;
 
 
-      } else {
+      }else{
           resultPage =
               <ReportResultView
               activePageIndex={activePageIndex}
@@ -627,6 +647,7 @@ class ReportPage extends React.Component {
                                         withoutLocationOnly={withoutLocationOnly}
                                         withDuplicateImportedIds={withDuplicateImportedIds}
                                         nearbyStopPlaces={nearbyStopPlaces}
+                                        detectMultiModalPoints={detectMultiModalPoints}
                                         withNearbySimilarDuplicates={withNearbySimilarDuplicates}
                                         showFutureAndExpired={showFutureAndExpired}
                                         filterByOrg={filterByOrg}

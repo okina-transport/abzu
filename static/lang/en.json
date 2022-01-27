@@ -102,6 +102,7 @@
   "delete_stop_not_allowed": "This stop place is a member of a multimodal stop place and cannot be deleted",
   "delete_stop_place": "Delete stop place",
   "delete_stop_title": "You are about delete this stop place",
+  "detect_multi_modal_points" : "Detect multi modal points",
   "description": "Description for travellers",
   "discard_changes_body": "You have done modifications to this stop place that are unsaved.",
   "discard_changes_cancel": "Cancel",

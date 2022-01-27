@@ -39,7 +39,8 @@ class NearbyStopPlaceResultView extends React.Component {
       quaysColumnOptions,
       intl,
       duplicateInfo,
-        nearbyRadius
+      nearbyRadius,
+      isDetectMultiModalPoints
     } = this.props;
     const { locale, formatMessage } = intl;
 
@@ -102,7 +103,7 @@ class NearbyStopPlaceResultView extends React.Component {
 
             const containsError = this.getContainsError(item);
             // let background = index % 2 ? 'rgba(213, 228, 236, 0.37)' : '#fff';
-              let background = backgroundColorMap.get(index);
+            let background = isDetectMultiModalPoints? index % 2 ? 'rgba(213, 228, 236, 0.37)' : '#fff': backgroundColorMap.get(index);
             const borderAround = containsError ? '1px solid red' : 'none';
 
             if (containsError) {
