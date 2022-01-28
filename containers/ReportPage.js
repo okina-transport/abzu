@@ -126,7 +126,7 @@ class ReportPage extends React.Component {
         // nearby stop place report & detect multi modal points report need a specific result page, incompatible with normal result page
         // So, if user select nearby stop places report, other choices are un-checked
         if ((key === 'nearbyStopPlaces' || key === 'detectMultiModalPoints') && value){
-            debugger
+
             if(key === 'nearbyStopPlaces'){
                 this.setState({['detectMultiModalPoints']: false});
                 this.setState({['nearbyRadius']: 50});
