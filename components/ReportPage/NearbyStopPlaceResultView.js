@@ -40,6 +40,7 @@ class NearbyStopPlaceResultView extends React.Component {
       intl,
       duplicateInfo,
       nearbyRadius,
+      organisationName,
       isDetectMultiModalPoints
     } = this.props;
     const { locale, formatMessage } = intl;

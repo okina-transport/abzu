@@ -250,6 +250,7 @@
   "open_tab": "Open in new tab",
   "open": "Open",
   "optional_search_string": "Optional search string",
+  "organisation_name" : "Organisation name",
   "overwrite_alt_name_body": "An alternative name for this name type already exsists in chosen language. Do you want overwrite this with current?",
   "overwrite_alt_name_cancel": "Keep previous",
   "overwrite_alt_name_confirm": "Overwrite",
