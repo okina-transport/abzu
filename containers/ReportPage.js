@@ -75,7 +75,6 @@ class ReportPage extends React.Component {
     }
 
     handleOnKeyDown(event) {
-        debugger
         if (event.key === 'Enter') {
             this.handleSearch();
         }
