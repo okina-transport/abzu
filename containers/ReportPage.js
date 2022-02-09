@@ -37,6 +37,7 @@ import TagFilterTray from '../components/ReportPage/TagFilterTray';
 import AdvancedReportFilters from '../components/ReportPage/AdvancedReportFilters';
 import GeneralReportFilters from '../components/ReportPage/GeneralReportFilters';
 import NearbyStopPlaceResultView from "../components/ReportPage/NearbyStopPlaceResultView";
+import OrganisationNameFilter from "../components/ReportPage/OrganisationNameFilter";
 
 class ReportPage extends React.Component {
     constructor(props) {
@@ -49,6 +50,7 @@ class ReportPage extends React.Component {
             activePageIndex: 0,
             searchQuery: '',
             nearbyRadius:50,
+            organisationName:'',
             isLoading: false,
             columnOptionsQuays: columnOptionsQuays,
             columnOptionsStopPlace: columnOptionsStopPlace,
@@ -100,6 +102,11 @@ class ReportPage extends React.Component {
             this.setState({nearbyRadius});
         }
     }
+
+    handleOrganisationNameChange(value){
+        this.setState({organisationName:value});
+    }
+
 
     handleItemOnCheck(name, checked) {
         let nextTags = this.state.tags.slice();
@@ -220,6 +227,7 @@ class ReportPage extends React.Component {
         this.setState({
             searchQuery: fromURL.query || '',
             nearbyRadius: fromURL.nearbyRadius || this.state.nearbyRadius,
+            organisationName: fromURL.organisationNama || this.state.organisationName,
             withoutLocationOnly: fromURL.withoutLocationOnly == 'true',
             withNearbySimilarDuplicates: fromURL.withNearbySimilarDuplicates == 'true',
             hasParking: fromURL.hasParking == 'true',
@@ -278,6 +286,7 @@ class ReportPage extends React.Component {
         let {
             searchQuery,
             nearbyRadius,
+            organisationName,
             topoiChips,
             stopTypeFilter,
             withoutLocationOnly,
@@ -309,6 +318,7 @@ class ReportPage extends React.Component {
         const queryVariables = {
             query: searchQuery,
             nearbyRadius,
+            organisationName,
             withoutLocationOnly,
             withDuplicateImportedIds,
             nearbyStopPlaces,
@@ -482,6 +492,7 @@ class ReportPage extends React.Component {
               quaysColumnOptions={this.state.columnOptionsQuays}
               duplicateInfo={duplicateInfo}
               nearbyRadius={this.state.lastSearchNearbyRadius}
+              organisationName = {this.state.organisationName}
               isDetectMultiModalPoints = {detectMultiModalPoints? true:false }
           />;
 
@@ -496,6 +507,12 @@ class ReportPage extends React.Component {
                       onKeyDown={this.handleOnKeyDown.bind(this)}
                       onChange={(e, v) => {
                           this.handleNearbyRadiusChange(v);
+                      }}
+                  />
+                  <OrganisationNameFilter
+                      formatMessage={formatMessage}
+                      handleOrganisationNameChange={(e,v) => {
+                          this.handleOrganisationNameChange(v)
                       }}
                   />
               </div>;

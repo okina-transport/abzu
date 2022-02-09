@@ -250,6 +250,7 @@
   "open_tab": "Åpne i ny fane",
   "open": "Åpne",
   "optional_search_string": "Valgfri søketekst",
+  "organisation_name" : "Organisasjonsnavn",
   "overwrite_alt_name_body": "Et alternativt navn for denne navnetypen finnes allerede for angitt språk. Ønsker du å overskrive den eksisterende med denne?",
   "overwrite_alt_name_cancel": "Behold forrige",
   "overwrite_alt_name_confirm": "Overskriv",

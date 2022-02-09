@@ -249,6 +249,7 @@
   "open_tab": "Ouvrir dans un nouvel onglet",
   "open": "Ouvrir",
   "optional_search_string": "Chaine de caractère de recherche optionelle",
+  "organisation_name" : "Nom organisation",
   "overwrite_alt_name_body": "Un nom alternatif pour ce type de nom existe déjà pour cette langue. Souhaitez-vous l'écraser ?",
   "overwrite_alt_name_cancel": "Garder le précédent",
   "overwrite_alt_name_confirm": "Ecraser",
