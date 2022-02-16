@@ -433,6 +433,7 @@
   "wheelchairAccess_hint": "Accessibilité PMR",
   "wheelchairAccess_no": "Non accessible PMR",
   "wheelchairAccess": "Accessible PMR",
+  "with_distant_quays" : "Points d'arrêts avec des quais éloignés",
   "with_nearby_similar_duplicates": "Seulement les points d'arrêt proches avec un nom similaire",
   "nearby_radius": "Rayon de recherche(m)",
   "has_parking": "Seulement avec parking enregistré",

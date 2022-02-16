@@ -434,6 +434,7 @@
   "wheelchairAccess_hint": "Rullestolvennlighet",
   "wheelchairAccess_no": "Ikke rullestolvennlig",
   "wheelchairAccess": "Rullestolvennlig",
+  "with_distant_quays" : "Stoppesteder med fjerne kaier",
   "with_nearby_similar_duplicates": "Kun nærliggende stoppesteder med liknende navn",
   "has_parking": "Kun med registret parkering",
   "you_are_creating_group": "Ny stoppestedsgruppe",
