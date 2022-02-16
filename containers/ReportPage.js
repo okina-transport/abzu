@@ -135,13 +135,7 @@ class ReportPage extends React.Component {
         // So, if user select nearby stop places report, other choices are un-checked
         if ((key === 'nearbyStopPlaces' || key === 'detectMultiModalPoints' || key === 'withDistantQuays') && value){
 
-            /*if(key === 'nearbyStopPlaces'){
-                this.setState({['detectMultiModalPoints']: false});
-                this.setState({['nearbyRadius']: 50});
-            }else{
-                this.setState({['nearbyStopPlaces']: false});
-                this.setState({['nearbyRadius']: 200});
-            }*/
+
             switch(key){
                 case 'nearbyStopPlaces':
                     this.setState({['detectMultiModalPoints']: false});
@@ -185,6 +179,7 @@ class ReportPage extends React.Component {
                 ['withTags']: false
             });
         }
+
 
         // And if user selects another filter, nearby Stop place result is un-checked
         if ((key !== 'nearbyStopPlaces' || key !== 'detectMultiModalPoints' || key !== 'withDistantQuays') && value){
@@ -338,6 +333,7 @@ class ReportPage extends React.Component {
         if (nearbyRadius === ''){
             nearbyRadius = null;
         }
+
         const queryVariables = {
             query: searchQuery,
             nearbyRadius,
@@ -367,6 +363,7 @@ class ReportPage extends React.Component {
             code: optionalOrgCodeFilter,
             versionValidity: showFutureAndExpired ? "MAX_VERSION" : null
         };
+
         client
             .query({
                 query: findStopForReport,
@@ -506,7 +503,8 @@ class ReportPage extends React.Component {
 
     let resultPage;
     let resultHeader;
-      if (nearbyStopPlaces || detectMultiModalPoints || withDistantQuays) {
+
+      if (nearbyStopPlaces || detectMultiModalPoints) {
           resultPage =    <NearbyStopPlaceResultView
               activePageIndex={activePageIndex}
               intl={intl}
