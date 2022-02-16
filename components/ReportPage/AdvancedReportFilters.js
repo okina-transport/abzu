@@ -36,6 +36,7 @@ class AdvancedReportFilters extends Component {
       nearbyStopPlaces,
       withNearbySimilarDuplicates,
       detectMultiModalPoints,
+      withDistantQuays,
       hasParking,
       handleCheckboxChange,
       withTags,
@@ -139,6 +140,20 @@ class AdvancedReportFilters extends Component {
                 style={{ marginTop: 10 }}
               />
             </MenuItem>
+
+            <MenuItem style={menuItemsStyle}>
+              <Checkbox
+                  label={formatMessage({ id: 'with_distant_quays' })}
+                  labelPosition="right"
+                  labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                  checked={withDistantQuays}
+                  onCheck={(e, value) => {
+                    handleCheckboxChange('withDistantQuays', value);
+                  }}
+                  style={{ marginTop: 10 }}
+              />
+            </MenuItem>
+
             <MenuItem style={menuItemsStyle}>
               <Checkbox
                 label={formatMessage({ id: 'with_nearby_similar_duplicates' })}

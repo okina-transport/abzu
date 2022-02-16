@@ -434,6 +434,7 @@
   "wheelchairAccess_hint": "Wheelchair accessibility",
   "wheelchairAccess_no": "Not wheelchair friendly",
   "wheelchairAccess": "Wheelchair friendly",
+  "with_distant_quays" : "Stop Places with distant quays",
   "with_nearby_similar_duplicates": "Only nearby stop places with similar name",
   "has_parking": "Only with registered parking",
   "you_are_creating_group": "New Group of Stop Places",
