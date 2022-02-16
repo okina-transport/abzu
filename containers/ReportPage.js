@@ -504,7 +504,7 @@ class ReportPage extends React.Component {
     let resultPage;
     let resultHeader;
 
-      if (nearbyStopPlaces || detectMultiModalPoints) {
+      if (nearbyStopPlaces || detectMultiModalPoints || withDistantQuays) {
           resultPage =    <NearbyStopPlaceResultView
               activePageIndex={activePageIndex}
               intl={intl}
