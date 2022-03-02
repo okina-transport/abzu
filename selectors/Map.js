@@ -13,7 +13,7 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 
-export const getMarkersForMap = ({ stopPlace, user }) => {
+export const getMarkersForMap = ({ stopPlace, user, parking }) => {
   const {
     newStop,
     findCoordinates,
@@ -21,7 +21,12 @@ export const getMarkersForMap = ({ stopPlace, user }) => {
     neighbourStops
   } = stopPlace;
 
-  const { isCreatingNewStop } = user;
+  const {
+    newParking,
+    neighbourParkings
+  } = parking;
+
+  const { isCreatingNewStop, isCreatingNewParking } = user;
 
   let markers = activeSearchResult ? [activeSearchResult] : [];
 
@@ -37,8 +42,16 @@ export const getMarkersForMap = ({ stopPlace, user }) => {
     markers = markers.concat(newStop);
   }
 
+  if (newParking && isCreatingNewParking) {
+    markers = markers.concat(newParking);
+  }
+
   if (neighbourStops && neighbourStops.length) {
     markers = markers.concat(neighbourStops);
+  }
+
+  if (neighbourParkings && neighbourParkings.length) {
+    markers = markers.concat(neighbourParkings);
   }
 
   if (findCoordinates) {

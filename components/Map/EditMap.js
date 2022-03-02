@@ -16,17 +16,17 @@ limitations under the Licence. */
 import { connect } from 'react-redux';
 import React from 'react';
 import LeafletMap from './LeafletMap';
-import { StopPlaceActions, UserActions } from '../../actions/';
+import {ParkingActions, StopPlaceActions, UserActions} from '../../actions/';
 import { injectIntl } from 'react-intl';
 import { setDecimalPrecision } from '../../utils';
 import CoordinatesDialog from '../Dialogs/CoordinatesDialog';
 import CompassBearingDialog from '../Dialogs/CompassBearingDialog';
 import debounce from 'lodash.debounce';
 import { withApollo } from 'react-apollo';
-import { getNeighbourStops } from '../../graphql/Tiamat/actions';
+import {getNeighbourParkings, getNeighbourStops} from '../../graphql/Tiamat/actions';
 import Settings from '../../singletons/SettingsManager';
 
-class EditStopMap extends React.Component {
+class EditMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,7 +34,7 @@ class EditStopMap extends React.Component {
       compassBearingDialogOpen: false,
     };
     const mapEnd = (event, { leafletElement }) => {
-      let { ignoreStopId, client } = this.props;
+      let { ignoreStopId, ignoreParkingId, client } = this.props;
 
       const zoom = leafletElement.getZoom();
 
@@ -42,6 +42,7 @@ class EditStopMap extends React.Component {
         const bounds = leafletElement.getBounds();
         let includeExpired = new Settings().getShowExpiredStops();
         getNeighbourStops(client, ignoreStopId, bounds, includeExpired);
+        getNeighbourParkings(client, ignoreParkingId, bounds, includeExpired);
       }
     };
     this.handleMapMoveEnd = debounce(mapEnd, 500);
@@ -78,7 +79,7 @@ class EditStopMap extends React.Component {
     return true;
   }
 
-  handleMapDragEnd(isQuay, index, event) {
+  handleMapDragEnd(isQuay, index, event, isParking) {
     const { dispatch } = this.props;
     const position = event.target.getLatLng();
 
@@ -95,7 +96,10 @@ class EditStopMap extends React.Component {
           formattedPosition,
         ),
       );
-    } else {
+    } else if (isParking) {
+      dispatch(ParkingActions.changeCurrentParkingPosition(formattedPosition));
+    }
+    else {
       dispatch(StopPlaceActions.changeCurrentStopPosition(formattedPosition));
     }
   }
@@ -165,11 +169,12 @@ class EditStopMap extends React.Component {
 
   componentDidMount() {
     const { leafletElement } = this.refs.leafletMap.refs.map;
-    const { dispatch, client, ignoreStopId } = this.props;
+    const { dispatch, client, ignoreStopId, ignoreParkingId } = this.props;
     dispatch(StopPlaceActions.setActiveMap(leafletElement));
     const bounds = leafletElement.getBounds();
     let includeExpired = new Settings().getShowExpiredStops();
     getNeighbourStops(client, ignoreStopId, bounds, includeExpired);
+    getNeighbourParkings(client, ignoreParkingId, bounds, includeExpired);
   }
 
   render() {
@@ -220,27 +225,47 @@ const mapStateToProps = state => {
   const currentStopPlace = state.stopPlace.current;
   const neighbourStops = state.stopPlace.neighbourStops;
 
+  const currentParking = state.parking.current;
+  const neighbourParkings = state.parking.neighbourParkings;
+
   let markers = [];
+  let position;
+  let zoom;
+  let minZoom;
 
   if (currentStopPlace) {
     markers = markers.concat(currentStopPlace);
+    position = state.stopPlace.centerPosition;
+    zoom = state.stopPlace.zoom;
+    minZoom = state.stopPlace.minZoom;
   }
 
   if (neighbourStops && neighbourStops.length) {
     markers = markers.concat(neighbourStops);
   }
 
+  if (currentParking) {
+    markers = markers.concat(currentParking);
+    position = state.parking.centerPosition;
+    zoom = state.parking.zoom;
+    minZoom = state.parking.minZoom;
+  }
+
+  if (neighbourParkings && neighbourParkings.length) {
+    markers = markers.concat(neighbourParkings);
+  }
+
   return {
-    position: state.stopPlace.centerPosition,
-    zoom: state.stopPlace.zoom,
+    position: position,
+    zoom: zoom,
+    minZoom: minZoom,
     activeBaselayer: state.user.activeBaselayer,
     enablePolylines: state.stopPlace.enablePolylines,
     isCreatingPolylines: state.stopPlace.isCreatingPolylines,
     missingCoordsMap: state.user.missingCoordsMap,
     markers,
     ignoreStopId: state.stopPlace.current ? state.stopPlace.current.id : -1,
-    minZoom: state.stopPlace.minZoom,
   };
 };
 
-export default withApollo(injectIntl(connect(mapStateToProps)(EditStopMap)));
+export default withApollo(injectIntl(connect(mapStateToProps)(EditMap)));

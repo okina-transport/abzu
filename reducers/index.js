@@ -16,6 +16,7 @@ limitations under the Licence. */
 export userReducer from './userReducer';
 export mapReducer from './mapReducer';
 export stopPlaceReducer from './stopPlaceReducer';
+export parkingReducer from './parkingReducer';
 export reportReducer from './reportReducer';
 export rolesReducer from './rolesReducer';
 export snackbarReducer from './snackbarReducer';

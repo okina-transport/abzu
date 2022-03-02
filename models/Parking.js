@@ -13,18 +13,21 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 
-import { getIn } from '../utils/';
+import {getIn, setDecimalPrecision} from '../utils/';
 import { hasExpired } from '../modelUtils/validBetween';
 import PARKING_TYPE from './parkingType';
 import PARKING_VEHICLE_TYPE from './parkingVehicleType';
+import {Entities} from "./Entities";
 
 class Parking {
-  constructor(parking) {
+  constructor(parking, isActive, userDefinedCoordinates) {
     this.parking = parking;
+    this.isActive = isActive;
+    this.userDefinedCoordinates = userDefinedCoordinates;
   }
 
   findNumberOfSpaces(userType, lookupKey) {
-    return this.parking.parkingProperties.length > 0
+    return (this.parking.parkingProperties !== undefined && this.parking.parkingProperties.length > 0)
       ? this.parking.parkingProperties
           .slice()
           .shift()
@@ -34,7 +37,7 @@ class Parking {
   }
 
   get numberOfSpaces() {
-    if (this.parking.parkingProperties.length) {
+    if (this.parking.parkingProperties !== undefined && this.parking.parkingProperties.length) {
       return this.findNumberOfSpaces('allUsers', 'numberOfSpaces');
     } else {
       return this.parking.totalCapacity;
@@ -74,12 +77,17 @@ class Parking {
   }
 
   toClient() {
-    const { parking } = this;
+    const { parking, isActive, userDefinedCoordinates } = this;
 
     let clientParking = {
       id: parking.id,
       name: getIn(parking, ['name', 'value'], ''),
       parkingType: this.parkingType,
+      parkingVehicleTypes: parking.parkingVehicleTypes,
+      hasExpired: hasExpired(parking.validBetween),
+      validBetween: parking.validBetween,
+      isActive: isActive,
+      entityType: Entities.PARKING,
       parkingPaymentProcess: parking.parkingPaymentProcess,
       rechargingAvailable: parking.rechargingAvailable,
       carpoolingAvailable: parking.carpoolingAvailable,
@@ -90,14 +98,25 @@ class Parking {
       numberOfSpacesForRegisteredDisabledUserType: this.isParkAndRide ? this.numberOfSpacesForRegisteredDisabledUserType : null,
       parkingLayout: this.isParkAndRide ? this.parking.parkingLayout : null,
       totalCapacity: parking.totalCapacity,
-      parkingVehicleTypes: parking.parkingVehicleTypes,
-      hasExpired: hasExpired(parking.validBetween),
-      validBetween: parking.validBetween
+      parentSiteRef: parking.parentSiteRef
     };
     let coordinates = getIn(parking, ['geometry', 'coordinates'], null);
 
     if (coordinates && coordinates.length) {
       clientParking.location = [coordinates[0][1], coordinates[0][0]];
+    }
+
+    if (parking.geometry && parking.geometry.coordinates) {
+      let coordinates = parking.geometry.coordinates[0].slice();
+      // Leaflet uses latLng, GeoJSON [long,lat]
+      clientParking.location = [
+        setDecimalPrecision(coordinates[1], 6),
+        setDecimalPrecision(coordinates[0], 6),
+      ];
+    } else {
+      if (userDefinedCoordinates && parking.id === userDefinedCoordinates.parkingId && userDefinedCoordinates.position) {
+        clientParking.location = userDefinedCoordinates.position.slice();
+      }
     }
 
     return clientParking;

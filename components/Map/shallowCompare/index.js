@@ -205,3 +205,33 @@ export const shallowCompareStopPlaceMarker = (props, nextProps) => {
 
   return false;
 };
+
+export const shallowCompareParkingMarker = (props, nextProps) => {
+  if (JSON.stringify(props.position) !== JSON.stringify(nextProps.position)) {
+    return true;
+  }
+
+  if (props.draggable !== nextProps.draggable) {
+    return true;
+  }
+
+  if (props.active !== nextProps.active) {
+    return true;
+  }
+
+  if (props.parkingType !== nextProps.parkingType) {
+    return true;
+  }
+  if (props.id !== nextProps.id) {
+    return true;
+  }
+
+  if (props.name !== nextProps.name) {
+    return true;
+  }
+
+  if (props.hasExpired !== nextProps.hasExpired) {
+    return true;
+  }
+  return false;
+};

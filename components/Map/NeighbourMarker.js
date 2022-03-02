@@ -104,7 +104,7 @@ class NeighbourMarker extends React.Component {
     let divIconBodyMarkup = ReactDOM.renderToStaticMarkup(
       <CustomMarkerIcon
         markerIndex={index}
-        stopType={stopType}
+        type={stopType}
         submode={submode}
         hasExpired={hasExpired}
         isMultimodal={isMultimodal}

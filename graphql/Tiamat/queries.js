@@ -117,6 +117,34 @@ export const stopPlaceBBQuery = gql`
     },
 `;
 
+export const parkingBBQuery = gql`
+    query parkingBBox($ignoreParkingId: String, $lonMin: BigDecimal!, $lonMax: BigDecimal!, $latMin: BigDecimal!, $latMax: BigDecimal!, $includeExpired: Boolean) {
+        parkingBBox(ignoreParkingId: $ignoreParkingId, latMin: $latMin, latMax: $latMax, lonMin: $lonMin, lonMax: $lonMax, size: 500, includeExpired: $includeExpired) {
+            id
+            geometry {
+                coordinates
+            }
+            name {
+                value
+            }
+            topographicPlace {
+                name {
+                    value
+                }
+                topographicPlaceType
+            }
+            validBetween {
+                fromDate
+                toDate
+            }
+            ...on Parking {
+                __typename
+                parkingType
+            }
+        }
+    },
+`;
+
 export const allEntities = gql`
     query stopPlaceAndPathLink($id: String!) {
         __typename
@@ -165,6 +193,16 @@ export const allEntities = gql`
     ${Fragments.stopPlace.verbose},
     ${Fragments.parentStopPlace.verbose},
     ${Fragments.pathLink.verbose},
+    ${Fragments.parking.verbose},
+`;
+
+export const allEntitiesParkings = gql`
+    query getParking($id: String!) {
+        __typename
+        parking: parking(id: $id, versionValidity: MAX_VERSION) {
+            ...VerboseParking
+        }
+    }
     ${Fragments.parking.verbose},
 `;
 
@@ -247,6 +285,15 @@ export const getStopById = gql`
                     }
                 }
             }
+        }
+    },
+`;
+
+export const getParkingById = gql`
+    query getParkingById($id: String!) {
+        parking(id: $id) {
+            id
+            __typename
         }
     },
 `;
@@ -481,6 +528,30 @@ export const stopPlaceAndPathLinkByVersion = gql`
     ${Fragments.parking.verbose}
 `;
 
+export const parkingByVersion = gql`
+    query getParking($id: String!, $version: Int) {
+        parking: parking(parkingId: $id) {
+            ...VerboseParking
+        }
+        versions:
+        parking(id: $id, allVersions: true, size: 100) {
+            id
+            validBetween {
+                fromDate
+                toDate
+            }
+            name {
+                value
+                lang
+            }
+            version
+            versionComment
+            changedBy
+        }
+    }
+    ${Fragments.parking.verbose}
+`;
+
 export const topopGraphicalPlacesQuery = gql`
     query TopopGraphicalPlaces($query: String!) {
         topographicPlace(query: $query) {
@@ -687,7 +758,7 @@ export const findTariffones = gql`
       }}
 }`;
 
-export const getStopPlaceNameWithRecommendations = gql`
-   query getStopPlaceNameWithRecommendations($name: String!) {
-      stopPlaceNameRecommendations(name: $name)
+export const getNameWithRecommendations = gql`
+   query getNameWithRecommendations($name: String!) {
+      nameRecommendations(name: $name)
 }`;

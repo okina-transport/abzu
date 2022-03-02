@@ -16,20 +16,21 @@ limitations under the Licence. */
 import { connect } from 'react-redux';
 import React from 'react';
 import LeafletMap from './LeafletMap';
-import { StopPlaceActions, UserActions } from '../../actions/';
+import {ParkingActions, StopPlaceActions, UserActions} from '../../actions/';
 import { withApollo } from 'react-apollo';
 import { getIn } from '../../utils/';
 import { injectIntl } from 'react-intl';
-import { getNeighbourStops } from '../../graphql/Tiamat/actions';
+import { getNeighbourStops, getNeighbourParkings } from '../../graphql/Tiamat/actions';
 import Settings from '../../singletons/SettingsManager';
 import debounce from 'lodash.debounce';
-import { getMarkersForMap } from '../../selectors/StopPlaceMap';
+import { getMarkersForMap } from '../../selectors/Map';
 
-class StopPlacesMap extends React.Component {
+class Map extends React.Component {
 
   constructor(props) {
     super(props);
     this.getNearbyStops = debounce(getNeighbourStops, 500);
+    this.getNearbyParking = debounce(getNeighbourParkings, 500);
   }
 
   componentDidMount() {
@@ -45,11 +46,14 @@ class StopPlacesMap extends React.Component {
   }
 
   handleClick(e, map) {
-    const { isCreatingNewStop } = this.props;
+    const { isCreatingNewStop, isCreatingNewParking } = this.props;
 
     if (isCreatingNewStop) {
       map.leafletElement.doubleClickZoom.disable();
       this.props.dispatch(StopPlaceActions.createNewStop(e.latlng));
+    } else if(isCreatingNewParking){
+      map.leafletElement.doubleClickZoom.disable();
+      this.props.dispatch(ParkingActions.createNewParking(e.latlng));
     } else {
       map.leafletElement.doubleClickZoom.enable();
     }
@@ -75,8 +79,9 @@ class StopPlacesMap extends React.Component {
 
     if (zoom > 14) {
       const bounds = leafletElement.getBounds();
-      const { ignoreStopId, client } = this.props;
+      const { ignoreStopId, client, ignoreParkingId } = this.props;
       this.getNearbyStops(client, ignoreStopId, bounds, includeExpired);
+      this.getNearbyParking(client, ignoreParkingId, bounds, includeExpired);
     } else {
       const { neighbourMarkersCount } = this.props;
       if (neighbourMarkersCount) {
@@ -114,13 +119,19 @@ const mapStateToProps = state => {
     kc: state.roles.kc,
     zoom: state.stopPlace.zoom,
     isCreatingNewStop: state.user.isCreatingNewStop,
+    isCreatingNewParking: state.user.isCreatingNewParking,
     activeBaselayer: state.user.activeBaselayer,
     ignoreStopId: getIn(
       state.stopPlace,
       ['activeSearchResult', 'id'],
       undefined,
     ),
+    ignoreParkingId: getIn(
+        state.parking,
+        ['activeSearchResult', 'id'],
+        undefined,
+    ),
   };
 };
 
-export default withApollo(injectIntl(connect(mapStateToProps)(StopPlacesMap)));
+export default withApollo(injectIntl(connect(mapStateToProps)(Map)));

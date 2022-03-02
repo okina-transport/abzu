@@ -39,7 +39,7 @@ module.exports = new Promise(function (resolve, reject) {
     },
     tiamatBaseUrl: {
       doc: 'Base URL for for tiamat graphql endpoint',
-      default: 'https://mobi-iti-lro.dev.okina.fr/api-proxy/api/stop_places/1.0/graphql',
+	    default: 'http://0.0.0.0:8585/services/stop_places/graphql',
       env: 'TIAMAT_BASE_URL'
     },
     OTPUrl: {

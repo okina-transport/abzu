@@ -178,7 +178,7 @@
   "log_out": "Log out",
   "lookup_coordinates": "Lookup coordinates",
   "making_parent_stop_place_title": "You are now making a new multimodal stop place",
-  "making_stop_place_hint": "Double click anywhere on the map to set desired location. Click the marker for more options",
+  "making_hint": "Double click anywhere on the map to set desired location. Click the marker for more options",
   "making_stop_place_title": "You are now making a new stop place",
   "map_settings": "Map preferences",
   "merged": "Merge",

@@ -25,6 +25,7 @@ import {
     mutateCreateMultiModalStopPlace,
     removeStopPlaceFromParent,
     mutateStopPlace,
+    mutateParking,
     updateChildOfParentStop,
     mutateRemoveTag,
     mutateCreateTag,
@@ -34,22 +35,23 @@ import {
     deleteParkingMutation
 } from './mutations';
 import {
-  allVersionsOfStopPlace,
-  allEntities,
-  stopPlaceBBQuery,
-  getMergeInfoStopPlace,
-  topopGraphicalPlacesQuery,
-  findStop,
-  getStopPlacesById,
-  getPolygons,
-  getTagsQuery,
-  findTagByNameQuery,
-  getStopById,
-  getQueryTopographicPlaces,
-  getTagsByNameQuery,
-  getGroupOfStopPlaceQuery,
-  findTariffones,
-  getStopPlaceNameWithRecommendations
+    allVersionsOfStopPlace,
+    allEntities,
+    stopPlaceBBQuery,
+    getMergeInfoStopPlace,
+    topopGraphicalPlacesQuery,
+    findStop,
+    getStopPlacesById,
+    getPolygons,
+    getTagsQuery,
+    findTagByNameQuery,
+    getStopById,
+    getQueryTopographicPlaces,
+    getTagsByNameQuery,
+    getGroupOfStopPlaceQuery,
+    findTariffones,
+    getNameWithRecommendations,
+    parkingBBQuery
 } from './queries';
 import mapToMutationVariables from '../../modelUtils/mapToQueryVariables';
 
@@ -81,6 +83,15 @@ export const getStopPlaceById = (client, id) =>
       id
     }
   });
+
+export const getParkingById = (client, id) =>
+    client.query({
+        query: getParkingById,
+        fetchPolicy: 'network-only',
+        variables: {
+            id
+        }
+    });
 
 export const getAddStopPlaceInfo = (client, stopPlaceIds) =>
   client.query({
@@ -179,7 +190,7 @@ export const terminateStop = (client, stopPlaceId, shouldTerminatePermanently, v
             toDate,
       modificationEnumeration: shouldTerminatePermanently ? 'delete' : null
         }
-    })
+    });
 
 export const addToMultiModalStopPlace = (client, parentSiteRef, stopPlaceIds) =>
     client.mutate({
@@ -298,6 +309,21 @@ export const getNeighbourStops = (client, ignoreStopPlaceId, bounds, includeExpi
         variables: {
             includeExpired: includeExpired,
             ignoreStopPlaceId,
+            latMin: bounds.getSouthWest().lat,
+            latMax: bounds.getNorthEast().lat,
+            lonMin: bounds.getSouthWest().lng,
+            lonMax: bounds.getNorthEast().lng,
+        }
+    })
+);
+
+export const getNeighbourParkings = (client, ignoreParkingId, bounds, includeExpired) => (
+    client.query({
+        fetchPolicy: 'network-only',
+        query: parkingBBQuery,
+        variables: {
+            includeExpired: includeExpired,
+            ignoreParkingId,
             latMin: bounds.getSouthWest().lat,
             latMax: bounds.getNorthEast().lat,
             lonMin: bounds.getSouthWest().lng,
@@ -431,9 +457,35 @@ export const deleteParking = (client, id) =>
         fetchPolicy: 'network-only'
     });
 
-export const getStopPlaceName = (client, name) =>
+export const saveParking = (client, parking) => {
+    const parkings = [];
+    parkings.push(parking);
+    const variables = mapToMutationVariables.mapParkingToVariables(
+        parkings,
+        null
+    );
+
+    return new Promise((resolve, reject) => {
+        client.mutate({
+            mutation: mutateParking,
+            variables: {Parking: variables},
+            fetchPolicy: 'network-only'
+        }).then(result => {
+            if (result.data.mutateParking[0].id) {
+                console.log(result.data.mutateParking[0].id);
+                resolve(result.data.mutateParking[0].id);
+            } else {
+                reject("Id not returned");
+            }
+        }).catch(err => {
+            reject(err);
+        });
+    });
+}
+
+export const getName = (client, name) =>
     client.query({
-        query: getStopPlaceNameWithRecommendations,
+        query: getNameWithRecommendations,
         variables: {
             name
         },

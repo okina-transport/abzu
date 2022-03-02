@@ -18,6 +18,7 @@ import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import mapReducer from '../reducers/mapReducer';
 import stopPlaceReducer from '../reducers/stopPlaceReducer';
+import parkingReducer from '../reducers/parkingReducer';
 import userReducer from '../reducers/userReducer';
 import rolesReducer from '../reducers/rolesReducer';
 import reportReducer from '../reducers/reportReducer';
@@ -81,9 +82,16 @@ export default function configureStore(kc) {
       lastMutatedStopPlaceId: [],
       isFetchingMergeInfo: false
     },
+    parking: {
+      centerPosition: window.config.defaultMapCentroid,
+      zoom: 7,
+      minZoom: 14,
+      lastMutatedParkingId: []
+    },
     user: {
       path: '/',
       isCreatingNewStop: false,
+      isCreatingNewParking: false,
       missingCoordsMap: {},
       searchFilters: {
         stopType: [],
@@ -114,6 +122,10 @@ export default function configureStore(kc) {
         open: false,
         stopPlaceId: null
       },
+      newParkingCreated: {
+        open: false,
+        parkingId: null
+      },
       client: tiamatClient,
       showPublicCode: Settings.getShowPublicCode(),
       adjacentStopDialogOpen: false
@@ -129,6 +141,7 @@ export default function configureStore(kc) {
     user: userReducer,
     routing: routerReducer,
     stopPlace: stopPlaceReducer,
+    parking: parkingReducer,
     report: reportReducer,
     apollo: tiamatClient.reducer(),
     roles: rolesReducer,

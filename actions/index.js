@@ -14,6 +14,7 @@ limitations under the Licence. */
 
 
 export StopPlaceActions from './StopPlaceActions';
+export ParkingActions from './ParkingActions';
 export UserActions from './UserActions';
 export AssessmentActions from './AssessmentActions';
 export EquipmentActions from './EquipmentActions';

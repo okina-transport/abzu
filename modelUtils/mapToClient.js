@@ -12,17 +12,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import { setDecimalPrecision, getIn, getInTransform } from '../utils/';
-import { LatLng } from 'leaflet';
+import {getIn, getInTransform, setDecimalPrecision} from '../utils/';
 import * as types from '../actions/Types';
 import moment from 'moment';
-import { hasExpired } from '../modelUtils/validBetween';
-import { getImportedId } from '../models/stopPlaceUtils';
-import {
-  getUniquePathLinks,
-  calculateDistance,
-  calculateEstimate
-} from '../modelUtils/leafletUtils';
+import {hasExpired} from '../modelUtils/validBetween';
+import {getImportedId} from '../models/stopPlaceUtils';
+import {calculateDistance, calculateEstimate, getUniquePathLinks} from '../modelUtils/leafletUtils';
 import Quay from '../models/Quay';
 import StopPlace from '../models/StopPlace';
 import ParentStopPlace from '../models/ParentStopPlace';
@@ -30,7 +25,7 @@ import GroupOfStopPlaces from '../models/GroupOfStopPlaces';
 import PathLink from '../models/PathLink';
 import Parking from '../models/Parking';
 import ChildOfParentStopPlace from '../models/ChildOfParentStopPlace';
-import { Entities } from '../models/Entities';
+import {Entities} from '../models/Entities';
 import PARKING_TYPE from '../models/parkingType';
 import PARKING_VEHICLE_TYPE from '../models/parkingVehicleType';
 
@@ -246,6 +241,20 @@ helpers.mapStopToClientStop = (
   }
 };
 
+helpers.mapParkingToClientParking = (
+    parking,
+    isActive,
+    userDefinedCoordinates = {}
+    ) => {
+  if (parking.__typename === 'Parking') {
+    return new Parking(
+        parking,
+        isActive,
+        userDefinedCoordinates
+    ).toClient();
+}
+};
+
 helpers.mapQuayToClientQuay = (quay, accessibilityAssessment) => {
   return new Quay(quay, accessibilityAssessment).toClient();
 };
@@ -272,6 +281,10 @@ helpers.mapNeighbourStopsToClientStops = (stops, currentStopPlace) => {
   return allStops.concat(extractedChildren);
 };
 
+helpers.mapNeighbourParkingsToClientParkings = (parkings) => {
+  return parkings.map(parking => helpers.mapParkingToClientParking(parking, false));
+};
+
 helpers.mapSearchResultToStopPlaces = stopPlaces => {
   return stopPlaces.map(stop => {
     if (stop.__typename === 'StopPlace') {
@@ -282,10 +295,20 @@ helpers.mapSearchResultToStopPlaces = stopPlaces => {
   });
 };
 
+helpers.mapSearchResultToParkings = parkings => {
+  return parkings.map(parking => {
+      return helpers.mapSearchResultParking(parking);
+  });
+};
+
 helpers.mapSearchResultStopPlace = stop => {
   let searchResult = new StopPlace(stop, true).toClient();
   searchResult.quays = stop.quays;
   return searchResult;
+};
+
+helpers.mapSearchResultParking = parking => {
+  return new Parking(parking, true).toClient();
 };
 
 helpers.mapSearchResultatGroup = groupsOfStopPlaces => {
@@ -412,7 +435,24 @@ helpers.createNewStopFromLocation = location => ({
   parking: [],
   isNewStop: true,
   isActive: true,
-  keyValues: []
+  keyValues: [],
+  entityType: Entities.STOP_PLACE
+});
+
+helpers.createNewParkingFromLocation = location => ({
+  id: null,
+  name: '',
+  description: '',
+  location: location.map(pos => setDecimalPrecision(pos, 6)),
+  parkingType: null,
+  topographicPlace: '',
+  tariffZones: [],
+  entrances: [],
+  pathJunctions: [],
+  isNewParking: true,
+  isActive: true,
+  keyValues: [],
+  entityType: Entities.PARKING
 });
 
 helpers.createNewParentStopFromLocation = location => ({
@@ -424,7 +464,8 @@ helpers.createNewParentStopFromLocation = location => ({
   children: [],
   isNewStop: true,
   isActive: true,
-  keyValues: []
+  keyValues: [],
+  entityType: Entities.STOP_PLACE
 });
 
 helpers.getCenterPosition = geometry => {
@@ -535,6 +576,13 @@ helpers.updateCurrentStopWithType = (current, type) => {
   });
 };
 
+helpers.updateCurrentParkingWithType = (current, type) => {
+  return Object.assign({}, current, {
+    parkingType: type,
+    submode: null
+  });
+};
+
 helpers.updateCurrentStopWithSubMode = (
   current,
   stopPlaceType,
@@ -549,6 +597,12 @@ helpers.updateCurrentStopWithSubMode = (
 };
 
 helpers.updateCurrentStopWithPosition = (current, location) => {
+  return Object.assign({}, current, {
+    location: location
+  });
+};
+
+helpers.updateCurrentParkingWithPosition = (current, location) => {
   return Object.assign({}, current, {
     location: location
   });
@@ -816,80 +870,126 @@ helpers.editAltName = (original, payLoad) => {
   return copy;
 };
 
-helpers.changeParkingName = (original, payLoad) => {
+ helpers.changeParkingName = (original, payLoad) => {
   const { index, name } = payLoad;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].name = name;
+  if(copy.parking){
+    copy.parking[index].name = name;
+  } else{
+    copy.name = name;
+  }
   return copy;
 };
 
 helpers.changeParkingLayout = (original, payLoad) => {
   const { index, parkingLayout } = payLoad;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].parkingLayout = parkingLayout;
+  if(copy.parking){
+    copy.parking[index].parkingLayout = parkingLayout;
+  }
+  else{
+    copy.parkingLayout = parkingLayout;
+  }
   return copy;
 }
 
 helpers.changeParkingPaymentProcess = (original, payLoad) => {
   const { index, parkingPaymentProcess } = payLoad;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].parkingPaymentProcess = parkingPaymentProcess;
+  if(copy.parking){
+    copy.parking[index].parkingPaymentProcess = parkingPaymentProcess;
+  } else{
+    copy.parkingPaymentProcess = parkingPaymentProcess;
+  }
   return copy;
 }
 
 helpers.changeParkingRechargingAvailable = (original, payload) => {
   const { index, rechargingAvailable } = payload;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].rechargingAvailable = rechargingAvailable;
+  if(copy.parking){
+    copy.parking[index].rechargingAvailable = rechargingAvailable;
+  } else{
+    copy.rechargingAvailable = rechargingAvailable;
+  }
   return copy;
 }
 
 helpers.changeParkingCarpoolingAvailable = (original, payload) => {
   const { index, carpoolingAvailable } = payload;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].carpoolingAvailable = carpoolingAvailable;
+  if(copy.parking){
+    copy.parking[index].carpoolingAvailable = carpoolingAvailable;
+  } else{
+    copy.carpoolingAvailable = carpoolingAvailable;
+  }
   return copy;
 }
 
 helpers.changeParkingCarsharingAvailable = (original, payload) => {
   const { index, carsharingAvailable } = payload;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].carsharingAvailable = carsharingAvailable;
+  if(copy.parking){
+    copy.parking[index].carsharingAvailable = carsharingAvailable;
+  } else{
+    copy.carsharingAvailable = carsharingAvailable;
+  }
   return copy;
 }
 
 helpers.changeParkingNumberOfSpaces = (original, payload) => {
   const { index, numberOfSpaces } = payload;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].numberOfSpaces = numberOfSpaces;
+  if(copy.parking){
+    copy.parking[index].numberOfSpaces = numberOfSpaces;
+  } else{
+    copy.numberOfSpaces = numberOfSpaces;
+  }
   return copy;
 }
 
 helpers.changeParkingNumberOfSpacesWithRechargePoint = (original, payload) => {
   const { index, numberOfSpacesWithRechargePoint } = payload;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].numberOfSpacesWithRechargePoint = numberOfSpacesWithRechargePoint;
+  if(copy.parking){
+    copy.parking[index].numberOfSpacesWithRechargePoint = numberOfSpacesWithRechargePoint;
+  } else{
+    copy.numberOfSpacesWithRechargePoint = numberOfSpacesWithRechargePoint;
+  }
   return copy;
 }
 
 helpers.changeParkingNumberOfCarsharingSpaces = (original, payload) => {
   const { index, numberOfCarsharingSpaces } = payload;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].numberOfCarsharingSpaces = numberOfCarsharingSpaces;
+  if(copy.parking){
+    copy.parking[index].numberOfCarsharingSpaces = numberOfCarsharingSpaces;
+  } else{
+    copy.numberOfCarsharingSpaces = numberOfCarsharingSpaces;
+  }
   return copy;
 }
 
 helpers.changeParkingNumberOfSpacesForRegisteredDisabledUserType = (original, payload) => {
   const { index, numberOfSpacesForRegisteredDisabledUserType } = payload;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].numberOfSpacesForRegisteredDisabledUserType = numberOfSpacesForRegisteredDisabledUserType;
+  if(copy.parking){
+    copy.parking[index].numberOfSpacesForRegisteredDisabledUserType = numberOfSpacesForRegisteredDisabledUserType;
+  } else{
+    copy.numberOfSpacesForRegisteredDisabledUserType = numberOfSpacesForRegisteredDisabledUserType;
+  }
   return copy;
 }
 
 helpers.changeParkingTotalCapacity = (original, payLoad) => {
   const { index, totalCapacity } = payLoad;
   const copy = JSON.parse(JSON.stringify(original));
-  copy.parking[index].totalCapacity = Number(totalCapacity);
+  if(copy.parking){
+    copy.parking[index].totalCapacity = Number(totalCapacity);
+  }
+  else{
+    copy.totalCapacity = Number(totalCapacity);
+  }
   return copy;
 };
 

@@ -72,6 +72,13 @@ export const createStopPlaceHref = stopPlaceId => {
   return href;
 };
 
+export const createParkingHref = parkingId => {
+  const path = window.location.href;
+  const lastIndexOfSlash = path.lastIndexOf('/') + 1;
+  const href = path.substr(0, lastIndexOfSlash) + parkingId;
+  return href;
+};
+
 export const toCamelCase = string => {
   if (!string) return '';
 

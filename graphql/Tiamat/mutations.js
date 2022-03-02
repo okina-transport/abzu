@@ -88,7 +88,7 @@ export const mutateCreateMultiModalStopPlace = gql`
       }
   },
   ${Fragments.parentStopPlace.verbose}
-`
+`;
 
 
 export const mutateTerminateStopPlace = gql`
@@ -100,7 +100,7 @@ export const mutateTerminateStopPlace = gql`
   },
   ${Fragments.stopPlace.verbose},
   ${Fragments.parentStopPlace.verbose}
-`
+`;
 
 export const mutateAddToMultiModalStopPlace = gql`
   mutation mutateAddToMultiModalStopPlace($parentSiteRef: String!, $stopPlaceIds: [String]!) {
@@ -168,7 +168,7 @@ export const removeStopPlaceFromParent = gql`
         }
     },
     ${Fragments.parentStopPlace.verbose}
-`
+`;
 
 export const mutateMergeStopPlaces = gql`
   mutation mergeStopPlaces($fromStopPlaceId: String!, $toStopPlaceId: String!, $fromVersionComment: String!, $toVersionComment: String!) {

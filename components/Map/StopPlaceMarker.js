@@ -63,7 +63,7 @@ class StopPlaceMarker extends React.Component {
         markerIndex={index}
         isMultimodal={isMultimodal}
         isMultimodalChild={isMultimodalChild}
-        stopType={stopType}
+        type={stopType}
         active={active}
         submode={submode}
         hasExpired={hasExpired}
@@ -122,7 +122,7 @@ class StopPlaceMarker extends React.Component {
         position={markerLocation}
         zIndexOffset={isMultimodal ? 150 : 100}
         onDragend={event => {
-          handleDragEnd(false, index, event);
+          handleDragEnd(false, index, event, false);
         }}
         draggable={draggable}
       >

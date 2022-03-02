@@ -15,7 +15,6 @@ limitations under the Licence. */
 
 import { connect } from 'react-redux';
 import React from 'react';
-import EditStopMap from '../components/Map/EditStopMap';
 import EditStopGeneral from '../components/EditStopPage/EditStopGeneral';
 import EditParentGeneral from '../components/EditParentStopPage/EditParentGeneral';
 import InformationBanner from '../components/EditStopPage/InformationBanner';
@@ -32,6 +31,7 @@ import { getIn } from '../utils';
 import NewElementsBox from '../components/EditStopPage/NewElementsBox';
 import NewStopPlaceInfo from '../components/EditStopPage/NewStopPlaceInfo';
 import LoadingPage from './LoadingPage';
+import EditMap from "../components/Map/EditMap";
 
 
 
@@ -161,13 +161,13 @@ class StopPlace extends React.Component {
           <div>
             <NewElementsBox disabled={disabled} />
             <EditStopGeneral disabled={disabled} />
-            <EditStopMap disabled={disabled} />
+            <EditMap disabled={disabled} />
           </div>
         }
         {stopPlace && stopPlace.isParent &&
         <div>
           <EditParentGeneral disabled={disabled}/>
-          <EditStopMap disabled={disabled} />
+          <EditMap disabled={disabled} />
         </div>
         }
       </div>

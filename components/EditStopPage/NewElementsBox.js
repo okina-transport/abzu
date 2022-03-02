@@ -50,7 +50,7 @@ class NewElementsBox extends React.Component {
   }
   render() {
     const { formatMessage } = this.props.intl;
-    const { activeStopPlace, missingCoordsMap, disabled } = this.props;
+    const { activeStopPlace, missingCoordsMap, disabled, activeParking } = this.props;
 
     const boxWrapperStyle = {
       width: 'auto',
@@ -95,11 +95,14 @@ class NewElementsBox extends React.Component {
 
     let shouldShowNewStop = true;
 
-    if (
-      activeStopPlace &&
-      (activeStopPlace.location || missingCoordsMap[activeStopPlace.id])
-    ) {
+    if (activeStopPlace && (activeStopPlace.location || missingCoordsMap[activeStopPlace.id])) {
       shouldShowNewStop = false;
+    }
+
+    let shouldShowNewParking = true;
+
+    if (activeParking && (activeParking.location || missingCoordsMap[activeParking.id])) {
+      shouldShowNewParking = false;
     }
 
     // ROR-272: Hide this elements until they are supported by backend
@@ -121,7 +124,7 @@ class NewElementsBox extends React.Component {
         />
 
         <div style={{ marginTop: 0, marginBottom: 0 }}>
-          {shouldShowNewStop
+          {(shouldShowNewStop && shouldShowNewParking)
             ? <div style={elementStyle}>
                 <img
                   ref="stop_place"
@@ -138,6 +141,7 @@ class NewElementsBox extends React.Component {
                 <div style={titleStyle}>{newStopText}</div>
               </div>
             : null}
+          {shouldShowNewParking ?
           <div style={elementStyleCenterIcon}>
             <img
               id="drag1"
@@ -149,6 +153,7 @@ class NewElementsBox extends React.Component {
             />
             <div style={titleStyle}>{quayText}</div>
           </div>
+              : null}
           <div style={temporaryHidden}>
             <img
               ref="pathJunction"
@@ -171,6 +176,7 @@ class NewElementsBox extends React.Component {
             />
             <div style={titleStyle}>{entranceText}</div>
           </div>
+          {shouldShowNewParking ?
           <div style={elementStyle}>
             <img
               ref="parkAndRide"
@@ -182,6 +188,8 @@ class NewElementsBox extends React.Component {
             />
             <div style={titleStyle}>{parkAndRideText}</div>
           </div>
+              : null}
+          {shouldShowNewParking ?
           <div style={elementStyle}>
             <img
               ref="bikeParking"
@@ -193,6 +201,7 @@ class NewElementsBox extends React.Component {
             />
             <div style={titleStyle}>{bikeParkingText}</div>
           </div>
+          : null}
         </div>
       </div>
     );
@@ -265,6 +274,7 @@ const mapStateToProps = state => ({
   activeMap: state.mapUtils.activeMap,
   missingCoordsMap: state.user.missingCoordsMap,
   activeStopPlace: state.stopPlace.current,
+  activeParking: state.parking.current
 });
 
 export default injectIntl(connect(mapStateToProps)(NewElementsBox));

@@ -34,3 +34,10 @@ export const newStopPlaceMarkerText = formatMessage => ({
   createNow: formatMessage({ id: 'create_now' }),
   createNotAllowed: formatMessage({id: 'create_not_allowed'})
 });
+
+export const newParkingMarkerText = formatMessage => ({
+    newParkingTitle: formatMessage({ id: 'new_parking_title' }),
+    newParkingQuestion: formatMessage({ id: 'new_parking_question' }),
+    createNow: formatMessage({ id: 'create_now' }),
+    createNotAllowed: formatMessage({id: 'create_not_allowed'})
+});

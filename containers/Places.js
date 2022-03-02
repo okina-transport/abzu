@@ -15,16 +15,23 @@ limitations under the Licence. */
 import React from 'react';
 import { connect } from 'react-redux';
 import SearchBox from '../components/MainPage/SearchBox';
-import StopPlacesMap from '../components/Map/StopPlacesMap';
-import { getStopPlaceById, getGroupOfStopPlacesById } from '../graphql/Tiamat/actions';
+import Map from '../components/Map/Map';
+import {getStopPlaceById, getGroupOfStopPlacesById, getParkingById} from '../graphql/Tiamat/actions';
 import { withApollo } from 'react-apollo';
 import formatHelpers from '../modelUtils/mapToClient';
 import StopPlaceActions from '../actions/StopPlaceActions';
-import { removeIdParamFromURL, updateURLWithId, getStopPlaceIdFromURL, getGroupOfStopPlacesIdFromURL } from '../utils/URLhelpers';
+import {
+  removeIdParamFromURL,
+  updateURLWithId,
+  getStopPlaceIdFromURL,
+  getGroupOfStopPlacesIdFromURL,
+  getParkingIdFromURL
+} from '../utils/URLhelpers';
 import '../styles/main.css';
 import Loader from '../components/Dialogs/Loader';
+import {ParkingActions} from "../actions";
 
-class StopPlaces extends React.Component {
+class Places extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -80,31 +87,82 @@ class StopPlaces extends React.Component {
     }
   }
 
+  handleLoadParking(props, parkingId, forceLoad) {
+    const { activeSearchResult, client, dispatch } = props;
+
+    if (forceLoad || (!activeSearchResult && parkingId)) {
+      this.setState({ isLoading: true });
+
+      getParkingById(client, parkingId)
+          .then(({ data }) => {
+            this.setState({ isLoading: false });
+            if (data.parking && data.parking.length) {
+              const parkings = formatHelpers.mapSearchResultToParkings(
+                  data.parking
+              );
+              if (parking.length) {
+                dispatch(StopPlaceActions.setMarkerOnMap(parkings[0]));
+              } else {
+                removeIdParamFromURL('parkingId');
+              }
+            } else {
+              removeIdParamFromURL('parkingId');
+            }
+          })
+          .catch(err => {
+            removeIdParamFromURL('parkingId');
+            this.setState({ isLoading: false });
+          });
+    } else if (!parkingId && activeSearchResult && activeSearchResult.id) {
+      updateURLWithId('parkingId', activeSearchResult.id);
+    }
+  }
+
   componentDidMount() {
-    const { lastMutatedStopPlaceId, activeSearchResult, dispatch } = this.props;
+    const { lastMutatedStopPlaceId, activeSearchResult, dispatch, lastMutatedParkingId } = this.props;
     const searchResultId = activeSearchResult ? activeSearchResult.id : null;
     const shouldRefreshStopPlace =
       (lastMutatedStopPlaceId.length && searchResultId !== null) &&
       (lastMutatedStopPlaceId.indexOf(searchResultId) > -1);
 
+    const shouldRefreshParking =
+        (lastMutatedParkingId.length && searchResultId !== null) &&
+        (lastMutatedParkingId.indexOf(searchResultId) > -1);
+
     const stopPlaceIdFromURL = getStopPlaceIdFromURL();
+    const parkingIdFromURL = getParkingIdFromURL();
     const groupOfStopPlacesFromURL = getGroupOfStopPlacesIdFromURL();
 
     const stopPlaceId = shouldRefreshStopPlace
       ? searchResultId
       : stopPlaceIdFromURL;
 
+    const parkingId = shouldRefreshParking
+        ? searchResultId
+        : parkingIdFromURL;
+
     if (shouldRefreshStopPlace) {
       dispatch(StopPlaceActions.clearLastMutatedStopPlaceId());
     }
 
+    if (shouldRefreshParking) {
+      dispatch(ParkingActions.clearLastMutatedParkingId());
+    }
+
     if (groupOfStopPlacesFromURL) {
       this.handleGroupOfStopPlace(groupOfStopPlacesFromURL);
-    } else {
+    } else if (shouldRefreshStopPlace) {
       this.handleLoadStopPlace(
         this.props,
         stopPlaceId,
         shouldRefreshStopPlace
+      );
+    }
+    else if (shouldRefreshParking) {
+      this.handleLoadParking(
+          this.props,
+          parkingId,
+          shouldRefreshParking
       );
     }
   }
@@ -115,16 +173,17 @@ class StopPlaces extends React.Component {
       <div>
         {isLoading && <Loader />}
         <SearchBox />
-        <StopPlacesMap />
+        <Map />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ stopPlace, user }) => ({
+const mapStateToProps = ({ stopPlace, user, parking }) => ({
   activeSearchResult: stopPlace.activeSearchResult,
   lastMutatedStopPlaceId: stopPlace.lastMutatedStopPlaceId,
+  lastMutatedParkingId: parking.lastMutatedParkingId,
   currentPath: user.path
 });
 
-export default withApollo(connect(mapStateToProps)(StopPlaces));
+export default withApollo(connect(mapStateToProps)(Places));

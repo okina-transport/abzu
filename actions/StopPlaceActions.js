@@ -128,7 +128,10 @@ StopPlaceActions.setMarkerOnMap = data => dispatch => {
     updateURLWithId('stopPlaceId', data.id);
   } else if (data.entityType === Entities.GROUP_OF_STOP_PLACE) {
     updateURLWithId('groupOfStopPlacesId', data.id);
-  } else {
+  } else if (data.entityType === Entities.PARKING) {
+    updateURLWithId('parkingId', data.id);
+  }
+  else {
     console.error('entityType not found', data.entityType, ', will not update URL');
   }
 };
@@ -297,7 +300,7 @@ StopPlaceActions.changeParkingTotalCapacity = (
   totalCapacity,
 ) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_TOTAL_CAPACITY, {
+    createThunk(types.CHANGED_PARKING_TOTAL_CAPACITY_IN_STOP_PLACE, {
       index,
       totalCapacity,
     }),
@@ -306,7 +309,7 @@ StopPlaceActions.changeParkingTotalCapacity = (
 
 StopPlaceActions.changeParkingName = (index, name) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_NAME, {
+    createThunk(types.CHANGED_PARKING_NAME_IN_STOP_PLACE, {
       index,
       name,
     }),
@@ -315,7 +318,7 @@ StopPlaceActions.changeParkingName = (index, name) => dispatch => {
 
 StopPlaceActions.changeParkingLayout = (index, parkingLayout) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_LAYOUT, {
+    createThunk(types.CHANGED_PARKING_LAYOUT_IN_STOP_PLACE, {
       index,
       parkingLayout
     }),
@@ -324,7 +327,7 @@ StopPlaceActions.changeParkingLayout = (index, parkingLayout) => dispatch => {
 
 StopPlaceActions.changeParkingPaymentProcess = (index, parkingPaymentProcess) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_PAYMENT_PROCESS, {
+    createThunk(types.CHANGED_PARKING_PAYMENT_PROCESS_IN_STOP_PLACE, {
       index,
       parkingPaymentProcess
     }),
@@ -333,7 +336,7 @@ StopPlaceActions.changeParkingPaymentProcess = (index, parkingPaymentProcess) =>
 
 StopPlaceActions.changeParkingRechargingAvailable = (index, rechargingAvailable) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_RECHARGING_AVAILABLE, {
+    createThunk(types.CHANGED_PARKING_RECHARGING_AVAILABLE_IN_STOP_PLACE, {
       index,
       rechargingAvailable
     }),
@@ -342,7 +345,7 @@ StopPlaceActions.changeParkingRechargingAvailable = (index, rechargingAvailable)
 
 StopPlaceActions.changeParkingCarpoolingAvailable = (index, carpoolingAvailable) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_CARPOOLING_AVAILABLE, {
+    createThunk(types.CHANGED_PARKING_CARPOOLING_AVAILABLE_IN_STOP_PLACE, {
       index,
       carpoolingAvailable
     }),
@@ -351,7 +354,7 @@ StopPlaceActions.changeParkingCarpoolingAvailable = (index, carpoolingAvailable)
 
 StopPlaceActions.changeParkingCarsharingAvailable = (index, carsharingAvailable) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_CARSHARING_AVAILABLE, {
+    createThunk(types.CHANGED_PARKING_CARSHARING_AVAILABLE_IN_STOP_PLACE, {
       index,
       carsharingAvailable
     }),
@@ -360,7 +363,7 @@ StopPlaceActions.changeParkingCarsharingAvailable = (index, carsharingAvailable)
 
 StopPlaceActions.changeParkingNumberOfSpaces = (index, numberOfSpaces) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES, {
+    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_IN_STOP_PLACE, {
       index,
       numberOfSpaces
     }),
@@ -369,7 +372,7 @@ StopPlaceActions.changeParkingNumberOfSpaces = (index, numberOfSpaces) => dispat
 
 StopPlaceActions.changeParkingNumberOfSpacesWithRechargePoint = (index, numberOfSpacesWithRechargePoint) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_WITH_RECHARGE_POINT, {
+    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_WITH_RECHARGE_POINT_IN_STOP_PLACE, {
       index,
       numberOfSpacesWithRechargePoint
     }),
@@ -379,7 +382,7 @@ StopPlaceActions.changeParkingNumberOfSpacesWithRechargePoint = (index, numberOf
 
 StopPlaceActions.changeParkingNumberOfCarsharingSpaces = (index, numberOfCarsharingSpaces) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_NUMBER_OF_CARSHARING_SPACES, {
+    createThunk(types.CHANGED_PARKING_NUMBER_OF_CARSHARING_SPACES_IN_STOP_PLACE, {
       index,
       numberOfCarsharingSpaces
     }),
@@ -388,7 +391,7 @@ StopPlaceActions.changeParkingNumberOfCarsharingSpaces = (index, numberOfCarshar
 
 StopPlaceActions.changeParkingNumberOfSpacesForRegisteredDisabledUserType = (index, numberOfSpacesForRegisteredDisabledUserType) => dispatch => {
   dispatch(
-    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_FOR_REGISTERED_DISABLED_USER_TYPE, {
+    createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_FOR_REGISTERED_DISABLED_USER_TYPE_IN_STOP_PLACE, {
       index,
       numberOfSpacesForRegisteredDisabledUserType
     }),

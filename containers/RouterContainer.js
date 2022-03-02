@@ -16,11 +16,12 @@ limitations under the Licence. */
 import React from 'react';
 import { Router, Route, IndexRoute } from 'react-router';
 import App from './App';
-import StopPlaces from './StopPlaces';
+import Places from './Places';
 import StopPlace from './StopPlace';
 import ReportPage from './ReportPage';
 import Routes from '../routes/';
 import GroupOfStopPlaces from './GroupOfStopPlaces';
+import Parking from "./Parking";
 
 class RouterContainer extends React.Component {
   render() {
@@ -28,10 +29,11 @@ class RouterContainer extends React.Component {
 
     const routes = (
       <Route path={path} component={App}>
-        <IndexRoute component={StopPlaces} />
+        <IndexRoute component={Places} />
         <Route path={path + Routes.STOP_PLACE + '/:stopId'} component={StopPlace} />
         <Route path={path + Routes.GROUP_OF_STOP_PLACE + '/:groupId'} component={GroupOfStopPlaces} />
-        <Route path={path + 'reports'} component={ReportPage} />
+        <Route path={path + Routes.REPORTS} component={ReportPage} />
+        <Route path={path + Routes.PARKING + '/:parkingId'} component={Parking} />
       </Route>
     );
 

@@ -18,6 +18,11 @@ const parkingType = Object.freeze({
   UNKNOWN: 'unknown'
 });
 
-export const parkingTypes = Object.values(parkingType);
+
+export const unknownParkingType = {
+  nb: 'Modalitet ikke satt',
+  en: 'Modality not defined',
+  fr: 'Type de parking non défini'
+};
 
 export default parkingType;

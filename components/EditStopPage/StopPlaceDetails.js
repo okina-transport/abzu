@@ -19,12 +19,7 @@ import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import ImportedId from './ImportedId';
-import {
-    StopPlaceActions,
-    AssessmentActions,
-    EquipmentActions,
-    UserActions
-} from '../../actions/';
+import {AssessmentActions, EquipmentActions, StopPlaceActions, UserActions} from '../../actions/';
 import {connect} from 'react-redux';
 import TicketMachine from '../../static/icons/facilities/TicketMachine';
 import BusShelter from '../../static/icons/facilities/BusShelter';
@@ -42,7 +37,7 @@ import AltNamesDialog from '../Dialogs/AltNamesDialog';
 import TariffZonesDialog from '../Dialogs/TariffZonesDialog';
 import MdTransfer from 'material-ui/svg-icons/maps/transfer-within-a-station';
 import WeightingPopover from './WeightingPopover';
-import weightTypes, {weightColors, noValue} from '../../models/weightTypes';
+import weightTypes, {noValue, weightColors} from '../../models/weightTypes';
 import Sign512 from '../../static/icons/TransportSign';
 import MdWarning from 'material-ui/svg-icons/alert/warning';
 import ToolTippable from './ToolTippable';
@@ -56,9 +51,9 @@ import TagsDialog from './TagsDialog';
 import TagTray from '../MainPage/TagTray';
 import BelongsToGroup from './../MainPage/BelongsToGroup';
 import AutoComplete from 'material-ui/AutoComplete';
-import {getStopPlaceName} from '../../graphql/Tiamat/actions';
 import MenuItem from 'material-ui/MenuItem';
 import MdSpinner from '../../static/icons/spinner';
+import {getName} from "../../graphql/Tiamat/actions";
 
 class StopPlaceDetails extends React.Component {
   constructor(props) {
@@ -83,7 +78,7 @@ class StopPlaceDetails extends React.Component {
     }, 5);
 
     this.updateStopPublicCode = debounce(value => {
-      this.props.dispatch(StopPlaceActions.changeStopPublicCode(value));
+        this.props.dispatch(StopPlaceActions.changeStopPublicCode(value));
     }, 200);
 
     this.updateStopPrivateCode = debounce(value => {
@@ -93,15 +88,15 @@ class StopPlaceDetails extends React.Component {
     this.updateStopDescription = debounce(value => {
       this.props.dispatch(StopPlaceActions.changeStopDescription(value));
     }, 200);
-      const searchStopName = (searchText) => {
-          getStopPlaceName(this.props.client, searchText).then(result => {
-              this.setState({
-                  dataSource: result.data.stopPlaceNameRecommendations,
-                  loading: false
-              });
-          });
 
-      };
+    const searchStopName = (searchText) => {
+        getName(this.props.client, searchText).then(result => {
+            this.setState({
+                dataSource: result.data.nameRecommendations,
+                loading: false
+            });
+        });
+    };
 
       this.debouncedSearchStopName = debounce(searchStopName, 1000);
   }

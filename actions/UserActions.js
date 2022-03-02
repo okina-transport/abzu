@@ -103,6 +103,16 @@ UserActions.toggleIsCreatingNewStop = isMultiModal => (dispatch, getState) => {
   dispatch(createThunk(types.TOGGLED_IS_CREATING_NEW_STOP, isMultiModal));
 };
 
+UserActions.toggleIsCreatingNewParking = () => (dispatch, getState) => {
+    const state = getState();
+    const isCreatingNewParking = state.user.isCreatingNewParking;
+
+    if (isCreatingNewParking) {
+        dispatch(createThunk(types.DESTROYED_NEW_PARKING, null));
+    }
+    dispatch(createThunk(types.TOGGLED_IS_CREATING_NEW_PARKING, null));
+};
+
 UserActions.toggleMultimodalEdges = value => dispatch => {
   Settings.setShowMultimodalEdges(value);
   dispatch(createThunk(types.TOGGLED_IS_MULTIMODAL_EDGES_ENABLED, value));
@@ -415,6 +425,10 @@ UserActions.hideDeleteStopDialog = () => dispatch => {
   dispatch(createThunk(types.CANCELLED_DELETE_STOP_DIALOG, null));
 };
 
+UserActions.hideDeleteParkingDialog = () => dispatch => {
+    dispatch(createThunk(types.CANCELLED_DELETE_PARKING_DIALOG, null));
+};
+
 UserActions.requestDeleteQuay = (
   stopPlaceId,
   quayId,
@@ -566,6 +580,22 @@ UserActions.requestTerminateStopPlace = stopPlaceId => dispatch => {
         );
       });
   }
+};
+
+UserActions.requestTerminateParking = parkingId => dispatch => {
+    dispatch(createThunk(types.TERMINATE_DELETE_PARKING_DIALOG, null));
+    if (parkingId) {
+        dispatch(
+            createThunk(types.TERMINATE_DELETE_PARKING_DIALOG_WARNING, {
+                warning: 0,
+                loading: true,
+                error: false,
+                activeDatesSize: 0,
+                latestActiveDate: null,
+                parkingId
+            })
+        );
+    }
 };
 
 UserActions.closeMoveQuayDialog = () => dispatch => {

@@ -12,19 +12,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import React from 'react';
+
+import React from 'react';
 import PropTypes from 'prop-types';
 
 class CustomMarkerIcon extends React.Component {
   static propTypes = {
     markerIndex: PropTypes.number.isRequired,
-    stopType: PropTypes.string,
+    type: PropTypes.string,
     active: PropTypes.bool.isRequired,
     hasExpired: PropTypes.bool,
   };
 
   componentWillMount() {
-    const { stopType, active, hasExpired, submode, isMultimodal, isMultimodalChild } = this.props;
+    const { type, active, hasExpired, submode, isMultimodal, isMultimodalChild } = this.props;
 
     let imageStyle = {
       padding: 3,
@@ -37,9 +38,9 @@ class CustomMarkerIcon extends React.Component {
       imageStyle.filter = isMultimodalChild ? 'grayscale(60%)' : 'grayscale(80%)';
     }
 
-    const icon = getIconIdByTypeOrSubmode(submode, stopType, isMultimodal);
+    const icon = getIconIdByTypeOrSubmode(submode, type, isMultimodal);
 
-    this._stopTypeIcon = (
+    this._typeIcon = (
       <img style={{ width: 20, height: 20, ...imageStyle }} src={icon} />
     );
   }
@@ -47,7 +48,7 @@ class CustomMarkerIcon extends React.Component {
   render() {
     return (
       <div>
-        {this._stopTypeIcon}
+        {this._typeIcon}
       </div>
     );
   }
@@ -76,11 +77,24 @@ const getIconIdByModality = (type, isMultimodal) => {
     airport: 'airport-without-box',
     harbourPort: 'harbour_port',
     liftStation: 'lift-without-box',
+    parkAndRide: 'parking',
+    bikeParking: 'parking',
+    urbanParking: 'parking',
+    airportParking: 'parking',
+    trainStationParking: 'parking',
+    exhibitionCentreParking: 'parking',
+    rentalCarParking: 'parking',
+    shoppingCentreParking: 'parking',
+    motorwayParking: 'parking',
+    roadside: 'parking',
+    parkingZone: 'parking',
+    undefined: 'parking',
+    cycleRental: 'parking',
   };
 
-  const stopType = modalityMap[type] || 'no-information';
+  const iconType = modalityMap[type] || 'no-information';
 
-  return require('../../static/icons/modalities/' + stopType + '.png');
+  return require('../../static/icons/modalities/' + iconType + '.png');
 };
 
 export default CustomMarkerIcon;

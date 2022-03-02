@@ -475,6 +475,7 @@ Fragments.parking = {
           geometry {
               coordinates
           }
+          parkingType
           parkingVehicleTypes
           validBetween {
               fromDate
@@ -493,6 +494,7 @@ Fragments.parking = {
                   numberOfCarsharingSpaces
               }
           }
+          parentSiteRef
       }
     `
 };

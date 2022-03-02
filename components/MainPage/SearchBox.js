@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AutoComplete from 'material-ui/AutoComplete';
@@ -20,35 +20,33 @@ import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import MdMore from 'material-ui/svg-icons/navigation/expand-more';
-import { StopPlaceActions, UserActions } from '../../actions/';
+import {StopPlaceActions, UserActions} from '../../actions/';
 import SearchBoxDetails from './SearchBoxDetails';
 import NewStopPlace from './CreateNewStop';
-import { injectIntl } from 'react-intl';
+import NewParking from './CreateNewParking';
+import {injectIntl} from 'react-intl';
 import MenuItem from 'material-ui/MenuItem';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import FavoriteManager from '../../singletons/FavoriteManager';
 import CoordinatesDialog from '../Dialogs/CoordinatesDialog';
-import {
-  findEntitiesWithFilters,
-  findTopographicalPlace
-} from '../../graphql/Tiamat/actions';
-import { withApollo } from 'react-apollo';
+import {findEntitiesWithFilters, findTopographicalPlace} from '../../graphql/Tiamat/actions';
+import {withApollo} from 'react-apollo';
 import FavoritePopover from './FavoritePopover';
 import ModalityFilter from '../EditStopPage/ModalityFilter';
 import FavoriteNameDialog from '../Dialogs/FavoriteNameDialog';
 import TopographicalFilter from './TopographicalFilter';
 import Divider from 'material-ui/Divider';
 import debounce from 'lodash.debounce';
-import { getIn } from '../../utils/';
-import { getPrimaryDarkerColor } from '../../config/themeConfig';
+import {getIn} from '../../utils/';
+import {getPrimaryDarkerColor} from '../../config/themeConfig';
 import MdLocationSearching from 'material-ui/svg-icons/device/location-searching';
 import MdSpinner from '../../static/icons/spinner';
-import { createSearchMenuItem } from './SearchMenuItem';
+import {createSearchMenuItem} from './SearchMenuItem';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import CheckBox from 'material-ui/Checkbox';
 import Routes from '../../routes/';
-import { Entities } from '../../models/Entities';
+import {Entities} from '../../models/Entities';
 
 class SearchBox extends React.Component {
   constructor(props) {
@@ -104,11 +102,19 @@ class SearchBox extends React.Component {
     }
   }
 
-  handleEdit(id, entityType) {
-    const route =
-      entityType === Entities.STOP_PLACE
-        ? Routes.STOP_PLACE
-        : Routes.GROUP_OF_STOP_PLACE;
+  handleEdit(id) {
+    const route = (entityType) => {
+      switch (entityType) {
+        case Entities.STOP_PLACE:
+          return Routes.STOP_PLACE
+        case Entities.GROUP_OF_STOP_PLACE:
+          return Routes.GROUP_OF_STOP_PLACE
+        case Entities.PARKING:
+          return Routes.PARKING
+        default:
+          return null;
+      }
+    }
     this.props.dispatch(UserActions.navigateTo(`/${route}/`, id));
   }
 
@@ -280,6 +286,10 @@ class SearchBox extends React.Component {
     this.props.dispatch(UserActions.toggleIsCreatingNewStop(isMultiModal));
   }
 
+  handleNewParking() {
+    this.props.dispatch(UserActions.toggleIsCreatingNewParking());
+  }
+
   handleLookupCoordinates(position) {
     this.props.dispatch(UserActions.lookupCoordinates(position, false));
     this.handleCloseLookupCoordinatesDialog();
@@ -424,6 +434,7 @@ console.log({ dataSource });
     const {
       chosenResult,
       isCreatingNewStop,
+      isCreatingNewParking,
       favorited,
       missingCoordinatesMap,
       intl,
@@ -518,7 +529,14 @@ console.log({ dataSource });
           ? 'making_parent_stop_place_title'
           : 'making_stop_place_title'
       }),
-      bodyText: formatMessage({ id: 'making_stop_place_hint' })
+      bodyText: formatMessage({ id: 'making_hint' })
+    };
+
+    const newParkingText = {
+      headerText: formatMessage({
+        id: 'making_parking_title'
+      }),
+      bodyText: formatMessage({ id: 'making_hint' })
     };
 
     let favoriteText = {
@@ -721,21 +739,26 @@ console.log({ dataSource });
             {!isGuest && (
               <div style={{ marginTop: 10 }}>
                 {isCreatingNewStop ? (
-                  <NewStopPlace
-                    text={newStopText}
-                    onClose={() => this.setState({ createNewStopOpen: false })}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between'
-                    }}
-                  >
-                    <RaisedButton
-                      onClick={this.handleOpenLookupCoordinatesDialog.bind(
-                        this
-                      )}
+                    <NewStopPlace
+                        text={newStopText}
+                        onClose={() => this.setState({createNewStopOpen: false})}
+                    />
+                ) : isCreatingNewParking ? (
+                        <NewParking
+                            text={newParkingText}
+                            onClose={() => this.setState({createNewStopOpen: false})}
+                        />
+                    ) : (
+                    <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between'
+                        }}
+                    >
+                      <RaisedButton
+                          onClick={this.handleOpenLookupCoordinatesDialog.bind(
+                              this
+                          )}
                       icon={
                         <MdLocationSearching
                           style={{ width: 20, height: 20 }}
@@ -771,16 +794,23 @@ console.log({ dataSource });
                     >
                       <Menu>
                         <MenuItem
-                          onClick={() => this.handleNewStop(false)}
-                          style={{ fontSize: '0.9em' }}
-                          primaryText={formatMessage({ id: 'new_stop' })}
+                            onClick={() => this.handleNewStop(false)}
+                            style={{fontSize: '0.9em'}}
+                            primaryText={formatMessage({id: 'new_stop'})}
                         />
                         <MenuItem
-                          onClick={() => this.handleNewStop(true)}
-                          style={{ fontSize: '0.9em' }}
-                          primaryText={formatMessage({
-                            id: 'new__multi_stop'
-                          })}
+                            onClick={() => this.handleNewStop(true)}
+                            style={{fontSize: '0.9em'}}
+                            primaryText={formatMessage({
+                              id: 'new__multi_stop'
+                            })}
+                        />
+                        <MenuItem
+                            onClick={() => this.handleNewParking(true)}
+                            style={{fontSize: '0.9em'}}
+                            primaryText={formatMessage({
+                              id: 'new_parking'
+                            })}
                         />
                       </Menu>
                     </Popover>
@@ -810,6 +840,7 @@ const mapStateToProps = state => {
     chosenResult: state.stopPlace.activeSearchResult,
     dataSource: state.stopPlace.searchResults || [],
     isCreatingNewStop: state.user.isCreatingNewStop,
+    isCreatingNewParking: state.user.isCreatingNewParking,
     stopTypeFilter: state.user.searchFilters.stopType,
     topoiChips: state.user.searchFilters.topoiChips,
     favorited,
@@ -817,9 +848,9 @@ const mapStateToProps = state => {
     searchText: state.user.searchFilters.text,
     topographicalPlaces: state.stopPlace.topographicalPlaces || [],
     canEdit: getIn(
-      state.roles,
-      ['allowanceInfoSearchResult', 'canEdit'],
-      false
+        state.roles,
+        ['allowanceInfoSearchResult', 'canEdit'],
+        false
     ),
     isGuest: state.roles.isGuest,
     lookupCoordinatesOpen: state.user.lookupCoordinatesOpen,

@@ -102,7 +102,11 @@ RoleParser.filterByEntities = (
   if (!entityType) {
     if (object.__typename === 'ParentStopPlace' || object.__typename === 'StopPlace') {
       entityType = Entities.STOP_PLACE;
-    } else {
+    }
+    else if (object.__typename === 'Parking'){
+      entityType = Entities.PARKING;
+    }
+    else {
       entityType = Entities.GROUP_OF_STOP_PLACE;
     }
   }

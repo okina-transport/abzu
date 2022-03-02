@@ -56,6 +56,26 @@ export const getAllowanceInfoForStop = ({result, variables}, tokenParsed) => {
   return allowanceInfoForStopPlace
 };
 
+export const getAllowanceInfoForParking = ({result, variables}, tokenParsed) => {
+  /* find all roles that allow editing of stop */
+  const token = { ...tokenParsed };
+  const editParkingRoles = roleParser.getEditStopRoles(token);
+  const deleteParkingRoles = roleParser.getDeleteStopRoles(token);
+
+  const parking = getParking(result);
+
+  if (!parking) {
+    return {
+      roles: [],
+      legalParkingTypes: [],
+      legalSubmodes: [],
+      canEdit: false
+    };
+  }
+
+  return buildAllowanceInfoForStopPlace(parking, editParkingRoles, deleteParkingRoles);
+};
+
 const buildAllowanceInfoForStopPlace = (stopPlace, editStopRoles, deleteStopRoles) => {
 
   const latlng = getLatLng(stopPlace);
@@ -402,6 +422,26 @@ export const getStopPlace = (result, childId) => {
 
   if (stopPlace) {
     return JSON.parse(JSON.stringify(stopPlace));
+  }
+
+  return null;
+};
+
+export const getParking = (result) => {
+  if (
+      !result ||
+      !result.data ||
+      !result.data.parking ||
+      !result.data.parking.length
+  ) {
+    return null;
+  }
+
+
+  let parking = result.data.parking[0];
+
+  if (parking) {
+    return JSON.parse(JSON.stringify(parking));
   }
 
   return null;

@@ -35,6 +35,7 @@ import MdReport from 'material-ui/svg-icons/content/report';
 import MdHelp from 'material-ui/svg-icons/action/help';
 import { getTiamatEnv, getEnvColor } from '../config/themeConfig';
 import ConfirmDialog from './Dialogs/ConfirmDialog';
+import Routes from "../routes";
 
 class Header extends React.Component {
   constructor(props) {
@@ -96,7 +97,7 @@ class Header extends React.Component {
   }
 
   goToReports() {
-    this.props.dispatch(UserActions.navigateTo('reports', ''));
+    this.props.dispatch(UserActions.navigateTo(Routes.REPORTS, ''));
   }
 
   handleTogglePublicCodePrivateCodeOnStopPlaces(value) {

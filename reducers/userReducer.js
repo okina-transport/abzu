@@ -41,6 +41,7 @@ export const initialState = {
   lookupCoordinatesOpen: false,
   newStopIsMultiModal: false,
   isCreatingNewStop: false,
+  isCreatingNewParking: false,
   serverTimeDiff: 0,
   deleteStopDialogWarning: {
     warning: false,
@@ -57,10 +58,15 @@ const userReducer = (state = initialState, action) => {
         showEditQuayAdditional: false,
         showEditStopAdditional: false,
         isCreatingNewStop: false,
+        isCreatingNewParking: false,
         keyValuesDialogOpen: false,
         deleteStopDialogWarning: {
           warning: false,
           stopPlaceId: null
+        },
+        deleteParkingDialogWarning: {
+          warning: false,
+          parkingId: null
         }
       });
 
@@ -68,6 +74,11 @@ const userReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         isCreatingNewStop: !state.isCreatingNewStop,
         newStopIsMultiModal: action.payLoad,
+      });
+
+    case types.TOGGLED_IS_CREATING_NEW_PARKING:
+      return Object.assign({}, state, {
+        isCreatingNewParking: !state.isCreatingNewParking,
       });
 
     case types.APPLIED_STOPTYPE_SEARCH_FILTER:

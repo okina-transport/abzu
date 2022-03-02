@@ -118,5 +118,7 @@ export const extractQueryParamsFromUrl = () => {
 
 export const getStopPlaceIdFromURL = () => getParamsFromURL(window.location.search).stopPlaceId;
 
+export const getParkingIdFromURL = () => getParamsFromURL(window.location.search).parkingId;
+
 export const getGroupOfStopPlacesIdFromURL = () => getParamsFromURL(window.location.search).groupOfStopPlacesId;
 

@@ -18,7 +18,8 @@ import {
   getAllowanceSearchInfo,
   getAllowanceInfoFromPosition,
   getAllowanceInfoForStop,
-  getLatLng
+  getLatLng,
+  getAllowanceInfoForParking
 } from './rolesReducerUtils';
 
 export const initialState = {};
@@ -42,7 +43,17 @@ const rolesReducer = (state = initialState, action) => {
             state.kc.tokenParsed
           )
         });
-      } else {
+      }
+      else if (action.operationName === 'getParking') {
+        return Object.assign({}, state, {
+          kc: state.kc,
+          allowanceInfo: getAllowanceInfoForParking(
+              action.result,
+              state.kc.tokenParsed
+          )
+        });
+      }
+      else {
         return state;
       }
 
@@ -77,6 +88,16 @@ const rolesReducer = (state = initialState, action) => {
         allowanceInfo: getAllowanceInfoFromPosition(
           action.payLoad,
           state.kc.tokenParsed
+        )
+      });
+
+    case types.USE_NEW_PARKING_AS_CURRENT:
+      return Object.assign({}, state, {
+        ...state,
+        kc: state.kc,
+        allowanceInfo: getAllowanceInfoFromPosition(
+            action.payLoad,
+            state.kc.tokenParsed
         )
       });
 

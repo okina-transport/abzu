@@ -23,7 +23,7 @@ import PManager from '../../singletons/PolygonManager';
 
 class NewStopMarker extends React.Component {
   static propTypes = {
-    text: PropTypes.string.isRequired,
+    text: PropTypes.object.isRequired,
     handleOnClick: PropTypes.func.isRequired,
     handleDragEnd: PropTypes.func.isRequired,
   };

@@ -16,6 +16,7 @@ limitations under the Licence. */
 import moment from 'moment';
 import { defaultLimitations } from '../models/Limitations';
 import { netexifyPlaceEquipment } from '../models/stopPlaceUtils'
+import PARKING_TYPE from "../models/parkingType";
 
 const helpers = {};
 
@@ -278,6 +279,13 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
 
     if (source.id) {
       parking.id = source.id;
+    }
+
+    if (source.parkingType) {
+      if(PARKING_TYPE.BIKE_PARKING === source.parkingType ){
+        source.parkingType = null;
+      }
+      parking.parkingType = source.parkingType;
     }
 
     if (source.parkingLayout) {
