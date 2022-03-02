@@ -21,6 +21,7 @@ import StopPlace from './StopPlace';
 import ReportPage from './ReportPage';
 import Routes from '../routes/';
 import GroupOfStopPlaces from './GroupOfStopPlaces';
+import ImportParkingPage from './ImportParkingPage';
 
 class RouterContainer extends React.Component {
   render() {
@@ -32,6 +33,7 @@ class RouterContainer extends React.Component {
         <Route path={path + Routes.STOP_PLACE + '/:stopId'} component={StopPlace} />
         <Route path={path + Routes.GROUP_OF_STOP_PLACE + '/:groupId'} component={GroupOfStopPlaces} />
         <Route path={path + 'reports'} component={ReportPage} />
+        <Route path={path + Routes.IMPORT_CSV} component={ImportParkingPage} />
       </Route>
     );
 

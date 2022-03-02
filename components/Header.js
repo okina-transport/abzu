@@ -35,6 +35,7 @@ import MdReport from 'material-ui/svg-icons/content/report';
 import MdHelp from 'material-ui/svg-icons/action/help';
 import { getTiamatEnv, getEnvColor } from '../config/themeConfig';
 import ConfirmDialog from './Dialogs/ConfirmDialog';
+import Routes from '../routes';
 
 class Header extends React.Component {
   constructor(props) {
@@ -81,6 +82,9 @@ class Header extends React.Component {
       case 'GoToReports':
         this.goToReports();
         break;
+      case 'GoToImportParking':
+        this.goToImportParking();
+        break;
       default:
         () => {
           console.info('Invalid action', actionOnDone, ' ignored');
@@ -98,6 +102,11 @@ class Header extends React.Component {
   goToReports() {
     this.props.dispatch(UserActions.navigateTo('reports', ''));
   }
+
+  goToImportParking() {
+    this.props.dispatch(UserActions.navigateTo(Routes.IMPORT_CSV, ''));
+  }
+
 
   handleTogglePublicCodePrivateCodeOnStopPlaces(value) {
     this.props.dispatch(UserActions.toggleEnablePublicCodePrivateCodeOnStopPlaces(value));
@@ -150,6 +159,7 @@ class Header extends React.Component {
     const showPathLinks = formatMessage({ id: 'show_path_links' });
     const showCompassBearing = formatMessage({ id: 'show_compass_bearing' });
     const reportSite = formatMessage({ id: 'report_site' });
+    const importCSVParkings = formatMessage({id: 'import_parking'})
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
     const userGuide = formatMessage({ id: 'user_guide' });
     const username = getIn(kc, ['tokenParsed', 'preferred_username'], '');
@@ -228,6 +238,17 @@ class Header extends React.Component {
                     'GoToReports'
                   )}
                 style={{ fontSize: 12, padding: 0 }}
+              />
+              <MenuItem
+                  leftIcon={<MdReport color="#41c0c4" />}
+                  primaryText={importCSVParkings}
+                  href = {Routes.IMPORT_CSV}
+                  onClick={() =>
+                      this.handleConfirmChangeRoute(
+                          this.goToImportParking.bind(this),
+                          'GoToImportParking'
+                      )}
+                  style={{ fontSize: 12, padding: 0 }}
               />
               <MenuItem
                 primaryText={settings}
