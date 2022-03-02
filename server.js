@@ -92,7 +92,7 @@ convictPromise
       res.send(getPage());
     });
 
-      app.get(ENDPOINTBASE + Routes.IMPORT_CSV, function(req, res) {
+      app.get(ENDPOINTBASE + Routes.IMPORT_PARKING_CSV, function(req, res) {
           res.send(getPage());
       });
 

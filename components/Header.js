@@ -104,7 +104,7 @@ class Header extends React.Component {
   }
 
   goToImportParking() {
-    this.props.dispatch(UserActions.navigateTo(Routes.IMPORT_CSV, ''));
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_PARKING_CSV, ''));
   }
 
 
