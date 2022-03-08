@@ -198,6 +198,7 @@ class Header extends React.Component {
               targetOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
+            {/*
               <MenuItem
                   leftIcon={<MdSupervisorAccount color="#005A82" />}
                   primaryText={portalAdmin}
@@ -205,6 +206,7 @@ class Header extends React.Component {
                   target="_blank"
                   style={{ fontSize: 12, padding: 0 }}
               />
+            */}
               <MenuItem
                   leftIcon={<MdLocalOffer color="#005A82" />}
                   primaryText={portalOffers}
