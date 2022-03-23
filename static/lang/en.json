@@ -377,7 +377,6 @@
   "visual_signs_available_quay_hint": "Are visual signs available on this quay?",
   "step_free_access": "Step free access",
   "escalator_free_access": "Escalator free access",
-  "select_csv_file_button" : "Select your csv file",
   "stop_has_expired_last_version": "This stop has expired!",
   "stop_has_expired": "Current version has expired!",
   "stop_place": "stop place",

@@ -28,7 +28,6 @@ import MdSettings from 'material-ui/svg-icons/action/settings';
 import MdLocalOffer from 'material-ui/svg-icons/maps/local-offer';
 import MdSupervisorAccount from 'material-ui/svg-icons/action/supervisor-account';
 import MdImportExport from 'material-ui/svg-icons/communication/import-export';
-import MdMap from 'material-ui/svg-icons/maps/map';
 import { UserActions } from '../actions/';
 import { getIn } from '../utils';
 import MdReport from 'material-ui/svg-icons/content/report';
@@ -36,6 +35,7 @@ import MdHelp from 'material-ui/svg-icons/action/help';
 import { getTiamatEnv, getEnvColor } from '../config/themeConfig';
 import ConfirmDialog from './Dialogs/ConfirmDialog';
 import Routes from '../routes';
+import {MapsLocalParking} from "material-ui/svg-icons/index.es";
 
 class Header extends React.Component {
   constructor(props) {
@@ -240,7 +240,7 @@ class Header extends React.Component {
                 style={{ fontSize: 12, padding: 0 }}
               />
               <MenuItem
-                  leftIcon={<MdReport color="#41c0c4" />}
+                  leftIcon={<MapsLocalParking color="#005A82" />}
                   primaryText={importCSVParkings}
                   href = {Routes.IMPORT_CSV}
                   onClick={() =>

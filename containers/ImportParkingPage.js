@@ -1,10 +1,10 @@
 import {withApollo} from "react-apollo";
 import {connect} from "react-redux";
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {injectIntl} from "react-intl";
-import { httpCall } from '../utils/httpCall';
+import {httpCall} from '../utils/httpCall';
 import RaisedButton from "material-ui/RaisedButton";
-import {Input, InputLabel} from '@material-ui/core';
+import {Input} from '@material-ui/core';
 import ReportFilterBox from "../components/ReportPage/ReportFilterBox";
 
 
@@ -27,7 +27,6 @@ class ImportParkingPage extends Component{
     }
 
     handleOnSubmit(e){
-
         e.preventDefault();
 
         if(this.state.file != ""){
@@ -46,7 +45,7 @@ class ImportParkingPage extends Component{
                     {
                         method: 'post',
                         headers: {
-                            "Authorization": "Bearer "+localStorage.getItem("ABZU::jwt"),
+                            "Authorization": "Bearer " + localStorage.getItem("ABZU::jwt"),
                              "Content-Type": "multipart/form-data"
                         },
                         data: bodyFormData
@@ -69,29 +68,20 @@ class ImportParkingPage extends Component{
         return(
             <div>
                 <ReportFilterBox style={{width: '60%'}}>
-                    <div style={{marginLeft: 5, paddingTop: 5}}>
-                        <div style={{fontWeight: 600, fontSize: 12, marginBottom: 10}}>{formatMessage({id: 'upload_file'})}</div>
-                    </div>
-                    <form>
-                        <InputLabel htmlFor={"upload_csv_parking"}>
-                            {formatMessage({id: 'select_csv_file_button'})}
-                            <Input
-                                id={"upload_csv_parking"}
-                                style={{display:"none"}}
-                                type={"file"}
-                                accept={".csv"}
-                                onChange={this.handleOnChange}/>
-                        </InputLabel>
-
-
+                        <Input
+                            id={"upload_csv_parking"}
+                            type={"file"}
+                            accept={".csv"}
+                            onChange={this.handleOnChange}
+                        />
                         <RaisedButton
                             style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
                             label={formatMessage({id: 'upload_parkings_file_submit'})}
-                            onClick={(event)=>{
+                            onClick={(event) => {
                                 this.handleOnSubmit(event);
                             }}
+                            primary={true}
                         />
-                    </form>
                 </ReportFilterBox>
 
                 {this.state.errors.length>0 && this.state.errors.map(error => alert(error.message))}
