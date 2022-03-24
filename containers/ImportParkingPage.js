@@ -29,12 +29,11 @@ class ImportParkingPage extends Component{
     handleOnSubmit(e){
         e.preventDefault();
 
-        if(this.state.file != ""){
+        if(this.state.file !== ""){
             this.fileReader.onload = (event) => {
                 const csvOutput = event.target.result;
-
-
-                const url = convict.get('tiamatBaseUrl')+"services/stop_places/parkings_import_csv";
+                const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
+                const url = tiamatBaseUrl + "parkings_import_csv";
 
                 const bodyFormData = new FormData();
                 bodyFormData.append('file', csvOutput);
