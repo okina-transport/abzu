@@ -334,6 +334,10 @@ class ReportPage extends React.Component {
             nearbyRadius = null;
         }
 
+        if (detectMultiModalPoints == undefined){
+            detectMultiModalPoints = false;
+        }
+
         const queryVariables = {
             query: searchQuery,
             nearbyRadius,
