@@ -34,8 +34,7 @@ class ImportParkingPage extends Component{
                 const csvOutput = event.target.result;
 
 
-                // const url = convict.get('tiamatBaseUrl')+"services/stop_places/parkings_import_csv";
-                const url= "http://0.0.0.0:8484/services/stop_places/parkings_import_csv";
+                const url = convict.get('tiamatBaseUrl')+"services/stop_places/parkings_import_csv";
 
                 const bodyFormData = new FormData();
                 bodyFormData.append('file', csvOutput);
