@@ -95,7 +95,7 @@ RoleParser.filterByEntities = (
     }
   });
 
-  let validForStop = [];
+  let validForStopAndParking = [];
 
   // recover entityType for object if not provided
   let entityType = object.entityType;
@@ -116,7 +116,7 @@ RoleParser.filterByEntities = (
     const stopPlaceIsMultiModal =
       object.__typename === 'ParentStopPlace' || object.isParent;
 
-    validForStop = stopPlaceRoles.filter( role => {
+    validForStopAndParking = stopPlaceRoles.filter( role => {
       if (stopPlaceIsMultiModal) {
         return object.children.every( child => doesRoleGrantAccessToStop(
           stopPlaceRoles, role.e.StopPlaceType, role.e.TransportMode, role.e.Submode, child
@@ -130,7 +130,7 @@ RoleParser.filterByEntities = (
 
   } else if (entityType === Entities.GROUP_OF_STOP_PLACE) {
 
-    validForStop = stopPlaceRoles.filter( role => {
+    validForStopAndParking = stopPlaceRoles.filter( role => {
       // group of stop places without members cannot be restricted for edit
       if (!object.members || !object.members.length) return role;
 
@@ -138,8 +138,10 @@ RoleParser.filterByEntities = (
         stopPlaceRoles, role.e.StopPlaceType, role.e.TransportMode, role.e.Submode, member
       ));
     });
+  } else if (entityType === Entities.PARKING) {
+    validForStopAndParking = stopPlaceRoles;
   }
-  return validForStop;
+  return validForStopAndParking;
 };
 
 const doesRoleGrantAccessToStop = (roles, roleStopPlaceType, roleTransportMode, roleSubmode, stopPlace) => {

@@ -89,6 +89,19 @@ const getIconIdByModality = type => {
     harbourPort: 'harbour_port',
     liftStation: 'lift',
     other: 'no-information',
+    parkAndRide: 'parking',
+    bikeParking: 'parking',
+    urbanParking: 'parking',
+    airportParking: 'parking',
+    trainStationParking: 'parking',
+    exhibitionCentreParking: 'parking',
+    rentalCarParking: 'parking',
+    shoppingCentreParking: 'parking',
+    motorwayParking: 'parking',
+    roadside: 'parking',
+    parkingZone: 'parking',
+    undefined: 'parking',
+    cycleRental: 'parking',
   };
   return modalityMap[type] || 'no-information';
 };

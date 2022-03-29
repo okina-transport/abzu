@@ -78,7 +78,8 @@ export const getStateByOperation = (state, action) => {
       return Object.assign({}, state, {
         searchResults: [
           ...formatHelpers.mapSearchResultToStopPlaces(action.result.data.stopPlace),
-          ...formatHelpers.mapSearchResultatGroup(action.result.data.groupOfStopPlaces)
+          ...formatHelpers.mapSearchResultatGroup(action.result.data.groupOfStopPlaces),
+          ...formatHelpers.mapSearchResultToParkings(action.result.data.parking)
           ]
       });
 

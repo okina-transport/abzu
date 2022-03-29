@@ -21,6 +21,7 @@ import StopPlaceResultInfo from './StopPlaceResultInfo';
 import ParentStopPlaceResultInfo from './ParentStopPlaceResultInfo';
 import GroupResultInfo from './GroupResultInfo';
 import { Entities } from '../../models/Entities';
+import ParkingResultInfo from "./ParkingResultInfo";
 
 const SearchBoxDetails = ({
   text,
@@ -57,6 +58,10 @@ const SearchBoxDetails = ({
   } else if (entityType === Entities.GROUP_OF_STOP_PLACE) {
     ResultInfo = (
       <GroupResultInfo result={result} formatMessage={formatMessage}/>
+    )
+  } else if (entityType === Entities.PARKING) {
+    ResultInfo = (
+        <ParkingResultInfo result={result} formatMessage={formatMessage}/>
     )
   }
 

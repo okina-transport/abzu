@@ -19,7 +19,6 @@ import { divIcon } from 'leaflet';
 import ReactDOM from 'react-dom/server';
 import CustomMarkerIcon from './CustomMarkerIcon';
 import { shallowCompareParkingMarker as shallowCompare } from './shallowCompare/';
-import PopupButton from '../Map/PopupButton';
 
 class ParkingMarker extends React.Component {
 
@@ -80,7 +79,6 @@ class ParkingMarker extends React.Component {
             draggable,
             missingCoordinatesMap,
             handleChangeCoordinates,
-            handleAdjustCentroid,
             translations,
             id
         } = this.props;
@@ -154,11 +152,6 @@ class ParkingMarker extends React.Component {
                 {markerLocation[1]}
               </span>
                         </div>
-                        <PopupButton
-                            hidden={!draggable}
-                            onClick={handleAdjustCentroid}
-                            label={translations.adjustCentroid}
-                        />
                     </div>
                 </Popup>
             </Marker>

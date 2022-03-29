@@ -326,7 +326,6 @@ class MarkerList extends React.Component {
                     handleDragEnd={handleDragEnd}
                     active={!!marker.isActive}
                     parkingType={marker.parkingType}
-                    handleAdjustCentroid={this.handleAdjustCentroid.bind(this)}
                     draggable={dragableMarkers}
                     handleChangeCoordinates={changeCoordinates}
                     translations={CustomPopupMarkerText}

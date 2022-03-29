@@ -199,12 +199,6 @@ class ParkingDetails extends React.Component {
         });
     }
 
-    handleChangeCoordinates(position) {
-        const {dispatch, index, handleLocateOnMap} = this.props;
-        dispatch(StopPlaceActions.changeElementPosition(index, 'quay', position));
-        handleLocateOnMap(position);
-    }
-
     getMenuItems(dataSource, nextProps, currentParkingName) {
         const {formatMessage} = nextProps.intl;
         let menuItems = [];

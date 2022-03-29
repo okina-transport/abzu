@@ -406,6 +406,22 @@ export const findStop = gql`
                }
            }
         }
+        parking(query: $query, size: 7) {
+            id
+            validBetween {
+                fromDate
+                toDate
+            }
+            name {
+                value
+                lang
+            }
+            version
+            parkingType
+            geometry {
+                coordinates
+            }
+        }
     },
 `;
 
