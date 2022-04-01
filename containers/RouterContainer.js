@@ -22,6 +22,7 @@ import ReportPage from './ReportPage';
 import Routes from '../routes/';
 import GroupOfStopPlaces from './GroupOfStopPlaces';
 import ImportParkingPage from './ImportParkingPage';
+import ImportSalePointPage from './ImportSalePointPage';
 import Parking from "./Parking";
 
 class RouterContainer extends React.Component {
@@ -36,6 +37,7 @@ class RouterContainer extends React.Component {
         <Route path={path + Routes.REPORTS} component={ReportPage} />
         <Route path={path + Routes.PARKING + '/:parkingId'} component={Parking} />
         <Route path={path + Routes.IMPORT_PARKING_CSV} component={ImportParkingPage} />
+          <Route path={path + Routes.IMPORT_SALE_POINT_CSV} component={ImportSalePointPage} />
       </Route>
     );
 

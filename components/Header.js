@@ -36,6 +36,7 @@ import { getTiamatEnv, getEnvColor } from '../config/themeConfig';
 import ConfirmDialog from './Dialogs/ConfirmDialog';
 import Routes from "../routes";
 import {MapsLocalParking} from "material-ui/svg-icons/index.es";
+import {MapsStoreMallDirectory} from "material-ui/svg-icons/index.es";
 
 class Header extends React.Component {
   constructor(props) {
@@ -85,6 +86,9 @@ class Header extends React.Component {
       case 'GoToImportParking':
         this.goToImportParking();
         break;
+      case 'GoToImportSalePoint':
+        this.goToImportSalePoint();
+        break;
       default:
         () => {
           console.info('Invalid action', actionOnDone, ' ignored');
@@ -105,6 +109,10 @@ class Header extends React.Component {
 
   goToImportParking() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_PARKING_CSV, ''));
+  }
+
+  goToImportSalePoint() {
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_SALE_POINT_CSV, ''));
   }
 
 
@@ -160,6 +168,7 @@ class Header extends React.Component {
     const showCompassBearing = formatMessage({ id: 'show_compass_bearing' });
     const reportSite = formatMessage({ id: 'report_site' });
     const importCSVParkings = formatMessage({id: 'import_parking'})
+    const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
     const userGuide = formatMessage({ id: 'user_guide' });
     const username = getIn(kc, ['tokenParsed', 'preferred_username'], '');
@@ -244,11 +253,22 @@ class Header extends React.Component {
               <MenuItem
                   leftIcon={<MapsLocalParking color="#005A82" />}
                   primaryText={importCSVParkings}
-                  href = {Routes.IMPORT_CSV}
+                  href = {Routes.IMPORT_PARKING_CSV}
                   onClick={() =>
                       this.handleConfirmChangeRoute(
                           this.goToImportParking.bind(this),
                           'GoToImportParking'
+                      )}
+                  style={{ fontSize: 12, padding: 0 }}
+              />
+              <MenuItem
+                  leftIcon={<MapsStoreMallDirectory color="#005A82" />}
+                  primaryText={importCSVSalePoints}
+                  href = {Routes.IMPORT_SALE_POINT_CSV}
+                  onClick={() =>
+                      this.handleConfirmChangeRoute(
+                          this.goToImportSalePoint.bind(this),
+                          'GoToImportSalePoint'
                       )}
                   style={{ fontSize: 12, padding: 0 }}
               />
