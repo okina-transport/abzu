@@ -199,12 +199,6 @@ class ParkingDetails extends React.Component {
         });
     }
 
-    handleChangeCoordinates(position) {
-        const {dispatch, index, handleLocateOnMap} = this.props;
-        dispatch(StopPlaceActions.changeElementPosition(index, 'quay', position));
-        handleLocateOnMap(position);
-    }
-
     getMenuItems(dataSource, nextProps, currentParkingName) {
         const {formatMessage} = nextProps.intl;
         let menuItems = [];
@@ -368,7 +362,10 @@ class ParkingDetails extends React.Component {
                 </div>
                 <Item>
                     <div className="pr-item-expanded">
-                        {parking.parkingType === PARKING_TYPE.PARK_AND_RIDE ? (
+                        {(parking.parkingType !== 'parkingZone'
+                            && parking.parkingType !== 'other'
+                            && parking.parkingType !== 'undefined'
+                            && parking.parkingType !== 'cycleRental') ? (
                             <ParkingItemPayAndRideExpandedFields
                                 disabled={disabled}
                                 hasExpired={parking.hasExpired}

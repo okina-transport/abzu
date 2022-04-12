@@ -266,6 +266,7 @@
   "parent_stop_place_requires_children": "Un point d'arrêt multimodal doit contenir des points d'arrêt afin d'exister",
   "parentStopPlace": "Point d'arrêt multimodal",
   "park_ride": "P+R",
+  "parking": "Parking",
   "parking_bike": "Parking vélo",
   "parking_expired": "Parking expiré !",
   "parking_general": "Parking",

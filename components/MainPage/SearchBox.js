@@ -102,19 +102,22 @@ class SearchBox extends React.Component {
     }
   }
 
-  handleEdit(id) {
-    const route = (entityType) => {
+  handleEdit(id, entityType) {
+    let route;
       switch (entityType) {
         case Entities.STOP_PLACE:
-          return Routes.STOP_PLACE
+          route = Routes.STOP_PLACE;
+          break;
         case Entities.GROUP_OF_STOP_PLACE:
-          return Routes.GROUP_OF_STOP_PLACE
+          route = Routes.GROUP_OF_STOP_PLACE;
+          break;
         case Entities.PARKING:
-          return Routes.PARKING
+          route = Routes.PARKING;
+          break;
         default:
-          return null;
+          route = null;
+          break;
       }
-    }
     this.props.dispatch(UserActions.navigateTo(`/${route}/`, id));
   }
 

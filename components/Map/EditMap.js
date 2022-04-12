@@ -133,21 +133,28 @@ class EditMap extends React.Component {
 
   handleSubmitChangeCoordinates(position) {
     const { coordinatesOwner } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, currentStopPlace, currentParking } = this.props;
 
-    if (coordinatesOwner.isQuay) {
-      dispatch(
-        StopPlaceActions.changeElementPosition(
-          coordinatesOwner.markerIndex,
-          'quay',
-          position,
-        ),
-      );
-    } else {
-      dispatch(StopPlaceActions.changeCurrentStopPosition(position));
+    if(currentStopPlace){
+      if (coordinatesOwner.isQuay) {
+        dispatch(
+            StopPlaceActions.changeElementPosition(
+                coordinatesOwner.markerIndex,
+                'quay',
+                position,
+            ),
+        );
+      } else {
+        dispatch(StopPlaceActions.changeCurrentStopPosition(position));
+      }
+
+      dispatch(StopPlaceActions.changeMapCenter(position, 14));
+    }
+    else if (currentParking){
+      dispatch(ParkingActions.changeCurrentParkingPosition(position));
+      dispatch(ParkingActions.changeMapCenter(position, 14));
     }
 
-    dispatch(StopPlaceActions.changeMapCenter(position, 14));
 
     this.setState({
       coordinatesDialogOpen: false,
@@ -265,6 +272,9 @@ const mapStateToProps = state => {
     missingCoordsMap: state.user.missingCoordsMap,
     markers,
     ignoreStopId: state.stopPlace.current ? state.stopPlace.current.id : -1,
+    ignoreParkingId: state.parking.current ? state.parking.current.id : -1,
+    currentParking: state.parking.current,
+    currentStopPlace: state.stopPlace.current
   };
 };
 

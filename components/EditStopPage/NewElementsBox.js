@@ -177,7 +177,7 @@ class NewElementsBox extends React.Component {
             <div style={titleStyle}>{entranceText}</div>
           </div>
           {shouldShowNewParking ?
-          <div style={elementStyle}>
+          <div style={temporaryHidden}>
             <img
               ref="parkAndRide"
               data-type="parkAndRide"
@@ -190,7 +190,7 @@ class NewElementsBox extends React.Component {
           </div>
               : null}
           {shouldShowNewParking ?
-          <div style={elementStyle}>
+          <div style={temporaryHidden}>
             <img
               ref="bikeParking"
               data-type="bikeParking"

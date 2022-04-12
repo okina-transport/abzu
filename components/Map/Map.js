@@ -130,7 +130,7 @@ const mapStateToProps = state => {
         state.parking,
         ['activeSearchResult', 'id'],
         undefined,
-    ),
+    )
   };
 };
 
