@@ -159,6 +159,7 @@
   "hide_quays": "Hide quays",
   "import_parking" : "Import Parking",
   "import_sale_point" : "Import Sale point",
+  "import_rental_bikes" : "Import rental bikes",
   "important_quay_usages_found": "Le quai source est utilisé dans au moins une course planififée. Utilisé par :",
   "important_stop_place_usages_found": "L'arrêt a au moins une course planifiée après la date d'expiration demandée. Le point d'arrêt est utilisé par :",
   "important_notice": "Important notice:",
