@@ -37,6 +37,7 @@ import ConfirmDialog from './Dialogs/ConfirmDialog';
 import Routes from "../routes";
 import {MapsLocalParking} from "material-ui/svg-icons/index.es";
 import {MapsStoreMallDirectory} from "material-ui/svg-icons/index.es";
+import {PoiIcon} from "./MainPage/PoiIcon";
 
 class Header extends React.Component {
   constructor(props) {
@@ -89,6 +90,9 @@ class Header extends React.Component {
       case 'GoToImportSalePoint':
         this.goToImportSalePoint();
         break;
+      case 'GoToImportPOI':
+        this.goToImportPOI();
+        break;
       default:
         () => {
           console.info('Invalid action', actionOnDone, ' ignored');
@@ -113,6 +117,10 @@ class Header extends React.Component {
 
   goToImportSalePoint() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_SALE_POINT_CSV, ''));
+  }
+
+  goToImportPOI() {
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_POI, ''));
   }
 
 
@@ -169,6 +177,7 @@ class Header extends React.Component {
     const reportSite = formatMessage({ id: 'report_site' });
     const importCSVParkings = formatMessage({id: 'import_parking'})
     const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
+    const importPOI = formatMessage({id: 'import_poi'})
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
     const userGuide = formatMessage({ id: 'user_guide' });
     const username = getIn(kc, ['tokenParsed', 'preferred_username'], '');
@@ -269,6 +278,17 @@ class Header extends React.Component {
                       this.handleConfirmChangeRoute(
                           this.goToImportSalePoint.bind(this),
                           'GoToImportSalePoint'
+                      )}
+                  style={{ fontSize: 12, padding: 0 }}
+              />
+              <MenuItem
+                  leftIcon={<PoiIcon color="#005A82" />}
+                  primaryText={importPOI}
+                  href = {Routes.IMPORT_POI}
+                  onClick={() =>
+                      this.handleConfirmChangeRoute(
+                          this.goToImportPOI().bind(this),
+                          'GoToImportPOI'
                       )}
                   style={{ fontSize: 12, padding: 0 }}
               />

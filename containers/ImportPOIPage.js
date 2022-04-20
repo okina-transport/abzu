@@ -8,7 +8,7 @@ import {Input} from '@material-ui/core';
 import ReportFilterBox from "../components/ReportPage/ReportFilterBox";
 
 
-class ImportSalePointPage extends Component{
+class ImportPOIPage extends Component{
 
     constructor(props) {
         super(props);
@@ -34,7 +34,7 @@ class ImportSalePointPage extends Component{
             this.fileReader.onload = (event) => {
                 const csvOutput = event.target.result;
                 const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-                const url = tiamatBaseUrl + "poi/shop_import_csv";
+                const url = tiamatBaseUrl + "poi/poi_import_csv";
 
 
 
@@ -79,7 +79,7 @@ class ImportSalePointPage extends Component{
                         />
                         <RaisedButton
                             style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
-                            label={formatMessage({id: 'upload_salePoint_file_submit'})}
+                            label={formatMessage({id: 'upload_poi_file_submit'})}
                             onClick={(event) => {
                                 this.handleOnSubmit(event);
                             }}
@@ -102,6 +102,6 @@ const mapStateToProps = ({}) => ({
 
 });
 
-export default withApollo(connect(mapStateToProps)(injectIntl(ImportSalePointPage)));
+export default withApollo(connect(mapStateToProps)(injectIntl(ImportPOIPage)));
 
 
