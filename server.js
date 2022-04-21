@@ -104,6 +104,10 @@ convictPromise
           res.send(getPage());
       });
 
+      app.get(ENDPOINTBASE + Routes.IMPORT_RENTAL_BIKE, function(req, res) {
+          res.send(getPage());
+      });
+
     app.get(ENDPOINTBASE + '_health', function(req, res) {
       res.sendStatus(200);
     });
