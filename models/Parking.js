@@ -73,8 +73,7 @@ class Parking {
   }
 
   get isParkAndRide() {
-    return  (this.parkingType !== 'parkingZone'
-        && this.parkingType !== 'other'
+    return  (this.parkingType !== 'other'
         && this.parkingType !== 'undefined'
         && this.parkingType !== 'cycleRental');
   }

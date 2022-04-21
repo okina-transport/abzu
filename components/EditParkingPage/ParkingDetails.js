@@ -362,8 +362,7 @@ class ParkingDetails extends React.Component {
                 </div>
                 <Item>
                     <div className="pr-item-expanded">
-                        {(parking.parkingType !== 'parkingZone'
-                            && parking.parkingType !== 'other'
+                        {(parking.parkingType !== 'other'
                             && parking.parkingType !== 'undefined'
                             && parking.parkingType !== 'cycleRental') ? (
                             <ParkingItemPayAndRideExpandedFields
