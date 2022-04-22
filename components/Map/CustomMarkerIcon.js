@@ -38,6 +38,12 @@ class CustomMarkerIcon extends React.Component {
       imageStyle.filter = isMultimodalChild ? 'grayscale(60%)' : 'grayscale(80%)';
     }
 
+    if (type === "cycleRental"){
+      imageStyle.background = null;
+      imageStyle.height = 30;
+      imageStyle.width = 30;
+    }
+
     const icon = getIconIdByTypeOrSubmode(submode, type, isMultimodal);
 
     this._typeIcon = (
@@ -89,7 +95,7 @@ const getIconIdByModality = (type, isMultimodal) => {
     roadside: 'parking',
     parkingZone: 'parking',
     undefined: 'parking',
-    cycleRental: 'parking',
+    cycleRental: 'cycleRental',
   };
 
   const iconType = modalityMap[type] || 'no-information';

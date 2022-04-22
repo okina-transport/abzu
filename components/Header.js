@@ -38,6 +38,7 @@ import Routes from "../routes";
 import {MapsLocalParking} from "material-ui/svg-icons/index.es";
 import {MapsStoreMallDirectory} from "material-ui/svg-icons/index.es";
 import {PoiIcon} from "./MainPage/PoiIcon";
+import {MapsDirectionsBike} from "material-ui/svg-icons/index.es";
 
 class Header extends React.Component {
   constructor(props) {
@@ -93,6 +94,9 @@ class Header extends React.Component {
       case 'GoToImportPOI':
         this.goToImportPOI();
         break;
+      case 'GoToImportRentalBike':
+        this.goToImportRentalBike();
+        break;
       default:
         () => {
           console.info('Invalid action', actionOnDone, ' ignored');
@@ -121,6 +125,10 @@ class Header extends React.Component {
 
   goToImportPOI() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_POI, ''));
+  }
+
+  goToImportRentalBike() {
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_RENTAL_BIKE, ''));
   }
 
 
@@ -178,6 +186,7 @@ class Header extends React.Component {
     const importCSVParkings = formatMessage({id: 'import_parking'})
     const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
     const importPOI = formatMessage({id: 'import_poi'})
+    const importRentalBike = formatMessage({id: 'import_rental_bikes'})
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
     const userGuide = formatMessage({ id: 'user_guide' });
     const username = getIn(kc, ['tokenParsed', 'preferred_username'], '');
@@ -289,6 +298,17 @@ class Header extends React.Component {
                       this.handleConfirmChangeRoute(
                           this.goToImportPOI().bind(this),
                           'GoToImportPOI'
+                      )}
+                  style={{ fontSize: 12, padding: 0 }}
+              />
+              <MenuItem
+                  leftIcon={<MapsDirectionsBike color="#005A82" />}
+                  primaryText={importRentalBike}
+                  href = {Routes.IMPORT_RENTAL_BIKE}
+                  onClick={() =>
+                      this.handleConfirmChangeRoute(
+                          this.goToImportRentalBike().bind(this),
+                          'GoToImportRentalBike'
                       )}
                   style={{ fontSize: 12, padding: 0 }}
               />

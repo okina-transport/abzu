@@ -5,7 +5,8 @@ const Routes = {
   REPORTS: 'reports',
   IMPORT_PARKING_CSV:'parking_import_csv',
   IMPORT_SALE_POINT_CSV:'sale_point_import',
-  IMPORT_POI:'poi_import'
+  IMPORT_POI:'poi_import',
+  IMPORT_RENTAL_BIKE:'rental_bike_import'
 };
 
 module.exports = Routes;
