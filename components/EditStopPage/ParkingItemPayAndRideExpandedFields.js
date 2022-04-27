@@ -194,12 +194,13 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
             value={numberOfSpaces || ''}
             type="number"
             fullWidth
-            className={classes.textField} />
+            className={classes.textField}
+            floatingLabelStyle={{ color: 'rgb(30,100,163)'}}
+          />
         </Box>
         <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
           <ActionAccessible style={parkingIconStyles()} />
           <TextField
-            hintText={formatMessage({ id: 'parking_number_of_spaces_for_registered_disabled_user_type' })}
             disabled={disabled || hasExpired}
             floatingLabelText={formatMessage({ id: 'parking_number_of_spaces_for_registered_disabled_user_type' })}
             onChange={(e, value) => {
@@ -208,7 +209,9 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
             value={numberOfSpacesForRegisteredDisabledUserType || ''}
             type="number"
             fullWidth
-            className={classes.textField} />
+            className={classes.textField}
+            floatingLabelStyle={{ color: 'rgb(30,100,163)', fontSize: '0.8em' }}
+          />
         </Box>
       </Grid>
       <Grid item>
@@ -224,7 +227,6 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
             handleSetNumberOfSpacesWithRechargePoint={handleSetNumberOfSpacesWithRechargePoint}
             rechargingAvailableValue={getRechargingAvailableValue(rechargingAvailable)} />
           <TextField
-            hintText={formatMessage({ id: 'parking_number_of_spaces_with_recharge_point' })}
             disabled={!rechargingAvailable || disabled || hasExpired}
             floatingLabelText={formatMessage({ id: 'parking_number_of_spaces_with_recharge_point' })}
             onChange={(_e, value) => {
@@ -233,7 +235,9 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
             value={numberOfSpacesWithRechargePoint || ''}
             type="number"
             fullWidth
-            className={classes.textField} />
+            className={classes.textField}
+            floatingLabelStyle={{color: rechargingAvailable ? 'rgb(30,100,163)' : 'rgba(0, 0, 0, 0.3)'}}
+          />
         </Box>
       </Grid>
       <Grid item>
@@ -273,7 +277,6 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
       <Grid item>
         <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
           <TextField
-              hintText={formatMessage({id : 'number_of_carsharing_places'})}
               disabled={ !carsharingAvailable }
               floatingLabelText={formatMessage({id : 'number_of_carsharing_places'})}
               onChange={(e, value) => {
@@ -282,6 +285,7 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
               value={numberOfCarsharingSpaces || ''}
               type="number"
               style={{ width: '95%', marginTop: -10 }}
+              floatingLabelStyle={{color: carsharingAvailable ? 'rgb(30,100,163)' : 'rgba(0, 0, 0, 0.3)'}}
           />
         </Box>
       </Grid>

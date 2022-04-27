@@ -781,7 +781,7 @@ console.log({ dataSource });
                       icon={<MdMore style={{ width: 20, height: 20 }} />}
                       primary={true}
                       labelStyle={{ fontSize: 11 }}
-                      label={formatMessage({ id: 'new_stop' })}
+                      label={formatMessage({ id: 'new_mobility_point' })}
                     />
                     <Popover
                       open={this.state.createNewStopOpen}

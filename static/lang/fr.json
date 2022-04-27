@@ -221,6 +221,7 @@
   "new__multi_stop": "Nouveau point d'arrêt multimodal",
   "new_element_help_text": "Vous pouvez ajouter de nouveaux éléments en les faisant glisser sur la carte.",
   "new_elements": "Nouveaux éléments",
+  "new_mobility_point": "Nouveau PDM",
   "new_parent_stop_question": "Souhaitez-vous créer un nouveau point d'arrêt multimodal ici ?",
   "new_parent_stop_title": "Vous êtes en train de créer un nouveau point d'arrêt multimodal.",
   "new_quay": "Nouveau quai",
