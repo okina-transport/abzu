@@ -53,7 +53,7 @@ class StopPlace extends React.Component {
 
     if (stopPlace) {
       if (stopPlace.isNewStop) {
-        title = formatMessage({ id: '_title_new_stop' });
+        title = formatMessage({ id: '_title_short' });
       } else {
         if (originalStopPlace.name) {
           title = originalStopPlace.name;

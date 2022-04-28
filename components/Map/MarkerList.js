@@ -104,14 +104,14 @@ class MarkerList extends React.Component {
     const {dispatch, intl} = this.props;
     dispatch(StopPlaceActions.useNewStopAsCurrent());
     dispatch(UserActions.navigateTo(`/${Routes.STOP_PLACE}/`, 'new'));
-    document.title = intl.formatMessage({id: '_title_new_stop'});
+    document.title = intl.formatMessage({id: '_title_short'});
   }
 
   handleNewParkingClick() {
     const {dispatch, intl} = this.props;
     dispatch(ParkingActions.useNewParkingAsCurrent());
     dispatch(UserActions.navigateTo(`/${Routes.PARKING}/`, 'new'));
-    document.title = intl.formatMessage({ id: '_title_new_parking' });
+    document.title = intl.formatMessage({ id: '_title_short' });
   }
 
   handleRemoveFromGroup(stopPlaceId) {

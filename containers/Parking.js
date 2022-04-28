@@ -49,7 +49,7 @@ class Parking extends React.Component {
 
         if (parking) {
             if (parking.isNewParking) {
-                title = formatMessage({id: '_title_new_stop'});
+                title = formatMessage({id: '_title_short'});
             } else {
                 if (originalParking.name) {
                     title = originalParking.name;

@@ -35,13 +35,13 @@ class Map extends React.Component {
 
   componentDidMount() {
     const { formatMessage } = this.props.intl;
-    document.title = formatMessage({ id: '_title' });
+    document.title = formatMessage({ id: '_title_short' });
   }
 
   componentWillUpdate(nextProps) {
     if (this.props.intl.locale !== nextProps.intl.locale) {
       const { formatMessage } = nextProps.intl;
-      document.title = formatMessage({ id: '_title' });
+      document.title = formatMessage({ id: '_title_short' });
     }
   }
 

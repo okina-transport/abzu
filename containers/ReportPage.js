@@ -239,7 +239,7 @@ class ReportPage extends React.Component {
     componentDidMount() {
         const {formatMessage} = this.props.intl;
         const {client} = this.props;
-        document.title = formatMessage({id: '_report_page'});
+        document.title = formatMessage({id: '_title_short'});
         const fromURL = extractQueryParamsFromUrl();
         this.setState({
             searchQuery: fromURL.query || '',
