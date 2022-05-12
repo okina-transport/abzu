@@ -39,9 +39,10 @@ class CustomMarkerIcon extends React.Component {
     }
 
     if (type === "cycleRental"){
-      imageStyle.background = null;
-      imageStyle.height = 30;
-      imageStyle.width = 30;
+      imageStyle.background= null;
+      imageStyle.height = 40;
+      imageStyle.width = 40;
+      imageStyle.filter ='grayscale(0%)';
     }
 
     const icon = getIconIdByTypeOrSubmode(submode, type, isMultimodal);
@@ -84,7 +85,7 @@ const getIconIdByModality = (type, isMultimodal) => {
     harbourPort: 'harbour_port',
     liftStation: 'lift-without-box',
     parkAndRide: 'parking',
-    bikeParking: 'parking',
+    bikeParking: 'bikeParking',
     urbanParking: 'parking',
     airportParking: 'parking',
     trainStationParking: 'parking',
