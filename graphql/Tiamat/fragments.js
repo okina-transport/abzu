@@ -494,6 +494,11 @@ Fragments.parking = {
                   numberOfCarsharingSpaces
               }
           }
+          parkingAreas {
+            id
+            specificParkingAreaUsage
+            totalCapacity
+          }
           parentSiteRef
       }
     `

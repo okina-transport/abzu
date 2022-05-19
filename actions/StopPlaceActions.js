@@ -389,6 +389,15 @@ StopPlaceActions.changeParkingNumberOfCarsharingSpaces = (index, numberOfCarshar
   );
 }
 
+StopPlaceActions.changeParkingNumberOfCarpoolingSpaces = (index, numberOfCarpoolingSpaces) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_PARKING_NUMBER_OF_CARPOOLING_SPACES_IN_STOP_PLACE, {
+            index,
+            numberOfCarpoolingSpaces
+        }),
+    );
+}
+
 StopPlaceActions.changeParkingNumberOfSpacesForRegisteredDisabledUserType = (index, numberOfSpacesForRegisteredDisabledUserType) => dispatch => {
   dispatch(
     createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_FOR_REGISTERED_DISABLED_USER_TYPE_IN_STOP_PLACE, {

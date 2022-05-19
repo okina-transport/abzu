@@ -274,7 +274,8 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       parentSiteRef: parentRef,
       parkingVehicleTypes: source.parkingVehicleTypes,
       validBetween: source.validBetween,
-      parkingProperties: []
+      parkingProperties: [],
+      parkingAreas: []
     };
 
     if (source.id) {
@@ -322,6 +323,14 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
             numberOfSpaces: source.numberOfSpacesForRegisteredDisabledUserType
           }
         ]
+      }];
+    }
+
+    if (source.numberOfCarpoolingSpaces) {
+      parking.parkingAreas = [{
+        id : source.id,
+        specificParkingAreaUsage: 'covoiturage',
+        totalCapacity: source.numberOfCarpoolingSpaces
       }];
     }
 

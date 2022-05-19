@@ -224,6 +224,12 @@ const parkingReducer = (state = {}, action) => {
                 parkingHasBeenModified: true
             });
 
+        case types.CHANGED_PARKING_NUMBER_OF_CARPOOLING_SPACES:
+            return Object.assign({}, state, {
+                current: formatHelpers.changeParkingNumberOfCarpoolingSpaces(state.current, action.payLoad),
+                parkingHasBeenModified: true
+            });
+
         case types.CHANGED_PARKING_NUMBER_OF_SPACES_FOR_REGISTERED_DISABLED_USER_TYPE:
             return Object.assign({}, state, {
                 current: formatHelpers.changeParkingNumberOfSpacesForRegisteredDisabledUserType(state.current, action.payLoad),

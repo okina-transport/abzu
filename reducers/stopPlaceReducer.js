@@ -640,6 +640,12 @@ const stopPlaceReducer = (state = {}, action) => {
         stopHasBeenModified: true
       });
 
+    case types.CHANGED_PARKING_NUMBER_OF_CARPOOLING_SPACES_IN_STOP_PLACE:
+      return Object.assign({}, state, {
+        current: formatHelpers.changeParkingNumberOfCarpoolingSpaces(state.current, action.payLoad),
+        stopHasBeenModified: true
+      });
+
     case types.CHANGED_PARKING_NUMBER_OF_SPACES_FOR_REGISTERED_DISABLED_USER_TYPE_IN_STOP_PLACE:
       return Object.assign({}, state, {
         current: formatHelpers.changeParkingNumberOfSpacesForRegisteredDisabledUserType(state.current, action.payLoad),

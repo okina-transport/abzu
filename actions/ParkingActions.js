@@ -143,6 +143,15 @@ ParkingActions.changeParkingNumberOfCarsharingSpaces = (index, numberOfCarsharin
     );
 }
 
+ParkingActions.changeParkingNumberOfCarpoolingSpaces = (index, numberOfCarpoolingSpaces) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_PARKING_NUMBER_OF_CARPOOLING_SPACES, {
+            index,
+            numberOfCarpoolingSpaces
+        }),
+    );
+}
+
 ParkingActions.changeParkingNumberOfSpacesForRegisteredDisabledUserType = (index, numberOfSpacesForRegisteredDisabledUserType) => dispatch => {
     dispatch(
         createThunk(types.CHANGED_PARKING_NUMBER_OF_SPACES_FOR_REGISTERED_DISABLED_USER_TYPE, {

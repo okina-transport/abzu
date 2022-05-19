@@ -36,6 +36,16 @@ class Parking {
       : 0;
   }
 
+  findNumberOfSpacesInParkingArea(areaType) {
+    if (this.parking.parkingAreas !== undefined && this.parking.parkingAreas.length > 0) {
+      let pa = this.parking.parkingAreas.find(area => area.specificParkingAreaUsage === areaType);
+      if (pa !== undefined) {
+        return pa.totalCapacity;
+      }
+    }
+    return 0;
+  }
+
   get numberOfSpaces() {
     if (this.parking.parkingProperties !== undefined && this.parking.parkingProperties.length) {
       return this.findNumberOfSpaces('allUsers', 'numberOfSpaces');
@@ -50,6 +60,10 @@ class Parking {
 
   get numberOfCarsharingSpaces() {
     return this.findNumberOfSpaces('allUsers', 'numberOfCarsharingSpaces');
+  }
+
+  get numberOfCarpoolingSpaces() {
+    return this.findNumberOfSpacesInParkingArea('covoiturage');
   }
 
   get numberOfSpacesForRegisteredDisabledUserType() {
@@ -97,6 +111,7 @@ class Parking {
       numberOfSpaces: this.isParkAndRide ? this.numberOfSpaces : null,
       numberOfSpacesWithRechargePoint: this.isParkAndRide ? this.numberOfSpacesWithRechargePoint : null,
       numberOfCarsharingSpaces: this.isParkAndRide ? this.numberOfCarsharingSpaces : null,
+      numberOfCarpoolingSpaces: this.isParkAndRide ? this.numberOfCarpoolingSpaces : null,
       numberOfSpacesForRegisteredDisabledUserType: this.isParkAndRide ? this.numberOfSpacesForRegisteredDisabledUserType : null,
       parkingLayout: this.isParkAndRide ? this.parking.parkingLayout : null,
       totalCapacity: parking.totalCapacity,

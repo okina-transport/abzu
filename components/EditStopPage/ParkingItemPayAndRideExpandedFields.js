@@ -98,6 +98,7 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
     numberOfSpaces,
     numberOfSpacesWithRechargePoint,
     numberOfCarsharingSpaces,
+    numberOfCarpoolingSpaces,
     numberOfSpacesForRegisteredDisabledUserType,
     handleSetParkingLayout,
     handleSetParkingPaymentProcess,
@@ -107,6 +108,7 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
     handleSetNumberOfSpaces,
     handleSetNumberOfSpacesWithRechargePoint,
     handleSetNumberOfCarsharingSpaces,
+    handleSetNumberOfCarpoolingSpaces,
     handleSetNumberOfSpacesForRegisteredDisabledUserType,
   } = props;
 
@@ -255,6 +257,21 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                     />
                 }
         />
+        </Box>
+      </Grid>
+      <Grid item>
+        <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+            <TextField
+                disabled={ !carpoolingAvailable }
+                floatingLabelText={formatMessage({id : 'number_of_carpooling_places'})}
+                onChange={(e, value) => {
+                    handleSetNumberOfCarpoolingSpaces(value);
+                }}
+                value={numberOfCarpoolingSpaces || ''}
+                type="number"
+                style={{ width: '95%', marginTop: -10 }}
+                floatingLabelStyle={{color: carpoolingAvailable ? 'rgb(30,100,163)' : 'rgba(0, 0, 0, 0.3)'}}
+            />
         </Box>
       </Grid>
       <Grid item>

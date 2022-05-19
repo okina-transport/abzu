@@ -177,6 +177,11 @@ class ParkingDetails extends React.Component {
         dispatch(ParkingActions.changeParkingNumberOfCarsharingSpaces(index, value));
     }
 
+    handleSetNumberOfCarpoolingSpaces(value) {
+        const {dispatch, index} = this.props;
+        dispatch(ParkingActions.changeParkingNumberOfCarpoolingSpaces(index, value));
+    }
+
     handleSetNumberOfSpacesForRegisteredDisabledUserType(value) {
         const {dispatch, index} = this.props;
         dispatch(ParkingActions.changeParkingNumberOfSpacesForRegisteredDisabledUserType(index, value));
@@ -377,6 +382,7 @@ class ParkingDetails extends React.Component {
                                 numberOfSpaces={parking.numberOfSpaces}
                                 numberOfSpacesWithRechargePoint={parking.numberOfSpacesWithRechargePoint}
                                 numberOfCarsharingSpaces={parking.numberOfCarsharingSpaces}
+                                numberOfCarpoolingSpaces={parking.numberOfCarpoolingSpaces}
                                 numberOfSpacesForRegisteredDisabledUserType={parking.numberOfSpacesForRegisteredDisabledUserType}
                                 handleSetParkingLayout={this.handleSetParkingLayout.bind(this)}
                                 handleSetParkingPaymentProcess={this.handleSetParkingPaymentProcess.bind(this)}
@@ -386,6 +392,7 @@ class ParkingDetails extends React.Component {
                                 handleSetNumberOfSpaces={this.handleSetNumberOfSpaces.bind(this)}
                                 handleSetNumberOfSpacesWithRechargePoint={this.handleSetNumberOfSpacesWithRechargePoint.bind(this)}
                                 handleSetNumberOfCarsharingSpaces={this.handleSetNumberOfCarsharingSpaces.bind(this)}
+                                handleSetNumberOfCarpoolingSpaces={this.handleSetNumberOfCarpoolingSpaces.bind(this)}
                                 handleSetNumberOfSpacesForRegisteredDisabledUserType={this.handleSetNumberOfSpacesForRegisteredDisabledUserType.bind(this)}/>
                         ) : (
                             <TextField

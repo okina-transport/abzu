@@ -970,6 +970,17 @@ helpers.changeParkingNumberOfCarsharingSpaces = (original, payload) => {
   return copy;
 }
 
+helpers.changeParkingNumberOfCarpoolingSpaces = (original, payload) => {
+  const { index, numberOfCarpoolingSpaces } = payload;
+  const copy = JSON.parse(JSON.stringify(original));
+  if (copy.parking){
+    copy.parking[index].numberOfCarpoolingSpaces = numberOfCarpoolingSpaces;
+  } else {
+    copy.numberOfCarpoolingSpaces = numberOfCarpoolingSpaces;
+  }
+  return copy;
+}
+
 helpers.changeParkingNumberOfSpacesForRegisteredDisabledUserType = (original, payload) => {
   const { index, numberOfSpacesForRegisteredDisabledUserType } = payload;
   const copy = JSON.parse(JSON.stringify(original));
