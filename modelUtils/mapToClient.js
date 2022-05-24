@@ -452,7 +452,9 @@ helpers.createNewParkingFromLocation = location => ({
   isNewParking: true,
   isActive: true,
   keyValues: [],
-  entityType: Entities.PARKING
+  entityType: Entities.PARKING,
+  carpoolingAvailable: false,
+  carsharingAvailable: false
 });
 
 helpers.createNewParentStopFromLocation = location => ({
