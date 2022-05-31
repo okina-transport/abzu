@@ -92,7 +92,7 @@ const getIconIdByModality = type => {
     airport: 'airplane-withoutBox',
     harbourPort: 'harbour_port',
     liftStation: 'lift',
-    other: 'no-information',
+    other: 'other',
     parkAndRide: 'parking',
     bikeParking: 'parking',
     urbanParking: 'parking',
