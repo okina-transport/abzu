@@ -88,6 +88,9 @@ class Header extends React.Component {
       case 'GoToImportParking':
         this.goToImportParking();
         break;
+      case 'GoToImportBikeParking':
+        this.goToImportBikeParking();
+        break;
       case 'GoToImportSalePoint':
         this.goToImportSalePoint();
         break;
@@ -117,6 +120,10 @@ class Header extends React.Component {
 
   goToImportParking() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_PARKING_CSV, ''));
+  }
+
+  goToImportBikeParking() {
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_BIKE_PARKING_CSV, ''));
   }
 
   goToImportSalePoint() {
@@ -184,6 +191,7 @@ class Header extends React.Component {
     const showCompassBearing = formatMessage({ id: 'show_compass_bearing' });
     const reportSite = formatMessage({ id: 'report_site' });
     const importCSVParkings = formatMessage({id: 'import_parking'})
+    const importCSVBikeParkings = formatMessage({id: 'import_bike_parking'})
     const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
     const importPOI = formatMessage({id: 'import_poi'})
     const importRentalBike = formatMessage({id: 'import_rental_bikes'})
@@ -276,6 +284,17 @@ class Header extends React.Component {
                       this.handleConfirmChangeRoute(
                           this.goToImportParking.bind(this),
                           'GoToImportParking'
+                      )}
+                  style={{ fontSize: 12, padding: 0 }}
+              />
+              <MenuItem
+                  leftIcon={<MapsDirectionsBike color="#005A82" />}
+                  primaryText={importCSVBikeParkings}
+                  href = {Routes.IMPORT_BIKE_PARKING_CSV}
+                  onClick={() =>
+                      this.handleConfirmChangeRoute(
+                          this.goToImportBikeParking().bind(this),
+                          'GoToImportBikeParking'
                       )}
                   style={{ fontSize: 12, padding: 0 }}
               />
