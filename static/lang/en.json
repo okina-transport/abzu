@@ -247,6 +247,7 @@
   "one_merged_quay": "A quay merged.",
   "only_duplicate_importedIds": "Only with duplicate importedId on quays",
   "nearby_stop_places": "Nearby stop places",
+  "stop_place_without_quays": "StopPlaces without quay",
   "nearby_radius": "Nearby radius(m)",
   "only_with_tags": "Only stops with tags",
   "only_without_coordinates": "Only without coordinates",

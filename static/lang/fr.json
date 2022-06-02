@@ -256,6 +256,7 @@
   "one_merged_quay": "Un quai fusionné.",
   "only_duplicate_importedIds": "Seulement avec des identifiants d'imports en doublon sur les quais",
   "nearby_stop_places": "Points d'arrêts proches (StopPlaces)",
+  "stop_place_without_quays": "StopPlaces sans quai",
   "only_with_tags": "Seulement avec des étiquettes",
   "only_without_coordinates": "Seulement sans coordonnées",
   "open_question": "Voulez-vous éditer ceci maintenant ?",

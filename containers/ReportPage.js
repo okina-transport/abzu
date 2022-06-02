@@ -55,6 +55,7 @@ class ReportPage extends React.Component {
             columnOptionsQuays: columnOptionsQuays,
             columnOptionsStopPlace: columnOptionsStopPlace,
             withoutLocationOnly: false,
+            stopPlacesWithoutQuay: false,
             withDuplicateImportedIds: false,
             nearbyStopPlaces: false,
             detectMultiModalPoints: false,
@@ -133,24 +134,32 @@ class ReportPage extends React.Component {
     handleFilterChange(key, value) {
         // nearby stop place report & detect multi modal points report need a specific result page, incompatible with normal result page
         // So, if user select nearby stop places report, other choices are un-checked
-        if ((key === 'nearbyStopPlaces' || key === 'detectMultiModalPoints' || key === 'withDistantQuays') && value){
+        if ((key === 'nearbyStopPlaces' || key === 'detectMultiModalPoints' || key === 'withDistantQuays' || key === 'stopPlacesWithoutQuay') && value){
 
 
             switch(key){
                 case 'nearbyStopPlaces':
                     this.setState({['detectMultiModalPoints']: false});
                     this.setState({['withDistantQuays']: false});
+                    this.setState({['stopPlacesWithoutQuay']: false});
                     this.setState({['nearbyRadius']: 50});
                     break;
                 case 'detectMultiModalPoints':
                     this.setState({['nearbyStopPlaces']: false});
                     this.setState({['withDistantQuays']: false});
+                    this.setState({['stopPlacesWithoutQuay']: false});
                     this.setState({['nearbyRadius']: 200});
                     break;
                 case 'withDistantQuays':
                     this.setState({['nearbyStopPlaces']: false});
                     this.setState({['detectMultiModalPoints']: false});
+                    this.setState({['stopPlacesWithoutQuay']: false});
                     this.setState({['nearbyRadius']: 100});
+                    break;
+                case 'stopPlacesWithoutQuay':
+                    this.setState({['nearbyStopPlaces']: false});
+                    this.setState({['detectMultiModalPoints']: false});
+                    this.setState({['withDistantQuays']: false});
                     break;
 
             }
@@ -182,7 +191,7 @@ class ReportPage extends React.Component {
 
 
         // And if user selects another filter, nearby Stop place result is un-checked
-        if ((key !== 'nearbyStopPlaces' || key !== 'detectMultiModalPoints' || key !== 'withDistantQuays') && value){
+        if ((key !== 'nearbyStopPlaces' || key !== 'detectMultiModalPoints' || key !== 'withDistantQuays' || key !== 'stopPlacesWithoutQuay') && value){
             this.setState({
                 ['nearbyStopPlaces']: false
             });
@@ -193,6 +202,10 @@ class ReportPage extends React.Component {
 
             this.setState({
                 ['withDistantQuays']: false
+            });
+
+            this.setState({
+                ['stopPlacesWithoutQuay']: false
             });
         }
 
@@ -249,6 +262,7 @@ class ReportPage extends React.Component {
             withNearbySimilarDuplicates: fromURL.withNearbySimilarDuplicates == 'true',
             hasParking: fromURL.hasParking == 'true',
             withDuplicateImportedIds: fromURL.withDuplicateImportedIds == 'true',
+            stopPlacesWithoutQuay: fromURL.stopPlacesWithoutQuay == 'true',
             nearbyStopPlaces: fromURL.nearbyStopPlaces == 'true',
             detectMultiModalPoints: fromURL.detectMultiModalPoints,
             withDistantQuay:fromURL.withDistantQuays,
@@ -309,6 +323,7 @@ class ReportPage extends React.Component {
             stopTypeFilter,
             withoutLocationOnly,
             withDuplicateImportedIds,
+            stopPlacesWithoutQuay,
             nearbyStopPlaces,
             detectMultiModalPoints,
             withDistantQuays,
@@ -344,6 +359,7 @@ class ReportPage extends React.Component {
             organisationName,
             withoutLocationOnly,
             withDuplicateImportedIds,
+            stopPlacesWithoutQuay,
             nearbyStopPlaces,
             detectMultiModalPoints,
             withDistantQuays,
@@ -492,6 +508,7 @@ class ReportPage extends React.Component {
       isLoading,
       withoutLocationOnly,
       withDuplicateImportedIds,
+      stopPlacesWithoutQuay,
       nearbyStopPlaces,
       detectMultiModalPoints,
       withDistantQuays,
@@ -508,7 +525,7 @@ class ReportPage extends React.Component {
     let resultPage;
     let resultHeader;
 
-      if (nearbyStopPlaces || detectMultiModalPoints || withDistantQuays) {
+      if (nearbyStopPlaces || detectMultiModalPoints || withDistantQuays || stopPlacesWithoutQuay) {
           resultPage =    <NearbyStopPlaceResultView
               activePageIndex={activePageIndex}
               intl={intl}
@@ -522,26 +539,42 @@ class ReportPage extends React.Component {
               isWithDistantQuays = {withDistantQuays?true:false}
           />;
 
-          resultHeader =
-              <div style={{display: 'flex'}}>
-                  <TextField
-                      floatingLabelText={formatMessage({
-                          id: 'nearby_radius'
-                      })}
-                      style={{width: 330}}
-                      value={this.state.nearbyRadius}
-                      onKeyDown={this.handleOnKeyDown.bind(this)}
-                      onChange={(e, v) => {
-                          this.handleNearbyRadiusChange(v);
-                      }}
-                  />
-                  <OrganisationNameFilter
-                      formatMessage={formatMessage}
-                      handleOrganisationNameChange={(e,v) => {
-                          this.handleOrganisationNameChange(v)
-                      }}
-                  />
-              </div>;
+
+          if (stopPlacesWithoutQuay){
+              resultHeader =
+                  <div style={{display: 'flex'}}>
+                      <OrganisationNameFilter
+                          formatMessage={formatMessage}
+                          handleOrganisationNameChange={(e,v) => {
+                              this.handleOrganisationNameChange(v)
+                          }}
+                      />
+                  </div>;
+
+          }else{
+              resultHeader =
+                  <div style={{display: 'flex'}}>
+                      <TextField
+                          floatingLabelText={formatMessage({
+                              id: 'nearby_radius'
+                          })}
+                          style={{width: 330}}
+                          value={this.state.nearbyRadius}
+                          onKeyDown={this.handleOnKeyDown.bind(this)}
+                          onChange={(e, v) => {
+                              this.handleNearbyRadiusChange(v);
+                          }}
+                      />
+                      <OrganisationNameFilter
+                          formatMessage={formatMessage}
+                          handleOrganisationNameChange={(e,v) => {
+                              this.handleOrganisationNameChange(v)
+                          }}
+                      />
+                  </div>;
+          }
+
+
 
 
       }else{
@@ -689,6 +722,7 @@ class ReportPage extends React.Component {
                                         formatMessage={formatMessage}
                                         withoutLocationOnly={withoutLocationOnly}
                                         withDuplicateImportedIds={withDuplicateImportedIds}
+                                        stopPlacesWithoutQuay={stopPlacesWithoutQuay}
                                         nearbyStopPlaces={nearbyStopPlaces}
                                         detectMultiModalPoints={detectMultiModalPoints}
                                         withDistantQuays={withDistantQuays}

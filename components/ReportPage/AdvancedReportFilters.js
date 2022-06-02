@@ -33,6 +33,7 @@ class AdvancedReportFilters extends Component {
       formatMessage,
       withoutLocationOnly,
       withDuplicateImportedIds,
+      stopPlacesWithoutQuay,
       nearbyStopPlaces,
       withNearbySimilarDuplicates,
       detectMultiModalPoints,
@@ -125,6 +126,20 @@ class AdvancedReportFilters extends Component {
                   handleCheckboxChange('nearbyStopPlaces', value);
                 }}
                 style={{ marginTop: 10 }}
+              />
+            </MenuItem>
+
+
+            <MenuItem style={menuItemsStyle}>
+              <Checkbox
+                  label={formatMessage({ id: 'stop_place_without_quays' })}
+                  labelPosition="right"
+                  labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                  checked={stopPlacesWithoutQuay}
+                  onCheck={(e, value) => {
+                    handleCheckboxChange('stopPlacesWithoutQuay', value);
+                  }}
+                  style={{ marginTop: 10 }}
               />
             </MenuItem>
 
