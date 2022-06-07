@@ -100,6 +100,10 @@ convictPromise
           res.send(getPage());
       });
 
+      app.get(ENDPOINTBASE + Routes.IMPORT_BIKE_PARKING_CSV, function(req, res) {
+          res.send(getPage());
+      });
+
       app.get(ENDPOINTBASE + Routes.IMPORT_SALE_POINT_CSV, function(req, res) {
           res.send(getPage());
       });
