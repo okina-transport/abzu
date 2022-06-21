@@ -6,6 +6,7 @@ import {httpCall} from '../utils/httpCall';
 import RaisedButton from "material-ui/RaisedButton";
 import {Input} from '@material-ui/core';
 import ReportFilterBox from "../components/ReportPage/ReportFilterBox";
+import {getIn} from "../utils";
 
 
 class ImportParkingPage extends Component{
@@ -36,7 +37,13 @@ class ImportParkingPage extends Component{
                 const url = tiamatBaseUrl + "parkings_import_csv";
 
                 const bodyFormData = new FormData();
+
                 bodyFormData.append('file', csvOutput);
+
+                bodyFormData.append('file_name',this.state.file.name);
+
+                const username = getIn(this.props.kc, ['tokenParsed', 'preferred_username'], '');
+                bodyFormData.append('user', username);
 
                 httpCall(
                     url,
@@ -93,8 +100,8 @@ class ImportParkingPage extends Component{
 }
 
 
-const mapStateToProps = ({}) => ({
-
+const mapStateToProps = state => ({
+    kc: state.roles.kc
 });
 
 export default withApollo(connect(mapStateToProps)(injectIntl(ImportParkingPage)));
