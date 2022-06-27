@@ -176,6 +176,16 @@ const userReducer = (state = initialState, action) => {
         }
       });
 
+    case types.TOGGLED_IS_SHOW_STOPS:
+      return Object.assign({}, state, {
+        showStops: action.payLoad
+      });
+
+    case types.TOGGLED_IS_SHOW_PARKINGS:
+      return Object.assign({}, state, {
+        showParkings: action.payLoad
+      });
+
     case types.SET_SEARCH_TEXT:
       return Object.assign({}, state, {
         searchFilters: {

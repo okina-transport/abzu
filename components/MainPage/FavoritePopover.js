@@ -63,7 +63,7 @@ class FilterPopover extends React.Component {
     };
 
     return (
-      <div>
+      <div style={{ minWidth: 100 }}>
         <FlatButton
           onClick={this.handleTouchTap.bind(this)}
           icon={<StarIcon style={{ height: 20, width: 20, marginLeft: -1 }} />}

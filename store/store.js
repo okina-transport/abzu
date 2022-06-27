@@ -92,6 +92,8 @@ export default function configureStore(kc) {
       path: '/',
       isCreatingNewStop: false,
       isCreatingNewParking: false,
+      showParkings: true,
+      showStops: true,
       missingCoordsMap: {},
       searchFilters: {
         stopType: [],
