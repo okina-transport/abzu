@@ -13,19 +13,16 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 import * as types from './Types';
-import { browserHistory } from 'react-router';
+import {browserHistory} from 'react-router';
 import configureLocalization from '../localization/localization';
 import FavoriteManager from '../singletons/FavoriteManager';
 import SettingsManager from '../singletons/SettingsManager';
-import {
-  getMergeInfoForStops,
-  getAddStopPlaceInfo
-} from '../graphql/Tiamat/actions';
-import { getIn } from '../utils/';
+import {getAddStopPlaceInfo, getMergeInfoForStops} from '../graphql/Tiamat/actions';
+import {getIn} from '../utils/';
 import ParentStopPlace from '../models/ParentStopPlace';
 import Routes from '../routes/';
-import { createThunk } from './';
-import { checkStopPlaceUsage, checkQuayUsage } from '../graphql/OTP/actions';
+import {createThunk} from './';
+import {checkQuayUsage, checkStopPlaceUsage} from '../graphql/OTP/actions';
 
 var UserActions = {};
 
@@ -136,6 +133,14 @@ UserActions.toggleCompassBearingEnabled = value => dispatch => {
 UserActions.toggleExpiredShowExpiredStops = value => dispatch => {
   Settings.setShowExpiredStops(value);
   dispatch(createThunk(types.TOGGLED_IS_SHOW_EXPIRED_STOPS, value));
+};
+
+UserActions.toggleShowStops = value => dispatch => {
+  dispatch(createThunk(types.TOGGLED_IS_SHOW_STOPS, value));
+};
+
+UserActions.toggleShowParkings = value => dispatch => {
+  dispatch(createThunk(types.TOGGLED_IS_SHOW_PARKINGS, value));
 };
 
 UserActions.applyStopTypeSearchFilter = filters => dispatch => {

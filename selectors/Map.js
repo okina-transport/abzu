@@ -26,7 +26,7 @@ export const getMarkersForMap = ({ stopPlace, user, parking }) => {
     neighbourParkings
   } = parking;
 
-  const { isCreatingNewStop, isCreatingNewParking } = user;
+  const { isCreatingNewStop, isCreatingNewParking, showParkings, showStops } = user;
 
   let markers = activeSearchResult ? [activeSearchResult] : [];
 
@@ -46,11 +46,11 @@ export const getMarkersForMap = ({ stopPlace, user, parking }) => {
     markers = markers.concat(newParking);
   }
 
-  if (neighbourStops && neighbourStops.length) {
+  if (neighbourStops && neighbourStops.length && showStops) {
     markers = markers.concat(neighbourStops);
   }
 
-  if (neighbourParkings && neighbourParkings.length) {
+  if (neighbourParkings && neighbourParkings.length && showParkings) {
     markers = markers.concat(neighbourParkings);
   }
 

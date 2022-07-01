@@ -179,6 +179,14 @@ class SearchBox extends React.Component {
     this.changeStateShowMoreFilterOptions();
   }
 
+  toggleShowStops(value) {
+    this.props.dispatch(UserActions.toggleShowStops(value));
+  }
+
+  toggleShowParkings(value) {
+    this.props.dispatch(UserActions.toggleShowParkings(value));
+  }
+
   handleTopographicalPlaceInput(searchText) {
     const { client } = this.props;
     findTopographicalPlace(client, searchText);
@@ -450,7 +458,9 @@ console.log({ dataSource });
       newStopIsMultiModal,
       dataSource,
       showFutureAndExpired,
-      filterByOrg
+      filterByOrg,
+      showStops,
+      showParkings
     } = this.props;
     const {
       coordinatesDialogOpen,
@@ -583,14 +593,30 @@ console.log({ dataSource });
         <FavoriteNameDialog />
         <div style={searchBoxWrapperStyle}>
           <div key="search-name-wrapper">
-            <FavoritePopover
-              caption={formatMessage({ id: 'favorites' })}
-              items={[]}
-              filter={stopTypeFilter}
-              onItemClick={this.handleRetrieveFilter.bind(this)}
-              onDismiss={this.handlePopoverDismiss.bind(this)}
-              text={favoriteText}
-            />
+            <div style={{display: 'flex'}}>
+              <FavoritePopover
+                  caption={formatMessage({ id: 'favorites' })}
+                  items={[]}
+                  filter={stopTypeFilter}
+                  onItemClick={this.handleRetrieveFilter.bind(this)}
+                  onDismiss={this.handlePopoverDismiss.bind(this)}
+                  text={favoriteText}
+              />
+              <CheckBox
+                  checked={showStops}
+                  onCheck={(e, value) => this.toggleShowStops(value)}
+                  label={formatMessage({ id: 'show_stops' })}
+                  labelStyle={{ fontSize: '0.8em' }}
+                  style={{ paddingTop: '5' }}
+              />
+              <CheckBox
+                  checked={showParkings}
+                  onCheck={(e, value) => this.toggleShowParkings(value)}
+                  label={formatMessage({ id: 'show_parkings' })}
+                  labelStyle={{ fontSize: '0.8em' }}
+                  style={{ paddingTop: '5' }}
+              />
+            </div>
             <div
               style={{
                 width: '100%',
@@ -861,7 +887,9 @@ const mapStateToProps = state => {
     showFutureAndExpired: state.user.searchFilters.showFutureAndExpired,
     filterByOrg: state.user.searchFilters.filterByOrg,
     orgCode: state.user.searchFilters.orgCode,
-    roles: state.roles.kc.tokenParsed.roles
+    roles: state.roles.kc.tokenParsed.roles,
+    showStops: state.user.showStops,
+    showParkings: state.user.showParkings
   };
 };
 

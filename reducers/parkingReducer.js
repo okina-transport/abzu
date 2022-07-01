@@ -105,16 +105,6 @@ const parkingReducer = (state = {}, action) => {
                 parkingHasBeenModified: true,
             });
 
-        case types.CHANGED_PARKING_NAME:
-            return {
-                ...state,
-                current: {
-                    ...state.current,
-                    name: action.payLoad,
-                },
-                parkingHasBeenModified: true,
-            };
-
         case types.CHANGED_PARKING_TYPE:
             return Object.assign({}, state, {
                 current: formatHelpers.updateCurrentParkingWithType(
