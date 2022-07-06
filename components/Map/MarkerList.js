@@ -327,6 +327,8 @@ class MarkerList extends React.Component {
                     active={!!marker.isActive}
                     parkingType={marker.parkingType}
                     draggable={dragableMarkers}
+                    secure={marker.secure}
+                    typeOfParkingRef={marker.typeOfParkingRef}
                     handleChangeCoordinates={changeCoordinates}
                     translations={CustomPopupMarkerText}
                     handleOnClick={() => {

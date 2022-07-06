@@ -22,10 +22,14 @@ class CustomMarkerIcon extends React.Component {
     type: PropTypes.string,
     active: PropTypes.bool.isRequired,
     hasExpired: PropTypes.bool,
+    secure: PropTypes.bool,
+    typeOfParkingRef: PropTypes.string,
   };
 
   componentWillMount() {
-    const { type, active, hasExpired, submode, isMultimodal, isMultimodalChild } = this.props;
+    const { type, active, hasExpired, submode, isMultimodal, isMultimodalChild, secure, typeOfParkingRef} = this.props;
+
+
 
     let imageStyle = {
       padding: 3,
@@ -38,18 +42,31 @@ class CustomMarkerIcon extends React.Component {
       imageStyle.filter = isMultimodalChild ? 'grayscale(60%)' : 'grayscale(80%)';
     }
 
-    if (type === "cycleRental"){
-      imageStyle.background= null;
-      imageStyle.height = 40;
-      imageStyle.width = 40;
-      imageStyle.filter ='grayscale(0%)';
+    if (type === 'other' && secure){
+      imageStyle.background= '#FF8C00';
+      imageStyle.filter=null;
     }
 
-    const icon = getIconIdByTypeOrSubmode(submode, type, isMultimodal);
 
-    this._typeIcon = (
-      <img style={{ width: 20, height: 20, ...imageStyle }} src={icon} />
-    );
+    if (type == 'other' && typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox'){
+      imageStyle.background= '#32CD32';
+      imageStyle.filter=null;
+    }
+
+    const icon = getIconIdByTypeOrSubmode(submode, type, isMultimodal, secure, typeOfParkingRef);
+
+
+    if (isABikeTransportMode(type, secure,typeOfParkingRef )){
+      this._typeIcon = (
+          <img style={{ width: 25, height: 25,objectFit: 'cover', ...imageStyle }} src={icon} />
+      );
+
+    }else{
+      this._typeIcon = (
+          <img style={{ width: 20, height: 20, ...imageStyle }} src={icon} />
+      );
+    }
+
   }
 
   render() {
@@ -61,18 +78,29 @@ class CustomMarkerIcon extends React.Component {
   }
 }
 
-const getIconIdByTypeOrSubmode = (submode, type, isMultimodal) => {
+const isABikeTransportMode = ( type, secure, typeOfParkingRef) => {
+    return type === "cycleRental" ||
+              (type == 'other' && (secure || (typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox')));
+}
+
+const getIconIdByTypeOrSubmode = (submode, type, isMultimodal, secure, typeOfParkingRef) => {
   const submodeMap = {
     railReplacementBus: require('../../static/icons/modalities/' + 'railReplacement' + '.png')
   };
-  return submodeMap[submode] || getIconIdByModality(type, isMultimodal);
+  return submodeMap[submode] || getIconIdByModality(type, isMultimodal, secure, typeOfParkingRef);
 
 }
-const getIconIdByModality = (type, isMultimodal) => {
+const getIconIdByModality = (type, isMultimodal, secure, typeOfParkingRef) => {
+
 
   if (isMultimodal) {
     return require('../../static/icons/modalities/multiModal.png');
   }
+
+  if (isABikeTransportMode(type, secure, typeOfParkingRef)){
+    return require('../../static/icons/modalities/bike.png');
+  }
+
 
   const modalityMap = {
     onstreetBus: 'bus-without-box',
@@ -96,7 +124,7 @@ const getIconIdByModality = (type, isMultimodal) => {
     roadside: 'parking',
     parkingZone: 'parking',
     undefined: 'parking',
-    cycleRental: 'cycleRental',
+    cycleRental: 'bike',
   };
 
   const iconType = modalityMap[type] || 'no-information';

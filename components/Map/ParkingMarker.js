@@ -31,6 +31,8 @@ class ParkingMarker extends React.Component {
         draggable: PropTypes.bool.isRequired,
         translations: PropTypes.object.isRequired,
         active: PropTypes.bool.isRequired,
+        secure: PropTypes.bool,
+        typeOfParkingRef: PropTypes.string,
         id: PropTypes.string,
         isEditingParking: PropTypes.bool.isRequired
     };
@@ -50,13 +52,17 @@ class ParkingMarker extends React.Component {
     createIcon({
                    index,
                    parkingType,
-                   active
+                   active,
+                   secure,
+                   typeOfParkingRef
                }) {
         let divIconBody = (
             <CustomMarkerIcon
                 markerIndex={index}
                 type={parkingType}
                 active={active}
+                secure={secure}
+                typeOfParkingRef={typeOfParkingRef}
             />
         );
 

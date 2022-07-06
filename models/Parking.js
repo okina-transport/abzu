@@ -115,7 +115,9 @@ class Parking {
       numberOfSpacesForRegisteredDisabledUserType: this.isParkAndRide ? this.numberOfSpacesForRegisteredDisabledUserType : null,
       parkingLayout: this.isParkAndRide ? this.parking.parkingLayout : null,
       totalCapacity: parking.totalCapacity,
-      parentSiteRef: parking.parentSiteRef
+      parentSiteRef: parking.parentSiteRef,
+      secure: parking.secure,
+      typeOfParkingRef: parking.typeOfParkingRef
     };
     let coordinates = getIn(parking, ['geometry', 'coordinates'], null);
 

@@ -69,7 +69,9 @@ class NeighbourMarkerParking extends React.Component {
             <CustomMarkerIcon
                 markerIndex={index}
                 type={type}
+                secure={parking.secure}
                 active={false}
+                typeOfParkingRef={parking.typeOfParkingRef}
             />
         );
 

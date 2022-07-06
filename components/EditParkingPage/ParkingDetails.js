@@ -342,7 +342,7 @@ class ParkingDetails extends React.Component {
                                             this.handleOpenParkingTypePopover(e);
                                         }}
                                     >
-                                        <ModalityIconSvg type={parking.parkingType}/>
+                                        <ModalityIconSvg type={parking.parkingType} secure={parking.secure} typeOfParkingRef={parking.typeOfParkingRef}/>
                                     </IconButton>
                                 </ToolTippable>
                                 <Popover

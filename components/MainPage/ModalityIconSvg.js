@@ -47,7 +47,7 @@ class ModalityIconSvg extends React.Component {
         transform: 'translateY(2px)',
       };
 
-    const iconId = getIconIdByTypeOrSubmode(this.props.submode, this.props.type);
+    const iconId = getIconIdByTypeOrSubmode(this.props.submode, this.props.type, this.props.secure, this.props.typeOfParkingRef);
 
     let style = {
       ...(this.props.style || {}),
@@ -74,14 +74,25 @@ ModalityIconSvg.propTypes = {
 };
 
 
-const getIconIdByTypeOrSubmode = (submode, type) => {
+const getIconIdByTypeOrSubmode = (submode, type, secure, typeOfParkingRef) => {
+
   const submodeMap = {
     railReplacementBus: 'railReplacement',
   };
-  return submodeMap[submode] || getIconIdByModality(type);
+  return submodeMap[submode] || getIconIdByModality(type, secure, typeOfParkingRef);
 };
 
-const getIconIdByModality = type => {
+const getIconIdByModality = (type, secure, typeOfParkingRef) => {
+
+  if (type == 'other' && secure){
+    return 'bikeDeposit';
+  }
+
+  if (type == 'other' && typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox'){
+    return 'bikeRentalSvg';
+  }
+
+
   const modalityMap = {
     onstreetBus: 'bus-withoutBox',
     onstreetTram: 'tram-withoutBox',
@@ -105,7 +116,7 @@ const getIconIdByModality = type => {
     roadside: 'parking',
     parkingZone: 'parking',
     undefined: 'parking',
-    cycleRental: 'parking',
+    cycleRental: 'bikeRentalSvg',
   };
   return modalityMap[type] || 'no-information';
 };

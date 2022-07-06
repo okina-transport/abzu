@@ -477,6 +477,8 @@ Fragments.parking = {
           }
           parkingType
           parkingVehicleTypes
+          secure
+          typeOfParkingRef  
           validBetween {
               fromDate
               toDate

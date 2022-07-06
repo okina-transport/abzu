@@ -140,6 +140,8 @@ export const parkingBBQuery = gql`
             ...on Parking {
                 __typename
                 parkingType
+                secure
+                typeOfParkingRef
             }
         }
     },
