@@ -454,7 +454,10 @@ helpers.createNewParkingFromLocation = location => ({
   keyValues: [],
   entityType: Entities.PARKING,
   carpoolingAvailable: false,
-  carsharingAvailable: false
+  carsharingAvailable: false,
+  covered: null,
+  typeOfParkingRef: null,
+  secure: false
 });
 
 helpers.createNewParentStopFromLocation = location => ({
@@ -481,7 +484,7 @@ helpers.getCenterPosition = geometry => {
 helpers.updateKeyValuesByKey = (original, key, newValues, origin) => {
   const { index, type } = origin;
 
-  if (type === 'stopPlace') {
+  if (type === 'stopPlace' || type === 'parking') {
     return Object.assign({
       ...original,
       importedId: key === 'imported-id' ? newValues : original.importedId,
@@ -518,7 +521,7 @@ helpers.updateKeyValuesByKey = (original, key, newValues, origin) => {
 helpers.deleteKeyValuesByKey = (original, key, origin) => {
   const { index, type } = origin;
 
-  if (type === 'stopPlace') {
+  if (type === 'stopPlace' || type === 'parking') {
     return Object.assign({
       ...original,
       importedId: key === 'imported-id' ? [] : original.importedId,
@@ -545,7 +548,7 @@ helpers.deleteKeyValuesByKey = (original, key, origin) => {
 helpers.createKeyValuesPair = (original, key, newValues, origin) => {
   const { index, type } = origin;
 
-  if (type === 'stopPlace') {
+  if (type === 'stopPlace' || type === 'parking') {
     return Object.assign({
       ...original,
       keyValues: (original.keyValues || []).concat({
@@ -582,6 +585,24 @@ helpers.updateCurrentParkingWithType = (current, type) => {
   return Object.assign({}, current, {
     parkingType: type,
     submode: null
+  });
+};
+
+helpers.updateCurrentParkingCovered = (current, covered) => {
+  return Object.assign({}, current, {
+    covered: covered
+  });
+};
+
+helpers.updateCurrentParkingTypeOfParkingRef = (current, typeOfParkingRef) => {
+  return Object.assign({}, current, {
+    typeOfParkingRef: typeOfParkingRef
+  });
+};
+
+helpers.updateCurrentParkingSecure = (current, secure) => {
+  return Object.assign({}, current, {
+    secure: secure
   });
 };
 

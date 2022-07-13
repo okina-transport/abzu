@@ -178,7 +178,7 @@ const stopPlaceReducer = (state = {}, action) => {
       });
 
 
-    case types.UPDATED_KEY_VALUES_FOR_KEY:
+    case types.UPDATED_KEY_VALUES_FOR_KEY_STOP_PLACE:
       return Object.assign({}, state, {
         current: formatHelpers.updateKeyValuesByKey(
           state.current,
@@ -189,7 +189,7 @@ const stopPlaceReducer = (state = {}, action) => {
         stopHasBeenModified: true,
       });
 
-    case types.DELETED_KEY_VALUES_BY_KEY:
+    case types.DELETED_KEY_VALUES_BY_KEY_STOP_PLACE:
       return Object.assign({}, state, {
         current: formatHelpers.deleteKeyValuesByKey(
           state.current,
@@ -199,7 +199,7 @@ const stopPlaceReducer = (state = {}, action) => {
         stopHasBeenModified: true,
       });
 
-    case types.CREATED_KEY_VALUES_PAIR:
+    case types.CREATED_KEY_VALUES_PAIR_STOP_PLACE:
       return Object.assign({}, state, {
         current: formatHelpers.createKeyValuesPair(
           state.current,

@@ -478,7 +478,8 @@ Fragments.parking = {
           parkingType
           parkingVehicleTypes
           secure
-          typeOfParkingRef  
+          typeOfParkingRef
+          covered  
           validBetween {
               fromDate
               toDate
@@ -502,7 +503,18 @@ Fragments.parking = {
             totalCapacity
           }
           parentSiteRef
+          keyValues {
+            key
+            values
+          }
+          description {
+              value
+          }
+          placeEquipments {
+              ...PlaceEquipments
+          }      
       }
+          ${Fragments.placeEquipments.verbose}
     `
 };
 

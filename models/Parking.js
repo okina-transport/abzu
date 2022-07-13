@@ -18,6 +18,7 @@ import { hasExpired } from '../modelUtils/validBetween';
 import PARKING_TYPE from './parkingType';
 import PARKING_VEHICLE_TYPE from './parkingVehicleType';
 import {Entities} from "./Entities";
+import {getImportedId, simplifyPlaceEquipment} from "./stopPlaceUtils";
 
 class Parking {
   constructor(parking, isActive, userDefinedCoordinates) {
@@ -117,7 +118,8 @@ class Parking {
       totalCapacity: parking.totalCapacity,
       parentSiteRef: parking.parentSiteRef,
       secure: parking.secure,
-      typeOfParkingRef: parking.typeOfParkingRef
+      typeOfParkingRef: parking.typeOfParkingRef,
+      covered: parking.covered
     };
     let coordinates = getIn(parking, ['geometry', 'coordinates'], null);
 
@@ -136,6 +138,19 @@ class Parking {
       if (userDefinedCoordinates && parking.id === userDefinedCoordinates.parkingId && userDefinedCoordinates.position) {
         clientParking.location = userDefinedCoordinates.position.slice();
       }
+    }
+
+    if (parking.description) {
+      clientParking.description = parking.description.value;
+    }
+
+    if (parking.keyValues) {
+      clientParking.importedId = getImportedId(parking.keyValues);
+      clientParking.keyValues = parking.keyValues;
+    }
+
+    if (parking.placeEquipments) {
+      clientParking.placeEquipments = simplifyPlaceEquipment(parking.placeEquipments);
     }
 
     return clientParking;

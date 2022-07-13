@@ -414,14 +414,20 @@ export const findStop = gql`
                 fromDate
                 toDate
             }
+            keyValues {
+                key
+                values
+            }
             name {
                 value
                 lang
             }
             version
-            parkingType
             geometry {
                 coordinates
+            }
+            ... on Parking {
+              parkingType
             }
         }
     },

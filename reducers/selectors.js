@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-export const selectKeyValuesDataSource = (keyValuesOrigin, stopPlace) => {
+
+export const selectKeyValuesDataSource = (keyValuesOrigin, stopPlace, parking) => {
   if (!keyValuesOrigin || !keyValuesOrigin.type) return [];
 
   let keyValues = [];
@@ -24,6 +25,8 @@ limitations under the Licence. */
     if (quay) {
       keyValues = stopPlace.quays[keyValuesOrigin.index].keyValues;
     }
+  } else if (keyValuesOrigin.type === 'parking') {
+    keyValues = parking.keyValues;
   }
   return keyValues;
 };

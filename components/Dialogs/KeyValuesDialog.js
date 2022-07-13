@@ -20,7 +20,7 @@ import MdRemove from 'material-ui/svg-icons/action/delete';
 import { getPrimaryColor } from '../../config/themeConfig';
 import EditKeyValuePair from '../EditStopPage/EditKeyValuePair';
 import CreateKeyValuePair from '../EditStopPage/CreateKeyValuePair';
-import { StopPlaceActions, UserActions } from '../../actions/';
+import { StopPlaceActions, UserActions, ParkingActions } from '../../actions/';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { selectKeyValuesDataSource } from '../../reducers/selectors';
@@ -44,22 +44,37 @@ class KeyValuesDialog extends React.Component {
     });
   }
 
-  handleDeleteKey(key) {
-    this.props.dispatch(StopPlaceActions.deleteKeyValuesByKey(key));
+  handleDeleteKey(key, stopPlace) {
+    if(stopPlace){
+      this.props.dispatch(StopPlaceActions.deleteKeyValuesByKeyStopPlace(key));
+    }
+    else{
+      this.props.dispatch(ParkingActions.deleteKeyValuesByKeyParking(key));
+    }
   }
 
-  handleUpdateValues(key, values) {
+  handleUpdateValues(key, values, stopPlace) {
     this.setState({
       isEditingOpen: false
     });
-    this.props.dispatch(StopPlaceActions.updateKeyValuesForKey(key, values));
+    if(stopPlace){
+      this.props.dispatch(StopPlaceActions.updateKeyValuesForKeyStopPlace(key, values));
+    }
+    else{
+      this.props.dispatch(ParkingActions.updateKeyValuesForKeyParking(key, values));
+    }
   }
 
-  handleCreateValues(key, values) {
+  handleCreateValues(key, values, stopPlace) {
     this.setState({
       isCreatingOpen: false
     });
-    this.props.dispatch(StopPlaceActions.createKeyValuesPair(key, values));
+    if(stopPlace){
+      this.props.dispatch(StopPlaceActions.createKeyValuesPairStopPlace(key, values));
+    }
+    else {
+      this.props.dispatch(ParkingActions.createKeyValuesPairParking(key, values));
+    }
   }
 
   handleOpenCreateValues() {
@@ -224,8 +239,11 @@ const mapStateToProps = state => ({
   open: state.user.keyValuesDialogOpen,
   keyValues: selectKeyValuesDataSource(
     state.user.keyValuesOrigin,
-    state.stopPlace.current
-  )
+    state.stopPlace.current,
+    state.parking.current
+  ),
+  stopPlace: state.stopPlace.current,
+  parking: state.parking.current
 });
 
 export default connect(mapStateToProps)(KeyValuesDialog);

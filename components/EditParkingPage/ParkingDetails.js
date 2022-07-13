@@ -17,11 +17,11 @@ import React from 'react';
 import ModalityIconSvg from '../MainPage/ModalityIconSvg';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import IconButton from 'material-ui/IconButton';
-import {ParkingActions, StopPlaceActions, UserActions} from '../../actions/';
+import {ParkingActions, UserActions} from '../../actions/';
 import {connect} from 'react-redux';
 import debounce from 'lodash.debounce';
 import ToolTippable from '../EditStopPage/ToolTippable';
-import PARKING_TYPE, {unknownParkingType} from "../../models/parkingType";
+import {unknownParkingType} from "../../models/parkingType";
 import {deleteParking, getName} from "../../graphql/Tiamat/actions";
 import ModalitiesParkingMenuItems from "./ModalitiesParkingMenuItems";
 import parkingTypes from "../../models/parkingTypes";
@@ -33,6 +33,16 @@ import * as types from "../../actions/Types";
 import AutoComplete from "material-ui/AutoComplete";
 import MenuItem from "material-ui/MenuItem";
 import MdSpinner from "../../static/icons/spinner";
+import {getPrimaryDarkerColor} from "../../config/themeConfig";
+import MdKey from "material-ui/svg-icons/communication/vpn-key";
+import KeyValuesDialog from "../Dialogs/KeyValuesDialog";
+import parkingTypesOfParkingRef from "../../models/parkingTypesOfParkingRef";
+import parkingTypesCovered from "../../models/parkingTypesCovered";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import ParkingTypeOfParkingRefMenuItems from "./ParkingTypeOfParkingRefMenuItems";
+import ParkingCoveredMenuItems from "./ParkingCoveredMenuItems";
+import {Button} from "@material-ui/core";
 
 class ParkingDetails extends React.Component {
     constructor(props) {
@@ -41,10 +51,12 @@ class ParkingDetails extends React.Component {
             parkingTypeOpen: false,
             weightingOpen: false,
             name: props.parking.name || '',
+            description: props.parking.description || '',
             tagsOpen: false,
             loading: false,
             currentParkingName: props.parking.name || '',
-            confirmDeleteDialogOpen: false
+            confirmDeleteDialogOpen: false,
+            activeTabIndex: 0
         };
 
         this.updateParkingName = debounce(value => {
@@ -62,11 +74,16 @@ class ParkingDetails extends React.Component {
         };
 
         this.debouncedSearchParkingName = debounce(searchParkingName, 1000);
+
+        this.updateParkingDescription = debounce(value => {
+            this.props.dispatch(ParkingActions.changeParkingDescription(value));
+        }, 200);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            name: nextProps.parking.name || ''
+            name: nextProps.parking.name || '',
+            description: nextProps.parking.description || ''
         });
         if (
             nextProps.keyValuesDialogOpen &&
@@ -83,6 +100,13 @@ class ParkingDetails extends React.Component {
         }
     }
 
+    handleTabOnChange = value => {
+        this.setState({
+            activeTabIndex: value,
+        });
+    };
+
+
     handleCloseParkingTypePopover() {
         this.setState({
             parkingTypeOpen: false
@@ -98,9 +122,60 @@ class ParkingDetails extends React.Component {
         });
     }
 
+    handleCloseParkingCoveredPopover() {
+        this.setState({
+            parkingCoveredOpen: false
+        });
+    }
+
+    handleOpenParkingCoveredPopover(event) {
+        this.setState({
+            parkingTypeOpen: false,
+            wheelChairOpen: false,
+            parkingCoveredAnchorEl: event.currentTarget,
+            weightingOpen: false,
+            parkingTypeOfParkingRefOpen: false,
+            parkingSecureOpen: false,
+            parkingCoveredOpen: true
+        });
+    }
+
+    handleCloseParkingTypeOfParkingRefPopover() {
+        this.setState({
+            parkingTypeOfParkingRefOpen: false
+        });
+    }
+
+    handleOpenParkingTypeOfParkingRefPopover(event) {
+        this.setState({
+            parkingTypeOpen: false,
+            wheelChairOpen: false,
+            parkingTypeOfParkingRefAnchorEl: event.currentTarget,
+            weightingOpen: false,
+            parkingSecureOpen: false,
+            parkingCoveredOpen: false,
+            parkingTypeOfParkingRefOpen: true
+        });
+    }
+
+
     handleParkingTypeChange(parkingType) {
         this.handleCloseParkingTypePopover();
         this.props.dispatch(ParkingActions.changeParkingType(parkingType));
+    }
+
+    handleParkingCoveredChange(parkingCovered) {
+        this.handleCloseParkingCoveredPopover();
+        this.props.dispatch(ParkingActions.changeParkingCovered(parkingCovered));
+    }
+
+    handleParkingTypeOfParkingRefChange(parkingTypeOfParkingRef) {
+        this.handleCloseParkingTypeOfParkingRefPopover();
+        this.props.dispatch(ParkingActions.changeParkingTypeOfParkingRef(parkingTypeOfParkingRef));
+    }
+
+    handleSetSecureAvailable(value) {
+        this.props.dispatch(ParkingActions.changeParkingSecureAvailable(value));
     }
 
 
@@ -115,6 +190,27 @@ class ParkingDetails extends React.Component {
 
         return unknownParkingType[locale];
     }
+
+    getParkingCoveredTranslation(locale, parkingTypeCovered) {
+        let translations = parkingTypesCovered[locale].filter(
+            type => type.value === parkingTypeCovered
+        );
+
+        if (translations && translations.length) {
+            return translations[0].name;
+        }
+    }
+
+    getParkingTypeOfParkingRefTranslation(locale, parkingTypeOfParkingRef) {
+        let translations = parkingTypesOfParkingRef[locale].filter(
+            type => type.value === parkingTypeOfParkingRef
+        );
+
+        if (translations && translations.length) {
+            return translations[0].name;
+        }
+    }
+
 
     handleSetTotalCapacity(value) {
         const {dispatch, index} = this.props;
@@ -204,6 +300,25 @@ class ParkingDetails extends React.Component {
         });
     }
 
+    handleOpenKeyValues() {
+        this.setState({
+            tariffZoneOpen: false,
+            altNamesDialogOpen: false,
+            tagsOpen: false,
+        });
+        this.props.dispatch(
+            UserActions.openKeyValuesDialog(this.props.parking.keyValues, 'parking', null)
+        );
+    }
+
+    handleParkingDescriptionChange(event) {
+        const description = event.target.value;
+        this.setState({
+            description: description
+        });
+        this.updateParkingDescription(description);
+    }
+
     getMenuItems(dataSource, nextProps, currentParkingName) {
         const {formatMessage} = nextProps.intl;
         let menuItems = [];
@@ -259,7 +374,18 @@ class ParkingDetails extends React.Component {
             display: 'block'
         };
 
-        const {parking, intl, disabled, translations} = this.props;
+        const style = {
+            background: '#fff'
+        };
+
+        const tabStyle = {
+            color: '#000',
+            fontSize: '0.7em',
+            fontWeight: 600,
+            marginTop: -10,
+        };
+
+        const {parking, intl, disabled, translations, index, activeTabIndex} = this.props;
         const {formatMessage, locale} = intl;
 
         const parkingTypeHint = this.getParkingTypeTranslation(
@@ -267,16 +393,34 @@ class ParkingDetails extends React.Component {
             parking.parkingType
         );
 
+        const parkingCoveredHint = this.getParkingCoveredTranslation(
+            locale,
+            parking.covered
+        );
+
+        const parkingTypeOfParkingRefHint = this.getParkingTypeOfParkingRefTranslation(
+            locale,
+            parking.typeOfParkingRef
+        );
+
         let totalCapacity = parking.totalCapacity || 0;
 
         const {
             name,
+            description,
             loading,
             dataSource,
-            currentParkingName
+            currentParkingName,
+            parkingCoveredOpen,
+            parkingCoveredAnchorEl,
+            parkingTypeOfParkingRefOpen,
+            parkingTypeOfParkingRefAnchorEl
         } = this.state;
 
         const menuItems = this.getMenuItems(dataSource, this.props, currentParkingName);
+
+        const keyValuesHint = formatMessage({id: 'key_values_hint'});
+        const primaryDarker = getPrimaryDarkerColor();
 
 
         const Loading = loading && [
@@ -338,9 +482,7 @@ class ParkingDetails extends React.Component {
                                             position: 'absolute',
                                             right: 0
                                         }}
-                                        onClick={e => {
-                                            this.handleOpenParkingTypePopover(e);
-                                        }}
+                                        onClick={e => {this.handleOpenParkingTypePopover(e);}}
                                     >
                                         <ModalityIconSvg type={parking.parkingType} secure={parking.secure} typeOfParkingRef={parking.typeOfParkingRef}/>
                                     </IconButton>
@@ -364,6 +506,34 @@ class ParkingDetails extends React.Component {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    <TextField
+                        hintText={formatMessage({id: 'description'})}
+                        floatingLabelText={formatMessage({id: 'description'})}
+                        style={{width: 340, marginTop: -10}}
+                        disabled={disabled}
+                        value={description}
+                        onChange={this.handleParkingDescriptionChange.bind(this)}
+                    />
+                    <ToolTippable toolTipText={keyValuesHint}>
+                        <IconButton
+                            style={{borderBottom: disabled ? 'none' : '1px dotted grey'}}
+                            onClick={this.handleOpenKeyValues.bind(this)}
+                        >
+                            <MdKey
+                                color={
+                                    (parking.keyValues || []).length
+                                        ? primaryDarker
+                                        : '#000'
+                                }
+                            />
+                        </IconButton>
+                    </ToolTippable>
+                    <KeyValuesDialog
+                        intl={intl}
+                        disabled={disabled}
+                    />
                 </div>
                 <Item>
                     <div className="pr-item-expanded">
@@ -393,7 +563,28 @@ class ParkingDetails extends React.Component {
                                 handleSetNumberOfSpacesWithRechargePoint={this.handleSetNumberOfSpacesWithRechargePoint.bind(this)}
                                 handleSetNumberOfCarsharingSpaces={this.handleSetNumberOfCarsharingSpaces.bind(this)}
                                 handleSetNumberOfCarpoolingSpaces={this.handleSetNumberOfCarpoolingSpaces.bind(this)}
-                                handleSetNumberOfSpacesForRegisteredDisabledUserType={this.handleSetNumberOfSpacesForRegisteredDisabledUserType.bind(this)}/>
+                                handleSetNumberOfSpacesForRegisteredDisabledUserType={this.handleSetNumberOfSpacesForRegisteredDisabledUserType.bind(this)}
+                                handleTabOnChange={this.handleTabOnChange.bind(this)}
+                                style={style}
+                                tabStyle={tabStyle}
+                                activeTabIndex={activeTabIndex}
+                                parking={parking}
+                                index={index}
+                                intl1={intl}
+                                parkingCoveredHint={parkingCoveredHint}
+                                parkingTypeOfParkingRefHint={parkingTypeOfParkingRefHint}
+                                handleOpenParkingCoveredPopover={this.handleOpenParkingCoveredPopover.bind(this)}
+                                handleOpenParkingTypeOfParkingRefPopover={this.handleOpenParkingTypeOfParkingRefPopover.bind(this)}
+                                handleCloseParkingCoveredPopover={this.handleCloseParkingCoveredPopover.bind(this)}
+                                handleCloseParkingTypeOfParkingRefPopover={this.handleCloseParkingTypeOfParkingRefPopover.bind(this)}
+                                handleSetSecureAvailable={this.handleSetSecureAvailable.bind(this)}
+                                handleParkingTypeOfParkingRefChange={this.handleParkingTypeOfParkingRefChange.bind(this)}
+                                parkingCoveredOpen={parkingCoveredOpen}
+                                handleParkingCoveredChange={this.handleParkingCoveredChange.bind(this)}
+                                parkingCoveredAnchorEl={parkingCoveredAnchorEl}
+                                parkingTypeOfParkingRefOpen={parkingTypeOfParkingRefOpen}
+                                parkingTypeOfParkingRefAnchorEl={parkingTypeOfParkingRefAnchorEl}
+                                locale={locale}/>
                         ) : (
                             <TextField
                                 hintText={translations.capacity}

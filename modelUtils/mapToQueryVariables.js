@@ -275,7 +275,9 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       parkingVehicleTypes: source.parkingVehicleTypes,
       validBetween: source.validBetween,
       parkingProperties: [],
-      parkingAreas: []
+      parkingAreas: [],
+      keyValues: source.keyValues,
+      covered: source.covered
     };
 
     if (source.id) {
@@ -283,10 +285,14 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
     }
 
     if (source.parkingType) {
-      if(PARKING_TYPE.BIKE_PARKING === source.parkingType ){
+      if(PARKING_TYPE.BIKE_PARKING === source.parkingType){
         source.parkingType = null;
       }
       parking.parkingType = source.parkingType;
+    }
+
+    if (source.typeOfParkingRef) {
+      parking.typeOfParkingRef = source.typeOfParkingRef;
     }
 
     if (source.parkingLayout) {
@@ -295,6 +301,10 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
 
     if (source.parkingPaymentProcess) {
       parking.parkingPaymentProcess = source.parkingPaymentProcess;
+    }
+
+    if (source.placeEquipments) {
+      parking.placeEquipments = netexifyPlaceEquipment(source.placeEquipments);
     }
 
     if (source.rechargingAvailable !== undefined) {
@@ -338,6 +348,13 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       value: source.name,
       lang: 'fr'
     };
+
+    if(source.description != null){
+      parking.description = {
+        value: source.description,
+        lang: 'fr'
+      }
+    }
 
     if (source.location) {
       let coordinates = source.location

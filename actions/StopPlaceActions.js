@@ -89,32 +89,32 @@ StopPlaceActions.changeSubmode = (stopPlaceType, transportMode, submode) => disp
   }));
 }
 
-StopPlaceActions.updateKeyValuesForKey = (key, values) => (dispatch, getState) => {
+StopPlaceActions.updateKeyValuesForKeyStopPlace = (key, values) => (dispatch, getState) => {
   let state = getState();
   let origin = state.user.keyValuesOrigin;
 
-  dispatch(createThunk(types.UPDATED_KEY_VALUES_FOR_KEY, {
+  dispatch(createThunk(types.UPDATED_KEY_VALUES_FOR_KEY_STOP_PLACE, {
     key,
     values,
     origin
   }));
 };
 
-StopPlaceActions.deleteKeyValuesByKey = key => (dispatch, getState) => {
+StopPlaceActions.deleteKeyValuesByKeyStopPlace = key => (dispatch, getState) => {
   let state = getState();
   let origin = state.user.keyValuesOrigin;
 
-  dispatch(createThunk(types.DELETED_KEY_VALUES_BY_KEY, {
+  dispatch(createThunk(types.DELETED_KEY_VALUES_BY_KEY_STOP_PLACE, {
     key,
     origin
   }));
 }
 
-StopPlaceActions.createKeyValuesPair = (key, values) => (dispatch, getState) => {
+StopPlaceActions.createKeyValuesPairStopPlace = (key, values) => (dispatch, getState) => {
   let state = getState();
   let origin = state.user.keyValuesOrigin;
 
-  dispatch(createThunk(types.CREATED_KEY_VALUES_PAIR, {
+  dispatch(createThunk(types.CREATED_KEY_VALUES_PAIR_STOP_PLACE, {
     key,
     values,
     origin

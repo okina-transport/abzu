@@ -869,7 +869,6 @@ const mapStateToProps = state => ({
   isPublicCodePrivateCodeEnabled: state.stopPlace.enablePublicCodePrivateCodeOnStopPlaces,
   keyValuesDialogOpen: state.user.keyValuesDialogOpen,
   client: state.user.client
-
 });
 
 export default connect(mapStateToProps)(StopPlaceDetails);

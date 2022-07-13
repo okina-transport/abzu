@@ -1,0 +1,67 @@
+/*
+ *  Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+  https://joinup.ec.europa.eu/software/page/eupl
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and
+limitations under the Licence. */
+
+
+import React from 'react';
+import {connect} from 'react-redux';
+import MenuItem from 'material-ui/MenuItem';
+import Menu from 'material-ui/Menu';
+
+class ParkingTypeOfParkingRefMenuItems extends React.Component {
+    render() {
+        const {
+            parkingTypesOfParkingRef,
+            handleParkingTypeOfParkingRefChange,
+            parkingTypeOfParkingRefChosen
+        } = this.props;
+
+        const chosenStyle = {fontWeight: 600};
+
+        return (
+            <Menu>
+
+                {parkingTypesOfParkingRef.map((type, index) => {
+                    const parkingTypeOfParkingRefMatchingChosen = parkingTypeOfParkingRefChosen === type.value;
+
+                    return (
+                        <MenuItem
+                            key={'parking' + index}
+                            value={type.value}
+                            style={{padding: '0px 10px'}}
+                            primaryText={
+                                <span
+                                    style={
+                                        parkingTypeOfParkingRefMatchingChosen ? chosenStyle : {}
+                                    }
+                                >
+                  {type.name}
+                </span>
+                            }
+                            onClick={() => {
+                                handleParkingTypeOfParkingRefChange(type.value);
+                            }}
+                            insetChildren={true}
+                        />
+                    );
+                })}
+            </Menu>
+        );
+    }
+}
+
+const mapStateToProps = state => ({
+    allowsInfo: state.roles.allowanceInfo
+});
+
+export default connect(mapStateToProps)(ParkingTypeOfParkingRefMenuItems);

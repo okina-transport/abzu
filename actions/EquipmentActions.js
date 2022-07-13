@@ -95,4 +95,81 @@ EquipmentActions.update512SignState = (state, entityType, id) => dispatch => {
   );
 };
 
+
+EquipmentActions.updateTicketMachineStateParking = (
+    state,
+    entityType,
+    id,
+) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_TICKET_MACHINE_STATE_PARKING, {
+            state: state,
+            type: entityType,
+            id: id,
+        }),
+    );
+};
+
+EquipmentActions.updateShelterEquipmentStateParking = (
+    state,
+    entityType,
+    id,
+) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_SHELTER_EQUIPMENT_STATE_PARKING, {
+            state: state,
+            type: entityType,
+            id: id,
+        }),
+    );
+};
+
+EquipmentActions.updateSanitaryStateParking = (state, entityType, id) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_SANITARY_EQUIPMENT_STATE_PARKING, {
+            state: state,
+            type: entityType,
+            id: id,
+        }),
+    );
+};
+
+EquipmentActions.updateWaitingRoomStateParking = (
+    state,
+    entityType,
+    id,
+) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_WAITING_ROOM_STATE_PARKING, {
+            state: state,
+            type: entityType,
+            id: id,
+        }),
+    );
+};
+
+EquipmentActions.updateCycleStorageStateParking = (
+    state,
+    entityType,
+    id,
+) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_CYCLE_STORAGE_STATE_PARKING, {
+            state: state,
+            type: entityType,
+            id: id,
+        }),
+    );
+};
+
+EquipmentActions.update512SignStateParking = (state, entityType, id) => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_TRANSPORT_SIGN_STATE_PARKING, {
+            state: state,
+            type: entityType,
+            id: id,
+        }),
+    );
+};
+
 export default EquipmentActions;

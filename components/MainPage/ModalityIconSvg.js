@@ -84,11 +84,11 @@ const getIconIdByTypeOrSubmode = (submode, type, secure, typeOfParkingRef) => {
 
 const getIconIdByModality = (type, secure, typeOfParkingRef) => {
 
-  if (type == 'other' && secure){
+  if (type === 'other' && secure){
     return 'bikeDeposit';
   }
 
-  if (type == 'other' && typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox'){
+  if (type === 'other' && typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox'){
     return 'bikeRentalSvg';
   }
 

@@ -1,6 +1,7 @@
 import {createThunk} from "./index";
 import * as types from "./Types";
 import {getIn} from "../utils";
+import StopPlaceActions from "./StopPlaceActions";
 
 var ParkingActions = {};
 
@@ -56,6 +57,18 @@ ParkingActions.discardChangesForEditingParking = () => dispatch => {
 
 ParkingActions.changeParkingType = type => dispatch => {
     dispatch(createThunk(types.CHANGED_PARKING_TYPE, type));
+};
+
+ParkingActions.changeParkingCovered = covered => dispatch => {
+    dispatch(createThunk(types.CHANGED_PARKING_COVERED, covered));
+};
+
+ParkingActions.changeParkingTypeOfParkingRef = typeOfParkingRef => dispatch => {
+    dispatch(createThunk(types.CHANGED_PARKING_TYPE_OF_PARKING_REF, typeOfParkingRef));
+};
+
+ParkingActions.changeParkingSecureAvailable = secure => dispatch => {
+    dispatch(createThunk(types.CHANGED_PARKING_SECURE, secure));
 };
 
 ParkingActions.changeParkingTotalCapacity = (
@@ -175,6 +188,42 @@ ParkingActions.clearLastMutatedParkingId = () => dispatch => {
     dispatch(
         createThunk(types.CLEAR_LAST_MUTATED_PARKING_IDS, null)
     );
+};
+
+ParkingActions.createKeyValuesPairParking = (key, values) => (dispatch, getState) => {
+    let state = getState();
+    let origin = state.user.keyValuesOrigin;
+
+    dispatch(createThunk(types.CREATED_KEY_VALUES_PAIR_PARKING, {
+        key,
+        values,
+        origin
+    }));
+}
+
+ParkingActions.updateKeyValuesForKeyParking = (key, values) => (dispatch, getState) => {
+    let state = getState();
+    let origin = state.user.keyValuesOrigin;
+
+    dispatch(createThunk(types.UPDATED_KEY_VALUES_FOR_KEY_PARKING, {
+        key,
+        values,
+        origin
+    }));
+};
+
+ParkingActions.deleteKeyValuesByKeyParking = key => (dispatch, getState) => {
+    let state = getState();
+    let origin = state.user.keyValuesOrigin;
+
+    dispatch(createThunk(types.DELETED_KEY_VALUES_BY_KEY_PARKING, {
+        key,
+        origin
+    }));
+}
+
+ParkingActions.changeParkingDescription = description => dispatch => {
+    dispatch(createThunk(types.CHANGED_PARKING_DESCRIPTION, description));
 };
 
 
