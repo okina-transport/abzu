@@ -1,6 +1,6 @@
 {
   "name": "Abzu",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "description": "Registre national d'arrêt",
   "main": "index.js",
   "scripts": {
