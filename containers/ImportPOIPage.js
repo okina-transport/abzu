@@ -52,6 +52,7 @@ class ImportPOIPage extends Component{
                     url,
                     {
                         method: 'post',
+                        timeout:1800000,
                         headers: {
                             "Authorization": "Bearer " + localStorage.getItem("ABZU::jwt"),
                              "Content-Type": "multipart/form-data"
