@@ -537,9 +537,7 @@ class ParkingDetails extends React.Component {
                 </div>
                 <Item>
                     <div className="pr-item-expanded">
-                        {(parking.parkingType !== 'other'
-                            && parking.parkingType !== 'undefined'
-                            && parking.parkingType !== 'cycleRental') ? (
+                        {(parking.parkingType !== 'undefined'  ) ? (
                             <ParkingItemPayAndRideExpandedFields
                                 disabled={disabled}
                                 hasExpired={parking.hasExpired}

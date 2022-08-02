@@ -79,8 +79,8 @@ class CustomMarkerIcon extends React.Component {
 }
 
 const isABikeTransportMode = ( type, secure, typeOfParkingRef) => {
-    return type === "cycleRental" ||
-              (type == 'other' && (secure || (typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox')));
+    return type === "cycleRental" ||  (typeOfParkingRef !== null &&
+        (typeOfParkingRef === 'IndividualBox' || typeOfParkingRef === 'SecureBikeParking' || typeOfParkingRef === 'BikeParking')) ;
 }
 
 const getIconIdByTypeOrSubmode = (submode, type, isMultimodal, secure, typeOfParkingRef) => {
