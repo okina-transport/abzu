@@ -45,7 +45,7 @@ class KeyValuesDialog extends React.Component {
   }
 
   handleDeleteKey(key, stopPlace) {
-    if(stopPlace){
+    if(this.props.stopPlace){
       this.props.dispatch(StopPlaceActions.deleteKeyValuesByKeyStopPlace(key));
     }
     else{
@@ -53,11 +53,13 @@ class KeyValuesDialog extends React.Component {
     }
   }
 
-  handleUpdateValues(key, values, stopPlace) {
+  handleUpdateValues(key, values) {
     this.setState({
       isEditingOpen: false
     });
-    if(stopPlace){
+
+
+    if(this.props.stopPlace){
       this.props.dispatch(StopPlaceActions.updateKeyValuesForKeyStopPlace(key, values));
     }
     else{
@@ -69,7 +71,7 @@ class KeyValuesDialog extends React.Component {
     this.setState({
       isCreatingOpen: false
     });
-    if(stopPlace){
+    if(this.props.stopPlace){
       this.props.dispatch(StopPlaceActions.createKeyValuesPairStopPlace(key, values));
     }
     else {
