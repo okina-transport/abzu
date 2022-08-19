@@ -15,17 +15,8 @@ limitations under the Licence. */
 
 import React from 'react';
 import MarkerList from './MarkerList';
-import {
-  Map as Lmap,
-  TileLayer,
-  ZoomControl,
-  LayersControl,
-  ScaleControl,
-} from 'react-leaflet';
-import { GoogleLayer } from 'react-leaflet-google';
+import {LayersControl, Map as Lmap, ScaleControl, TileLayer, ZoomControl,} from 'react-leaflet';
 import MultiPolylineList from './PathLink';
-import WMTSLayer from './WMTSLayer';
-import MapboxLayer from './MapboxLayer';
 import MultimodalStopEdges from './MultimodalStopEdges';
 import StopPlaceGroupList from './StopPlaceGroupList';
 
@@ -47,26 +38,7 @@ export default class LeafLetMap extends React.Component {
       : [Number(position.lat), Number(position.lng)];
   }
 
-  getLocalGKTToken() {
-    let localToken = JSON.parse(localStorage.getItem('ABZU::GKT_TOKEN'));
-
-    if (localToken && localToken.gkt) {
-      return localToken.gkt;
-    }
-    return null;
-  }
-
-  getMapboxAccessToken() {
-    return `${window.config.mapboxAccessToken}`;
-  }
-
-  getMapboxTariffZoneStyle() {
-    return `${window.config.mapboxTariffZonesStyle}`;
-  }
-
   render() {
-    // Okina API key
-    const googleApiKey = 'AIzaSyBoGgXuwKIOMGp1hwUl0rl_DxMkjpSFH84';
 
     const {
       position,
@@ -90,8 +62,6 @@ export default class LeafLetMap extends React.Component {
     };
 
     const centerPosition = this.getCenterPosition(position);
-    const mapboxAccessToken = this.getMapboxAccessToken();
-    const mapboxTariffZonesStyle = this.getMapboxTariffZoneStyle();
 
     return (
       <Lmap
@@ -114,52 +84,24 @@ export default class LeafLetMap extends React.Component {
       >
         <LayersControl position="topright">
           <BaseLayer
-            checked={this.getCheckedBaseLayerByValue('OpenStreetMap')}
-            name="OpenStreetMap"
+              checked={this.getCheckedBaseLayerByValue('Carte transport')}
+              name="Carte transport"
           >
             <TileLayer
-              attribution="&copy; <a href=&quot;https://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-              url="//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              maxZoom="19"
-            />
-          </BaseLayer>
-          {/*<BaseLayer*/}
-            {/*checked={this.getCheckedBaseLayerByValue('OpenStreetMap Transport')}*/}
-            {/*name="OpenStreetMap Transport"*/}
-          {/*>*/}
-            {/*<TileLayer*/}
-              {/*attribution="&copy; OpenStreetMap contributors"*/}
-              {/*url="//{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"*/}
-              {/*maxZoom="19"*/}
-            {/*/>*/}
-          {/*</BaseLayer>*/}
-          <BaseLayer
-            checked={this.getCheckedBaseLayerByValue('Google Maps Satellite')}
-            name="Google Maps Satellite">
-            <GoogleLayer
-              maxZoom="19"
-              googlekey={googleApiKey}
-              maptype="HYBRID"
+                attribution="Thunderforest"
+                url="//{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=0d925ffb1c7f4fa29c090405b4038b96"
+                maxZoom="19"
             />
           </BaseLayer>
           <BaseLayer
-            checked={this.getCheckedBaseLayerByValue('Google Maps Route')}
-            name="Google Maps Route">
-            <GoogleLayer
-              maxZoom="19"
-              googlekey={googleApiKey}
-              maptype="roadmap"
+              checked={this.getCheckedBaseLayerByValue('Carte satellite IGN')}
+              name="Carte satellite IGN">
+            <TileLayer
+                attribution="IGN-F/Geoportail"
+                url="//wxs.ign.fr/decouverte/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&STYLE=normal&FORMAT=image/jpeg&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}"
+                maxZoom="19"
             />
           </BaseLayer>
-          {/*{mapboxAccessToken && mapboxTariffZonesStyle ? (<BaseLayer*/}
-              {/*checked={this.getCheckedBaseLayerByValue('Takstsoner')}*/}
-              {/*name="Takstsoner" >*/}
-              {/*<MapboxLayer*/}
-                {/*accessToken={mapboxAccessToken}*/}
-                {/*style={mapboxTariffZonesStyle}*/}
-               {/*/>*/}
-            {/*</BaseLayer>*/}
-        {/*) : ( null )}*/}
         </LayersControl>
         <ScaleControl imperial={false} position="bottomright" />
         <ZoomControl position="bottomright" />
