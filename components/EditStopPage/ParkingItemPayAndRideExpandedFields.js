@@ -155,91 +155,8 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
             >
                 <Tab
                     style={tabStyle}
-                    label={formatMessage({id: 'facilities'})}
-                    value={0}
-                >
-                    <FacilitiesParkingTab
-                        intl={intl1}
-                        parking={parking}
-                        index={index}
-                        disabled={disabled}
-                    />
-                    <Grid container alignItems="stretch" direction="column" spacing={2} className={classes.mainGrid}>
-                    <Grid item className={classes.gridItemMargin}>
-                        <InputLabel htmlFor="select-parking-layout">
-                            {formatMessage({id: 'parking_layout'})}
-                        </InputLabel>
-                        <Select
-                            displayEmpty
-                            disabled={disabled || hasExpired}
-                            value={parkingLayout}
-                            input={<Input className={classes.selectInput} id="select-parking-layout"/>}
-                            renderValue={selected => selected ? formatMessage({id: `parking_layout_${selected}`}) :
-                                <em>{formatMessage({id: 'parking_layout_undefined'})}</em>}
-                            onChange={(event) => {
-                                const {value} = event.target;
-                                if (value === parkingLayout) {
-                                    handleSetParkingLayout(null);
-                                } else {
-                                    handleSetParkingLayout(value);
-                                }
-                            }}>
-                            {parkingLayouts.map(key => (
-                                <MenuItem key={key} value={key}>
-                                    <Checkbox checked={key === parkingLayout}/>
-                                    <ListItemText
-                                        primary={formatMessage({id: `parking_layout_${key}`})}/>
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </Grid>
-                    <Grid item>
-                        <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
-                            <Box>
-                                <Payment style={parkingIconStyles(6)}/>
-                            </Box>
-                            <Box className={classes.boxFullWidth}>
-                                <InputLabel htmlFor="select-multiple-parking-payment-process">
-                                    {formatMessage({id: 'parking_payment_process'})}
-                                </InputLabel>
-                                <Select
-                                    multiple
-                                    displayEmpty
-                                    disabled={disabled || hasExpired}
-                                    value={parkingPaymentProcessSelectFieldValue(parkingPaymentProcess)}
-                                    renderValue={selected => {
-                                        if (selected.length === 0) {
-                                            return <em>{formatMessage({id: 'parking_payment_process_undefined'})}</em>;
-                                        }
-
-                                        return selected.map(key => {
-                                            return formatMessage({id: `parking_payment_process_${key}`});
-                                        }).join(', ');
-                                    }}
-                                    input={
-                                        <Input className={classes.selectInput} id="select-multiple-parking-payment-process"/>}
-                                    onChange={(event) => {
-                                        const {value} = event.target;
-                                        handleSetParkingPaymentProcess(value);
-                                    }}>
-                                    {parkingPaymentProcesses.map(key => (
-                                        <MenuItem key={key} value={key}>
-                                            <Checkbox checked={parkingPaymentProcessChecked(parkingPaymentProcess, key)}/>
-                                            <ListItemText
-                                                primary={formatMessage({id: `parking_payment_process_${key}`})}
-                                                secondary={key === `payByPrepaidToken` ? formatMessage({id: `parking_payment_process_${key}_hover`}) : null}/>
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </Box>
-                        </Box>
-                    </Grid>
-                    </Grid>
-                </Tab>
-                <Tab
-                    style={tabStyle}
                     label={formatMessage({id: 'capacity'})}
-                    value={1}
+                    value={0}
                 >
                     <Grid container alignItems="stretch" direction="column" spacing={2} className={classes.mainGrid}>
                         <Grid item>
@@ -369,10 +286,93 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                 </Tab>
                 <Tab
                     style={tabStyle}
+                    label={formatMessage({id: 'facilities'})}
+                    value={1}
+                >
+                    {/*<FacilitiesParkingTab*/}
+                    {/*    intl={intl1}*/}
+                    {/*    parking={parking}*/}
+                    {/*    index={index}*/}
+                    {/*    disabled={disabled}*/}
+                    {/*/>*/}
+                    <Grid container alignItems="stretch" direction="column" spacing={2} className={classes.mainGrid}>
+                    <Grid item className={classes.gridItemMargin}>
+                        <InputLabel htmlFor="select-parking-layout">
+                            {formatMessage({id: 'parking_layout'})}
+                        </InputLabel>
+                        <Select
+                            displayEmpty
+                            disabled={disabled || hasExpired}
+                            value={parkingLayout}
+                            input={<Input className={classes.selectInput} id="select-parking-layout"/>}
+                            renderValue={selected => selected ? formatMessage({id: `parking_layout_${selected}`}) :
+                                <em>{formatMessage({id: 'parking_layout_undefined'})}</em>}
+                            onChange={(event) => {
+                                const {value} = event.target;
+                                if (value === parkingLayout) {
+                                    handleSetParkingLayout(null);
+                                } else {
+                                    handleSetParkingLayout(value);
+                                }
+                            }}>
+                            {parkingLayouts.map(key => (
+                                <MenuItem key={key} value={key}>
+                                    <Checkbox checked={key === parkingLayout}/>
+                                    <ListItemText
+                                        primary={formatMessage({id: `parking_layout_${key}`})}/>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
+                    <Grid item>
+                        <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+                            <Box>
+                                <Payment style={parkingIconStyles(6)}/>
+                            </Box>
+                            <Box className={classes.boxFullWidth}>
+                                <InputLabel htmlFor="select-multiple-parking-payment-process">
+                                    {formatMessage({id: 'parking_payment_process'})}
+                                </InputLabel>
+                                <Select
+                                    multiple
+                                    displayEmpty
+                                    disabled={disabled || hasExpired}
+                                    value={parkingPaymentProcessSelectFieldValue(parkingPaymentProcess)}
+                                    renderValue={selected => {
+                                        if (selected.length === 0) {
+                                            return <em>{formatMessage({id: 'parking_payment_process_undefined'})}</em>;
+                                        }
+
+                                        return selected.map(key => {
+                                            return formatMessage({id: `parking_payment_process_${key}`});
+                                        }).join(', ');
+                                    }}
+                                    input={
+                                        <Input className={classes.selectInput} id="select-multiple-parking-payment-process"/>}
+                                    onChange={(event) => {
+                                        const {value} = event.target;
+                                        handleSetParkingPaymentProcess(value);
+                                    }}>
+                                    {parkingPaymentProcesses.map(key => (
+                                        <MenuItem key={key} value={key}>
+                                            <Checkbox checked={parkingPaymentProcessChecked(parkingPaymentProcess, key)}/>
+                                            <ListItemText
+                                                primary={formatMessage({id: `parking_payment_process_${key}`})}
+                                                secondary={key === `payByPrepaidToken` ? formatMessage({id: `parking_payment_process_${key}_hover`}) : null}/>
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </Box>
+                        </Box>
+                    </Grid>
+                    </Grid>
+                </Tab>
+                <Tab
+                    style={tabStyle}
                     label={formatMessage({id: 'other'})}
                     value={2}
                 >
-                <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                <div style={{display: 'block', justifyContent: 'space-around'}}>
                     <ToolTippable toolTipText={parkingCoveredHint}>
                         <Button onClick={handleOpenParkingCoveredPopover}>
                             Infrastructure

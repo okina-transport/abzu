@@ -512,7 +512,7 @@ class ParkingDetails extends React.Component {
                         hintText={formatMessage({id: 'description'})}
                         floatingLabelText={formatMessage({id: 'description'})}
                         style={{width: 340, marginTop: -10}}
-                        disabled={disabled}
+                        disabled={true}
                         value={description}
                         onChange={this.handleParkingDescriptionChange.bind(this)}
                     />
