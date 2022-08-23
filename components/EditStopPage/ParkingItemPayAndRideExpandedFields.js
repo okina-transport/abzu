@@ -373,6 +373,27 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                     value={2}
                 >
                 <div style={{display: 'block', justifyContent: 'space-around'}}>
+                    <ToolTippable toolTipText={parkingTypeOfParkingRefHint}>
+                        <Button onClick={handleOpenParkingTypeOfParkingRefPopover}>
+                            Autres types de parking
+                        </Button>
+                    </ToolTippable>
+                    <Popover
+                        open={parkingTypeOfParkingRefOpen}
+                        anchorEl={parkingTypeOfParkingRefAnchorEl}
+                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                        targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                        onRequestClose={handleCloseParkingTypeOfParkingRefPopover}
+                        animation={PopoverAnimationVertical}
+                        style={{overflowY: 'none'}}
+                        animated={true}
+                    >
+                        <ParkingTypeOfParkingRefMenuItems
+                            handleParkingTypeOfParkingRefChange={handleParkingTypeOfParkingRefChange}
+                            parkingTypeOfParkingRefChosen={parking.typeOfParkingRef}
+                            parkingTypesOfParkingRef={parkingTypesOfParkingRef[locale]}
+                        />
+                    </Popover>
                     <ToolTippable toolTipText={parkingCoveredHint}>
                         <Button onClick={handleOpenParkingCoveredPopover}>
                             Infrastructure
@@ -392,27 +413,6 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                             handleParkingCoveredChange={handleParkingCoveredChange}
                             parkingCoveredChosen={parking.covered}
                             parkingTypesCovered={parkingTypesCovered[locale]}
-                        />
-                    </Popover>
-                    <ToolTippable toolTipText={parkingTypeOfParkingRefHint}>
-                        <Button onClick={handleOpenParkingTypeOfParkingRefPopover}>
-                            Type de parking
-                        </Button>
-                    </ToolTippable>
-                    <Popover
-                        open={parkingTypeOfParkingRefOpen}
-                        anchorEl={parkingTypeOfParkingRefAnchorEl}
-                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                        targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                        onRequestClose={handleCloseParkingTypeOfParkingRefPopover}
-                        animation={PopoverAnimationVertical}
-                        style={{overflowY: 'none'}}
-                        animated={true}
-                    >
-                        <ParkingTypeOfParkingRefMenuItems
-                            handleParkingTypeOfParkingRefChange={handleParkingTypeOfParkingRefChange}
-                            parkingTypeOfParkingRefChosen={parking.typeOfParkingRef}
-                            parkingTypesOfParkingRef={parkingTypesOfParkingRef[locale]}
                         />
                     </Popover>
                     <FormControlLabel
