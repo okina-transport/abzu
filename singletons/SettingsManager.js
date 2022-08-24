@@ -72,7 +72,7 @@ class SettingsManager {
   }
 
   getMapLayer() {
-    return localStorage.getItem(mapLayerKey) || 'OpenStreetMap';
+    return localStorage.getItem(mapLayerKey) || 'Carte transport';
   }
 
   setMapLayer(value) {
