@@ -109,7 +109,7 @@ class Parking {
       rechargingAvailable: parking.rechargingAvailable,
       carpoolingAvailable: parking.carpoolingAvailable,
       carsharingAvailable: parking.carsharingAvailable,
-      numberOfSpaces: this.isParkAndRide ? this.numberOfSpaces : null,
+      numberOfSpaces: this.numberOfSpaces,
       numberOfSpacesWithRechargePoint: this.isParkAndRide ? this.numberOfSpacesWithRechargePoint : null,
       numberOfCarsharingSpaces: this.isParkAndRide ? this.numberOfCarsharingSpaces : null,
       numberOfCarpoolingSpaces: this.isParkAndRide ? this.numberOfCarpoolingSpaces : null,

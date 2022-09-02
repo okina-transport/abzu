@@ -66,12 +66,12 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Info = ({children}) => {
-  const classes = useStyles();
-  return <p className={classes.info}>{children}</p>;
+    const classes = useStyles();
+    return <p className={classes.info}>{children}</p>;
 }
 
 const parkingIconStyles = (topMargin = 15) => ({
-  margin: `${topMargin}px 22px 18px 10px`
+    margin: `${topMargin}px 22px 18px 10px`
 });
 
 const hasElements = list => list && list.length > 0;
@@ -81,7 +81,7 @@ const hasValue = value => value !== null && value !== undefined;
 const getRechargingAvailableValue = value => hasValue(value) ? value : null;
 
 const parkingPaymentProcessSelectFieldValue = (parkingPaymentProcess) => {
-  return hasElements(parkingPaymentProcess) ? parkingPaymentProcess.map(value => `${value}`) : [];
+    return hasElements(parkingPaymentProcess) ? parkingPaymentProcess.map(value => `${value}`) : [];
 }
 
 const parkingPaymentProcessChecked = (parkingPaymentProcess, key) => {
@@ -144,6 +144,9 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
 
     const classes = useStyles();
 
+    var isBikeParkingType = isBikeParking(parking);
+
+
     return (
         <div style={style} id="additional">
             <Tabs
@@ -176,7 +179,7 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                                     floatingLabelStyle={{color: 'rgb(30,100,163)'}}
                                 />
                             </Box>
-                            <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+                            {!isBikeParkingType && <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
                                 <ActionAccessible style={parkingIconStyles()}/>
                                 <TextField
                                     disabled={disabled || hasExpired}
@@ -191,34 +194,37 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                                     floatingLabelStyle={{color: 'rgb(30,100,163)', fontSize: '0.8em'}}
                                 />
                             </Box>
+                            }
                         </Grid>
-                        <Grid item>
-                            <Subheader>{formatMessage({id: 'parking_recharging_sub_header'})}</Subheader>
-                            <Info>
-                                {formatMessage({id: 'parking_recharging_available_info'})}
-                            </Info>
-                            <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
-                                <RechargingAvailablePopover
-                                    disabled={disabled}
-                                    hasExpired={hasExpired}
-                                    handleSetRechargingAvailable={handleSetRechargingAvailable}
-                                    handleSetNumberOfSpacesWithRechargePoint={handleSetNumberOfSpacesWithRechargePoint}
-                                    rechargingAvailableValue={getRechargingAvailableValue(rechargingAvailable)}/>
-                                <TextField
-                                    disabled={!rechargingAvailable || disabled || hasExpired}
-                                    floatingLabelText={formatMessage({id: 'parking_number_of_spaces_with_recharge_point'})}
-                                    onChange={(_e, value) => {
-                                        handleSetNumberOfSpacesWithRechargePoint(value);
-                                    }}
-                                    value={numberOfSpacesWithRechargePoint || ''}
-                                    type="number"
-                                    fullWidth
-                                    className={classes.textField}
-                                    floatingLabelStyle={{color: rechargingAvailable ? 'rgb(30,100,163)' : 'rgba(0, 0, 0, 0.3)'}}
-                                />
-                            </Box>
-                        </Grid>
-                        <Grid item>
+                        {!isBikeParkingType && <Grid item>
+                                <Subheader>{formatMessage({id: 'parking_recharging_sub_header'})}</Subheader>
+                                <Info>
+                                    {formatMessage({id: 'parking_recharging_available_info'})}
+                                </Info>
+                                <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+                                    <RechargingAvailablePopover
+                                        disabled={disabled}
+                                        hasExpired={hasExpired}
+                                        handleSetRechargingAvailable={handleSetRechargingAvailable}
+                                        handleSetNumberOfSpacesWithRechargePoint={handleSetNumberOfSpacesWithRechargePoint}
+                                        rechargingAvailableValue={getRechargingAvailableValue(rechargingAvailable)}/>
+                                    <TextField
+                                        disabled={!rechargingAvailable || disabled || hasExpired}
+                                        floatingLabelText={formatMessage({id: 'parking_number_of_spaces_with_recharge_point'})}
+                                        onChange={(_e, value) => {
+                                            handleSetNumberOfSpacesWithRechargePoint(value);
+                                        }}
+                                        value={numberOfSpacesWithRechargePoint || ''}
+                                        type="number"
+                                        fullWidth
+                                        className={classes.textField}
+                                        floatingLabelStyle={{color: rechargingAvailable ? 'rgb(30,100,163)' : 'rgba(0, 0, 0, 0.3)'}}
+                                    />
+                                </Box>
+                                </Grid>
+                        }
+
+                        {!isBikeParkingType && <Grid item>
                             <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
                                 <FormControlLabel
                                     label={formatMessage({id: 'carpooling_available'})}
@@ -235,7 +241,9 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                                 />
                             </Box>
                         </Grid>
-                        <Grid item>
+                        }
+
+                        {!isBikeParkingType && <Grid item>
                             <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
                                 <TextField
                                     disabled={!carpoolingAvailable}
@@ -250,7 +258,10 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                                 />
                             </Box>
                         </Grid>
-                        <Grid item>
+
+                        }
+
+                        {!isBikeParkingType && <Grid item>
                             <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
                                 <FormControlLabel
                                     label={formatMessage({id: 'carsharing_available'})}
@@ -267,22 +278,28 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                                 />
                             </Box>
                         </Grid>
-                        <Grid item>
+                        }
+
+                        {!isBikeParkingType &&   <Grid item>
                             <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
-                                <TextField
-                                    disabled={!carsharingAvailable}
-                                    floatingLabelText={formatMessage({id: 'number_of_carsharing_places'})}
-                                    onChange={(e, value) => {
-                                        handleSetNumberOfCarsharingSpaces(value);
-                                    }}
-                                    value={numberOfCarsharingSpaces || ''}
-                                    type="number"
-                                    style={{width: '95%', marginTop: -10}}
-                                    floatingLabelStyle={{color: carsharingAvailable ? 'rgb(30,100,163)' : 'rgba(0, 0, 0, 0.3)'}}
-                                />
+                            <TextField
+                            disabled={!carsharingAvailable}
+                            floatingLabelText={formatMessage({id: 'number_of_carsharing_places'})}
+                            onChange={(e, value) => {
+                            handleSetNumberOfCarsharingSpaces(value);
+                        }}
+                            value={numberOfCarsharingSpaces || ''}
+                            type="number"
+                            style={{width: '95%', marginTop: -10}}
+                            floatingLabelStyle={{color: carsharingAvailable ? 'rgb(30,100,163)' : 'rgba(0, 0, 0, 0.3)'}}
+                            />
                             </Box>
-                        </Grid>
+                            </Grid>
+
+
+                        }
                     </Grid>
+
                 </Tab>
                 <Tab
                     style={tabStyle}
@@ -296,75 +313,77 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                     {/*    disabled={disabled}*/}
                     {/*/>*/}
                     <Grid container alignItems="stretch" direction="column" spacing={2} className={classes.mainGrid}>
-                    <Grid item className={classes.gridItemMargin}>
-                        <InputLabel htmlFor="select-parking-layout">
-                            {formatMessage({id: 'parking_layout'})}
-                        </InputLabel>
-                        <Select
-                            displayEmpty
-                            disabled={disabled || hasExpired}
-                            value={parkingLayout}
-                            input={<Input className={classes.selectInput} id="select-parking-layout"/>}
-                            renderValue={selected => selected ? formatMessage({id: `parking_layout_${selected}`}) :
-                                <em>{formatMessage({id: 'parking_layout_undefined'})}</em>}
-                            onChange={(event) => {
-                                const {value} = event.target;
-                                if (value === parkingLayout) {
-                                    handleSetParkingLayout(null);
-                                } else {
-                                    handleSetParkingLayout(value);
-                                }
-                            }}>
-                            {parkingLayouts.map(key => (
-                                <MenuItem key={key} value={key}>
-                                    <Checkbox checked={key === parkingLayout}/>
-                                    <ListItemText
-                                        primary={formatMessage({id: `parking_layout_${key}`})}/>
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </Grid>
-                    <Grid item>
-                        <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
-                            <Box>
-                                <Payment style={parkingIconStyles(6)}/>
-                            </Box>
-                            <Box className={classes.boxFullWidth}>
-                                <InputLabel htmlFor="select-multiple-parking-payment-process">
-                                    {formatMessage({id: 'parking_payment_process'})}
-                                </InputLabel>
-                                <Select
-                                    multiple
-                                    displayEmpty
-                                    disabled={disabled || hasExpired}
-                                    value={parkingPaymentProcessSelectFieldValue(parkingPaymentProcess)}
-                                    renderValue={selected => {
-                                        if (selected.length === 0) {
-                                            return <em>{formatMessage({id: 'parking_payment_process_undefined'})}</em>;
-                                        }
+                        <Grid item className={classes.gridItemMargin}>
+                            <InputLabel htmlFor="select-parking-layout">
+                                {formatMessage({id: 'parking_layout'})}
+                            </InputLabel>
+                            <Select
+                                displayEmpty
+                                disabled={disabled || hasExpired}
+                                value={parkingLayout}
+                                input={<Input className={classes.selectInput} id="select-parking-layout"/>}
+                                renderValue={selected => selected ? formatMessage({id: `parking_layout_${selected}`}) :
+                                    <em>{formatMessage({id: 'parking_layout_undefined'})}</em>}
+                                onChange={(event) => {
+                                    const {value} = event.target;
+                                    if (value === parkingLayout) {
+                                        handleSetParkingLayout(null);
+                                    } else {
+                                        handleSetParkingLayout(value);
+                                    }
+                                }}>
+                                {parkingLayouts.map(key => (
+                                    <MenuItem key={key} value={key}>
+                                        <Checkbox checked={key === parkingLayout}/>
+                                        <ListItemText
+                                            primary={formatMessage({id: `parking_layout_${key}`})}/>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </Grid>
+                        <Grid item>
+                            <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+                                <Box>
+                                    <Payment style={parkingIconStyles(6)}/>
+                                </Box>
+                                <Box className={classes.boxFullWidth}>
+                                    <InputLabel htmlFor="select-multiple-parking-payment-process">
+                                        {formatMessage({id: 'parking_payment_process'})}
+                                    </InputLabel>
+                                    <Select
+                                        multiple
+                                        displayEmpty
+                                        disabled={disabled || hasExpired}
+                                        value={parkingPaymentProcessSelectFieldValue(parkingPaymentProcess)}
+                                        renderValue={selected => {
+                                            if (selected.length === 0) {
+                                                return <em>{formatMessage({id: 'parking_payment_process_undefined'})}</em>;
+                                            }
 
-                                        return selected.map(key => {
-                                            return formatMessage({id: `parking_payment_process_${key}`});
-                                        }).join(', ');
-                                    }}
-                                    input={
-                                        <Input className={classes.selectInput} id="select-multiple-parking-payment-process"/>}
-                                    onChange={(event) => {
-                                        const {value} = event.target;
-                                        handleSetParkingPaymentProcess(value);
-                                    }}>
-                                    {parkingPaymentProcesses.map(key => (
-                                        <MenuItem key={key} value={key}>
-                                            <Checkbox checked={parkingPaymentProcessChecked(parkingPaymentProcess, key)}/>
-                                            <ListItemText
-                                                primary={formatMessage({id: `parking_payment_process_${key}`})}
-                                                secondary={key === `payByPrepaidToken` ? formatMessage({id: `parking_payment_process_${key}_hover`}) : null}/>
-                                        </MenuItem>
-                                    ))}
-                                </Select>
+                                            return selected.map(key => {
+                                                return formatMessage({id: `parking_payment_process_${key}`});
+                                            }).join(', ');
+                                        }}
+                                        input={
+                                            <Input className={classes.selectInput}
+                                                   id="select-multiple-parking-payment-process"/>}
+                                        onChange={(event) => {
+                                            const {value} = event.target;
+                                            handleSetParkingPaymentProcess(value);
+                                        }}>
+                                        {parkingPaymentProcesses.map(key => (
+                                            <MenuItem key={key} value={key}>
+                                                <Checkbox
+                                                    checked={parkingPaymentProcessChecked(parkingPaymentProcess, key)}/>
+                                                <ListItemText
+                                                    primary={formatMessage({id: `parking_payment_process_${key}`})}
+                                                    secondary={key === `payByPrepaidToken` ? formatMessage({id: `parking_payment_process_${key}_hover`}) : null}/>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Grid>
+                        </Grid>
                     </Grid>
                 </Tab>
                 <Tab
@@ -372,66 +391,73 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                     label={formatMessage({id: 'other'})}
                     value={2}
                 >
-                <div style={{display: 'block', justifyContent: 'space-around'}}>
-                    <ToolTippable toolTipText={parkingTypeOfParkingRefHint}>
-                        <Button onClick={handleOpenParkingTypeOfParkingRefPopover}>
-                            Autres types de parking
-                        </Button>
-                    </ToolTippable>
-                    <Popover
-                        open={parkingTypeOfParkingRefOpen}
-                        anchorEl={parkingTypeOfParkingRefAnchorEl}
-                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                        targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                        onRequestClose={handleCloseParkingTypeOfParkingRefPopover}
-                        animation={PopoverAnimationVertical}
-                        style={{overflowY: 'none'}}
-                        animated={true}
-                    >
-                        <ParkingTypeOfParkingRefMenuItems
-                            handleParkingTypeOfParkingRefChange={handleParkingTypeOfParkingRefChange}
-                            parkingTypeOfParkingRefChosen={parking.typeOfParkingRef}
-                            parkingTypesOfParkingRef={parkingTypesOfParkingRef[locale]}
-                        />
-                    </Popover>
-                    <ToolTippable toolTipText={parkingCoveredHint}>
-                        <Button onClick={handleOpenParkingCoveredPopover}>
-                            Infrastructure
-                        </Button>
-                    </ToolTippable>
-                    <Popover
-                        open={parkingCoveredOpen}
-                        anchorEl={parkingCoveredAnchorEl}
-                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                        targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                        onRequestClose={handleCloseParkingCoveredPopover}
-                        animation={PopoverAnimationVertical}
-                        style={{overflowY: 'none'}}
-                        animated={true}
-                    >
-                        <ParkingCoveredMenuItems
-                            handleParkingCoveredChange={handleParkingCoveredChange}
-                            parkingCoveredChosen={parking.covered}
-                            parkingTypesCovered={parkingTypesCovered[locale]}
-                        />
-                    </Popover>
-                    <FormControlLabel
-                        label={formatMessage({id: 'secure_available'})}
-                        control={
-                            <Checkbox
-                                checked={parking.secure}
-                                label={formatMessage({id: 'secure_available'})}
-                                onChange={(event, checked) => {
-                                    handleSetSecureAvailable(checked);
-                                }}
+                    <div style={{display: 'block', justifyContent: 'space-around'}}>
+                        <ToolTippable toolTipText={parkingTypeOfParkingRefHint}>
+                            <Button onClick={handleOpenParkingTypeOfParkingRefPopover}>
+                                Autres types de parking
+                            </Button>
+                        </ToolTippable>
+                        <Popover
+                            open={parkingTypeOfParkingRefOpen}
+                            anchorEl={parkingTypeOfParkingRefAnchorEl}
+                            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                            targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                            onRequestClose={handleCloseParkingTypeOfParkingRefPopover}
+                            animation={PopoverAnimationVertical}
+                            style={{overflowY: 'none'}}
+                            animated={true}
+                        >
+                            <ParkingTypeOfParkingRefMenuItems
+                                handleParkingTypeOfParkingRefChange={handleParkingTypeOfParkingRefChange}
+                                parkingTypeOfParkingRefChosen={parking.typeOfParkingRef}
+                                parkingTypesOfParkingRef={parkingTypesOfParkingRef[locale]}
                             />
-                        }
-                    />
-                </div>
+                        </Popover>
+                        <ToolTippable toolTipText={parkingCoveredHint}>
+                            <Button onClick={handleOpenParkingCoveredPopover}>
+                                Infrastructure
+                            </Button>
+                        </ToolTippable>
+                        <Popover
+                            open={parkingCoveredOpen}
+                            anchorEl={parkingCoveredAnchorEl}
+                            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                            targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                            onRequestClose={handleCloseParkingCoveredPopover}
+                            animation={PopoverAnimationVertical}
+                            style={{overflowY: 'none'}}
+                            animated={true}
+                        >
+                            <ParkingCoveredMenuItems
+                                handleParkingCoveredChange={handleParkingCoveredChange}
+                                parkingCoveredChosen={parking.covered}
+                                parkingTypesCovered={parkingTypesCovered[locale]}
+                            />
+                        </Popover>
+                        <FormControlLabel
+                            label={formatMessage({id: 'secure_available'})}
+                            control={
+                                <Checkbox
+                                    checked={parking.secure}
+                                    label={formatMessage({id: 'secure_available'})}
+                                    onChange={(event, checked) => {
+                                        handleSetSecureAvailable(checked);
+                                    }}
+                                />
+                            }
+                        />
+                    </div>
                 </Tab>
             </Tabs>
         </div>
-  );
+    );
 }
 
+
 export default injectIntl(ParkingItemPayAndRideExpandedFields);
+
+export const isBikeParking = (parking) => {
+    var parkingVehicleTypes = parking.parkingVehicleTypes;
+    return parkingVehicleTypes.includes("pedalCycle");
+    ;
+}
