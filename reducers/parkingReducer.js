@@ -107,6 +107,11 @@ const parkingReducer = (state = {}, action) => {
             });
 
         case types.CHANGED_PARKING_TYPE:
+            if ( action.payLoad !== "other"){
+                delete state.current.typeOfParkingRef;
+
+            }
+
             return Object.assign({}, state, {
                 current: formatHelpers.updateCurrentParkingWithType(
                     state.current,

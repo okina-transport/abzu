@@ -145,6 +145,9 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
     const classes = useStyles();
 
     var isBikeParkingType = isBikeParking(parking);
+    var isOtherTypeParking = parking.parkingType === "other";
+
+
 
 
     return (
@@ -392,12 +395,15 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                     value={2}
                 >
                     <div style={{display: 'block', justifyContent: 'space-around'}}>
-                        <ToolTippable toolTipText={parkingTypeOfParkingRefHint}>
+                        {isOtherTypeParking && <ToolTippable toolTipText={parkingTypeOfParkingRefHint}>
                             <Button onClick={handleOpenParkingTypeOfParkingRefPopover}>
                                 Autres types de parking
                             </Button>
+
                         </ToolTippable>
-                        <Popover
+                        }
+
+                        {isOtherTypeParking &&   <Popover
                             open={parkingTypeOfParkingRefOpen}
                             anchorEl={parkingTypeOfParkingRefAnchorEl}
                             anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
@@ -406,13 +412,15 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                             animation={PopoverAnimationVertical}
                             style={{overflowY: 'none'}}
                             animated={true}
-                        >
+                            >
                             <ParkingTypeOfParkingRefMenuItems
-                                handleParkingTypeOfParkingRefChange={handleParkingTypeOfParkingRefChange}
-                                parkingTypeOfParkingRefChosen={parking.typeOfParkingRef}
-                                parkingTypesOfParkingRef={parkingTypesOfParkingRef[locale]}
+                            handleParkingTypeOfParkingRefChange={handleParkingTypeOfParkingRefChange}
+                            parkingTypeOfParkingRefChosen={parking.typeOfParkingRef}
+                            parkingTypesOfParkingRef={parkingTypesOfParkingRef[locale]}
                             />
-                        </Popover>
+                            </Popover>
+
+                        }
                         <ToolTippable toolTipText={parkingCoveredHint}>
                             <Button onClick={handleOpenParkingCoveredPopover}>
                                 Infrastructure
