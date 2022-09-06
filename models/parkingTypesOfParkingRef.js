@@ -7,6 +7,10 @@ const parkingTypesOfParkingRef = {
         {
             name: 'Box individuel',
             value: 'IndividualBox'
+        },
+        {
+            name: 'Station vélo',
+            value: 'BikeParking'
         }
     ]
 };
