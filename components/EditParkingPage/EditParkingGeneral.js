@@ -53,7 +53,9 @@ class EditParkingGeneral extends React.Component {
     if (
         !parking.name ||
         !parking.name.trim().length ||
-        !parking.parkingType
+        !parking.parkingType ||
+        !parking.parkingPaymentProcess ||
+        !parking.parkingPaymentProcess.length
     ) {
       this.setState({
         requiredFieldsMissingOpen: true
@@ -364,7 +366,8 @@ class EditParkingGeneral extends React.Component {
                 }}
                 requiredMissing={{
                   name: !parking.name || !parking.name.trim().length,
-                  type: !parking.parkingType
+                  type: !parking.parkingType,
+                  payment: !parking.parkingPaymentProcess || !parking.parkingPaymentProcess.length
                 }}
                 formatMessage={formatMessage}
                 isNewParking={parking.isNewParking}

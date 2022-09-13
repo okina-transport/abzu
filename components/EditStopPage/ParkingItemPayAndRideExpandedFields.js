@@ -21,18 +21,21 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import {injectIntl} from 'react-intl';
 import {parkingPaymentProcesses} from '../../models/parkingPaymentProcess';
+import { parkingFreeSetting } from '../../models/parkingFree';
 import {parkingLayouts} from '../../models/parkingLayout';
 import {Subheader, TextField} from 'material-ui';
 import RechargingAvailablePopover from './RechargingAvailablePopover';
 import LocalParking from 'material-ui/svg-icons/maps/local-parking';
 import {ActionAccessible} from 'material-ui/svg-icons';
 import Payment from 'material-ui/svg-icons/action/payment';
+import Paid from 'material-ui/svg-icons/action/euro-symbol';
+import Lock from 'material-ui/svg-icons/action/lock';
 import Box from '@material-ui/core/Box';
+import LayersIcon from 'material-ui/svg-icons/maps/layers';
 import {Button, Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Tab, Tabs} from "material-ui/Tabs";
-import FacilitiesParkingTab from "../EditParkingPage/FacilitiesParkingTab";
 import ToolTippable from "./ToolTippable";
 import {Popover, PopoverAnimationVertical} from "material-ui/Popover";
 import ParkingCoveredMenuItems from "../EditParkingPage/ParkingCoveredMenuItems";
@@ -99,6 +102,7 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
         disabled,
         hasExpired,
         parkingLayout,
+        parkingFree,
         parkingPaymentProcess,
         rechargingAvailable,
         carpoolingAvailable,
@@ -111,6 +115,7 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
         numberOfSpacesForRegisteredDisabledUserType,
         handleSetParkingLayout,
         handleSetParkingPaymentProcess,
+        handleSetParkingFree,
         handleSetRechargingAvailable,
         handleSetCarpoolingAvailable,
         handleSetCarsharingAvailable,
@@ -124,18 +129,11 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
         tabStyle,
         activeTabIndex,
         parking,
-        index,
-        intl1,
-        parkingCoveredHint,
         parkingTypeOfParkingRefHint,
-        handleOpenParkingCoveredPopover,
-        handleCloseParkingCoveredPopover,
         handleCloseParkingTypeOfParkingRefPopover,
         handleSetSecureAvailable,
         handleParkingTypeOfParkingRefChange,
-        parkingCoveredOpen,
         handleParkingCoveredChange,
-        parkingCoveredAnchorEl,
         parkingTypeOfParkingRefOpen,
         parkingTypeOfParkingRefAnchorEl,
         locale,
@@ -344,6 +342,37 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                         <Grid item>
                             <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
                                 <Box>
+                                    <Paid style={parkingIconStyles(6)}/>
+                                </Box>
+                                <Box className={classes.boxFullWidth}>
+                                    <InputLabel htmlFor="select-parking-free">
+                                        {formatMessage({id: 'parking_free'})}
+                                    </InputLabel>
+                                    <Select
+                                        displayEmpty
+                                        value={parkingFree}
+                                        renderValue={selected => selected ? formatMessage({id: `parking_free_${parkingFree}`}) : 
+                                            <em>{formatMessage({id: 'parking_free_undefined'})}</em>
+                                        }
+                                        input={
+                                            <Input className={classes.selectInput}
+                                                   id="select-parking-free"/>}
+                                        onChange={(event) => {
+                                            const {value} = event.target;
+                                            handleSetParkingFree(value);
+                                        }}>
+                                        {parkingFreeSetting.map(key => (
+                                            <MenuItem key={key} value={key}>
+                                                <ListItemText
+                                                    primary={formatMessage({id: `parking_free_${key}`})}/>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </Box>
+                            </Box>
+                            {parkingFree != 'yes' && 
+                            <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+                                <Box>
                                     <Payment style={parkingIconStyles(6)}/>
                                 </Box>
                                 <Box className={classes.boxFullWidth}>
@@ -383,6 +412,44 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                                     </Select>
                                 </Box>
                             </Box>
+                            }
+                        </Grid>
+                        <Grid item>
+                            <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+                                <Box>
+                                    <LayersIcon style={parkingIconStyles(6)}/>
+                                </Box>
+                                <Box className={classes.boxFullWidth}>
+                                    <InputLabel htmlFor="select-infrastructure">
+                                        Infrastructure
+                                    </InputLabel>
+                                    
+                                    <ParkingCoveredMenuItems
+                                        handleParkingCoveredChange={handleParkingCoveredChange}
+                                        parkingCoveredChosen={parking.covered}
+                                        parkingTypesCovered={parkingTypesCovered[locale]}
+                                    />
+                                </Box>
+                            </Box>
+                            <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+                                <Box>
+                                    <Lock style={parkingIconStyles(6)}/>
+                                </Box>
+                                <Box className={classes.boxFullWidth}>
+                                    <FormControlLabel
+                                        label={formatMessage({id: 'secure_available'})}
+                                        control={
+                                            <Checkbox
+                                                checked={parking.secure}
+                                                label={formatMessage({id: 'secure_available'})}
+                                                onChange={(event, checked) => {
+                                                    handleSetSecureAvailable(checked);
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </Box>
+                            </Box>
                         </Grid>
                     </Grid>
                 </Tab>
@@ -413,39 +480,6 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                                 parkingTypesOfParkingRef={parkingTypesOfParkingRef[locale]}
                             />
                         </Popover>
-                        <ToolTippable toolTipText={parkingCoveredHint}>
-                            <Button onClick={handleOpenParkingCoveredPopover}>
-                                Infrastructure
-                            </Button>
-                        </ToolTippable>
-                        <Popover
-                            open={parkingCoveredOpen}
-                            anchorEl={parkingCoveredAnchorEl}
-                            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                            targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                            onRequestClose={handleCloseParkingCoveredPopover}
-                            animation={PopoverAnimationVertical}
-                            style={{overflowY: 'none'}}
-                            animated={true}
-                        >
-                            <ParkingCoveredMenuItems
-                                handleParkingCoveredChange={handleParkingCoveredChange}
-                                parkingCoveredChosen={parking.covered}
-                                parkingTypesCovered={parkingTypesCovered[locale]}
-                            />
-                        </Popover>
-                        <FormControlLabel
-                            label={formatMessage({id: 'secure_available'})}
-                            control={
-                                <Checkbox
-                                    checked={parking.secure}
-                                    label={formatMessage({id: 'secure_available'})}
-                                    onChange={(event, checked) => {
-                                        handleSetSecureAvailable(checked);
-                                    }}
-                                />
-                            }
-                        />
                     </div>
                 </Tab>
             </Tabs>

@@ -9,7 +9,7 @@ class RequiredFieldsMissingDialog extends Component {
   render() {
 
     const { open, handleClose, requiredMissing, formatMessage, isNewStop } = this.props;
-    const { name, type } = requiredMissing;
+    const { name, type, payment } = requiredMissing;
 
     const translations = {
       labelOK: formatMessage({id: 'ok'}),
@@ -19,6 +19,7 @@ class RequiredFieldsMissingDialog extends Component {
       stopPlaceType: formatMessage({id: 'stopPlaceType'}),
       setMissingFieldsNewStop: formatMessage({id: 'required_fields_missing_action_new'}),
       setMissingFields: formatMessage({id: 'required_fields_missing_action'}),
+      payment: formatMessage({id: 'parking_payment_process'})
     };
 
 
@@ -46,6 +47,7 @@ class RequiredFieldsMissingDialog extends Component {
         <ul style={{color: '#000'}}>
           {name && <li>{translations.name}</li>}
           {type && <li>{translations.stopPlaceType}</li>}
+          {payment && <li>{translations.payment}</li>}
         </ul>
         { isNewStop
           ? <p>{translations.setMissingFieldsNewStop}</p>

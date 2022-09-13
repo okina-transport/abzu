@@ -13,7 +13,7 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 
-import React from 'react';
+import React, { useState } from 'react';
 import ModalityIconSvg from '../MainPage/ModalityIconSvg';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import IconButton from 'material-ui/IconButton';
@@ -122,24 +122,6 @@ class ParkingDetails extends React.Component {
         });
     }
 
-    handleCloseParkingCoveredPopover() {
-        this.setState({
-            parkingCoveredOpen: false
-        });
-    }
-
-    handleOpenParkingCoveredPopover(event) {
-        this.setState({
-            parkingTypeOpen: false,
-            wheelChairOpen: false,
-            parkingCoveredAnchorEl: event.currentTarget,
-            weightingOpen: false,
-            parkingTypeOfParkingRefOpen: false,
-            parkingSecureOpen: false,
-            parkingCoveredOpen: true
-        });
-    }
-
     handleCloseParkingTypeOfParkingRefPopover() {
         this.setState({
             parkingTypeOfParkingRefOpen: false
@@ -165,7 +147,6 @@ class ParkingDetails extends React.Component {
     }
 
     handleParkingCoveredChange(parkingCovered) {
-        this.handleCloseParkingCoveredPopover();
         this.props.dispatch(ParkingActions.changeParkingCovered(parkingCovered));
     }
 
@@ -238,6 +219,23 @@ class ParkingDetails extends React.Component {
     handleSetParkingPaymentProcess(value) {
         const {dispatch, index} = this.props;
         dispatch(ParkingActions.changeParkingPaymentProcess(index, value));
+    }
+
+    getParkingFree(value) {
+        if (value && value.includes("free")) {
+            return 'yes';
+        } else {
+            return 'no';
+        }
+    }
+
+    handleSetParkingFree(value) {
+        const {dispatch, index} = this.props;
+        const processes = [];
+        if (value === 'yes') {
+            processes.push('free'); 
+        }
+        dispatch(ParkingActions.changeParkingPaymentProcess(index, processes));
     }
 
     handleSetRechargingAvailable(value) {
@@ -411,8 +409,6 @@ class ParkingDetails extends React.Component {
             loading,
             dataSource,
             currentParkingName,
-            parkingCoveredOpen,
-            parkingCoveredAnchorEl,
             parkingTypeOfParkingRefOpen,
             parkingTypeOfParkingRefAnchorEl
         } = this.state;
@@ -543,6 +539,7 @@ class ParkingDetails extends React.Component {
                                 hasExpired={parking.hasExpired}
                                 parkingLayout={parking.parkingLayout}
                                 parkingPaymentProcess={parking.parkingPaymentProcess}
+                                parkingFree={this.getParkingFree(parking.parkingPaymentProcess)}
                                 rechargingAvailable={parking.rechargingAvailable}
                                 carpoolingAvailable={parking.carpoolingAvailable}
                                 carsharingAvailable={parking.carsharingAvailable}
@@ -554,6 +551,8 @@ class ParkingDetails extends React.Component {
                                 numberOfSpacesForRegisteredDisabledUserType={parking.numberOfSpacesForRegisteredDisabledUserType}
                                 handleSetParkingLayout={this.handleSetParkingLayout.bind(this)}
                                 handleSetParkingPaymentProcess={this.handleSetParkingPaymentProcess.bind(this)}
+                                getParkingFree={this.getParkingFree.bind(this)}
+                                handleSetParkingFree={this.handleSetParkingFree.bind(this)}
                                 handleSetRechargingAvailable={this.handleSetRechargingAvailable.bind(this)}
                                 handleSetCarpoolingAvailable={this.handleSetCarpoolingAvailable.bind(this)}
                                 handleSetCarsharingAvailable={this.handleSetCarsharingAvailable.bind(this)}
@@ -569,17 +568,12 @@ class ParkingDetails extends React.Component {
                                 parking={parking}
                                 index={index}
                                 intl1={intl}
-                                parkingCoveredHint={parkingCoveredHint}
                                 parkingTypeOfParkingRefHint={parkingTypeOfParkingRefHint}
-                                handleOpenParkingCoveredPopover={this.handleOpenParkingCoveredPopover.bind(this)}
                                 handleOpenParkingTypeOfParkingRefPopover={this.handleOpenParkingTypeOfParkingRefPopover.bind(this)}
-                                handleCloseParkingCoveredPopover={this.handleCloseParkingCoveredPopover.bind(this)}
                                 handleCloseParkingTypeOfParkingRefPopover={this.handleCloseParkingTypeOfParkingRefPopover.bind(this)}
                                 handleSetSecureAvailable={this.handleSetSecureAvailable.bind(this)}
                                 handleParkingTypeOfParkingRefChange={this.handleParkingTypeOfParkingRefChange.bind(this)}
-                                parkingCoveredOpen={parkingCoveredOpen}
                                 handleParkingCoveredChange={this.handleParkingCoveredChange.bind(this)}
-                                parkingCoveredAnchorEl={parkingCoveredAnchorEl}
                                 parkingTypeOfParkingRefOpen={parkingTypeOfParkingRefOpen}
                                 parkingTypeOfParkingRefAnchorEl={parkingTypeOfParkingRefAnchorEl}
                                 locale={locale}/>
