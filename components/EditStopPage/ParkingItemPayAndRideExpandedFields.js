@@ -470,7 +470,7 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                         </ToolTippable>
                         }
 
-                        {isOtherTypeParking &&   <Popover
+                        {isOtherTypeParking &&  <Popover
                             open={parkingTypeOfParkingRefOpen}
                             anchorEl={parkingTypeOfParkingRefAnchorEl}
                             anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
@@ -485,7 +485,7 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                             parkingTypeOfParkingRefChosen={parking.typeOfParkingRef}
                             parkingTypesOfParkingRef={parkingTypesOfParkingRef[locale]}
                             />
-                        </Popover>
+                        </Popover> }
                     </div>
                 </Tab>
             </Tabs>
