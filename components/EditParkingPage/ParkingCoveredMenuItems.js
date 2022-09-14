@@ -16,9 +16,21 @@ limitations under the Licence. */
 import React from 'react';
 import {connect} from 'react-redux';
 import MenuItem from 'material-ui/MenuItem';
-import Menu from 'material-ui/Menu';
+import Select from '@material-ui/core/Select';
+import Input from '@material-ui/core/Input';
 
 class ParkingCoveredMenuItems extends React.Component {
+
+    getNameFromValue(types, value) {
+        let name = null;
+        types.map((type, index) => {
+            if (type.value === value) {
+                name = type.name;
+            }
+        });
+        return name;
+    }
+
     render() {
         const {
             parkingTypesCovered,
@@ -29,8 +41,15 @@ class ParkingCoveredMenuItems extends React.Component {
         const chosenStyle = {fontWeight: 600};
 
         return (
-            <Menu>
-
+            <Select
+                value={parkingCoveredChosen}
+                input={<Input style={{width: '100%'}} id="select-infrastructure"/>}
+                renderValue={selected => selected ? this.getNameFromValue(parkingTypesCovered, parkingCoveredChosen) : "Non défini"}
+                onChange={(event) => {
+                    const {value} = event.target;
+                    handleParkingCoveredChange(value);
+                }}
+            >
                 {parkingTypesCovered.map((type, index) => {
                     const parkingTypeMatchingChosen = parkingCoveredChosen === type.value;
 
@@ -45,17 +64,14 @@ class ParkingCoveredMenuItems extends React.Component {
                                         parkingTypeMatchingChosen ? chosenStyle : {}
                                     }
                                 >
-                  {type.name}
-                </span>
-                            }
-                            onClick={() => {
-                                handleParkingCoveredChange(type.value);
-                            }}
+                                    {type.name}
+                                </span>
+                            }   
                             insetChildren={true}
                         />
                     );
                 })}
-            </Menu>
+            </Select>
         );
     }
 }

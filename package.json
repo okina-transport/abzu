@@ -18,6 +18,7 @@
   "license": "EUPL-1.2 with modifications",
   "dependencies": {
     "@material-ui/core": "^4.3.1",
+    "@material-ui/icons": "^4.11.3",
     "apollo-client": "1.9.2",
     "axios": "^0.18.1",
     "babel-cli": "6.26.0",
