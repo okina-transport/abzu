@@ -497,7 +497,5 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
 export default injectIntl(ParkingItemPayAndRideExpandedFields);
 
 export const isBikeParking = (parking) => {
-    var parkingVehicleTypes = parking.parkingVehicleTypes;
-    return parkingVehicleTypes.includes("pedalCycle");
-    ;
+    return parking.parkingVehicleTypes !== undefined ? parking.parkingVehicleTypes.includes("pedalCycle") : false;
 }
