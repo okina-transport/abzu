@@ -16,14 +16,14 @@ limitations under the Licence. */
 import { connect } from 'react-redux';
 import React from 'react';
 import LeafletMap from './LeafletMap';
-import {ParkingActions, StopPlaceActions, UserActions} from '../../actions/';
+import {ParkingActions, PointOfInterestActions, StopPlaceActions, UserActions} from '../../actions/';
 import { injectIntl } from 'react-intl';
 import { setDecimalPrecision } from '../../utils';
 import CoordinatesDialog from '../Dialogs/CoordinatesDialog';
 import CompassBearingDialog from '../Dialogs/CompassBearingDialog';
 import debounce from 'lodash.debounce';
 import { withApollo } from 'react-apollo';
-import {getNeighbourParkings, getNeighbourStops} from '../../graphql/Tiamat/actions';
+import {getNeighbourParkings, getNeighbourPointsOfInterest, getNeighbourStops} from '../../graphql/Tiamat/actions';
 import Settings from '../../singletons/SettingsManager';
 
 class EditMap extends React.Component {
@@ -34,7 +34,7 @@ class EditMap extends React.Component {
       compassBearingDialogOpen: false,
     };
     const mapEnd = (event, { leafletElement }) => {
-      let { ignoreStopId, ignoreParkingId, client } = this.props;
+      let { ignoreStopId, ignoreParkingId, ignorePointOfInterestId, client } = this.props;
 
       const zoom = leafletElement.getZoom();
 
@@ -43,6 +43,7 @@ class EditMap extends React.Component {
         let includeExpired = new Settings().getShowExpiredStops();
         getNeighbourStops(client, ignoreStopId, bounds, includeExpired);
         getNeighbourParkings(client, ignoreParkingId, bounds, includeExpired);
+        getNeighbourPointsOfInterest(client, ignorePointOfInterestId, bounds, includeExpired);
       }
     };
     this.handleMapMoveEnd = debounce(mapEnd, 500);
@@ -79,7 +80,7 @@ class EditMap extends React.Component {
     return true;
   }
 
-  handleMapDragEnd(isQuay, index, event, isParking) {
+  handleMapDragEnd(isQuay, index, event, isParking, isPointOfInterest) {
     const { dispatch } = this.props;
     const position = event.target.getLatLng();
 
@@ -98,6 +99,8 @@ class EditMap extends React.Component {
       );
     } else if (isParking) {
       dispatch(ParkingActions.changeCurrentParkingPosition(formattedPosition));
+    } else if (isPointOfInterest) {
+      dispatch(PointOfInterestActions.changeCurrentPointOfInterestPosition(formattedPosition));
     }
     else {
       dispatch(StopPlaceActions.changeCurrentStopPosition(formattedPosition));
@@ -133,7 +136,7 @@ class EditMap extends React.Component {
 
   handleSubmitChangeCoordinates(position) {
     const { coordinatesOwner } = this.state;
-    const { dispatch, currentStopPlace, currentParking } = this.props;
+    const { dispatch, currentStopPlace, currentParking, currentPointOfInterest } = this.props;
 
     if(currentStopPlace){
       if (coordinatesOwner.isQuay) {
@@ -153,6 +156,10 @@ class EditMap extends React.Component {
     else if (currentParking){
       dispatch(ParkingActions.changeCurrentParkingPosition(position));
       dispatch(ParkingActions.changeMapCenter(position, 14));
+    }
+    else if (currentPointOfInterest){
+      dispatch(PointOfInterestActions.changeCurrentPointOfInterestPosition(position));
+      dispatch(PointOfInterestActions.changeMapCenter(position, 14));
     }
 
 
@@ -176,12 +183,13 @@ class EditMap extends React.Component {
 
   componentDidMount() {
     const { leafletElement } = this.refs.leafletMap.refs.map;
-    const { dispatch, client, ignoreStopId, ignoreParkingId } = this.props;
+    const { dispatch, client, ignoreStopId, ignoreParkingId, ignorePointOfInterestId } = this.props;
     dispatch(StopPlaceActions.setActiveMap(leafletElement));
     const bounds = leafletElement.getBounds();
     let includeExpired = new Settings().getShowExpiredStops();
     getNeighbourStops(client, ignoreStopId, bounds, includeExpired);
     getNeighbourParkings(client, ignoreParkingId, bounds, includeExpired);
+    getNeighbourPointsOfInterest(client, ignorePointOfInterestId, bounds, includeExpired);
   }
 
   render() {
@@ -235,6 +243,9 @@ const mapStateToProps = state => {
   const currentParking = state.parking.current;
   const neighbourParkings = state.parking.neighbourParkings;
 
+  const currentPointOfInterest = state.pointOfInterest.current;
+  const neighbourPointsOfInterest = state.pointOfInterest.neighbourPointsOfInterest;
+
   let markers = [];
   let position;
   let zoom;
@@ -262,6 +273,17 @@ const mapStateToProps = state => {
     markers = markers.concat(neighbourParkings);
   }
 
+  if (currentPointOfInterest) {
+    markers = markers.concat(currentPointOfInterest);
+    position = state.pointOfInterest.centerPosition;
+    zoom = state.pointOfInterest.zoom;
+    minZoom = state.pointOfInterest.minZoom;
+  }
+
+  if (neighbourPointsOfInterest && neighbourPointsOfInterest.length) {
+    markers = markers.concat(neighbourPointsOfInterest);
+  }
+
   return {
     position: position,
     zoom: zoom,
@@ -273,8 +295,10 @@ const mapStateToProps = state => {
     markers,
     ignoreStopId: state.stopPlace.current ? state.stopPlace.current.id : -1,
     ignoreParkingId: state.parking.current ? state.parking.current.id : -1,
+    ignorePointOfInterestId: state.pointOfInterest.current ? state.pointOfInterest.current.id : -1,
     currentParking: state.parking.current,
-    currentStopPlace: state.stopPlace.current
+    currentStopPlace: state.stopPlace.current,
+    currentPointOfInterest: state.pointOfInterest.current
   };
 };
 

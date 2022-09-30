@@ -12,13 +12,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
+const pointOfInterestType = Object.freeze({
+  POINT_OF_INTEREST: 'poi',
+  UNKNOWN: 'unknown'
+});
 
-export userReducer from './userReducer';
-export mapReducer from './mapReducer';
-export stopPlaceReducer from './stopPlaceReducer';
-export parkingReducer from './parkingReducer';
-export pointOfInterestReducer from './pointOfInterestReducer';
-export reportReducer from './reportReducer';
-export rolesReducer from './rolesReducer';
-export snackbarReducer from './snackbarReducer';
-export groupOfStopPlaceReducer from './groupOfStopPlacesReducer';
+
+export const unknownPointOfInterestType = {
+  nb: 'Modalitet ikke satt',
+  en: 'Modality not defined',
+  fr: 'Type de POI non défini'
+};
+
+export default pointOfInterestType;

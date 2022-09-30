@@ -79,7 +79,8 @@ export const getStateByOperation = (state, action) => {
         searchResults: [
           ...formatHelpers.mapSearchResultToStopPlaces(action.result.data.stopPlace),
           ...formatHelpers.mapSearchResultatGroup(action.result.data.groupOfStopPlaces),
-          ...formatHelpers.mapSearchResultToParkings(action.result.data.parking)
+          ...formatHelpers.mapSearchResultToParkings(action.result.data.parking),
+          ...formatHelpers.mapSearchResultToPointsOfInterest(action.result.data.pointOfInterest)
           ]
       });
 
@@ -92,6 +93,17 @@ export const getStateByOperation = (state, action) => {
 
       return Object.assign({}, state, {
         current: stopPlaceWithParking
+      });
+
+    case 'mutatePointOfInterest':
+      let pointOfInterest = Object.assign({}, state.current, {
+        pointOfInterest: formatHelpers.mapPointOfInterestToClient(
+            action.result.data.mutatePointOfInterest
+        )
+      });
+
+      return Object.assign({}, state, {
+        current: pointOfInterest
       });
 
     case 'neighbourStopPlaceQuays':

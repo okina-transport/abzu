@@ -114,6 +114,9 @@ class SearchBox extends React.Component {
         case Entities.PARKING:
           route = Routes.PARKING;
           break;
+        case Entities.POINT_OF_INTEREST:
+          route = Routes.POINT_OF_INTEREST;
+          break;
         default:
           route = null;
           break;
@@ -185,6 +188,10 @@ class SearchBox extends React.Component {
 
   toggleShowParkings(value) {
     this.props.dispatch(UserActions.toggleShowParkings(value));
+  }
+
+  toggleShowPointsOfInterest(value) {
+    this.props.dispatch(UserActions.toggleShowPointsOfInterest(value));
   }
 
   handleTopographicalPlaceInput(searchText) {
@@ -460,7 +467,8 @@ console.log({ dataSource });
       showFutureAndExpired,
       filterByOrg,
       showStops,
-      showParkings
+      showParkings,
+      showPointsOfInterest
     } = this.props;
     const {
       coordinatesDialogOpen,
@@ -613,6 +621,13 @@ console.log({ dataSource });
                   checked={showParkings}
                   onCheck={(e, value) => this.toggleShowParkings(value)}
                   label={formatMessage({ id: 'show_parkings' })}
+                  labelStyle={{ fontSize: '0.8em' }}
+                  style={{ paddingTop: '5' }}
+              />
+              <CheckBox
+                  checked={showPointsOfInterest}
+                  onCheck={(e, value) => this.toggleShowPointsOfInterest(value)}
+                  label={formatMessage({ id: 'show_poi' })}
                   labelStyle={{ fontSize: '0.8em' }}
                   style={{ paddingTop: '5' }}
               />
@@ -870,6 +885,7 @@ const mapStateToProps = state => {
     dataSource: state.stopPlace.searchResults || [],
     isCreatingNewStop: state.user.isCreatingNewStop,
     isCreatingNewParking: state.user.isCreatingNewParking,
+    isCreatingNewPointOfInterest: state.user.isCreatingNewPointOfInterest,
     stopTypeFilter: state.user.searchFilters.stopType,
     topoiChips: state.user.searchFilters.topoiChips,
     favorited,
@@ -889,7 +905,8 @@ const mapStateToProps = state => {
     orgCode: state.user.searchFilters.orgCode,
     roles: state.roles.kc.tokenParsed.roles,
     showStops: state.user.showStops,
-    showParkings: state.user.showParkings
+    showParkings: state.user.showParkings,
+    showPointsOfInterest: state.user.showPointsOfInterest
   };
 };
 

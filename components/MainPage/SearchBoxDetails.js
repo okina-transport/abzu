@@ -22,6 +22,7 @@ import ParentStopPlaceResultInfo from './ParentStopPlaceResultInfo';
 import GroupResultInfo from './GroupResultInfo';
 import { Entities } from '../../models/Entities';
 import ParkingResultInfo from "./ParkingResultInfo";
+import PointOfInterestResultInfo from "./PointOfInterestResultInfo";
 
 const SearchBoxDetails = ({
   text,
@@ -62,6 +63,10 @@ const SearchBoxDetails = ({
   } else if (entityType === Entities.PARKING) {
     ResultInfo = (
         <ParkingResultInfo result={result} formatMessage={formatMessage}/>
+    )
+  } else if (entityType === Entities.POINT_OF_INTEREST) {
+    ResultInfo = (
+        <PointOfInterestResultInfo result={result}/>
     )
   }
 

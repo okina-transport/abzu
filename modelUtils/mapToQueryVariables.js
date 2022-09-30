@@ -378,6 +378,117 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
   });
 };
 
+helpers.mapPointOfInterestToVariables = (poi, parentRef) => {
+  return poi.map(source => {
+    let pointOfInterest = {
+      parentSiteRef: parentRef,
+      validBetween: source.validBetween,
+      classifications: [],
+      keyValues: source.keyValues,
+      name : {
+        value : source.name,
+        lang : 'fr'
+      },
+      description : {
+        value : source.description,
+        lang : 'fr'
+      },
+      pointOfInterestFacilitySet: {}
+    };
+
+    if (source.id) {
+      pointOfInterest.id = source.id;
+    }
+
+    if (source.zipCode) {
+      pointOfInterest.zipCode = source.zipCode;
+    }
+
+    if (source.address) {
+      pointOfInterest.address = source.address;
+    }
+
+    if (source.city) {
+      pointOfInterest.city = source.city;
+    }
+
+    if (source.postalCode) {
+      pointOfInterest.postalCode = source.postalCode;
+    }
+
+    if (source.location) {
+      let coordinates = source.location
+          .map(c => {
+            if (!isFloat(c)) {
+              return parseFloat(c + '.0000001');
+            }
+            return c;
+          })
+          .reverse();
+
+      pointOfInterest.geometry = {
+        type: 'Point',
+        coordinates: [coordinates]
+      };
+    } else {
+      pointOfInterest.geometry = null;
+    }
+
+    if (source.ticketFacility) {
+      pointOfInterest.pointOfInterestFacilitySet.ticketingFacility = source.ticketFacility;
+    }
+
+    if (source.ticketServiceFacility) {
+      pointOfInterest.pointOfInterestFacilitySet.ticketingServiceFacility = source.ticketServiceFacility;
+    }
+
+    if (source.placeEquipments) {
+      pointOfInterest.placeEquipments = netexifyPlaceEquipment(source.placeEquipments);
+    }
+
+    if (source.classifications) {
+      pointOfInterest.classifications = source.classifications.map(sourceClassification => {
+        let classification = {
+          name : {
+            value : sourceClassification.name,
+            lang : 'fr'
+          }
+        };
+
+        if (sourceClassification.id) {
+          classification.id = sourceClassification.id;
+        }
+
+        if (sourceClassification.osm) {
+          classification.osm = sourceClassification.osm;
+        }
+
+        if (sourceClassification.active) {
+          classification.active = sourceClassification.active;
+        }
+
+        if (sourceClassification.parent) {
+          let parent = {
+            id : sourceClassification.parent.id,
+            name : {
+              value : sourceClassification.parent.name,
+              lang: 'fr'
+            },
+            osm : sourceClassification.parent.osm,
+            active : sourceClassification.parent.active
+          };
+          classification.parent = parent;
+        }
+
+        return classification;
+      });
+    }
+
+    helpers.removeTypeNameRecursively(pointOfInterest);
+    return pointOfInterest;
+  })
+}
+
 const stripRedundantFields = pathLink => {
   delete pathLink.estimate;
   delete pathLink.duration;

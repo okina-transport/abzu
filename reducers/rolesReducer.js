@@ -19,7 +19,7 @@ import {
   getAllowanceInfoFromPosition,
   getAllowanceInfoForStop,
   getLatLng,
-  getAllowanceInfoForParking
+  getAllowanceInfoForParking, getAllowanceInfoForPointOfInterest
 } from './rolesReducerUtils';
 
 export const initialState = {};
@@ -48,6 +48,15 @@ const rolesReducer = (state = initialState, action) => {
         return Object.assign({}, state, {
           kc: state.kc,
           allowanceInfo: getAllowanceInfoForParking(
+              action.result,
+              state.kc.tokenParsed
+          )
+        });
+      }
+      else if (action.operationName === 'getPointOfInterest') {
+        return Object.assign({}, state, {
+          kc: state.kc,
+          allowanceInfo: getAllowanceInfoForPointOfInterest(
               action.result,
               state.kc.tokenParsed
           )

@@ -27,7 +27,12 @@ import CycleParkingMarker from './CycleParkingMarker';
 import {getIn, setDecimalPrecision} from '../../utils';
 import QuayMarker from './QuayMarker';
 import {withApollo} from 'react-apollo';
-import {allEntities, allEntitiesParkings, neighbourStopPlaceQuays} from '../../graphql/Tiamat/queries';
+import {
+  allEntities,
+  allEntitiesParkings,
+  allEntitiesPointsOfInterest,
+  neighbourStopPlaceQuays
+} from '../../graphql/Tiamat/queries';
 import CoordinateMarker from './CoordinateMarker';
 import Routes from '../../routes/';
 import * as MarkerStrings from './markerText';
@@ -35,6 +40,8 @@ import {Entities} from '../../models/Entities';
 import NewParkingMarker from "./NewParkingMarker";
 import NeighbourMarkerParking from "./NeighbourMarkerParking";
 import ParkingMarker from "./ParkingMarker";
+import PointOfInterestMarker from "./PointOfInterestMarker";
+import NeighbourMarkerPointOfInterest from "./NeighbourMarkerPointOfInterest";
 
 class MarkerList extends React.Component {
   static propTypes = {
@@ -96,6 +103,26 @@ class MarkerList extends React.Component {
           })
           .then(result => {
             dispatch(UserActions.navigateTo(`/${Routes.PARKING}/`, id));
+          });
+    }
+  }
+
+  handlePointOfInterestOnClick(id) {
+    const {dispatch, client, path} = this.props;
+
+    const isAlreadyActive = id === path;
+
+    if (!isAlreadyActive) {
+      client
+          .query({
+            fetchPolicy: 'network-only',
+            query: allEntitiesPointsOfInterest,
+            variables: {
+              id: id
+            }
+          })
+          .then(result => {
+            dispatch(UserActions.navigateTo(`/${Routes.POINT_OF_INTEREST}/`, id));
           });
     }
   }
@@ -226,6 +253,7 @@ class MarkerList extends React.Component {
       showExpiredStops,
       isEditingStop,
       isEditingParking,
+      isEditingPointOfInterest,
       currentIsNewStop,
       currentStopIsMultiModal,
       tokenParsed
@@ -335,6 +363,25 @@ class MarkerList extends React.Component {
                       this.handleParkingOnClick(marker.id);
                     }}
                     isEditingParking={isEditingParking}
+                />
+            );
+          } else if (Entities.POINT_OF_INTEREST === marker.entityType) {
+            popupMarkers.push(
+                <PointOfInterestMarker
+                    key={'pointOfInterest-' + marker.id}
+                    id={marker.id}
+                    index={parentIndex}
+                    position={marker.location}
+                    name={marker.name}
+                    handleDragEnd={handleDragEnd}
+                    handleChangeCoordinates={changeCoordinates}
+                    draggable={dragableMarkers}
+                    translations={CustomPopupMarkerText}
+                    active={!!marker.isActive}
+                    handleOnClick={() => {
+                      this.handlePointOfInterestOnClick(marker.id);
+                    }}
+                    isEditingPointOfInterest={isEditingPointOfInterest}
                 />
             );
           } else if (marker.isParent && marker.children) {
@@ -609,6 +656,22 @@ class MarkerList extends React.Component {
                       isEditingParking={isEditingParking}
                   />
               );
+            } else if (marker.entityType === Entities.POINT_OF_INTEREST) {
+              popupMarkers.push(
+                  <NeighbourMarkerPointOfInterest
+                      key={'neighbourPointOfInterest' + marker.id}
+                      id={marker.id}
+                      position={marker.location}
+                      name={marker.name}
+                      handleOnClick={() => {
+                        this.handlePointOfInterestOnClick(marker.id);
+                      }}
+                      index={parentIndex}
+                      translations={CustomPopupMarkerText}
+                      type='storePoint'
+                      isEditingPointOfInterest={isEditingPointOfInterest}
+                  />
+              );
             }
             else {
               popupMarkers.push(
@@ -699,6 +762,7 @@ const mapStateToProps = state => ({
   isCreatingPolylines: state.stopPlace.isCreatingPolylines,
   currentIsNewStop: getIn(state.stopPlace, ['current', 'isNewStop'], false),
   currentIsNewParking: getIn(state.parking, ['current', 'isNewParking'], false),
+  currentIsNewPointOfInterest: getIn(state.parking, ['current', 'isNewPointOfInterest'], false),
   neighbourStopQuays: state.stopPlace.neighbourStopQuays || {},
   isEditingStop:
     state.routing.locationBeforeTransitions.pathname.indexOf(
@@ -711,6 +775,10 @@ const mapStateToProps = state => ({
   isEditingParking:
       state.routing.locationBeforeTransitions.pathname.indexOf(
           Routes.PARKING
+      ) > -1,
+  isEditingPointOfInterest:
+      state.routing.locationBeforeTransitions.pathname.indexOf(
+          Routes.POINT_OF_INTEREST
       ) > -1,
   missingCoordinatesMap: state.user.missingCoordsMap,
   activeMap: state.mapUtils.activeMap,

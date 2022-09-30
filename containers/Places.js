@@ -16,7 +16,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import SearchBox from '../components/MainPage/SearchBox';
 import Map from '../components/Map/Map';
-import {getStopPlaceById, getGroupOfStopPlacesById, getParkingById} from '../graphql/Tiamat/actions';
+import {
+  getStopPlaceById,
+  getGroupOfStopPlacesById,
+  getParkingById,
+  getPointOfInterestById
+} from '../graphql/Tiamat/actions';
 import { withApollo } from 'react-apollo';
 import formatHelpers from '../modelUtils/mapToClient';
 import StopPlaceActions from '../actions/StopPlaceActions';
@@ -25,11 +30,11 @@ import {
   updateURLWithId,
   getStopPlaceIdFromURL,
   getGroupOfStopPlacesIdFromURL,
-  getParkingIdFromURL
+  getParkingIdFromURL, getPointofInterestIdFromURL
 } from '../utils/URLhelpers';
 import '../styles/main.css';
 import Loader from '../components/Dialogs/Loader';
-import {ParkingActions} from "../actions";
+import {ParkingActions, PointOfInterestActions} from "../actions";
 
 class Places extends React.Component {
   constructor(props) {
@@ -100,7 +105,7 @@ class Places extends React.Component {
               const parkings = formatHelpers.mapSearchResultToParkings(
                   data.parking
               );
-              if (parking.length) {
+              if (parkings.length) {
                 dispatch(StopPlaceActions.setMarkerOnMap(parkings[0]));
               } else {
                 removeIdParamFromURL('parkingId');
@@ -118,8 +123,39 @@ class Places extends React.Component {
     }
   }
 
+  handleLoadPointOfInterest(props, pointOfInterestId, forceLoad) {
+    const { activeSearchResult, client, dispatch } = props;
+
+    if (forceLoad || (!activeSearchResult && pointOfInterestId)) {
+      this.setState({ isLoading: true });
+
+      getPointOfInterestById(client, pointOfInterestId)
+          .then(({ data }) => {
+            this.setState({ isLoading: false });
+            if (data.pointOfInterest && data.pointOfInterest.length) {
+              const pointsOfInterest = formatHelpers.mapSearchResultToPointsOfInterest(
+                  data.pointOfInterest
+              );
+              if (pointsOfInterest.length) {
+                dispatch(StopPlaceActions.setMarkerOnMap(pointsOfInterest[0]));
+              } else {
+                removeIdParamFromURL('pointOfInterestId');
+              }
+            } else {
+              removeIdParamFromURL('pointOfInterestId');
+            }
+          })
+          .catch(err => {
+            removeIdParamFromURL('pointOfInterestId');
+            this.setState({ isLoading: false });
+          });
+    } else if (!pointOfInterestId && activeSearchResult && activeSearchResult.id) {
+      updateURLWithId('pointOfInterestId', activeSearchResult.id);
+    }
+  }
+
   componentDidMount() {
-    const { lastMutatedStopPlaceId, activeSearchResult, dispatch, lastMutatedParkingId } = this.props;
+    const { lastMutatedStopPlaceId, activeSearchResult, dispatch, lastMutatedParkingId, lastMutatedPointOfInterestId } = this.props;
     const searchResultId = activeSearchResult ? activeSearchResult.id : null;
     const shouldRefreshStopPlace =
       (lastMutatedStopPlaceId.length && searchResultId !== null) &&
@@ -129,8 +165,13 @@ class Places extends React.Component {
         (lastMutatedParkingId.length && searchResultId !== null) &&
         (lastMutatedParkingId.indexOf(searchResultId) > -1);
 
+    const shouldRefreshPointOfInterest =
+        (lastMutatedPointOfInterestId.length && searchResultId !== null) &&
+        (lastMutatedPointOfInterestId.indexOf(searchResultId) > -1);
+
     const stopPlaceIdFromURL = getStopPlaceIdFromURL();
     const parkingIdFromURL = getParkingIdFromURL();
+    const pointOfInterestIdFromURL = getPointofInterestIdFromURL();
     const groupOfStopPlacesFromURL = getGroupOfStopPlacesIdFromURL();
 
     const stopPlaceId = shouldRefreshStopPlace
@@ -141,12 +182,20 @@ class Places extends React.Component {
         ? searchResultId
         : parkingIdFromURL;
 
+    const pointOfInterestId = shouldRefreshPointOfInterest
+        ? searchResultId
+        : pointOfInterestIdFromURL;
+
     if (shouldRefreshStopPlace) {
       dispatch(StopPlaceActions.clearLastMutatedStopPlaceId());
     }
 
     if (shouldRefreshParking) {
       dispatch(ParkingActions.clearLastMutatedParkingId());
+    }
+
+    if (shouldRefreshPointOfInterest) {
+      dispatch(PointOfInterestActions.clearLastMutatedPointOfInterestId());
     }
 
     if (groupOfStopPlacesFromURL) {
@@ -165,6 +214,13 @@ class Places extends React.Component {
           shouldRefreshParking
       );
     }
+    else if (shouldRefreshPointOfInterest) {
+      this.handleLoadPointOfInterest(
+          this.props,
+          pointOfInterestId,
+          shouldRefreshPointOfInterest
+      );
+    }
   }
 
   render() {
@@ -179,10 +235,11 @@ class Places extends React.Component {
   }
 }
 
-const mapStateToProps = ({ stopPlace, user, parking }) => ({
+const mapStateToProps = ({ stopPlace, user, parking, pointOfInterest }) => ({
   activeSearchResult: stopPlace.activeSearchResult,
   lastMutatedStopPlaceId: stopPlace.lastMutatedStopPlaceId,
   lastMutatedParkingId: parking.lastMutatedParkingId,
+  lastMutatedPointOfInterestId: pointOfInterest.lastMutatedPointOfInterestId,
   currentPath: user.path
 });
 

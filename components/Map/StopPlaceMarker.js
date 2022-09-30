@@ -122,7 +122,7 @@ class StopPlaceMarker extends React.Component {
         position={markerLocation}
         zIndexOffset={isMultimodal ? 150 : 100}
         onDragend={event => {
-          handleDragEnd(false, index, event, false);
+          handleDragEnd(false, index, event, false, false);
         }}
         draggable={draggable}
       >

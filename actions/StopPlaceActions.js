@@ -130,6 +130,8 @@ StopPlaceActions.setMarkerOnMap = data => dispatch => {
     updateURLWithId('groupOfStopPlacesId', data.id);
   } else if (data.entityType === Entities.PARKING) {
     updateURLWithId('parkingId', data.id);
+  } else if (data.entityType === Entities.POINT_OF_INTEREST) {
+    updateURLWithId('pointOfInterestId', data.id);
   }
   else {
     console.error('entityType not found', data.entityType, ', will not update URL');

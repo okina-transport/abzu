@@ -88,6 +88,10 @@ convictPromise
       res.send(getPage());
     });
 
+    app.get(ENDPOINTBASE + Routes.POINT_OF_INTEREST + '/:id', function(req, res) {
+      res.send(getPage());
+    });
+
     app.get(ENDPOINTBASE + Routes.GROUP_OF_STOP_PLACE + '/:id', function(req, res) {
       res.send(getPage());
     });

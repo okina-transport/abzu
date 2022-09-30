@@ -35,6 +35,8 @@ export const createSearchMenuItem = (element, formatMessage) => {
     return createGroupOfStopPlacesMenuItem(element, formatMessage);
   } else if (element.entityType === Entities.PARKING) {
     return createParkingMenuItem(element);
+  } else if (element.entityType === Entities.POINT_OF_INTEREST) {
+    return createPointOfInterestMenuItem(element);
   }
   else {
     console.error(`createSearchMenuItem: ${element.entityType} is not supported`);
@@ -253,6 +255,47 @@ const createParkingMenuItem = (element) => {
                                 transform: 'scale(0.8)'
                             }}
                             type={element.parkingType}
+                        />
+                    </div>
+                }
+            />
+        )
+    };
+};
+
+const createPointOfInterestMenuItem = (element) => {
+    return {
+        element: element,
+        text: element.name,
+        value: (
+            <MenuItem
+                style={{ marginTop: 0, width: 'auto' }}
+                key={element.id}
+                innerDivStyle={{ padding: '0px 16px 0px 0px' }}
+                primaryText={
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div
+                            style={{
+                                marginLeft: 10,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                minWidth: 280
+                            }}
+                        >
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <div style={{ fontSize: '0.9em' }}>{element.name}</div>
+                                <div style={{ fontSize: '0.6em', color: 'grey' }}>
+                                    {element.id}
+                                </div>
+                            </div>
+                        </div>
+                        <ModalityIconImg
+                            svgStyle={{ marginTop: 10, marginRight: 0, transform: 'translate3d(0,0,0)' }}
+                            style={{ display: 'inline-block', position: 'relative' }}
+                            iconStyle={{
+                                transform: 'scale(0.8)'
+                            }}
+                            type='storePoint'
                         />
                     </div>
                 }

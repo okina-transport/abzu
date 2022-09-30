@@ -120,5 +120,7 @@ export const getStopPlaceIdFromURL = () => getParamsFromURL(window.location.sear
 
 export const getParkingIdFromURL = () => getParamsFromURL(window.location.search).parkingId;
 
+export const getPointofInterestIdFromURL = () => getParamsFromURL(window.location.search).pointOfInterestId;
+
 export const getGroupOfStopPlacesIdFromURL = () => getParamsFromURL(window.location.search).groupOfStopPlacesId;
 

@@ -20,7 +20,7 @@ import {ParkingActions, StopPlaceActions, UserActions} from '../../actions/';
 import { withApollo } from 'react-apollo';
 import { getIn } from '../../utils/';
 import { injectIntl } from 'react-intl';
-import { getNeighbourStops, getNeighbourParkings } from '../../graphql/Tiamat/actions';
+import {getNeighbourStops, getNeighbourParkings, getNeighbourPointsOfInterest} from '../../graphql/Tiamat/actions';
 import Settings from '../../singletons/SettingsManager';
 import debounce from 'lodash.debounce';
 import { getMarkersForMap } from '../../selectors/Map';
@@ -31,6 +31,7 @@ class Map extends React.Component {
     super(props);
     this.getNearbyStops = debounce(getNeighbourStops, 500);
     this.getNearbyParking = debounce(getNeighbourParkings, 500);
+    this.getNearbyPointOfInterest = debounce(getNeighbourPointsOfInterest, 500);
   }
 
   componentDidMount() {
@@ -79,9 +80,10 @@ class Map extends React.Component {
 
     if (zoom > 14) {
       const bounds = leafletElement.getBounds();
-      const { ignoreStopId, client, ignoreParkingId } = this.props;
+      const { ignoreStopId, client, ignoreParkingId, ignorePointOfInterestId } = this.props;
       this.getNearbyStops(client, ignoreStopId, bounds, includeExpired);
       this.getNearbyParking(client, ignoreParkingId, bounds, includeExpired);
+      this.getNearbyPointOfInterest(client, ignorePointOfInterestId, bounds, includeExpired);
     } else {
       const { neighbourMarkersCount } = this.props;
       if (neighbourMarkersCount) {
@@ -120,6 +122,7 @@ const mapStateToProps = state => {
     zoom: state.stopPlace.zoom,
     isCreatingNewStop: state.user.isCreatingNewStop,
     isCreatingNewParking: state.user.isCreatingNewParking,
+    isCreatingNewPointOfInterest: state.user.isCreatingNewPointOfInterest,
     activeBaselayer: state.user.activeBaselayer,
     ignoreStopId: getIn(
       state.stopPlace,
@@ -128,6 +131,11 @@ const mapStateToProps = state => {
     ),
     ignoreParkingId: getIn(
         state.parking,
+        ['activeSearchResult', 'id'],
+        undefined,
+    ),
+    ignorePointOfInterestId: getIn(
+        state.pointOfInterest,
         ['activeSearchResult', 'id'],
         undefined,
     )

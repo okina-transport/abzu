@@ -26,13 +26,14 @@ import {
     removeStopPlaceFromParent,
     mutateStopPlace,
     mutateParking,
+    mutatePointOfInterest,
     updateChildOfParentStop,
     mutateRemoveTag,
     mutateCreateTag,
     mutateTerminateStopPlace,
     mutateGroupOfStopPlaces,
     deleteGroupMutation,
-    deleteParkingMutation
+    deleteParkingMutation, deletePointOfInterestMutation
 } from './mutations';
 import {
     allVersionsOfStopPlace,
@@ -51,7 +52,8 @@ import {
     getGroupOfStopPlaceQuery,
     findTariffones,
     getNameWithRecommendations,
-    parkingBBQuery
+    parkingBBQuery,
+    pointOfInterestBBQuery
 } from './queries';
 import mapToMutationVariables from '../../modelUtils/mapToQueryVariables';
 
@@ -87,6 +89,15 @@ export const getStopPlaceById = (client, id) =>
 export const getParkingById = (client, id) =>
     client.query({
         query: getParkingById,
+        fetchPolicy: 'network-only',
+        variables: {
+            id
+        }
+    });
+
+export const getPointOfInterestById = (client, id) =>
+    client.query({
+        query: getPointOfInterestById,
         fetchPolicy: 'network-only',
         variables: {
             id
@@ -332,6 +343,23 @@ export const getNeighbourParkings = (client, ignoreParkingId, bounds, includeExp
     })
 );
 
+export const getNeighbourPointsOfInterest= (client, ignorePointOfInterestId, bounds, includeExpired) => (
+    client.query({
+        fetchPolicy: 'network-only',
+        query: pointOfInterestBBQuery,
+        variables: {
+            includeExpired: includeExpired,
+            ignorePointOfInterestId,
+            latMin: bounds.getSouthWest().lat,
+            latMax: bounds.getNorthEast().lat,
+            lonMin: bounds.getSouthWest().lng,
+            lonMax: bounds.getNorthEast().lng,
+        }
+    })
+);
+
+
+
 export const getPolygon = (client, ids) => (
     client.query({
         fetchPolicy: 'network-only',
@@ -474,6 +502,41 @@ export const saveParking = (client, parking) => {
             if (result.data.mutateParking[0].id) {
                 console.log(result.data.mutateParking[0].id);
                 resolve(result.data.mutateParking[0].id);
+            } else {
+                reject("Id not returned");
+            }
+        }).catch(err => {
+            reject(err);
+        });
+    });
+}
+
+export const deletePointOfInterest = (client, id) =>
+    client.mutate({
+        mutation: deletePointOfInterestMutation,
+        variables: {
+            id
+        },
+        fetchPolicy: 'network-only'
+    });
+
+export const savePointOfInterest = (client, pointOfInterest) => {
+    const pointsOfInterest = [];
+    pointsOfInterest.push(pointOfInterest);
+    const variables = mapToMutationVariables.mapPointOfInterestToVariables(
+        pointsOfInterest,
+        null
+    );
+
+    return new Promise((resolve, reject) => {
+        client.mutate({
+            mutation: mutatePointOfInterest,
+            variables: {PointOfInterest: variables},
+            fetchPolicy: 'network-only'
+        }).then(result => {
+            if (result.data.mutatePointOfInterest[0].id) {
+                console.log(result.data.mutatePointOfInterest[0].id);
+                resolve(result.data.mutatePointOfInterest[0].id);
             } else {
                 reject("Id not returned");
             }

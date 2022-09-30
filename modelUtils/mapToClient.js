@@ -28,11 +28,16 @@ import ChildOfParentStopPlace from '../models/ChildOfParentStopPlace';
 import {Entities} from '../models/Entities';
 import PARKING_TYPE from '../models/parkingType';
 import PARKING_VEHICLE_TYPE from '../models/parkingVehicleType';
+import PointOfInterest from "../models/PointOfInterest";
+import pointOfInterestType from "../models/pointOfInterestType";
 
 const helpers = {};
 
 helpers.mapParkingToClient = (parkingObjs = []) =>
   parkingObjs.map(parking => new Parking(parking).toClient());
+
+helpers.mapPointOfInterestToClient = (pointOfInterestObjs = []) =>
+    pointOfInterestObjs.map(pointOfInterest => new PointOfInterest(pointOfInterest).toClient());
 
 helpers.sortQuays = (current, attribute) => {
   let copy = JSON.parse(JSON.stringify(current));
@@ -252,7 +257,21 @@ helpers.mapParkingToClientParking = (
         isActive,
         userDefinedCoordinates
     ).toClient();
-}
+  }
+};
+
+helpers.mapPointOfInterestToClientPointOfInterest = (
+    pointOfInterest,
+    isActive,
+    userDefinedCoordinates = {}
+) => {
+  if (pointOfInterest.__typename === 'PointOfInterest') {
+    return new PointOfInterest(
+        pointOfInterest,
+        isActive,
+        userDefinedCoordinates
+    ).toClient();
+  }
 };
 
 helpers.mapQuayToClientQuay = (quay, accessibilityAssessment) => {
@@ -285,6 +304,10 @@ helpers.mapNeighbourParkingsToClientParkings = (parkings) => {
   return parkings.map(parking => helpers.mapParkingToClientParking(parking, false));
 };
 
+helpers.mapNeighbourPointsOfInterestToClientPointsOfInterest = (pointsOfInterest) => {
+  return pointsOfInterest.map(pointOfInterest => helpers.mapPointOfInterestToClientPointOfInterest(pointOfInterest, false));
+};
+
 helpers.mapSearchResultToStopPlaces = stopPlaces => {
   return stopPlaces.map(stop => {
     if (stop.__typename === 'StopPlace') {
@@ -301,6 +324,12 @@ helpers.mapSearchResultToParkings = parkings => {
   });
 };
 
+helpers.mapSearchResultToPointsOfInterest = pointsOfInterest => {
+  return pointsOfInterest.map(poi => {
+    return helpers.mapSearchResultPointOfInterest(poi);
+  });
+};
+
 helpers.mapSearchResultStopPlace = stop => {
   let searchResult = new StopPlace(stop, true).toClient();
   searchResult.quays = stop.quays;
@@ -309,6 +338,10 @@ helpers.mapSearchResultStopPlace = stop => {
 
 helpers.mapSearchResultParking = parking => {
   return new Parking(parking, true).toClient();
+};
+
+helpers.mapSearchResultPointOfInterest = pointOfInterest => {
+  return new PointOfInterest(pointOfInterest, true).toClient();
 };
 
 helpers.mapSearchResultatGroup = groupsOfStopPlaces => {
@@ -484,7 +517,7 @@ helpers.getCenterPosition = geometry => {
 helpers.updateKeyValuesByKey = (original, key, newValues, origin) => {
   const { index, type } = origin;
 
-  if (type === 'stopPlace' || type === 'parking') {
+  if (type === 'stopPlace' || type === 'parking' || type === 'pointOfInterest') {
     return Object.assign({
       ...original,
       importedId: key === 'imported-id' ? newValues : original.importedId,
@@ -521,7 +554,7 @@ helpers.updateKeyValuesByKey = (original, key, newValues, origin) => {
 helpers.deleteKeyValuesByKey = (original, key, origin) => {
   const { index, type } = origin;
 
-  if (type === 'stopPlace' || type === 'parking') {
+  if (type === 'stopPlace' || type === 'parking' || type === 'pointOfInterest') {
     return Object.assign({
       ...original,
       importedId: key === 'imported-id' ? [] : original.importedId,
@@ -548,7 +581,7 @@ helpers.deleteKeyValuesByKey = (original, key, origin) => {
 helpers.createKeyValuesPair = (original, key, newValues, origin) => {
   const { index, type } = origin;
 
-  if (type === 'stopPlace' || type === 'parking') {
+  if (type === 'stopPlace' || type === 'parking' || type === 'pointOfInterest') {
     return Object.assign({
       ...original,
       keyValues: (original.keyValues || []).concat({
@@ -619,13 +652,7 @@ helpers.updateCurrentStopWithSubMode = (
   });
 };
 
-helpers.updateCurrentStopWithPosition = (current, location) => {
-  return Object.assign({}, current, {
-    location: location
-  });
-};
-
-helpers.updateCurrentParkingWithPosition = (current, location) => {
+helpers.updateCurrentWithPosition = (current, location) => {
   return Object.assign({}, current, {
     location: location
   });

@@ -105,8 +105,9 @@ RoleParser.filterByEntities = (
     }
     else if (object.__typename === 'Parking'){
       entityType = Entities.PARKING;
-    }
-    else {
+    } else if (object.__typename === 'PointOfInterest'){
+      entityType = Entities.POINT_OF_INTEREST;
+    } else {
       entityType = Entities.GROUP_OF_STOP_PLACE;
     }
   }
@@ -139,6 +140,8 @@ RoleParser.filterByEntities = (
       ));
     });
   } else if (entityType === Entities.PARKING) {
+    validForStopAndParking = stopPlaceRoles;
+  } else if (entityType === Entities.POINT_OF_INTEREST) {
     validForStopAndParking = stopPlaceRoles;
   }
   return validForStopAndParking;

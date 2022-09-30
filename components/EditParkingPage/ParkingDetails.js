@@ -27,7 +27,7 @@ import ModalitiesParkingMenuItems from "./ModalitiesParkingMenuItems";
 import parkingTypes from "../../models/parkingTypes";
 import Item from "../EditStopPage/Item";
 import TextField from "material-ui/TextField";
-import ParkingItemPayAndRideExpandedFields from "../EditStopPage/ParkingItemPayAndRideExpandedFields";
+import ParkingItemPayAndRideExpandedFields from "./ParkingItemPayAndRideExpandedFields";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import * as types from "../../actions/Types";
 import AutoComplete from "material-ui/AutoComplete";

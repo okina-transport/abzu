@@ -143,6 +143,10 @@ UserActions.toggleShowParkings = value => dispatch => {
   dispatch(createThunk(types.TOGGLED_IS_SHOW_PARKINGS, value));
 };
 
+UserActions.toggleShowPointsOfInterest = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI, value));
+};
+
 UserActions.applyStopTypeSearchFilter = filters => dispatch => {
   dispatch(createThunk(types.APPLIED_STOPTYPE_SEARCH_FILTER, filters));
 };
@@ -434,6 +438,10 @@ UserActions.hideDeleteParkingDialog = () => dispatch => {
     dispatch(createThunk(types.CANCELLED_DELETE_PARKING_DIALOG, null));
 };
 
+UserActions.hideDeletePointOfInterestDialog = () => dispatch => {
+    dispatch(createThunk(types.CANCELLED_DELETE_POI_DIALOG, null));
+};
+
 UserActions.requestDeleteQuay = (
   stopPlaceId,
   quayId,
@@ -598,6 +606,22 @@ UserActions.requestTerminateParking = parkingId => dispatch => {
                 activeDatesSize: 0,
                 latestActiveDate: null,
                 parkingId
+            })
+        );
+    }
+};
+
+UserActions.requestTerminatePointOfInterest = pointOfInterestId => dispatch => {
+    dispatch(createThunk(types.TERMINATE_DELETE_POI_DIALOG, null));
+    if (pointOfInterestId) {
+        dispatch(
+            createThunk(types.TERMINATE_DELETE_POI_DIALOG_WARNING, {
+                warning: 0,
+                loading: true,
+                error: false,
+                activeDatesSize: 0,
+                latestActiveDate: null,
+                pointOfInterestId
             })
         );
     }

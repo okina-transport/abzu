@@ -102,6 +102,7 @@ const getIconIdByModality = type => {
     parkingZone: 'parking',
     undefined: 'parking',
     cycleRental: 'parking',
+    storePoint: 'storepoint'
   };
   return modalityMap[type] || 'no-information';
 };

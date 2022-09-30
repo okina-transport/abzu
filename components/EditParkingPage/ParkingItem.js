@@ -15,10 +15,10 @@ limitations under the Licence. */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { StopPlaceActions, UserActions } from '../../actions/';
+import { StopPlaceActions, UserActions } from '../../actions';
 import Warning from 'material-ui/svg-icons/alert/warning';
 import MdDeleteForver from 'material-ui/svg-icons/action/delete-forever';
-import ToolTippable from './ToolTippable';
+import ToolTippable from '../EditStopPage/ToolTippable';
 import { injectIntl } from 'react-intl';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
 import { withApollo } from 'react-apollo';
@@ -27,9 +27,9 @@ import * as types from "../../actions/Types";
 import {FlatButton} from "material-ui";
 import TextField from 'material-ui/TextField';
 import ParkingItemPayAndRideExpandedFields from './ParkingItemPayAndRideExpandedFields';
-import ItemHeader from './ItemHeader';
-import Item from './Item';
-import Code from './Code';
+import ItemHeader from '../EditStopPage/ItemHeader';
+import Item from '../EditStopPage/Item';
+import Code from '../EditStopPage/Code';
 import PARKING_TYPE from '../../models/parkingType';
 
 class ParkingItem extends React.Component {

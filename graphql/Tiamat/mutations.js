@@ -161,6 +161,15 @@ export const mutateParking = gql`
   ${Fragments.parking.verbose}
 `;
 
+export const mutatePointOfInterest = gql`
+    mutation mutatePointOfInterest($PointOfInterest: [PointOfInterestInput]!) {
+        mutatePointOfInterest(PointOfInterest: $PointOfInterest) {
+            ...VerbosePointOfInterest
+        }
+    }
+    ${Fragments.pointOfInterest.verbose}
+`;
+
 export const removeStopPlaceFromParent = gql`
     mutation removeStopPlaceFromParent($parentSiteRef: String!, $stopPlaceId: [String!]) {
         removeFromMultiModalStopPlace(parentSiteRef: $parentSiteRef, stopPlaceId: $stopPlaceId) {
@@ -253,5 +262,11 @@ export const deleteParkingMutation = gql`
   mutation deleteParking($id: String!) {
     deleteParking(parkingId: $id)
   }
+`;
+
+export const deletePointOfInterestMutation = gql`
+    mutation deletePointOfInterest($id: String!) {
+        deletePointOfInterest(pointOfInterestId: $id)
+    }
 `;
 

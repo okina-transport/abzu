@@ -42,6 +42,7 @@ export const initialState = {
   newStopIsMultiModal: false,
   isCreatingNewStop: false,
   isCreatingNewParking: false,
+  isCreatingNewPointOfInterest: false,
   serverTimeDiff: 0,
   deleteStopDialogWarning: {
     warning: false,
@@ -59,6 +60,7 @@ const userReducer = (state = initialState, action) => {
         showEditStopAdditional: false,
         isCreatingNewStop: false,
         isCreatingNewParking: false,
+        isCreatingNewPointOfInterest: false,
         keyValuesDialogOpen: false,
         deleteStopDialogWarning: {
           warning: false,
@@ -67,6 +69,10 @@ const userReducer = (state = initialState, action) => {
         deleteParkingDialogWarning: {
           warning: false,
           parkingId: null
+        },
+        deletePointOfInterestDialogWarning: {
+          warning: false,
+          pointOfInterestId: null
         }
       });
 
@@ -184,6 +190,11 @@ const userReducer = (state = initialState, action) => {
     case types.TOGGLED_IS_SHOW_PARKINGS:
       return Object.assign({}, state, {
         showParkings: action.payLoad
+      });
+
+    case types.TOGGLED_IS_SHOW_POI:
+      return Object.assign({}, state, {
+        showPointsOfInterest: action.payLoad
       });
 
     case types.SET_SEARCH_TEXT:

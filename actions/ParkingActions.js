@@ -1,7 +1,6 @@
 import {createThunk} from "./index";
 import * as types from "./Types";
 import {getIn} from "../utils";
-import StopPlaceActions from "./StopPlaceActions";
 
 var ParkingActions = {};
 

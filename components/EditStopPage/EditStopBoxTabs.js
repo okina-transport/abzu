@@ -17,7 +17,7 @@ import React from 'react';
 import QuayItem from './QuayItem';
 import PathJunctionItem from './PathJunctionItem';
 import EntranceItem from './EntranceItem';
-import ParkingItem from './ParkingItem';
+import ParkingItem from '../EditParkingPage/ParkingItem';
 import { connect } from 'react-redux';
 import { StopPlaceActions, UserActions } from '../../actions/';
 import { CodeBadge } from './Code';

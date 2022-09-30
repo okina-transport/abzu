@@ -29,6 +29,7 @@ export const initialState = {
   deleteQuayDialogOpen: false,
   deleteStopDialogOpen: false,
   deleteParkingDialogOpen: false,
+  deletePointOfInterestDialogOpen: false,
   moveQuayDialogOpen: false,
   moveQuayToNewStopDialogOpen: false,
   movingQuayToNewStop: null,
@@ -173,6 +174,11 @@ const mapReducer = (state = initialState, action) => {
         deleteParkingDialogOpen: true
       });
 
+    case types.TERMINATE_DELETE_POI_DIALOG:
+      return Object.assign({}, state, {
+        deletePointOfInterestDialogOpen: true
+      });
+
     case types.CANCELLED_DELETE_STOP_DIALOG:
       return Object.assign({}, state, {
         deleteStopDialogOpen: false
@@ -181,6 +187,11 @@ const mapReducer = (state = initialState, action) => {
     case types.CANCELLED_DELETE_PARKING_DIALOG:
       return Object.assign({}, state, {
         deleteParkingDialogOpen: false
+      });
+
+    case types.CANCELLED_DELETE_POI_DIALOG:
+      return Object.assign({}, state, {
+        deletePointOfInterestDialogOpen: false
       });
 
     case types.CANCELLED_DELETE_QUAY_DIALOG:

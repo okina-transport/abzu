@@ -113,7 +113,7 @@ const stopPlaceReducer = (state = {}, action) => {
       });
 
     case types.NAVIGATE_TO:
-      if (action.payLoad === '' || action.payLoad.includes('Parking')) {
+      if (action.payLoad === '' || action.payLoad.includes('PointOfInterest') || action.payLoad.includes('Parking')) {
         return Object.assign({}, state, {
           pathLink: [],
           current: null,
@@ -278,7 +278,7 @@ const stopPlaceReducer = (state = {}, action) => {
 
     case types.CHANGED_ACTIVE_STOP_POSITION:
       return Object.assign({}, state, {
-        current: formatHelpers.updateCurrentStopWithPosition(
+        current: formatHelpers.updateCurrentWithPosition(
           state.current,
           action.payLoad.location,
         ),

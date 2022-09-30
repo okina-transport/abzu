@@ -17,6 +17,7 @@ export const MutationErrorCodes = {
   ERROR_STOP_PLACE: 'ERROR_STOP_PLACE',
   ERROR_PATH_LINKS: 'ERROR_PATH_LINKS',
   ERROR_PARKING: 'ERROR_PARKING',
+  ERROR_POI: 'ERROR_POI',
 };
 
 export const HumanReadableErrorCodes = {
@@ -24,15 +25,18 @@ export const HumanReadableErrorCodes = {
     ERROR_STOP_PLACE: 'Feilet å lagre stoppested',
     ERROR_PATH_LINKS: 'Feilet å lagre ganglenker',
     ERROR_PARKING: 'Feilet å lagre parkering',
+    ERROR_POI: 'Feilet å lagre severdighet',
   },
   en: {
     ERROR_STOP_PLACE: 'Failed to save stop place',
     ERROR_PATH_LINKS: 'Failed to save path links',
     ERROR_PARKING: 'Failed to save parking',
+    ERROR_POI: 'Failed to save point of interest',
   },
   fr: {
     ERROR_STOP_PLACE: 'Erreur lors de la sauvegarde du point d\'arrêt',
     ERROR_PATH_LINKS: 'Erreur lors de la sauvegarde du cheminement',
     ERROR_PARKING: 'Erreur lors de la sauvegarde du parking',
+    ERROR_POI: 'Erreur lors de la sauvegarde du point d\'intérêt',
   },
 };

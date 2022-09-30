@@ -43,15 +43,15 @@ export const getAllowanceInfoForStop = ({result, variables}, tokenParsed) => {
   if(stopPlace.id !== requestedStopPlaceId) {
     // Requested stop place ID seems to be a child
     const childStopPlace = getStopPlace(result, requestedStopPlaceId);
-    allowanceInfoForStopPlace = buildAllowanceInfoForStopPlace(childStopPlace, editStopRoles, deleteStopRoles);
+    allowanceInfoForStopPlace = buildAllowanceInfo(childStopPlace, editStopRoles, deleteStopRoles);
 
     // Check if the user is authorized to edit the parent stop place.
     // It should be possible to edit a child of a multimodal stop place, of only authorized to edit that child.
     // But it shall not be possible to set the termination date for the parent stop.
-    const allowanceInfoForParentStop = buildAllowanceInfoForStopPlace(stopPlace, editStopRoles, deleteStopRoles);
+    const allowanceInfoForParentStop = buildAllowanceInfo(stopPlace, editStopRoles, deleteStopRoles);
     allowanceInfoForStopPlace.canEditParentStop = allowanceInfoForParentStop.canEdit;
   } else {
-    allowanceInfoForStopPlace = buildAllowanceInfoForStopPlace(stopPlace, editStopRoles, deleteStopRoles);
+    allowanceInfoForStopPlace = buildAllowanceInfo(stopPlace, editStopRoles, deleteStopRoles);
   }
   return allowanceInfoForStopPlace
 };
@@ -73,27 +73,45 @@ export const getAllowanceInfoForParking = ({result, variables}, tokenParsed) => 
     };
   }
 
-  return buildAllowanceInfoForStopPlace(parking, editParkingRoles, deleteParkingRoles);
+  return buildAllowanceInfo(parking, editParkingRoles, deleteParkingRoles);
 };
 
-const buildAllowanceInfoForStopPlace = (stopPlace, editStopRoles, deleteStopRoles) => {
+export const getAllowanceInfoForPointOfInterest = ({result, variables}, tokenParsed) => {
+  /* find all roles that allow editing of poi */
+  const token = { ...tokenParsed };
+  const editPointOfInterestRoles = roleParser.getEditStopRoles(token);
+  const deletePointOfInterestRoles = roleParser.getDeleteStopRoles(token);
 
-  const latlng = getLatLng(stopPlace);
+  const pointOfInterest = getPointOfInterest(result);
+
+  if (!pointOfInterest) {
+    return {
+      roles: [],
+      canEdit: false
+    };
+  }
+
+  return buildAllowanceInfo(pointOfInterest, editPointOfInterestRoles, deletePointOfInterestRoles);
+};
+
+const buildAllowanceInfo = (object, editRoles, deleteRoles) => {
+
+  const latlng = getLatLng(object);
   const editStopRolesGeoFiltered = roleParser.filterRolesByZoneRestriction(
-    editStopRoles,
+    editRoles,
     latlng
   );
 
   // retrieve all roles that allow editing a given stop
   const responsibleEditRoles = roleParser.filterByEntities(
     editStopRolesGeoFiltered,
-    stopPlace
+    object
   );
 
   // retrieve all roles that allow hard-deleting a given stop
   const responsibleDeleteRoles = roleParser.filterByEntities(
-    deleteStopRoles,
-    stopPlace
+    deleteRoles,
+    object
   );
 
   const canEdit = responsibleEditRoles.length > 0;
@@ -461,6 +479,25 @@ export const getGroupOfStopPlaces = result => {
 
   if (groupOfStopPlaces) {
     return JSON.parse(JSON.stringify(groupOfStopPlaces));
+  }
+
+  return null;
+};
+
+export const getPointOfInterest = result => {
+  if (
+      !result ||
+      !result.data ||
+      !result.data.pointOfInterest ||
+      !result.data.pointOfInterest.length
+  ) {
+    return null;
+  }
+
+  let pointOfInterest = result.data.pointOfInterest[0];
+
+  if (pointOfInterest) {
+    return JSON.parse(JSON.stringify(pointOfInterest));
   }
 
   return null;

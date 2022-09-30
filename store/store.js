@@ -31,6 +31,7 @@ import rolesParser from '../roles/rolesParser';
 import Raven from 'raven-js';
 import createRavenMiddleware from 'redux-raven-middleware';
 import { createTiamatClient } from '../graphql/clients';
+import pointOfInterestReducer from "../reducers/pointOfInterestReducer";
 
 export default function configureStore(kc) {
   const loggerMiddleware = createLogger();
@@ -88,12 +89,20 @@ export default function configureStore(kc) {
       minZoom: 14,
       lastMutatedParkingId: []
     },
+    pointOfInterest: {
+      centerPosition: window.config.defaultMapCentroid,
+      zoom: 7,
+      minZoom: 14,
+      lastMutatedPointOfInterestId: []
+    },
     user: {
       path: '/',
       isCreatingNewStop: false,
       isCreatingNewParking: false,
+      isCreatingNewPointOfInterest: false,
       showParkings: true,
       showStops: true,
+      showPointsOfInterest: true,
       missingCoordsMap: {},
       searchFilters: {
         stopType: [],
@@ -128,6 +137,10 @@ export default function configureStore(kc) {
         open: false,
         parkingId: null
       },
+      newPointofInterestCreated: {
+        open: false,
+        pointOfInterestId: null
+      },
       client: tiamatClient,
       showPublicCode: Settings.getShowPublicCode(),
       adjacentStopDialogOpen: false
@@ -144,6 +157,7 @@ export default function configureStore(kc) {
     routing: routerReducer,
     stopPlace: stopPlaceReducer,
     parking: parkingReducer,
+    pointOfInterest: pointOfInterestReducer,
     report: reportReducer,
     apollo: tiamatClient.reducer(),
     roles: rolesReducer,

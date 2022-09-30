@@ -518,5 +518,58 @@ Fragments.parking = {
     `
 };
 
+Fragments.pointOfInterest = {
+    verbose: gql`
+        fragment VerbosePointOfInterest on PointOfInterest {
+            id
+            name {
+                value
+            }
+            zipCode
+            address
+            city
+            postalCode
+            pointOfInterestFacilitySet {
+                ticketingFacility
+                ticketingServiceFacility
+            }
+            classifications {
+                id
+                name {
+                    value
+                }
+                osm
+                active
+                parent {
+                    id
+                    name {
+                        value
+                    }
+                    osm
+                    active
+                }
+            }
+            geometry {
+                coordinates
+            }
+            parentSiteRef
+            keyValues {
+                key
+                values
+            }
+            description {
+                value
+            }
+            validBetween {
+                fromDate
+                toDate
+            }
+            placeEquipments {
+                ...PlaceEquipments
+            }      
+        }
+            ${Fragments.placeEquipments.verbose}
+    `
+};
 
 export default Fragments;

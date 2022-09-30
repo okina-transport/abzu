@@ -13,12 +13,27 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 
-export userReducer from './userReducer';
-export mapReducer from './mapReducer';
-export stopPlaceReducer from './stopPlaceReducer';
-export parkingReducer from './parkingReducer';
-export pointOfInterestReducer from './pointOfInterestReducer';
-export reportReducer from './reportReducer';
-export rolesReducer from './rolesReducer';
-export snackbarReducer from './snackbarReducer';
-export groupOfStopPlaceReducer from './groupOfStopPlacesReducer';
+import {getIn} from "../utils";
+
+class PointOfInterestClassification {
+  constructor(poic) {
+    this.poic = poic;
+  }
+
+  toClient() {
+
+    const { poic } = this;
+
+    const clientPoic = {
+      id: poic.id,
+      name : getIn(poic, ['name', 'value']),
+      osm : poic.osm,
+      active : poic.active,
+      parent : poic.parent ? new PointOfInterestClassification(poic.parent).toClient() : undefined,
+    };
+
+    return clientPoic;
+  }
+}
+
+export default PointOfInterestClassification;

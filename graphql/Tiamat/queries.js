@@ -147,6 +147,30 @@ export const parkingBBQuery = gql`
     },
 `;
 
+export const pointOfInterestBBQuery = gql`
+    query pointOfInterestBBox($ignorePointOfInterestId: String, $lonMin: BigDecimal!, $lonMax: BigDecimal!, $latMin: BigDecimal!, $latMax: BigDecimal!, $includeExpired: Boolean) {
+        pointOfInterestBBox(ignorePointOfInterestId: $ignorePointOfInterestId, latMin: $latMin, latMax: $latMax, lonMin: $lonMin, lonMax: $lonMax, size: 500, includeExpired: $includeExpired) {
+            id
+            geometry {
+                coordinates
+            }
+            name {
+                value
+            }
+            topographicPlace {
+                name {
+                    value
+                }
+                topographicPlaceType
+            }
+            validBetween {
+                fromDate
+                toDate
+            }
+        }
+    },
+`;
+
 export const allEntities = gql`
     query stopPlaceAndPathLink($id: String!) {
         __typename
@@ -156,7 +180,7 @@ export const allEntities = gql`
         stopPlace(id: $id, versionValidity: MAX_VERSION) {
             ...VerboseStopPlace
             ...VerboseParentStopPlace
-        }
+        },
         parking: parking(stopPlaceId: $id) {
             ...VerboseParking
         },
@@ -206,6 +230,16 @@ export const allEntitiesParkings = gql`
         }
     }
     ${Fragments.parking.verbose},
+`;
+
+export const allEntitiesPointsOfInterest = gql`
+    query getPointOfInterest($id: String!) {
+        __typename
+        pointOfInterest: pointOfInterest(id: $id, versionValidity: MAX_VERSION) {
+            ...VerbosePointOfInterest
+        }
+    }
+    ${Fragments.pointOfInterest.verbose},
 `;
 
 export const getStopById = gql`
@@ -430,7 +464,26 @@ export const findStop = gql`
               parkingType
             }
         }
-    },
+        pointOfInterest(query: $query, size: 7) {
+            id
+            validBetween {
+                fromDate
+                toDate
+            }
+            keyValues {
+                key
+                values
+            }
+            name {
+                value
+                lang
+            }
+            version
+            geometry {
+                coordinates
+            }
+        }
+    }
 `;
 
 export const findStopForReport = gql`

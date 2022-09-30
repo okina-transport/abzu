@@ -12,13 +12,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
+const ticketFacilityService = Object.freeze({
+    purchase : 'purchase',
+    collection : 'collection',
+    cardTopUp : 'cardTopUp',
+    reservations : 'reservations',
+    exchange : 'exchange',
+    refund : 'refund',
+    renewal : 'renewal',
+    excessFares : 'excessFares',
+    other : 'other',
+    all : 'all'
+});
 
-export userReducer from './userReducer';
-export mapReducer from './mapReducer';
-export stopPlaceReducer from './stopPlaceReducer';
-export parkingReducer from './parkingReducer';
-export pointOfInterestReducer from './pointOfInterestReducer';
-export reportReducer from './reportReducer';
-export rolesReducer from './rolesReducer';
-export snackbarReducer from './snackbarReducer';
-export groupOfStopPlaceReducer from './groupOfStopPlacesReducer';
+export const ticketFacilityServices = Object.values(ticketFacilityService);
+
+export default ticketFacilityService;

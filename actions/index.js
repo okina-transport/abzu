@@ -19,6 +19,7 @@ export UserActions from './UserActions';
 export AssessmentActions from './AssessmentActions';
 export EquipmentActions from './EquipmentActions';
 export StopPlacesGroupActions from './StopPlacesGroupActions';
+export PointOfInterestActions from './PointOfInterestActions';
 
 export const createThunk = (type, payLoad) => ({
   type,

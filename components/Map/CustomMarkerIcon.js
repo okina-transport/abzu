@@ -125,6 +125,7 @@ const getIconIdByModality = (type, isMultimodal, secure, typeOfParkingRef) => {
     parkingZone: 'parking',
     undefined: 'parking',
     cycleRental: 'bike',
+    storePoint: 'storepoint'
   };
 
   const iconType = modalityMap[type] || 'no-information';

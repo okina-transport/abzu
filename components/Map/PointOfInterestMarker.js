@@ -20,21 +20,18 @@ import ReactDOM from 'react-dom/server';
 import CustomMarkerIcon from './CustomMarkerIcon';
 import { shallowCompareParkingMarker as shallowCompare } from './shallowCompare/';
 
-class ParkingMarker extends React.Component {
+class PointOfInterestMarker extends React.Component {
 
     static propTypes = {
         position: PropTypes.arrayOf(Number),
         handleOnClick: PropTypes.func.isRequired,
         handleChangeCoordinates: PropTypes.func,
-        parkingType: PropTypes.string,
         index: PropTypes.number.isRequired,
         draggable: PropTypes.bool.isRequired,
         translations: PropTypes.object.isRequired,
         active: PropTypes.bool.isRequired,
-        secure: PropTypes.bool,
-        typeOfParkingRef: PropTypes.string,
         id: PropTypes.string,
-        isEditingParking: PropTypes.bool.isRequired
+        isEditingPointOfInterest: PropTypes.bool.isRequired
     };
 
     shouldComponentUpdate(nextProps) {
@@ -51,18 +48,13 @@ class ParkingMarker extends React.Component {
 
     createIcon({
                    index,
-                   parkingType,
-                   active,
-                   secure,
-                   typeOfParkingRef
+                   active
                }) {
         let divIconBody = (
             <CustomMarkerIcon
                 markerIndex={index}
-                type={parkingType}
+                type='storePoint'
                 active={active}
-                secure={secure}
-                typeOfParkingRef={typeOfParkingRef}
             />
         );
 
@@ -99,13 +91,13 @@ class ParkingMarker extends React.Component {
 
         return (
             <Marker
-                key={'parking' + id}
+                key={'pointOfInterest' + id}
                 keyboard={false}
                 icon={icon}
                 position={markerLocation}
                 zIndexOffset={100}
                 onDragend={event => {
-                    handleDragEnd(false, index, event, true, false);
+                    handleDragEnd(false, index, event, false, true);
                 }}
                 draggable={draggable}
             >
@@ -165,4 +157,4 @@ class ParkingMarker extends React.Component {
     }
 }
 
-export default ParkingMarker;
+export default PointOfInterestMarker;

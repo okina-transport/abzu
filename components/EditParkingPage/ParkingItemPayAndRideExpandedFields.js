@@ -24,7 +24,7 @@ import {parkingPaymentProcesses} from '../../models/parkingPaymentProcess';
 import { parkingFreeSetting } from '../../models/parkingFree';
 import {parkingLayouts} from '../../models/parkingLayout';
 import {Subheader, TextField} from 'material-ui';
-import RechargingAvailablePopover from './RechargingAvailablePopover';
+import RechargingAvailablePopover from '../EditStopPage/RechargingAvailablePopover';
 import LocalParking from 'material-ui/svg-icons/maps/local-parking';
 import {ActionAccessible} from 'material-ui/svg-icons';
 import Payment from 'material-ui/svg-icons/action/payment';
@@ -36,11 +36,11 @@ import {Button, Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Tab, Tabs} from "material-ui/Tabs";
-import ToolTippable from "./ToolTippable";
+import ToolTippable from "../EditStopPage/ToolTippable";
 import {Popover, PopoverAnimationVertical} from "material-ui/Popover";
-import ParkingCoveredMenuItems from "../EditParkingPage/ParkingCoveredMenuItems";
+import ParkingCoveredMenuItems from "./ParkingCoveredMenuItems";
 import parkingTypesCovered from "../../models/parkingTypesCovered";
-import ParkingTypeOfParkingRefMenuItems from "../EditParkingPage/ParkingTypeOfParkingRefMenuItems";
+import ParkingTypeOfParkingRefMenuItems from "./ParkingTypeOfParkingRefMenuItems";
 import parkingTypesOfParkingRef from "../../models/parkingTypesOfParkingRef";
 
 const useStyles = makeStyles(() => ({
