@@ -88,9 +88,9 @@ class ImportBikeParkingPage extends Component{
                         />
                 </ReportFilterBox>
 
-                {this.state.errors.length > 0 && this.state.errors.map(error => alert(error.message))}
+                {this.state.errors && this.state.errors.length > 0 && this.state.errors.map(error => alert(error.message))}
 
-                {this.state.result.length > 0 && alert(this.state.result)}
+                {this.state.result && this.state.result.length > 0 && alert(this.state.result)}
 
 
             </div>

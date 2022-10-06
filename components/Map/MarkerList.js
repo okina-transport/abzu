@@ -378,6 +378,7 @@ class MarkerList extends React.Component {
                     draggable={dragableMarkers}
                     translations={CustomPopupMarkerText}
                     active={!!marker.isActive}
+                    missingCoordinatesMap={missingCoordinatesMap}
                     handleOnClick={() => {
                       this.handlePointOfInterestOnClick(marker.id);
                     }}

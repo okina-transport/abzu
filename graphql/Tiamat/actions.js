@@ -47,6 +47,8 @@ import {
     getTagsQuery,
     findTagByNameQuery,
     getStopById,
+    getParkingByIdQuery,
+    getPointOfInterestByIdQuery,
     getQueryTopographicPlaces,
     getTagsByNameQuery,
     getGroupOfStopPlaceQuery,
@@ -88,7 +90,7 @@ export const getStopPlaceById = (client, id) =>
 
 export const getParkingById = (client, id) =>
     client.query({
-        query: getParkingById,
+        query: getParkingByIdQuery,
         fetchPolicy: 'network-only',
         variables: {
             id
@@ -97,7 +99,7 @@ export const getParkingById = (client, id) =>
 
 export const getPointOfInterestById = (client, id) =>
     client.query({
-        query: getPointOfInterestById,
+        query: getPointOfInterestByIdQuery,
         fetchPolicy: 'network-only',
         variables: {
             id

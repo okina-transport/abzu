@@ -219,7 +219,7 @@ export const allEntities = gql`
     ${Fragments.stopPlace.verbose},
     ${Fragments.parentStopPlace.verbose},
     ${Fragments.pathLink.verbose},
-    ${Fragments.parking.verbose},
+    ${Fragments.parking.verbose}
 `;
 
 export const allEntitiesParkings = gql`
@@ -325,11 +325,35 @@ export const getStopById = gql`
     },
 `;
 
-export const getParkingById = gql`
+export const getParkingByIdQuery = gql`
     query getParkingById($id: String!) {
         parking(id: $id) {
             id
             __typename
+        }
+    },
+`;
+
+export const getPointOfInterestByIdQuery = gql`
+    query getPointOfInterestById($id: String!) {
+        pointOfInterest(id: $id) {
+            id
+            validBetween {
+                fromDate
+                toDate
+            }
+            keyValues {
+                key
+                values
+            }
+            name {
+                value
+                lang
+            }
+            version
+            geometry {
+                coordinates
+            }
         }
     },
 `;
