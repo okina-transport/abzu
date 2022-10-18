@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import * as Limitations from '../models/Limitations';
+
+import * as Limitations from '../models/Limitations';
 import { getIn } from '../utils';
 
 const LimitationHelpers = {};

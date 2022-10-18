@@ -13,10 +13,10 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import ModalityIconSvg from '../MainPage/ModalityIconSvg';
 import IconButton from 'material-ui/IconButton';
-import {PointOfInterestActions, UserActions} from '../../actions/';
+import {AssessmentActions, PointOfInterestActions, UserActions} from '../../actions/';
 import {connect} from 'react-redux';
 import debounce from 'lodash.debounce';
 import ToolTippable from '../EditStopPage/ToolTippable';
@@ -36,6 +36,10 @@ import {unknownPointOfInterestType} from "../../models/pointOfInterestType";
 import ticketFacility, {ticketFacilities} from "../../models/ticketFacility";
 import ticketFacilityService, {ticketFacilityServices} from "../../models/ticketFacilityService";
 import PointOfInterestItemExpandedFields from "./PointOfInterestItemExpandedFields";
+import accessibilityAssessments from "../../models/accessibilityAssessments";
+import WheelChairPopover from '../EditStopPage/WheelChairPopover';
+import {getIn} from "../../utils";
+
 
 class PointOfInterestDetails extends React.Component {
     constructor(props) {
@@ -91,6 +95,11 @@ class PointOfInterestDetails extends React.Component {
             activeTabIndex: value,
         });
     };
+
+    handleHandleWheelChair(value) {
+        if (!this.props.disabled)
+            this.props.dispatch(AssessmentActions.setPoiWheelchairAccess(value));
+    }
 
     handleUpdatePointOfInterestName(searchText, dataSource) {
         this.updatePointOfInterestName(searchText);
@@ -198,7 +207,7 @@ class PointOfInterestDetails extends React.Component {
             classification => classification.name === "shop" || (classification.parent && classification.parent.name === "shop")
         );
 
-        if ( shopClassification && isTicketMachines && isPurchase) {
+        if (shopClassification && isTicketMachines && isPurchase) {
             let translations = pointOfInterestTypes[locale].filter(
                 type => type.value === 'storepoint'
             );
@@ -259,10 +268,20 @@ class PointOfInterestDetails extends React.Component {
         );
 
         const fullAddress = (pointOfInterest.address ? pointOfInterest.address + " " : "") +
-                            (pointOfInterest.postalCode ? pointOfInterest.postalCode + " " : "") +
-                            (pointOfInterest.city ? pointOfInterest.city : "");
+            (pointOfInterest.postalCode ? pointOfInterest.postalCode + " " : "") +
+            (pointOfInterest.city ? pointOfInterest.city : "");
 
         const pointOfInterestTypeHint = pointOfInterestType.name ? pointOfInterestType.name : unknownPointOfInterestType[locale];
+
+        const wheelchairAccess = getIn(
+            pointOfInterest,
+            ['accessibilityAssessment', 'limitations', 'wheelchairAccess'],
+            'UNKNOWN'
+        );
+
+
+        const wheelChairHint = accessibilityAssessments.wheelchairAccess.values[locale][wheelchairAccess];
+
 
 
         const Loading = loading && [
@@ -324,7 +343,8 @@ class PointOfInterestDetails extends React.Component {
                                             borderBottom: 'none',
                                         }}
                                     >
-                                        <ModalityIconSvg type={pointOfInterestType.value ? pointOfInterestType.value : 'no-information'} />
+                                        <ModalityIconSvg
+                                            type={pointOfInterestType.value ? pointOfInterestType.value : 'no-information'}/>
                                     </IconButton>
                                 </ToolTippable>
                             </div>
@@ -367,8 +387,32 @@ class PointOfInterestDetails extends React.Component {
                         disabled={true}
                     />
                 </div>
-                <Item>
-                    <div className="pr-item-expanded">
+
+                <div
+                    style={{
+                        marginTop: 10,
+                        marginBottom: 15,
+                        height: 35,
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                        alignItems: 'center'
+                    }}
+                >
+                    <ToolTippable toolTipText={wheelChairHint}>
+                        <WheelChairPopover
+                            intl={intl}
+                            handleChange={this.handleHandleWheelChair.bind(this)}
+                            wheelchairAccess={wheelchairAccess}
+                        />
+                    </ToolTippable>
+
+                </div>
+
+
+                <div>
+
+                    <Item>
+                        <div className="pr-item-expanded">
                             <PointOfInterestItemExpandedFields
                                 pointOfInterest={pointOfInterest}
                                 handleTabOnChange={this.handleTabOnChange.bind(this)}
@@ -377,22 +421,23 @@ class PointOfInterestDetails extends React.Component {
                                 activeTabIndex={activeTabIndex}
                                 intl1={intl}
                                 locale={locale}/>
-                    </div>
-                    <ConfirmDialog
-                        open={this.state.confirmDeleteDialogOpen}
-                        handleClose={() => {
-                            this.setState({confirmDeleteDialogOpen: false});
-                        }}
-                        handleConfirm={this.handleConfirmPointOfInterest.bind(this)}
-                        intl={intl}
-                        messagesById={{
-                            title: 'delete_poi',
-                            body: 'delete_poi_are_you_sure',
-                            confirm: 'delete_group_confirm',
-                            cancel: 'delete_group_cancel'
-                        }}
-                    />
-                </Item>
+                        </div>
+                        <ConfirmDialog
+                            open={this.state.confirmDeleteDialogOpen}
+                            handleClose={() => {
+                                this.setState({confirmDeleteDialogOpen: false});
+                            }}
+                            handleConfirm={this.handleConfirmPointOfInterest.bind(this)}
+                            intl={intl}
+                            messagesById={{
+                                title: 'delete_poi',
+                                body: 'delete_poi_are_you_sure',
+                                confirm: 'delete_group_confirm',
+                                cancel: 'delete_group_cancel'
+                            }}
+                        />
+                    </Item>
+                </div>
             </div>
         );
     }

@@ -17,6 +17,7 @@ import {getStateByOperation,} from './pointOfInterestReducerUtils';
 import * as types from '../actions/Types';
 import formatHelpers from '../modelUtils/mapToClient';
 import {setDecimalPrecision} from '../utils/';
+import limitationHelpers from "../modelUtils/limitationHelpers";
 
 const pointOfInterestReducer = (state = {}, action) => {
     switch (action.type) {
@@ -170,6 +171,15 @@ const pointOfInterestReducer = (state = {}, action) => {
                 },
                 pointOfInterestHasBeenModified: true,
             };
+
+        case types.CHANGED_POI_ACCESSIBLITY_ASSESSMENT:
+            return Object.assign({}, state, {
+                current: limitationHelpers.updateCurrentWithLimitations(
+                    state.current,
+                    action.payLoad,
+                ),
+                pointOfInterestHasBeenModified: true,
+            });
 
         default:
             return state;

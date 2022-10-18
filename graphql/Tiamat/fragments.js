@@ -564,11 +564,15 @@ Fragments.pointOfInterest = {
                 fromDate
                 toDate
             }
+            accessibilityAssessment {
+            ...AccessibilityAssessment
+            }
             placeEquipments {
                 ...PlaceEquipments
             }      
         }
-            ${Fragments.placeEquipments.verbose}
+            ${Fragments.placeEquipments.verbose},
+            ${Fragments.accessibilityAssessment.verbose}
     `
 };
 

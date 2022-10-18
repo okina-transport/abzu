@@ -385,6 +385,9 @@ helpers.mapPointOfInterestToVariables = (poi, parentRef) => {
       validBetween: source.validBetween,
       classifications: [],
       keyValues: source.keyValues,
+      accessibilityAssessment: formatAccessibilityAssements(
+          source.accessibilityAssessment
+      ),
       name : {
         value : source.name,
         lang : 'fr'

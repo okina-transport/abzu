@@ -140,4 +140,18 @@ AssessmentActions.setQuayVisualSignsAvailable = (value, index) => dispatch => {
     );
 };
 
+/////////////////////
+// Point of interest actions
+/////////////////////
+
+
+AssessmentActions.setPoiWheelchairAccess = value => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_POI_ACCESSIBLITY_ASSESSMENT, {
+            value: value,
+            limitationType: limitations.wheelchairAccess,
+        }),
+    );
+};
+
 export default AssessmentActions;

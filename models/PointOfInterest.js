@@ -44,6 +44,7 @@ class PointOfInterest {
       isActive: isActive,
       entityType: Entities.POINT_OF_INTEREST,
       parentSiteRef: pointOfInterest.parentSiteRef,
+      accessibilityAssessment: pointOfInterest.accessibilityAssessment
     };
     let coordinates = getIn(pointOfInterest, ['geometry', 'coordinates'], null);
 
