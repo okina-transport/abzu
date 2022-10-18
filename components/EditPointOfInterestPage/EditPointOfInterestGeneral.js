@@ -26,7 +26,7 @@ import MdBack from 'material-ui/svg-icons/navigation/arrow-back';
 import Divider from 'material-ui/Divider';
 import SaveDialog from '../Dialogs/SaveDialog';
 import {MutationErrorCodes} from '../../models/ErrorCodes';
-import {savePointOfInterest} from '../../graphql/Tiamat/actions';
+import {savePointOfInterest,deletePointOfInterest} from '../../graphql/Tiamat/actions';
 import {getIsCurrentVersionMax} from '../../utils/';
 import RequiredFieldsMissingDialog from '../Dialogs/RequiredFieldsMissingDialog';
 import Routes from '../../routes/';
