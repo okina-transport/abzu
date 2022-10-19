@@ -72,7 +72,7 @@ class SettingsManager {
   }
 
   getMapLayer() {
-    return localStorage.getItem(mapLayerKey) || 'Carte transport';
+    return localStorage.getItem(mapLayerKey) || 'Atlas';
   }
 
   setMapLayer(value) {

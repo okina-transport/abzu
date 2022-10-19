@@ -84,12 +84,12 @@ export default class LeafLetMap extends React.Component {
       >
         <LayersControl position="topright">
           <BaseLayer
-              checked={this.getCheckedBaseLayerByValue('Carte transport')}
-              name="Carte transport"
+              checked={this.getCheckedBaseLayerByValue('Atlas')}
+              name="Atlas"
           >
             <TileLayer
                 attribution="Thunderforest"
-                url="//{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=0d925ffb1c7f4fa29c090405b4038b96"
+                url="//{s}.tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=0d925ffb1c7f4fa29c090405b4038b96"
                 maxZoom="19"
             />
           </BaseLayer>
