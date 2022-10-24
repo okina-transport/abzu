@@ -26,7 +26,11 @@ import MdBack from 'material-ui/svg-icons/navigation/arrow-back';
 import Divider from 'material-ui/Divider';
 import SaveDialog from '../Dialogs/SaveDialog';
 import {MutationErrorCodes} from '../../models/ErrorCodes';
-import {deleteParking, saveParking} from '../../graphql/Tiamat/actions';
+import {
+  deleteParking,
+  getNeighbourParkings,
+  saveParking
+} from '../../graphql/Tiamat/actions';
 import {getIn, getIsCurrentVersionMax} from '../../utils/';
 import RequiredFieldsMissingDialog from '../Dialogs/RequiredFieldsMissingDialog';
 import Routes from '../../routes/';
@@ -34,6 +38,7 @@ import ToolTippable from "../EditStopPage/ToolTippable";
 import Warning from 'material-ui/svg-icons/alert/warning';
 import TerminateParkingDialog from "../Dialogs/TerminateParkingDialog";
 import ParkingDetails from "./ParkingDetails";
+import Settings from "../../singletons/SettingsManager";
 
 class EditParkingGeneral extends React.Component {
   constructor(props) {
@@ -122,10 +127,20 @@ class EditParkingGeneral extends React.Component {
   }
 
   handleGoBack() {
+    const { client, activeMap } = this.props;
     this.setState({
       confirmGoBack: false
     });
     this.props.dispatch(UserActions.navigateTo('/', ''));
+    if (activeMap) {
+      let includeExpired = new Settings().getShowExpiredStops();
+      getNeighbourParkings(
+          client,
+          null,
+          activeMap.getBounds(),
+          includeExpired
+      );
+    }
   }
 
   handleAllowUserToGoBack() {

@@ -34,7 +34,8 @@ import {
   addToMultiModalStopPlace,
   removeStopPlaceFromMultiModalStop,
   terminateStop,
-  deleteStopPlace
+  deleteStopPlace,
+  getNeighbourStops
 } from '../../graphql/Tiamat/actions';
 import * as types from '../../actions/Types';
 import { MutationErrorCodes } from '../../models/ErrorCodes';
@@ -42,7 +43,7 @@ import { stopPlaceAndPathLinkByVersion } from '../../graphql/Tiamat/queries';
 import RemoveStopFromParentDialog from '../Dialogs/RemoveStopFromParentDialog';
 import TerminateStopPlaceDialog from '../Dialogs/TerminateStopPlaceDialog';
 import { getIn, getIsCurrentVersionMax } from '../../utils/';
-import StopPlace from '../../models/StopPlace';
+import Settings from "../../singletons/SettingsManager";
 
 class EditParentGeneral extends React.Component {
   constructor(props) {
@@ -152,10 +153,20 @@ class EditParentGeneral extends React.Component {
   }
 
   handleGoBack() {
+    const { client, activeMap } = this.props;
     this.setState({
       confirmGoBack: false
     });
     this.props.dispatch(UserActions.navigateTo('/', ''));
+    if (activeMap) {
+      let includeExpired = new Settings().getShowExpiredStops();
+      getNeighbourStops(
+          client,
+          null,
+          activeMap.getBounds(),
+          includeExpired
+      );
+    }
   }
 
   handleAllowUserToGoBack() {
@@ -499,7 +510,8 @@ const mapStateToProps = ({ stopPlace, mapUtils, roles, user }) => ({
   deleteStopDialogOpen: mapUtils.deleteStopDialogOpen,
   originalStopPlace: stopPlace.originalCurrent,
   serverTimeDiff: user.serverTimeDiff,
-  deleteStopDialogWarning: user.deleteStopDialogWarning
+  deleteStopDialogWarning: user.deleteStopDialogWarning,
+  activeMap: mapUtils.activeMap
 });
 
 export default withApollo(
