@@ -511,8 +511,8 @@ export const findStop = gql`
 `;
 
 export const findStopForReport = gql`
-    query findStopForReport($query: String, $nearbyRadius: Int, $organisationName: String, $importedId: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $countryReference: [String], $withoutLocationOnly: Boolean!, $withDuplicateImportedIds: Boolean!,$stopPlacesWithoutQuay: Boolean!,$nearbyStopPlaces: Boolean!, $detectMultiModalPoints: Boolean!, $withDistantQuays: Boolean!, $pointInTime: DateTime, $withNearbySimilarDuplicates: Boolean, $hasParking: Boolean, $tags: [String], $withTags: Boolean, $code: String, $versionValidity: VersionValidity) {
-        stopPlace(query: $query,nearbyRadius:$nearbyRadius, organisationName:$organisationName, importedId: $importedId, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, countryReference: $countryReference, withoutLocationOnly: $withoutLocationOnly, withDuplicatedQuayImportedIds: $withDuplicateImportedIds,stopPlacesWithoutQuay: $stopPlacesWithoutQuay,nearbyStopPlaces: $nearbyStopPlaces, detectMultiModalPoints: $detectMultiModalPoints, withDistantQuays: $withDistantQuays,pointInTime: $pointInTime, size: 300, withNearbySimilarDuplicates: $withNearbySimilarDuplicates, hasParking:$hasParking, tags: $tags, withTags: $withTags, code: $code, versionValidity: $versionValidity) {
+    query findStopForReport($query: String, $nearbyRadius: Int, $organisationName: String, $importedId: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $countryReference: [String], $withoutLocationOnly: Boolean!, $withDuplicateImportedIds: Boolean!,$stopPlacesWithoutQuay: Boolean!,$stopPlacesWithMultipleProducers: Boolean!,$quaysWithMultipleProducers: Boolean!,$nearbyStopPlaces: Boolean!, $detectMultiModalPoints: Boolean!, $withDistantQuays: Boolean!, $pointInTime: DateTime, $withNearbySimilarDuplicates: Boolean, $hasParking: Boolean, $tags: [String], $withTags: Boolean, $code: String, $versionValidity: VersionValidity) {
+        stopPlace(query: $query,nearbyRadius:$nearbyRadius, organisationName:$organisationName, importedId: $importedId, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, countryReference: $countryReference, withoutLocationOnly: $withoutLocationOnly, withDuplicatedQuayImportedIds: $withDuplicateImportedIds,stopPlacesWithoutQuay: $stopPlacesWithoutQuay,stopPlacesWithMultipleProducers: $stopPlacesWithMultipleProducers,quaysWithMultipleProducers: $quaysWithMultipleProducers,nearbyStopPlaces: $nearbyStopPlaces, detectMultiModalPoints: $detectMultiModalPoints, withDistantQuays: $withDistantQuays,pointInTime: $pointInTime, size: 300, withNearbySimilarDuplicates: $withNearbySimilarDuplicates, hasParking:$hasParking, tags: $tags, withTags: $withTags, code: $code, versionValidity: $versionValidity) {
             ...on StopPlace {
                 ...ReportStopPlace
             }
@@ -716,7 +716,6 @@ export const getParkingForMultipleStopPlaces = stopPlaceIds => {
     queryContent += `
         ${stopPlace.alias}: parking(stopPlaceId: "${stopPlace.id}") {
             id
-            parkingVehicleTypes
         }
     `;
   });

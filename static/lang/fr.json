@@ -277,6 +277,8 @@
   "nearby_stop_places": "Points d'arrêts proches (StopPlaces)",
   "secure_available": "Sécurisé",
   "stop_place_without_quays": "StopPlaces sans quai",
+  "stop_place_with_multiple_producers": "Points d'arrêt co-exploités",
+  "quay_with_multiple_producers": "Quays co-exploités",
   "only_with_tags": "Seulement avec des étiquettes",
   "only_without_coordinates": "Seulement sans coordonnées",
   "open_question": "Voulez-vous éditer ceci maintenant ?",

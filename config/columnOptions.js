@@ -24,6 +24,10 @@ export const columnOptionsQuays = [
     checked: true
   },
   {
+    id: 'importedName',
+    checked: true
+  },
+  {
     id: 'position',
     checked: true
   },
@@ -41,22 +45,6 @@ export const columnOptionsQuays = [
   },
   {
     id: 'stepFreeAccess',
-    checked: false
-  },
-  {
-    id: 'escalatorFreeAccess',
-    checked: false
-  },
-  {
-    id: 'liftFreeAccess',
-    checked: false
-  },
-  {
-    id: 'audibleSignalsAvailable',
-    checked: false
-  },
-  {
-    id: 'visualSignsAvailable',
     checked: false
   },
   {
@@ -103,12 +91,16 @@ export const columnOptionsStopPlace = [
     checked: false
   },
   {
+    id: 'importedName',
+    checked: false
+  },
+  {
     id: 'position',
     checked: false
   },
   {
     id: 'parking',
-    checked: true
+    checked: false
   },
   {
     id: 'wheelchairAccess',

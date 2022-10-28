@@ -130,6 +130,7 @@ export const ColumnTransformerStopPlaceJsx = {
   muncipality: stop => stop.topographicPlace,
   county: stop => stop.parentTopographicPlace,
   importedId: stop => stop.importedId.join('\r\n'),
+  importedName: stop => stop.importedName.join('\r\n'),
   position: stop => (stop.location ? stop.location.join(',') : ColumnTranslations.notAssigned),
   quays: stop => (stop.quays ? stop.quays.length : 0),
   parking: stop => getParkingElements(stop.parking),
@@ -217,6 +218,7 @@ export const ColumnTransformersStopPlace = {
     return stop.stopPlaceType;
   },
   importedId: stop => stop.importedId.join(','),
+  importedName: stop => stop.importedName.join(','),
   quays: stop => (stop.quays ? stop.quays.map(quay => quay.id).join(',') : ''),
   parking: stop =>
     stop.parking ? stop.parking.map(parking => parking.id).join(',') : '',
@@ -324,6 +326,25 @@ export const ColumnTransformerQuaysJsx = {
       </div>
     );
   },
+  importedName: (quay) => {
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {quay.importedName.map((importedName, index) => {
+            return (
+                <span
+                    style={{
+                      color: 'initial',
+                      fontWeight: 400,
+                      cursor: 'initial'
+                    }}
+                    key={'importedName-' + quay.id + '-' + index}
+                >{importedName}
+            </span>
+            );
+          })}
+        </div>
+    );
+  },
   position: quay => (quay.location ? quay.location.join(',') : ColumnTranslations.notAssigned),
   publicCode: quay => quay.publicCode,
   privateCode: quay => quay.privateCode,
@@ -344,6 +365,7 @@ export const ColumnTransformersQuays = {
   stopPlaceId: quay => quay.stopPlaceId,
   stopPlaceName: quay => quay.stopPlaceName,
   importedId: quay => quay.importedId.join(','),
+  importedName: quay => quay.importedName.join(','),
   wheelchairAccess: quay => ColumnTransformersStopPlace.wheelchairAccess(quay),
   sanitaryEquipment: quay =>
     ColumnTransformersStopPlace.sanitaryEquipment(quay),
@@ -383,6 +405,7 @@ export const ColumnTranslations = {
     muncipality: 'Muncipality',
     county: 'County',
     importedId: 'ImportedId',
+    importedName: 'Imported Name',
     position: 'Position',
     quays: 'Quays',
     parking: 'Parking',
@@ -403,7 +426,8 @@ export const ColumnTranslations = {
     id: 'Id',
     muncipality: 'Municipalité',
     county: 'Département',
-    importedId: 'ID local',
+    importedId: 'Imported Id',
+    importedName: 'Imported Name',
     position: 'Position',
     quays: 'Quais',
     parking: 'Parking',

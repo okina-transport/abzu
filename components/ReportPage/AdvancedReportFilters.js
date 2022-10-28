@@ -34,11 +34,12 @@ class AdvancedReportFilters extends Component {
       withoutLocationOnly,
       withDuplicateImportedIds,
       stopPlacesWithoutQuay,
+      stopPlacesWithMultipleProducers,
+      quaysWithMultipleProducers,
       nearbyStopPlaces,
       withNearbySimilarDuplicates,
       detectMultiModalPoints,
       withDistantQuays,
-      hasParking,
       handleCheckboxChange,
       withTags,
       showFutureAndExpired,
@@ -193,6 +194,30 @@ class AdvancedReportFilters extends Component {
                 style={{ marginTop: 10 }}
               />
             </MenuItem>
+            <MenuItem style={menuItemsStyle}>
+              <Checkbox
+                label={formatMessage({ id: 'stop_place_with_multiple_producers' })}
+                labelPosition="right"
+                labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                checked={stopPlacesWithMultipleProducers}
+                onCheck={(e, value) => {
+                  handleCheckboxChange('stopPlacesWithMultipleProducers', value);
+                }}
+                style={{ marginTop: 10 }}
+               />
+            </MenuItem>
+              <MenuItem style={menuItemsStyle}>
+                  <Checkbox
+                      label={formatMessage({ id: 'quay_with_multiple_producers' })}
+                      labelPosition="right"
+                      labelStyle={{ width: 'auto', fontSize: '0.9em' }}
+                      checked={quaysWithMultipleProducers}
+                      onCheck={(e, value) => {
+                          handleCheckboxChange('quaysWithMultipleProducers', value);
+                      }}
+                      style={{ marginTop: 10 }}
+                  />
+              </MenuItem>
           </Menu>
         </Popover>
       </div>

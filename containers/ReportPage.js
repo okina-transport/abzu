@@ -21,7 +21,11 @@ import ModalityFilter from '../components/EditStopPage/ModalityFilter';
 import TopographicalFilter from '../components/MainPage/TopographicalFilter';
 import AutoComplete from 'material-ui/AutoComplete';
 import {withApollo} from 'react-apollo';
-import {findStopForReport, getParkingForMultipleStopPlaces, topopGraphicalPlacesReportQuery} from '../graphql/Tiamat/queries';
+import {
+    findStopForReport,
+    getParkingForMultipleStopPlaces,
+    topopGraphicalPlacesReportQuery
+} from '../graphql/Tiamat/queries';
 import {getTopographicPlaces} from '../graphql/Tiamat/actions';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -36,8 +40,6 @@ import {buildReportSearchQuery, extractQueryParamsFromUrl} from '../utils/URLhel
 import TagFilterTray from '../components/ReportPage/TagFilterTray';
 import AdvancedReportFilters from '../components/ReportPage/AdvancedReportFilters';
 import GeneralReportFilters from '../components/ReportPage/GeneralReportFilters';
-import NearbyStopPlaceResultView from "../components/ReportPage/NearbyStopPlaceResultView";
-import OrganisationNameFilter from "../components/ReportPage/OrganisationNameFilter";
 
 class ReportPage extends React.Component {
     constructor(props) {
@@ -49,13 +51,15 @@ class ReportPage extends React.Component {
             topoiChips: [],
             activePageIndex: 0,
             searchQuery: '',
-            nearbyRadius:50,
-            organisationName:'',
+            nearbyRadius: 50,
+            organisationName: '',
             isLoading: false,
             columnOptionsQuays: columnOptionsQuays,
             columnOptionsStopPlace: columnOptionsStopPlace,
             withoutLocationOnly: false,
             stopPlacesWithoutQuay: false,
+            stopPlacesWithMultipleProducers: false,
+            quaysWithMultipleProducers: false,
             withDuplicateImportedIds: false,
             nearbyStopPlaces: false,
             detectMultiModalPoints: false,
@@ -65,7 +69,7 @@ class ReportPage extends React.Component {
             showFutureAndExpired: false,
             withTags: false,
             tags: [],
-            regexp : /^[0-9\b]+$/,
+            regexp: /^[0-9\b]+$/,
             filterByOrg: false
         };
     }
@@ -105,8 +109,8 @@ class ReportPage extends React.Component {
         }
     }
 
-    handleOrganisationNameChange(value){
-        this.setState({organisationName:value});
+    handleOrganisationNameChange(value) {
+        this.setState({organisationName: value});
     }
 
 
@@ -134,32 +138,60 @@ class ReportPage extends React.Component {
     handleFilterChange(key, value) {
         // nearby stop place report & detect multi modal points report need a specific result page, incompatible with normal result page
         // So, if user select nearby stop places report, other choices are un-checked
-        if ((key === 'nearbyStopPlaces' || key === 'detectMultiModalPoints' || key === 'withDistantQuays' || key === 'stopPlacesWithoutQuay') && value){
+        if ((key === 'nearbyStopPlaces' ||
+            key === 'detectMultiModalPoints' ||
+            key === 'withDistantQuays' ||
+            key === 'stopPlacesWithoutQuay' ||
+            key === 'stopPlacesWithMultipleProducers' ||
+            key === 'quaysWithMultipleProducers')
+            && value) {
 
 
-            switch(key){
+            switch (key) {
                 case 'nearbyStopPlaces':
                     this.setState({['detectMultiModalPoints']: false});
                     this.setState({['withDistantQuays']: false});
                     this.setState({['stopPlacesWithoutQuay']: false});
+                    this.setState({['stopPlacesWithMultipleProducers']: false});
+                    this.setState({['quaysWithMultipleProducers']: false});
                     this.setState({['nearbyRadius']: 50});
                     break;
                 case 'detectMultiModalPoints':
                     this.setState({['nearbyStopPlaces']: false});
                     this.setState({['withDistantQuays']: false});
                     this.setState({['stopPlacesWithoutQuay']: false});
+                    this.setState({['stopPlacesWithMultipleProducers']: false});
+                    this.setState({['quaysWithMultipleProducers']: false});
                     this.setState({['nearbyRadius']: 200});
                     break;
                 case 'withDistantQuays':
                     this.setState({['nearbyStopPlaces']: false});
                     this.setState({['detectMultiModalPoints']: false});
                     this.setState({['stopPlacesWithoutQuay']: false});
+                    this.setState({['stopPlacesWithMultipleProducers']: false});
+                    this.setState({['quaysWithMultipleProducers']: false});
                     this.setState({['nearbyRadius']: 100});
                     break;
                 case 'stopPlacesWithoutQuay':
                     this.setState({['nearbyStopPlaces']: false});
                     this.setState({['detectMultiModalPoints']: false});
                     this.setState({['withDistantQuays']: false});
+                    this.setState({['stopPlacesWithMultipleProducers']: false});
+                    this.setState({['quaysWithMultipleProducers']: false});
+                    break;
+                case 'stopPlacesWithMultipleProducers':
+                    this.setState({['nearbyStopPlaces']: false});
+                    this.setState({['detectMultiModalPoints']: false});
+                    this.setState({['withDistantQuays']: false});
+                    this.setState({['stopPlacesWithoutQuay']: false});
+                    this.setState({['quaysWithMultipleProducers']: false});
+                    break;
+                case 'quaysWithMultipleProducers':
+                    this.setState({['nearbyStopPlaces']: false});
+                    this.setState({['detectMultiModalPoints']: false});
+                    this.setState({['withDistantQuays']: false});
+                    this.setState({['stopPlacesWithoutQuay']: false});
+                    this.setState({['stopPlacesWithMultipleProducers']: false});
                     break;
 
             }
@@ -191,13 +223,13 @@ class ReportPage extends React.Component {
 
 
         // And if user selects another filter, nearby Stop place result is un-checked
-        if ((key !== 'nearbyStopPlaces' || key !== 'detectMultiModalPoints' || key !== 'withDistantQuays' || key !== 'stopPlacesWithoutQuay') && value){
+        if ((key !== 'nearbyStopPlaces' || key !== 'detectMultiModalPoints' || key !== 'withDistantQuays' || key !== 'stopPlacesWithoutQuay' || key !== 'stopPlacesWithMultipleProducers' || key !== 'quaysWithMultipleProducers') && value) {
             this.setState({
                 ['nearbyStopPlaces']: false
             });
 
             this.setState({
-                ['detectMultiModalPoints'] : false
+                ['detectMultiModalPoints']: false
             });
 
             this.setState({
@@ -206,6 +238,14 @@ class ReportPage extends React.Component {
 
             this.setState({
                 ['stopPlacesWithoutQuay']: false
+            });
+
+            this.setState({
+                ['stopPlacesWithMultipleProducers']: false
+            });
+
+            this.setState({
+                ['quaysWithMultipleProducers']: false
             });
         }
 
@@ -258,16 +298,18 @@ class ReportPage extends React.Component {
             searchQuery: fromURL.query || '',
             nearbyRadius: fromURL.nearbyRadius || this.state.nearbyRadius,
             organisationName: fromURL.organisationNama || this.state.organisationName,
-            withoutLocationOnly: fromURL.withoutLocationOnly == 'true',
-            withNearbySimilarDuplicates: fromURL.withNearbySimilarDuplicates == 'true',
-            hasParking: fromURL.hasParking == 'true',
-            withDuplicateImportedIds: fromURL.withDuplicateImportedIds == 'true',
-            stopPlacesWithoutQuay: fromURL.stopPlacesWithoutQuay == 'true',
-            nearbyStopPlaces: fromURL.nearbyStopPlaces == 'true',
-            detectMultiModalPoints: fromURL.detectMultiModalPoints,
-            withDistantQuay:fromURL.withDistantQuays,
-            showFutureAndExpired: fromURL.showFutureAndExpired == 'true',
-            withTags: fromURL.withTags == 'true',
+            withoutLocationOnly: fromURL.withoutLocationOnly === 'true',
+            withNearbySimilarDuplicates: fromURL.withNearbySimilarDuplicates === 'true',
+            hasParking: fromURL.hasParking === 'true',
+            withDuplicateImportedIds: fromURL.withDuplicateImportedIds === 'true',
+            stopPlacesWithoutQuay: fromURL.stopPlacesWithoutQuay === 'true',
+            stopPlacesWithMultipleProducers: fromURL.stopPlacesWithMultipleProducers === 'true',
+            quaysWithMultipleProducers: fromURL.quaysWithMultipleProducers === 'true',
+            nearbyStopPlaces: fromURL.nearbyStopPlaces === 'true',
+            detectMultiModalPoints: fromURL.detectMultiModalPoints === 'true',
+            withDistantQuay: fromURL.withDistantQuays === 'true',
+            showFutureAndExpired: fromURL.showFutureAndExpired === 'true',
+            withTags: fromURL.withTags === 'true',
             tags: fromURL.tags ? fromURL.tags.split(',') : [],
             stopTypeFilter: fromURL.stopPlaceType
                 ? fromURL.stopPlaceType.split(',')
@@ -324,6 +366,8 @@ class ReportPage extends React.Component {
             withoutLocationOnly,
             withDuplicateImportedIds,
             stopPlacesWithoutQuay,
+            stopPlacesWithMultipleProducers,
+            quaysWithMultipleProducers,
             nearbyStopPlaces,
             detectMultiModalPoints,
             withDistantQuays,
@@ -339,17 +383,17 @@ class ReportPage extends React.Component {
 
         this.setState({
             isLoading: true,
-            lastSearchNearbyRadius:nearbyRadius
+            lastSearchNearbyRadius: nearbyRadius
         });
 
         let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
 
 
-        if (nearbyRadius === ''){
+        if (nearbyRadius === '') {
             nearbyRadius = null;
         }
 
-        if (detectMultiModalPoints == undefined){
+        if (detectMultiModalPoints === undefined) {
             detectMultiModalPoints = false;
         }
 
@@ -360,6 +404,8 @@ class ReportPage extends React.Component {
             withoutLocationOnly,
             withDuplicateImportedIds,
             stopPlacesWithoutQuay,
+            stopPlacesWithMultipleProducers,
+            quaysWithMultipleProducers,
             nearbyStopPlaces,
             detectMultiModalPoints,
             withDistantQuays,
@@ -393,10 +439,10 @@ class ReportPage extends React.Component {
             .then(response => {
                 const stopPlaces = response.data.stopPlace;
                 const stopPlaceIds = [];
-                for (let i = 0; i<stopPlaces.length; i++) {
-                    if (stopPlaces[i].__typename == "ParentStopPlace") {
+                for (let i = 0; i < stopPlaces.length; i++) {
+                    if (stopPlaces[i].__typename === "ParentStopPlace") {
                         const childStops = stopPlaces[i].children;
-                        for (let j = 0; j<childStops.length; j++) {
+                        for (let j = 0; j < childStops.length; j++) {
                             stopPlaceIds.push(childStops[j].id);
                         }
                     } else {
@@ -500,132 +546,104 @@ class ReportPage extends React.Component {
         return firstOrgFound;
     }
 
-  render() {
-    const {
-      stopTypeFilter,
-      topoiChips,
-      activePageIndex,
-      isLoading,
-      withoutLocationOnly,
-      withDuplicateImportedIds,
-      stopPlacesWithoutQuay,
-      nearbyStopPlaces,
-      detectMultiModalPoints,
-      withDistantQuays,
-      withNearbySimilarDuplicates,
-      hasParking,
-      showFutureAndExpired,
-      withTags,
-      filterByOrg
-    } = this.state;
-    const { intl, topographicalPlaces, results: dataSource, duplicateInfo } = this.props;
-    const { locale, formatMessage } = intl;
-    const results = hasParking ? dataSource.filter(stopPlace => stopPlace.parking && stopPlace.parking.length) : dataSource;
+    render() {
+        const {
+            stopTypeFilter,
+            topoiChips,
+            activePageIndex,
+            isLoading,
+            withoutLocationOnly,
+            withDuplicateImportedIds,
+            stopPlacesWithoutQuay,
+            stopPlacesWithMultipleProducers,
+            quaysWithMultipleProducers,
+            nearbyStopPlaces,
+            detectMultiModalPoints,
+            withDistantQuays,
+            withNearbySimilarDuplicates,
+            hasParking,
+            showFutureAndExpired,
+            withTags,
+            filterByOrg
+        } = this.state;
+        const {intl, topographicalPlaces, results: dataSource, duplicateInfo} = this.props;
+        const {locale, formatMessage} = intl;
+        const results = hasParking ? dataSource.filter(stopPlace => stopPlace.parking && stopPlace.parking.length) : dataSource;
 
-    let resultPage;
-    let resultHeader;
+        let resultPage =
+            <ReportResultView
+                activePageIndex={activePageIndex}
+                intl={intl}
+                results={results}
+                stopPlaceColumnOptions={this.state.columnOptionsStopPlace}
+                quaysColumnOptions={this.state.columnOptionsQuays}
+                duplicateInfo={duplicateInfo}
+            />;
 
-      if (nearbyStopPlaces || detectMultiModalPoints || withDistantQuays || stopPlacesWithoutQuay) {
-          resultPage =    <NearbyStopPlaceResultView
-              activePageIndex={activePageIndex}
-              intl={intl}
-              results={results}
-              stopPlaceColumnOptions={this.state.columnOptionsStopPlace}
-              quaysColumnOptions={this.state.columnOptionsQuays}
-              duplicateInfo={duplicateInfo}
-              nearbyRadius={this.state.lastSearchNearbyRadius}
-              organisationName = {this.state.organisationName}
-              isDetectMultiModalPoints = {detectMultiModalPoints? true:false }
-              isWithDistantQuays = {withDistantQuays?true:false}
-          />;
-
-
-          if (stopPlacesWithoutQuay){
-              resultHeader =
-                  <div style={{display: 'flex'}}>
-                      <OrganisationNameFilter
-                          formatMessage={formatMessage}
-                          handleOrganisationNameChange={(e,v) => {
-                              this.handleOrganisationNameChange(v)
-                          }}
-                      />
-                  </div>;
-
-          }else{
-              resultHeader =
-                  <div style={{display: 'flex'}}>
-                      <TextField
-                          floatingLabelText={formatMessage({
-                              id: 'nearby_radius'
-                          })}
-                          style={{width: 330}}
-                          value={this.state.nearbyRadius}
-                          onKeyDown={this.handleOnKeyDown.bind(this)}
-                          onChange={(e, v) => {
-                              this.handleNearbyRadiusChange(v);
-                          }}
-                      />
-                      <OrganisationNameFilter
-                          formatMessage={formatMessage}
-                          handleOrganisationNameChange={(e,v) => {
-                              this.handleOrganisationNameChange(v)
-                          }}
-                      />
-                  </div>;
-          }
-
-
-
-
-      }else{
-          resultPage =
-              <ReportResultView
-              activePageIndex={activePageIndex}
-              intl={intl}
-              results={results}
-              stopPlaceColumnOptions={this.state.columnOptionsStopPlace}
-              quaysColumnOptions={this.state.columnOptionsQuays}
-              duplicateInfo={duplicateInfo}
-          />;
-
-          resultHeader =
-              <div style={{display: 'flex'}}>
-                  <ColumnFilterPopover
-                      style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
-                      columnOptions={this.state.columnOptionsStopPlace}
-                      handleColumnCheck={this.handleColumnStopPlaceCheck.bind(this)}
-                      buttonLabel={formatMessage({
-                          id: 'column_filter_label_stop_place'
-                      })}
-                      captionLabel={formatMessage({id: 'stop_place'})}
-                      locale={locale}
-                      handleCheckAll={this.handleCheckAllColumnStops.bind(this)}
-                      selectAllLabel={formatMessage({id: 'all'})}
-                  />
-                  <ColumnFilterPopover
-                      style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
-                      columnOptions={this.state.columnOptionsQuays}
-                      handleColumnCheck={this.handleColumnQuaysCheck.bind(this)}
-                      buttonLabel={formatMessage({id: 'column_filter_label_quays'})}
-                      captionLabel={formatMessage({id: 'quays'})}
-                      locale={locale}
-                      handleCheckAll={this.handleCheckAllColumnQuays.bind(this)}
-                      selectAllLabel={formatMessage({id: 'all'})}
-                  />
-              </div>;
-
-      }
+        let resultHeader =
+            <div>
+                <div style={{display: 'flex'}}>
+                    <ColumnFilterPopover
+                        style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
+                        columnOptions={this.state.columnOptionsStopPlace}
+                        handleColumnCheck={this.handleColumnStopPlaceCheck.bind(this)}
+                        buttonLabel={formatMessage({
+                            id: 'column_filter_label_stop_place'
+                        })}
+                        captionLabel={formatMessage({id: 'stop_place'})}
+                        locale={locale}
+                        handleCheckAll={this.handleCheckAllColumnStops.bind(this)}
+                        selectAllLabel={formatMessage({id: 'all'})}
+                    />
+                    <ColumnFilterPopover
+                        style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
+                        columnOptions={this.state.columnOptionsQuays}
+                        handleColumnCheck={this.handleColumnQuaysCheck.bind(this)}
+                        buttonLabel={formatMessage({id: 'column_filter_label_quays'})}
+                        captionLabel={formatMessage({id: 'quays'})}
+                        locale={locale}
+                        handleCheckAll={this.handleCheckAllColumnQuays.bind(this)}
+                        selectAllLabel={formatMessage({id: 'all'})}
+                    />
+                </div>
+                <div style={{display: 'flex'}}>
+                    {nearbyStopPlaces || detectMultiModalPoints || withDistantQuays ?
+                        <TextField
+                            floatingLabelText={formatMessage({
+                                id: 'nearby_radius'
+                            })}
+                            style={{marginLeft: 2, transform: 'scale(0.9)'}}
+                            value={this.state.nearbyRadius}
+                            onKeyDown={this.handleOnKeyDown.bind(this)}
+                            onChange={(e, v) => {
+                                this.handleNearbyRadiusChange(v);
+                            }}
+                        /> : ""
+                    }
+                    {nearbyStopPlaces || detectMultiModalPoints || withDistantQuays || stopPlacesWithoutQuay || stopPlacesWithMultipleProducers || quaysWithMultipleProducers ?
+                        <TextField
+                            floatingLabelText={formatMessage({
+                                id: 'organisation_name'
+                            })}
+                            type="text"
+                            defaultValue={this.state.organisationName}
+                            onChange={(e, v) => {
+                                this.handleOrganisationNameChange(v);
+                            }}
+                        /> : ""}
+                </div>
+            </div>
 
 
-    const topographicalPlacesDataSource = topographicalPlaces
-           .filter(
+        const topographicalPlacesDataSource = topographicalPlaces
+            .filter(
                 place =>
                     place.topographicPlaceType === 'county' ||
                     place.topographicPlaceType === 'municipality' ||
                     place.topographicPlaceType === 'country'
             )
             .filter(
-                place => topoiChips.map(chip => chip.value).indexOf(place.id) == -1
+                place => topoiChips.map(chip => chip.value).indexOf(place.id) === -1
             )
             .map(place => this.createTopographicPlaceMenuItem(place, formatMessage));
 
@@ -670,8 +688,8 @@ class ReportPage extends React.Component {
                                     fullWidth={true}
                                     ref="topoFilter"
                                     onNewRequest={this.handleAddChip.bind(this)}
-                                menuStyle={{width: 500}}
-                  listStyle={{width: 500}}/>
+                                    menuStyle={{width: 500}}
+                                    listStyle={{width: 500}}/>
                                 <TopographicalFilter
                                     topoiChips={topoiChips}
                                     handleDeleteChip={chip => this.handleDeleteChipById(chip)}
@@ -680,7 +698,11 @@ class ReportPage extends React.Component {
                         </ReportFilterBox>
                         <ReportFilterBox style={{width: '60%'}}>
                             <div style={{marginLeft: 5, paddingTop: 5}}>
-                                <div style={{fontWeight: 600, fontSize: 12, marginBottom: 10}}>{formatMessage({id: 'filter_by_tags'})}</div>
+                                <div style={{
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                    marginBottom: 10
+                                }}>{formatMessage({id: 'filter_by_tags'})}</div>
                                 <TagFilterTray
                                     tags={this.state.tags}
                                     formatMessage={formatMessage}
@@ -705,7 +727,7 @@ class ReportPage extends React.Component {
                                         this.handleSearchQueryChange(v);
                                     }}
                                 />
-                                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap',marginTop: 2}}>
+                                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: 2}}>
                                     <RaisedButton
                                         style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
                                         disabled={isLoading}
@@ -723,6 +745,8 @@ class ReportPage extends React.Component {
                                         withoutLocationOnly={withoutLocationOnly}
                                         withDuplicateImportedIds={withDuplicateImportedIds}
                                         stopPlacesWithoutQuay={stopPlacesWithoutQuay}
+                                        stopPlacesWithMultipleProducers={stopPlacesWithMultipleProducers}
+                                        quaysWithMultipleProducers={quaysWithMultipleProducers}
                                         nearbyStopPlaces={nearbyStopPlaces}
                                         detectMultiModalPoints={detectMultiModalPoints}
                                         withDistantQuays={withDistantQuays}
@@ -741,7 +765,6 @@ class ReportPage extends React.Component {
                 {resultHeader}
 
                 {resultPage}
-
 
 
                 <ReportPageFooter
