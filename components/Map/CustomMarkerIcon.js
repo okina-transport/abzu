@@ -48,7 +48,7 @@ class CustomMarkerIcon extends React.Component {
     }
 
 
-    if (type == 'other' && typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox'){
+    if (type === 'other' && typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox'){
       imageStyle.background= '#32CD32';
       imageStyle.filter=null;
     }
