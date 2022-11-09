@@ -485,7 +485,9 @@ export const findStop = gql`
                 coordinates
             }
             ... on Parking {
-              parkingType
+                parkingType
+                secure
+                typeOfParkingRef
             }
         }
         pointOfInterest(query: $query, size: 7) {
