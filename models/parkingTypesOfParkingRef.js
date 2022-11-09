@@ -1,11 +1,11 @@
 const parkingTypesOfParkingRef = {
     fr: [
         {
-            name: 'Parking vélo sécurisé',
+            name: 'Consigne collective vélo',
             value: 'SecureBikeParking'
         },
         {
-            name: 'Box individuel',
+            name: 'Box individuel vélo',
             value: 'IndividualBox'
         },
         {
