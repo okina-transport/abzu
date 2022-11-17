@@ -13,7 +13,8 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 
-export const selectKeyValuesDataSource = (keyValuesOrigin, stopPlace, parking) => {
+export const selectKeyValuesDataSource = (keyValuesOrigin, stopPlace, parking, pointOfInterest) => {
+
   if (!keyValuesOrigin || !keyValuesOrigin.type) return [];
 
   let keyValues = [];
@@ -27,6 +28,8 @@ export const selectKeyValuesDataSource = (keyValuesOrigin, stopPlace, parking) =
     }
   } else if (keyValuesOrigin.type === 'parking') {
     keyValues = parking.keyValues;
+  } else if (keyValuesOrigin.type === 'pointOfInterest') {
+    keyValues = pointOfInterest.keyValues;
   }
   return keyValues;
 };
