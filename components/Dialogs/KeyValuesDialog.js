@@ -20,7 +20,7 @@ import MdRemove from 'material-ui/svg-icons/action/delete';
 import { getPrimaryColor } from '../../config/themeConfig';
 import EditKeyValuePair from '../EditStopPage/EditKeyValuePair';
 import CreateKeyValuePair from '../EditStopPage/CreateKeyValuePair';
-import { StopPlaceActions, UserActions, ParkingActions } from '../../actions/';
+import { StopPlaceActions, UserActions, ParkingActions, PointOfInterestActions } from '../../actions/';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { selectKeyValuesDataSource } from '../../reducers/selectors';
@@ -48,8 +48,10 @@ class KeyValuesDialog extends React.Component {
     if(this.props.stopPlace){
       this.props.dispatch(StopPlaceActions.deleteKeyValuesByKeyStopPlace(key));
     }
-    else{
+    else if (this.props.parking){
       this.props.dispatch(ParkingActions.deleteKeyValuesByKeyParking(key));
+    } else if (this.props.pointOfInterest){
+      this.props.dispatch(PointOfInterestActions.deleteKeyValuesByKeyPointOfInterest(key));
     }
   }
 
@@ -62,8 +64,10 @@ class KeyValuesDialog extends React.Component {
     if(this.props.stopPlace){
       this.props.dispatch(StopPlaceActions.updateKeyValuesForKeyStopPlace(key, values));
     }
-    else{
+    else if (this.props.parking){
       this.props.dispatch(ParkingActions.updateKeyValuesForKeyParking(key, values));
+    }  else if (this.props.pointOfInterest){
+      this.props.dispatch(PointOfInterestActions.updateKeyValuesForKeyPointOfInterest(key, values));
     }
   }
 
@@ -74,8 +78,10 @@ class KeyValuesDialog extends React.Component {
     if(this.props.stopPlace){
       this.props.dispatch(StopPlaceActions.createKeyValuesPairStopPlace(key, values));
     }
-    else {
+    else if (this.props.parking){
       this.props.dispatch(ParkingActions.createKeyValuesPairParking(key, values));
+    }    else if (this.props.pointOfInterest){
+      this.props.dispatch(PointOfInterestActions.createKeyValuesPairPointOfInterest(key, values));
     }
   }
 
@@ -242,10 +248,12 @@ const mapStateToProps = state => ({
   keyValues: selectKeyValuesDataSource(
     state.user.keyValuesOrigin,
     state.stopPlace.current,
-    state.parking.current
+    state.parking.current,
+    state.pointOfInterest.current
   ),
   stopPlace: state.stopPlace.current,
-  parking: state.parking.current
+  parking: state.parking.current,
+  pointOfInterest : state.pointOfInterest.current
 });
 
 export default connect(mapStateToProps)(KeyValuesDialog);
