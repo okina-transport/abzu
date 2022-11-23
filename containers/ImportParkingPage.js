@@ -51,7 +51,7 @@ class ImportParkingPage extends Component{
                         method: 'post',
                         headers: {
                             "Authorization": "Bearer " + localStorage.getItem("ABZU::jwt"),
-                             "Content-Type": "multipart/form-data"
+                            "Content-Type": "multipart/form-data; charset=utf-8"
                         },
                         data: bodyFormData
                     }).then(response=>{
