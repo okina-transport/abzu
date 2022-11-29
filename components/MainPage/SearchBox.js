@@ -77,7 +77,10 @@ class SearchBox extends React.Component {
         stopPlaceTypes,
         chips,
         showFutureAndExpired,
-        optionalOrgCodeFilter
+        optionalOrgCodeFilter,
+        this.props.showStops,
+        this.props.showParkings,
+        this.props.showPointsOfInterest
       ).then(() => {
         this.setState({ loading: false });
       });

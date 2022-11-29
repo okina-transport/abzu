@@ -387,7 +387,7 @@ export const getMergeInfoForStops = (client, stopPlaceId) => (
     })
 );
 
-export const findEntitiesWithFilters = (client, query, stopPlaceType, chips, showFutureAndExpired, orgCode) => {
+export const findEntitiesWithFilters = (client, query, stopPlaceType, chips, showFutureAndExpired, orgCode, showStops, showParkings, showPointsOfInterest) => {
   const municipalityReference = chips
   .filter(topos => topos.type === 'municipality')
     .map(topos => topos.value);
@@ -409,7 +409,10 @@ export const findEntitiesWithFilters = (client, query, stopPlaceType, chips, sho
       countryReference: countryReference,
       pointInTime: showFutureAndExpired ? null : new Date().toISOString(),
       versionValidity: showFutureAndExpired ? "MAX_VERSION" : null,
-      code: orgCode
+      code: orgCode,
+      ignoreStops: !showStops,
+      ignoreParkings: !showParkings,
+      ignorePointsOfInterest: !showPointsOfInterest
     },
   });
 };

@@ -359,8 +359,8 @@ export const getPointOfInterestByIdQuery = gql`
 `;
 
 export const findStop = gql`
-    query findStop($query: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $countryReference: [String], $pointInTime: DateTime, $versionValidity: VersionValidity, $code: String) {
-        groupOfStopPlaces(query: $query, size: 7) {
+    query findStop($query: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $countryReference: [String], $pointInTime: DateTime, $versionValidity: VersionValidity, $code: String, $ignoreStops: Boolean, $ignoreParkings: Boolean, $ignorePointsOfInterest: Boolean) {
+        groupOfStopPlaces(query: $query, size: 7, ignoreStops: $ignoreStops) {
             id
             name {
                 value
@@ -391,7 +391,7 @@ export const findStop = gql`
                 }
             }
         }
-        stopPlace(query: $query, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, countryReference: $countryReference, size: 7, pointInTime: $pointInTime, versionValidity: $versionValidity, code: $code) {
+        stopPlace(query: $query, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, countryReference: $countryReference, size: 7, pointInTime: $pointInTime, versionValidity: $versionValidity, code: $code, ignoreStops: $ignoreStops) {
             id
             groups {
                 id
@@ -466,7 +466,7 @@ export const findStop = gql`
                }
            }
         }
-        parking(query: $query, size: 7) {
+        parking(query: $query, size: 7, ignoreParkings: $ignoreParkings) {
             id
             validBetween {
                 fromDate
@@ -490,7 +490,7 @@ export const findStop = gql`
                 typeOfParkingRef
             }
         }
-        pointOfInterest(query: $query, size: 7) {
+        pointOfInterest(query: $query, size: 7, ignorePointsOfInterest: $ignorePointsOfInterest) {
             id
             validBetween {
                 fromDate

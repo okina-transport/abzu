@@ -239,12 +239,15 @@ class EditMap extends React.Component {
 const mapStateToProps = state => {
   const currentStopPlace = state.stopPlace.current;
   const neighbourStops = state.stopPlace.neighbourStops;
+  const showStops =  state.user.showStops;
 
   const currentParking = state.parking.current;
   const neighbourParkings = state.parking.neighbourParkings;
+  const showParkings = state.user.showParkings;
 
   const currentPointOfInterest = state.pointOfInterest.current;
   const neighbourPointsOfInterest = state.pointOfInterest.neighbourPointsOfInterest;
+  const showPointsOfInterest = state.user.showPointsOfInterest;
 
   let markers = [];
   let position;
@@ -258,7 +261,7 @@ const mapStateToProps = state => {
     minZoom = state.stopPlace.minZoom;
   }
 
-  if (neighbourStops && neighbourStops.length) {
+  if (neighbourStops && neighbourStops.length && showStops) {
     markers = markers.concat(neighbourStops);
   }
 
@@ -269,7 +272,7 @@ const mapStateToProps = state => {
     minZoom = state.parking.minZoom;
   }
 
-  if (neighbourParkings && neighbourParkings.length) {
+  if (neighbourParkings && neighbourParkings.length && showParkings) {
     markers = markers.concat(neighbourParkings);
   }
 
@@ -280,7 +283,7 @@ const mapStateToProps = state => {
     minZoom = state.pointOfInterest.minZoom;
   }
 
-  if (neighbourPointsOfInterest && neighbourPointsOfInterest.length) {
+  if (neighbourPointsOfInterest && neighbourPointsOfInterest.length && showPointsOfInterest) {
     markers = markers.concat(neighbourPointsOfInterest);
   }
 
