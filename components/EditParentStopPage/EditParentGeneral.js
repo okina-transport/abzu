@@ -390,18 +390,18 @@ class EditParentGeneral extends React.Component {
               justifyContent: 'space-around'
             }}
           >
-            <FlatButton
-              disabled={disableTerminate}
-              label={formatMessage({ id: 'terminate_stop_place' })}
-              style={{ margin: '8 5', zIndex: 999 }}
-              labelStyle={{
-                fontSize: '0.7em',
-                color: disableTerminate ? 'rgba(0, 0, 0, 0.3)' : 'initial'
-              }}
-              onClick={() => {
-                this.props.dispatch(UserActions.requestTerminateStopPlace(stopPlace.id));
-              }}
-            />
+            {/*<FlatButton*/}
+            {/*  disabled={disableTerminate}*/}
+            {/*  label={formatMessage({ id: 'terminate_stop_place' })}*/}
+            {/*  style={{ margin: '8 5', zIndex: 999 }}*/}
+            {/*  labelStyle={{*/}
+            {/*    fontSize: '0.7em',*/}
+            {/*    color: disableTerminate ? 'rgba(0, 0, 0, 0.3)' : 'initial'*/}
+            {/*  }}*/}
+            {/*  onClick={() => {*/}
+            {/*    this.props.dispatch(UserActions.requestTerminateStopPlace(stopPlace.id));*/}
+            {/*  }}*/}
+            {/*/>*/}
             <FlatButton
               icon={<MdUndo style={{ height: '1.3em', width: '1.3em' }} />}
               disabled={!stopHasBeenModified}
