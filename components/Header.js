@@ -451,7 +451,7 @@ class Header extends React.Component {
               />
               <MenuItem
                 leftIcon={<MdHelp color="#005A82" />}
-                href="doc"
+                href=" http://static.okina.fr/docs/MAN_Mobi-iti_Referentiel_PDM_V0.1.pdf"
                 target="_blank"
                 primaryText={userGuide}
                 style={{ fontSize: 12, padding: 0 }}
