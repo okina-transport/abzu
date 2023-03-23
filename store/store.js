@@ -109,7 +109,9 @@ export default function configureStore(kc) {
         topoiChips: [],
         text: '',
         showFutureAndExpired: false,
-        filterByOrg: false
+        filterByOrg: false,
+        filterByFullTAD: Settings.getFilterByFullTAD(),
+        filterByPartialTAD: Settings.getFilterByPartialTAD()
       },
       snackbarOptions: {
         isOpen: false,

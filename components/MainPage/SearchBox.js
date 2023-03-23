@@ -47,6 +47,7 @@ import Menu from 'material-ui/Menu';
 import CheckBox from 'material-ui/Checkbox';
 import Routes from '../../routes/';
 import {Entities} from '../../models/Entities';
+import SettingsManager from "../../singletons/SettingsManager";
 
 class SearchBox extends React.Component {
   constructor(props) {
@@ -185,6 +186,55 @@ class SearchBox extends React.Component {
     this.changeStateShowMoreFilterOptions();
   }
 
+  toggleSearchWithFullTAD(value) {
+    const {
+      searchText,
+      topoiChips,
+      stopTypeFilter,
+      showFutureAndExpired
+    } = this.props;
+    if (searchText) {
+      this.handleSearchUpdate(searchText, null, null, {
+        filterByFullTAD: value,
+        topoiChips,
+        stopType: stopTypeFilter,
+        showFutureAndExpired
+      });
+    }
+    if (value){
+      let Settings = new SettingsManager();
+      Settings.setFilterByPartialTAD(false);
+    }
+
+
+    this.props.dispatch(UserActions.toggleSearchWithFullTAD(value));
+    this.changeStateShowMoreFilterOptions();
+  }
+
+  toggleSearchWithPartialTAD(value) {
+    const {
+      searchText,
+      topoiChips,
+      stopTypeFilter,
+      showFutureAndExpired
+    } = this.props;
+    if (searchText) {
+      this.handleSearchUpdate(searchText, null, null, {
+        filterByPartialTAD: value,
+        topoiChips,
+        stopType: stopTypeFilter,
+        showFutureAndExpired
+      });
+    }
+    if (value){
+      let Settings = new SettingsManager();
+      Settings.setFilterByFullTAD(false);
+    }
+
+    this.props.dispatch(UserActions.toggleSearchWithPartialTAD(value));
+    this.changeStateShowMoreFilterOptions();
+  }
+
   toggleShowStops(value) {
     this.props.dispatch(UserActions.toggleShowStops(value));
   }
@@ -227,14 +277,18 @@ class SearchBox extends React.Component {
       searchText,
       showFutureAndExpired,
       topoiChips,
-      filterByOrg
+      filterByOrg,
+        filterByFullTAD,
+      filterByPartialTAD
     } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         showFutureAndExpired,
         topoiChips,
         stopType: filters,
-        filterByOrg
+        filterByOrg,
+        filterByFullTAD,
+        filterByPartialTAD
       });
     }
     this.props.dispatch(UserActions.applyStopTypeSearchFilter(filters));
@@ -260,7 +314,9 @@ class SearchBox extends React.Component {
       stopTypeFilters,
       showFutureAndExpired,
       topoiChips,
-      filterByOrg
+      filterByOrg,
+      filterByFullTAD,
+      filterByPartialTAD
     } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
@@ -271,7 +327,9 @@ class SearchBox extends React.Component {
           value: id
         }),
         stopType: stopTypeFilters,
-        filterByOrg
+        filterByOrg,
+        filterByFullTAD,
+        filterByPartialTAD
       });
     }
     this.props.dispatch(
@@ -289,14 +347,18 @@ class SearchBox extends React.Component {
       stopTypeFilters,
       showFutureAndExpired,
       topoiChips,
-      filterByOrg
+      filterByOrg,
+      filterByFullTAD,
+      filterByPartialTAD
     } = this.props;
     if (searchText) {
       this.handleSearchUpdate(searchText, null, null, {
         showFutureAndExpired,
         topoiChips: topoiChips.filter(chip => chip.value !== chipValue),
         stopType: stopTypeFilters,
-        filterByOrg
+        filterByOrg,
+        filterByFullTAD,
+        filterByPartialTAD
       });
     }
     dispatch(UserActions.deleteChip(chipValue));
@@ -471,8 +533,11 @@ console.log({ dataSource });
       filterByOrg,
       showStops,
       showParkings,
-      showPointsOfInterest
+      showPointsOfInterest,
+      filterByFullTAD,
+      filterByPartialTAD
     } = this.props;
+
     const {
       coordinatesDialogOpen,
       showMoreFilterOptions,
@@ -703,6 +768,18 @@ console.log({ dataSource });
                     label={formatMessage({ id: 'search_with_code' })}
                     labelStyle={{ fontSize: '0.8em' }}
                   />
+                  <CheckBox
+                      checked={filterByPartialTAD}
+                      onCheck={(e, value) => this.toggleSearchWithPartialTAD(value)}
+                      label={formatMessage({ id: 'search_partial_TAD' })}
+                      labelStyle={{ fontSize: '0.8em' }}
+                  />
+                  <CheckBox
+                      checked={filterByFullTAD}
+                      onCheck={(e, value) => this.toggleSearchWithFullTAD(value)}
+                      label={formatMessage({ id: 'search_full_TAD' })}
+                      labelStyle={{ fontSize: '0.8em' }}
+                  />
                   <TopographicalFilter
                     topoiChips={topoiChips}
                     handleDeleteChip={this.handleDeleteChip.bind(this)}
@@ -909,7 +986,9 @@ const mapStateToProps = state => {
     roles: state.roles.kc.tokenParsed.roles,
     showStops: state.user.showStops,
     showParkings: state.user.showParkings,
-    showPointsOfInterest: state.user.showPointsOfInterest
+    showPointsOfInterest: state.user.showPointsOfInterest,
+    filterByFullTAD : state.user.searchFilters.filterByFullTAD,
+    filterByPartialTAD:state.user.searchFilters.filterByPartialTAD,
   };
 };
 

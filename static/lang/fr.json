@@ -377,6 +377,8 @@
   "search_result_expired": "Expiré",
   "search_result_future": "Valide à l'avenir",
   "search_with_code": "Inclure seulement mes données",
+  "search_full_TAD": "Inclure seulement les arrêts totalement dédiés au TAD",
+  "search_partial_TAD": "Inclure seulement les arrêts partiellement dédiés au TAD",
   "search": "Rechercher",
   "second": "seconde",
   "seconds": "secondes",

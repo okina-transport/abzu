@@ -174,6 +174,31 @@ const userReducer = (state = initialState, action) => {
         }
       });
 
+    case types.TOGGLE_SEARCH_WITH_FULL_TAD:
+      //Partial TAD is exclusive with FullTAD
+      var newFilterByPartialTAD = action.payLoad ? false : state.searchFilters.filterByPartialTAD;
+
+      return Object.assign({}, state, {
+        searchFilters: {
+          ...state.searchFilters,
+          filterByFullTAD: action.payLoad,
+          filterByPartialTAD : newFilterByPartialTAD
+        }
+      });
+
+    case types.TOGGLE_SEARCH_WITH_PARTIAL_TAD:
+      //Partial TAD is exclusive with FullTAD
+      var newFilterByFullTAD = action.payLoad ? false : state.searchFilters.filterByFullTAD;
+
+
+      return Object.assign({}, state, {
+        searchFilters: {
+          ...state.searchFilters,
+          filterByPartialTAD: action.payLoad,
+          filterByFullTAD : newFilterByFullTAD
+        }
+      });
+
     case types.TOGGLE_SEARCH_WITH_ORG_CODE:
       return Object.assign({}, state, {
         searchFilters: {

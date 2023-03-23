@@ -30,8 +30,11 @@ import PARKING_TYPE from '../models/parkingType';
 import PARKING_VEHICLE_TYPE from '../models/parkingVehicleType';
 import PointOfInterest from "../models/PointOfInterest";
 import pointOfInterestType from "../models/pointOfInterestType";
+import { getFilteredStops } from '../utils/FilteringUtils';
+import SettingsManager from '../singletons/SettingsManager';
 
 const helpers = {};
+const Settings = new SettingsManager();
 
 helpers.mapParkingToClient = (parkingObjs = []) =>
   parkingObjs.map(parking => new Parking(parking).toClient());
@@ -309,7 +312,8 @@ helpers.mapNeighbourPointsOfInterestToClientPointsOfInterest = (pointsOfInterest
 };
 
 helpers.mapSearchResultToStopPlaces = stopPlaces => {
-  return stopPlaces.map(stop => {
+  let filterdStopPlaces = getFilteredStops(stopPlaces,Settings.getFilterByFullTAD(),Settings.getFilterByPartialTAD());
+  return filterdStopPlaces.map(stop => {
     if (stop.__typename === 'StopPlace') {
       return helpers.mapSearchResultStopPlace(stop);
     } else if (stop.__typename === 'ParentStopPlace') {

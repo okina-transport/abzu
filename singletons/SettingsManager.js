@@ -17,6 +17,8 @@ let instance = null;
 
 const rootKey = 'ABZU::settings';
 const showExpiredKey = rootKey + '::showExpiredStops';
+const filterByFullTADKey = rootKey + '::filterByFullTAD';
+const filterByPartialTADKey = rootKey + '::filterByPartialTAD';
 const showPathLinksKey = rootKey + '::pathLinks';
 const showCompassBearingKey = rootKey + '::showCompassBearing';
 const showMultimodalEdges = rootKey + '::showMultimodalEdges';
@@ -45,6 +47,22 @@ class SettingsManager {
 
   setShowExpiredStops(value) {
     localStorage.setItem(showExpiredKey, value);
+  }
+
+  getFilterByFullTAD() {
+    return this.parseBoolean(localStorage.getItem(filterByFullTADKey), false);
+  }
+
+  setFilterByFullTAD(value) {
+    localStorage.setItem(filterByFullTADKey, value);
+  }
+
+  getFilterByPartialTAD() {
+    return this.parseBoolean(localStorage.getItem(filterByPartialTADKey), false);
+  }
+
+  setFilterByPartialTAD(value) {
+    localStorage.setItem(filterByPartialTADKey, value);
   }
 
   getShowPathLinks() {

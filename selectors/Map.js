@@ -13,6 +13,9 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 
+import { getFilteredStops } from '../utils/FilteringUtils';
+
+
 export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) => {
   const {
     newStop,
@@ -31,9 +34,12 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) 
     neighbourPointsOfInterest
   } = pointOfInterest;
 
-  const { isCreatingNewStop, isCreatingNewParking, isCreatingNewPointOfInterest, showParkings, showStops, showPointsOfInterest } = user;
+  const { isCreatingNewStop, isCreatingNewParking, isCreatingNewPointOfInterest, showParkings, showStops, showPointsOfInterest, searchFilters } = user;
 
   let markers = activeSearchResult ? [activeSearchResult] : [];
+
+  let filterByFullTAD = searchFilters !== undefined && searchFilters.filterByFullTAD;
+  let filterByPartialTAD = searchFilters !== undefined && searchFilters.filterByPartialTAD;
 
   if (
     activeSearchResult &&
@@ -56,7 +62,7 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) 
   }
 
   if (neighbourStops && neighbourStops.length && showStops) {
-    markers = markers.concat(neighbourStops);
+    markers = markers.concat(getFilteredStops(neighbourStops, filterByFullTAD, filterByPartialTAD));
   }
 
   if (neighbourParkings && neighbourParkings.length && showParkings) {

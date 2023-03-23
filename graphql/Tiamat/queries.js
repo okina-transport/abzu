@@ -71,6 +71,10 @@ export const stopPlaceBBQuery = gql`
             name {
                 value
             }
+           keyValues {
+                key
+                values
+            }
             topographicPlace {
                 name {
                     value

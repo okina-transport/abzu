@@ -49,6 +49,16 @@ UserActions.toggleSearchWithOrgCode = value => dispatch => {
   dispatch(createThunk(types.TOGGLE_SEARCH_WITH_ORG_CODE, value));
 };
 
+UserActions.toggleSearchWithFullTAD = value => dispatch => {
+    Settings.setFilterByFullTAD(value);
+    dispatch(createThunk(types.TOGGLE_SEARCH_WITH_FULL_TAD, value));
+};
+
+UserActions.toggleSearchWithPartialTAD = value => dispatch => {
+    Settings.setFilterByPartialTAD(value);
+    dispatch(createThunk(types.TOGGLE_SEARCH_WITH_PARTIAL_TAD, value));
+};
+
 UserActions.navigateToMainAfterDelete = () => dispatch => {
   dispatch(createThunk(types.NAVIGATE_TO_MAIN_AFTER_DELETE, null));
   goToRoute('/', '');
