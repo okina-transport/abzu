@@ -15,7 +15,7 @@
 import { getIn } from '../utils';
 import { getEnvColor as defaultEnvColor } from './themes/default/defaultTheme';
 import { getTheme as getDefaultTheme } from './themes/default/defaultTheme';
-import defaultLogo from './themes/default/logo.png';
+import defaultLogo from './themes/default/lumidata-logo.png';
 import { primary as defaultPrimary } from './themes/default/defaultTheme';
 import {
   primaryDarker as defaultPrimaryDarker,
@@ -46,7 +46,7 @@ export const getTheme = () => {
 
 export const getLogo = () => {
   if (process.env.THEME) {
-    return require('./themes/' + process.env.THEME + '/logo.png');
+    return require('./themes/' + process.env.THEME + '/lumidata-logo.png');
   } else {
     return defaultLogo;
   }
