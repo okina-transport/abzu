@@ -28,6 +28,7 @@ import ImportPOIPage from "./ImportPOIPage";
 import ImportRentalBikePage from "./ImportRentalBikePage";
 import ImportBikeParkingPage from "./ImportBikeParkingPage";
 import PointOfInterest from "./PointOfInterest";
+import ImportTADPage from "./ImportTADPage";
 
 class RouterContainer extends React.Component {
   render() {
@@ -45,6 +46,7 @@ class RouterContainer extends React.Component {
         <Route path={path + Routes.IMPORT_BIKE_PARKING_CSV} component={ImportBikeParkingPage} />
         <Route path={path + Routes.IMPORT_SALE_POINT_CSV} component={ImportSalePointPage} />
         <Route path={path + Routes.IMPORT_POI} component={ImportPOIPage} />
+        <Route path={path + Routes.IMPORT_TAD} component={ImportTADPage} />
         <Route path={path + Routes.IMPORT_RENTAL_BIKE} component={ImportRentalBikePage} />
       </Route>
     );

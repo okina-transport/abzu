@@ -134,6 +134,10 @@ class Header extends React.Component {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_POI, ''));
   }
 
+  goToImportTAD() {
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_TAD, ''));
+  }
+
   goToImportRentalBike() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_RENTAL_BIKE, ''));
   }
@@ -194,6 +198,7 @@ class Header extends React.Component {
     const importCSVBikeParkings = formatMessage({id: 'import_bike_parking'})
     const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
     const importPOI = formatMessage({id: 'import_poi'})
+    const importTAD = formatMessage({id: 'import_tad'})
     const importRentalBike = formatMessage({id: 'import_rental_bikes'})
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
     const userGuide = formatMessage({ id: 'user_guide' });
@@ -317,6 +322,17 @@ class Header extends React.Component {
                       this.handleConfirmChangeRoute(
                           this.goToImportPOI().bind(this),
                           'GoToImportPOI'
+                      )}
+                  style={{ fontSize: 12, padding: 0 }}
+              />
+              <MenuItem
+                  leftIcon={<PoiIcon color="#005A82" />}
+                  primaryText={importTAD}
+                  href = {Routes.IMPORT_TAD}
+                  onClick={() =>
+                      this.handleConfirmChangeRoute(
+                          this.goToImportTAD().bind(this),
+                          'GoToImportTAD'
                       )}
                   style={{ fontSize: 12, padding: 0 }}
               />
