@@ -79,7 +79,7 @@ class ImportTADPage extends Component{
 
                 <ReportFilterBox style={{width: '60%'}}>
                     <Input
-                        id={"upload_csv_sale_point"}
+                        id={"upload_csv_tad_point"}
                         type={"file"}
                         accept={".csv"}
                         onChange={this.handleOnChange}
