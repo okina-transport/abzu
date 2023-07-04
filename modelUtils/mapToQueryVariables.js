@@ -396,9 +396,12 @@ helpers.mapPointOfInterestToVariables = (poi, parentRef) => {
         value : source.description,
         lang : 'fr'
       },
-      pointOfInterestFacilitySet: {}
+      pointOfInterestFacilitySet: {},
+      pointOfInterestOpeningHours: {
+        value : source.pointOfInterestOpeningHours,
+        lang : 'fr'
+      }
     };
-
     if (source.id) {
       pointOfInterest.id = source.id;
     }
@@ -447,6 +450,10 @@ helpers.mapPointOfInterestToVariables = (poi, parentRef) => {
 
     if (source.placeEquipments) {
       pointOfInterest.placeEquipments = netexifyPlaceEquipment(source.placeEquipments);
+    }
+
+    if(source.pointOfInterestOpeningHours) {
+      pointOfInterest.pointOfInterestOpeningHours = source.pointOfInterestOpeningHours;
     }
 
     if (source.classifications) {

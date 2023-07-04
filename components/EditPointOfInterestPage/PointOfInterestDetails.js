@@ -47,6 +47,7 @@ class PointOfInterestDetails extends React.Component {
         this.state = {
             name: props.pointOfInterest.name || '',
             description: props.pointOfInterest.description || '',
+            pointOfInterestOpeningHours: props.pointOfInterest.pointOfInterestOpeningHours || '',
             tagsOpen: false,
             loading: false,
             currentPointOfInterestName: props.pointOfInterest.name || '',
@@ -72,6 +73,10 @@ class PointOfInterestDetails extends React.Component {
 
         this.updatePointOfInterestDescription = debounce(value => {
             this.props.dispatch(PointOfInterestActions.changePointOfInterestDescription(value));
+        }, 200);
+
+        this.updatePointOfInterestOpeningHours = debounce(value => {
+            this.props.dispatch(PointOfInterestActions.updatePointOfInterestOpeningHours(value));
         }, 200);
     }
 
@@ -130,6 +135,15 @@ class PointOfInterestDetails extends React.Component {
             confirmDeleteDialogOpen: false
         });
     }
+
+    //todo modifier le nom de ce truc
+    handlePointOfInterestChange (pointOfInterestOpeningHours){
+
+        this.setState({
+            pointOfInterestOpeningHours: pointOfInterestOpeningHours
+        });
+        this.updatePointOfInterestOpeningHours(pointOfInterestOpeningHours);
+    };
 
     handleOpenKeyValues() {
         this.setState({
@@ -416,10 +430,11 @@ class PointOfInterestDetails extends React.Component {
                             <PointOfInterestItemExpandedFields
                                 pointOfInterest={pointOfInterest}
                                 handleTabOnChange={this.handleTabOnChange.bind(this)}
+                                updatePointOfInterest={this.handlePointOfInterestChange.bind(this)}
                                 style={style}
                                 tabStyle={tabStyle}
                                 activeTabIndex={activeTabIndex}
-                                intl1={intl}
+                                intl={intl}
                                 locale={locale}/>
                         </div>
                         <ConfirmDialog

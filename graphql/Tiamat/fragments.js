@@ -32,6 +32,20 @@ Fragments.accessibilityAssessment = {
   `
 };
 
+Fragments.pointOfInterestOpeningHours = {
+    verbose: gql`
+        fragment PointOfInterestOpeningHours on PointOfInterestOpeningHours {
+            dayType {
+                dayOfWeek
+                timeBand {
+                    startTime
+                    endTime
+                }
+            }
+        }
+    `
+};
+
 Fragments.groupOfStopPlaces = {
   verbose: gql`
       fragment GroupOfStopPlaces on GroupOfStopPlaces {
@@ -570,9 +584,14 @@ Fragments.pointOfInterest = {
             placeEquipments {
                 ...PlaceEquipments
             }      
+            pointOfInterestOpeningHours {
+            ...PointOfInterestOpeningHours
+            }
         }
             ${Fragments.placeEquipments.verbose},
-            ${Fragments.accessibilityAssessment.verbose}
+            ${Fragments.accessibilityAssessment.verbose},
+            ${Fragments.pointOfInterestOpeningHours.verbose}
+            
     `
 };
 

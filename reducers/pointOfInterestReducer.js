@@ -18,6 +18,7 @@ import * as types from '../actions/Types';
 import formatHelpers from '../modelUtils/mapToClient';
 import {setDecimalPrecision} from '../utils/';
 import limitationHelpers from "../modelUtils/limitationHelpers";
+import {CHANGED_POI_OPENING_HOURS} from "../actions/Types";
 
 const pointOfInterestReducer = (state = {}, action) => {
     switch (action.type) {
@@ -180,6 +181,16 @@ const pointOfInterestReducer = (state = {}, action) => {
                 ),
                 pointOfInterestHasBeenModified: true,
             });
+
+        case types.CHANGED_POI_OPENING_HOURS:
+            return {
+                ...state,
+                current: {
+                    ...state.current,
+                    pointOfInterestOpeningHours: action.payLoad.pointOfInterestOpeningHours.pointOfInterestOpeningHours,
+                },
+                pointOfInterestHasBeenModified: true,
+            };
 
         default:
             return state;

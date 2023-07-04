@@ -24,6 +24,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import {Tab, Tabs} from "material-ui/Tabs";
 import ticketFacility, {ticketFacilities} from "../../models/ticketFacility";
 import {ticketFacilityServices} from "../../models/ticketFacilityService";
+import PointOfInterestScheduleField from "./PointOfInterestScheduleField";
 
 const useStyles = makeStyles((theme) => ({
     mainGrid: {
@@ -71,14 +72,17 @@ const hasValue = value => value !== null && value !== undefined;
 
 const PointOfInterestItemExpandedFields = (props) => {
     const {
-        intl: {formatMessage},
+        intl,
         pointOfInterest,
         handleTabOnChange,
+        updatePointOfInterest,
         style,
         tabStyle,
         activeTabIndex,
         locale,
     } = props;
+
+    const {formatMessage} = intl;
 
     const classes = useStyles();
 
@@ -169,6 +173,22 @@ const PointOfInterestItemExpandedFields = (props) => {
                                 ))}
                             </Select>
                         </Grid>
+                    </Grid>
+                </Tab>
+                <Tab
+                    style={tabStyle}
+                    label={formatMessage({id: 'schedule'})}
+                    value={1}
+                >
+                    <Grid container alignItems="stretch" direction="column" spacing={2} className={classes.mainGrid}>
+                        <PointOfInterestScheduleField
+                            pointOfInterest={pointOfInterest}
+                            updatePointOfInterest={updatePointOfInterest}
+                            style={style}
+                            tabStyle={tabStyle}
+                            activeTabIndex={activeTabIndex}
+                            intl={intl}
+                            locale={locale}/>
                     </Grid>
                 </Tab>
             </Tabs>

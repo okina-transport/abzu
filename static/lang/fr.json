@@ -133,6 +133,7 @@
   "entrance": "entrée",
   "entrances": "entrées",
   "equipments" : "Equipements",
+  "schedule" : "Horaires",
   "error_has_occurred": "Une erreur est survenue",
   "error_stopPlace_404": "Impossible de trouver le point d'arrêt avec l'id : ",
   "error_parking_404": "Impossible de trouver le parking avec l'id : ",

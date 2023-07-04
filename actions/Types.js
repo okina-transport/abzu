@@ -1,3 +1,4 @@
+
 /*
  *  Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
 the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -247,4 +248,5 @@ export const CHANGED_ACTIVE_POI_POSITION = 'CHANGED_ACTIVE_POI_POSITION';
 export const CANCELLED_DELETE_POI_DIALOG = 'CANCELLED_DELETE_POI_DIALOG';
 export const TERMINATE_DELETE_POI_DIALOG = 'REQUESTED_DELETE_POI_DIALOG';
 export const TERMINATE_DELETE_POI_DIALOG_WARNING = 'TERMINATE_DELETE_POI_DIALOG_WARNING';
+export const CHANGED_POI_OPENING_HOURS = 'CHANGED_POI_OPENING_HOURS';
 

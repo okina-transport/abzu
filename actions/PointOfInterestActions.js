@@ -3,6 +3,14 @@ import * as types from "./Types";
 
 var PointOfInterestActions = {};
 
+PointOfInterestActions.updatePointOfInterestOpeningHours = pointOfInterestOpeningHours => dispatch => {
+    dispatch(
+        createThunk(types.CHANGED_POI_OPENING_HOURS, {
+            pointOfInterestOpeningHours: pointOfInterestOpeningHours,
+        }),
+    );
+};
+
 PointOfInterestActions.changePointOfInterestNameTitle = name => dispatch => {
     dispatch(createThunk(types.CHANGED_POI_NAME, name));
 };
