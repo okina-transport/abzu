@@ -56,10 +56,6 @@ const PointOfInterestScheduleField = (props) => {
     const {
         intl: {formatMessage},
         pointOfInterest,
-        updatePointOfInterest,
-        style,
-        tabStyle,
-        activeTabIndex,
         locale,
     } = props;
 
