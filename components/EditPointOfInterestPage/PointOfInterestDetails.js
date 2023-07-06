@@ -136,7 +136,6 @@ class PointOfInterestDetails extends React.Component {
         });
     }
 
-    //todo modifier le nom de ce truc
     handlePointOfInterestChange (pointOfInterestOpeningHours){
 
         this.setState({
