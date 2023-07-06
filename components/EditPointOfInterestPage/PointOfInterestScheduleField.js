@@ -129,6 +129,27 @@ const PointOfInterestScheduleField = (props) => {
                 },
             };
             setPointOfInterestOpeningHours(updatedPointOfInterestOpeningHours);
+        }else if (facility === ""){
+            const updatedPointOfInterestOpeningHours = {
+                ...pointOfInterestOpeningHours,
+                [day]: {
+                    facility,
+                    startTimeAm: "",
+                    endTimeAm: "",
+                    startTimePm: "",
+                    endTimePm: "",
+                    startTime: "",
+                    endTime: "",
+                },
+            };
+            setPointOfInterestOpeningHours(updatedPointOfInterestOpeningHours);
+
+            const updatedPointOfInterest = {
+                ...pointOfInterest,
+                pointOfInterestOpeningHours: updatedPointOfInterestOpeningHours,
+            };
+
+            props.updatePointOfInterest(updatedPointOfInterest);
         } else {
             const { [day]: omit, ...updatedPointOfInterestOpeningHours } = pointOfInterestOpeningHours;
             setPointOfInterestOpeningHours(updatedPointOfInterestOpeningHours);
