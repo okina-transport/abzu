@@ -44,7 +44,7 @@ class RemoveStopFromParentDialog extends React.Component {
 
     const { isLastChild } = this.props;
     if (isLastChild) {
-      if (changesUnderstood) {
+      if (changesUnderstood){
         return false;
       }
       return true;

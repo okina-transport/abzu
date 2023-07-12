@@ -39,7 +39,7 @@ const stopPlaceReducer = (state = {}, action) => {
       return Object.assign({}, state, {
         current: formatHelpers.updateParenStopWithoutStopPlace(
           state.current,
-          action.payLoad,
+          action.payLoad
         ),
         stopHasBeenModified: true,
       });
@@ -66,8 +66,8 @@ const stopPlaceReducer = (state = {}, action) => {
         stopHasBeenModified: false,
         activeSearchResult: null,
         versions: [],
-        originalCurrent: null,
-      });
+        originalCurrent: null
+     });
 
     case types.HID_QUAYS_FOR_NEIGHBOUR_STOP:
       const id = action.payLoad;

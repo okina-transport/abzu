@@ -33,7 +33,9 @@ import {
     mutateTerminateStopPlace,
     mutateGroupOfStopPlaces,
     deleteGroupMutation,
-    deleteParkingMutation, deletePointOfInterestMutation
+    deleteParkingMutation,
+    deletePointOfInterestMutation,
+    removeParentStopPlace
 } from './mutations';
 import {
     allVersionsOfStopPlace,
@@ -171,6 +173,16 @@ export const saveParentStopPlace = (client, variables) =>
 export const removeStopPlaceFromMultiModalStop = (client, parentSiteRef, stopPlaceId) =>
     client.mutate({
         mutation: removeStopPlaceFromParent,
+        variables: {
+            stopPlaceId,
+            parentSiteRef
+        },
+        fetchPolicy: 'network-only'
+    });
+
+export const removeMultiModalStop = (client, parentSiteRef, stopPlaceId) =>
+    client.mutate({
+        mutation: removeParentStopPlace,
         variables: {
             stopPlaceId,
             parentSiteRef

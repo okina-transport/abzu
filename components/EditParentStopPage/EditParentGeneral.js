@@ -35,7 +35,8 @@ import {
   removeStopPlaceFromMultiModalStop,
   terminateStop,
   deleteStopPlace,
-  getNeighbourStops
+  getNeighbourStops,
+  removeMultiModalStop
 } from '../../graphql/Tiamat/actions';
 import * as types from '../../actions/Types';
 import { MutationErrorCodes } from '../../models/ErrorCodes';
@@ -184,30 +185,63 @@ class EditParentGeneral extends React.Component {
   }
 
   handleRemoveStopFromParent() {
-    const { removingStopPlaceFromParentId, client, stopPlace } = this.props;
+    const { removingStopPlaceFromParentId, client, stopPlace, activeMap, dispatch } = this.props;
     this.setState({
       isLoading: true
     });
 
-    removeStopPlaceFromMultiModalStop(
-      client,
-      stopPlace.id,
-      removingStopPlaceFromParentId
-    )
-      .then(response => {
-        this.handleSaveSuccess(stopPlace.id);
-        this.handleCloseRemoveStopFromParent();
-        this.setState({
-          isLoading: false
-        });
-      })
-      .catch(err => {
-        this.handleSaveError(err);
-        this.handleCloseRemoveStopFromParent();
-        this.setState({
-          isLoading: false
-        });
-      });
+    const isLastChild = this.getIsLastChild(stopPlace.children);
+
+    if(isLastChild){
+      removeMultiModalStop(client, stopPlace.id, removingStopPlaceFromParentId)
+          .then(response => {
+            this.handleCloseRemoveStopFromParent();
+            this.setState({
+              isLoading: false
+            });
+            if (response.data.removeMultiModalStopPlace) {
+              dispatch(UserActions.navigateToMainAfterDelete());
+            }
+          })
+          .catch(err => {
+            this.handleSaveError(err);
+            this.handleCloseRemoveStopFromParent();
+            this.setState({
+              isLoading: false
+            });
+          });
+    }
+    else {
+      removeStopPlaceFromMultiModalStop(
+          client,
+          stopPlace.id,
+          removingStopPlaceFromParentId
+      )
+          .then(response => {
+            this.handleSaveSuccess(stopPlace.id);
+            this.handleCloseRemoveStopFromParent();
+            this.setState({
+              isLoading: false
+            });
+          })
+          .catch(err => {
+            this.handleSaveError(err);
+            this.handleCloseRemoveStopFromParent();
+            this.setState({
+              isLoading: false
+            });
+          });
+    }
+
+    if (activeMap) {
+      let includeExpired = new Settings().getShowExpiredStops();
+      getNeighbourStops(
+          client,
+          null,
+          activeMap.getBounds(),
+          includeExpired
+      );
+    }
   }
 
   handleSaveSuccess(stopPlaceId) {
@@ -349,8 +383,6 @@ class EditParentGeneral extends React.Component {
       originalStopPlace,
       formatMessage
     );
-    const disableTerminate =
-      stopPlace.isNewStop || disabled || stopPlace.hasExpired;
 
     return (
       <div style={containerStyle}>
@@ -390,18 +422,6 @@ class EditParentGeneral extends React.Component {
               justifyContent: 'space-around'
             }}
           >
-            {/*<FlatButton*/}
-            {/*  disabled={disableTerminate}*/}
-            {/*  label={formatMessage({ id: 'terminate_stop_place' })}*/}
-            {/*  style={{ margin: '8 5', zIndex: 999 }}*/}
-            {/*  labelStyle={{*/}
-            {/*    fontSize: '0.7em',*/}
-            {/*    color: disableTerminate ? 'rgba(0, 0, 0, 0.3)' : 'initial'*/}
-            {/*  }}*/}
-            {/*  onClick={() => {*/}
-            {/*    this.props.dispatch(UserActions.requestTerminateStopPlace(stopPlace.id));*/}
-            {/*  }}*/}
-            {/*/>*/}
             <FlatButton
               icon={<MdUndo style={{ height: '1.3em', width: '1.3em' }} />}
               disabled={!stopHasBeenModified}

@@ -179,6 +179,12 @@ export const removeStopPlaceFromParent = gql`
     ${Fragments.parentStopPlace.verbose}
 `;
 
+export const removeParentStopPlace = gql`
+    mutation removeParentStopPlace($parentSiteRef: String!, $stopPlaceId: [String!]) {
+      removeMultiModalStopPlace(parentSiteRef: $parentSiteRef, stopPlaceId: $stopPlaceId)
+    }
+`;
+
 export const mutateMergeStopPlaces = gql`
   mutation mergeStopPlaces($fromStopPlaceId: String!, $toStopPlaceId: String!, $fromVersionComment: String!, $toVersionComment: String!) {
       mergeStopPlaces(fromStopPlaceId: $fromStopPlaceId, toStopPlaceId: $toStopPlaceId, fromVersionComment: $fromVersionComment, toVersionComment: $toVersionComment) {
