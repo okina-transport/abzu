@@ -238,7 +238,7 @@ class EditMap extends React.Component {
 
 const mapStateToProps = state => {
   function checkIfInChildren (currentStopPlace, neighbourStops, showStops) {
-    if (neighbourStops !== undefined && neighbourStops.length > 0 && currentStopPlace.children !== undefined && currentStopPlace.children.length > 0 && showStops) {
+    if (neighbourStops !== undefined && neighbourStops.length > 0 && currentStopPlace !== undefined && currentStopPlace.children !== undefined && currentStopPlace.children.length > 0 && showStops) {
       return neighbourStops.filter(neighbourStop =>
           !currentStopPlace.children.find(childStop =>
               childStop.id === neighbourStop.id && childStop.isChildOfParent
