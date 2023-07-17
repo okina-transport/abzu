@@ -7,7 +7,7 @@ import {ticketFacilities} from "../../models/ticketFacility";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import {ticketFacilityServices} from "../../models/ticketFacilityService";
-import React, {useState} from "react";
+import React, {useState, useEffect } from "react";
 import {injectIntl} from "react-intl";
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from "material-ui/TextField";
@@ -104,6 +104,11 @@ const PointOfInterestScheduleField = (props) => {
     };
 
     const [pointOfInterestOpeningHours, setPointOfInterestOpeningHours] = useState(mapOpeningHours(pointOfInterest.pointOfInterestOpeningHours));
+
+    useEffect(() => {
+        const mappedOpeningHours = mapOpeningHours(pointOfInterest.pointOfInterestOpeningHours);
+        setPointOfInterestOpeningHours(mappedOpeningHours);
+    }, [pointOfInterest]);
 
 
     const handleFacilitiesChange = (day, facility) => {
