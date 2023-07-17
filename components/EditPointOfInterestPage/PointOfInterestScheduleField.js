@@ -106,7 +106,6 @@ const PointOfInterestScheduleField = (props) => {
     const [pointOfInterestOpeningHours, setPointOfInterestOpeningHours] = useState(mapOpeningHours(pointOfInterest.pointOfInterestOpeningHours));
 
     useEffect(() => {
-        debugger;;
         const mappedOpeningHours = mapOpeningHours(pointOfInterest.pointOfInterestOpeningHours);
         setPointOfInterestOpeningHours(mappedOpeningHours);
     }, [pointOfInterest.id]);
