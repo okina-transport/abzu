@@ -119,6 +119,7 @@ class Header extends React.Component {
   }
 
   goToImportParking() {
+    debugger;;
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_PARKING_CSV, ''));
   }
 
@@ -203,6 +204,7 @@ class Header extends React.Component {
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
     const userGuide = formatMessage({ id: 'user_guide' });
     const username = getIn(kc, ['tokenParsed', 'preferred_username'], '');
+    const roles = getIn(kc, ['tokenParsed', 'realm_access', 'roles'], '');
     const showMultimodalEdgesLabel = formatMessage({id: 'show_multimodal_edges'});
     const showPublicCodeLabel = formatMessage({id: 'show_public_code'});
     const showPrivateCodeLabel = formatMessage({id: 'show_private_code'});
@@ -210,6 +212,8 @@ class Header extends React.Component {
     const portalAdmin = formatMessage({id: 'portal_admin'});
     const portalImport = formatMessage({id: 'portal_import'});
     const portalOffers = formatMessage({id: 'portal_offers'});
+
+    const isSuperAdmin = roles.includes('ROLE_SUPER_ADMINISTRATEUR');
 
     const tiamatEnv = getTiamatEnv();
     const logo = getLogo();
@@ -281,6 +285,8 @@ class Header extends React.Component {
                   )}
                 style={{ fontSize: 12, padding: 0 }}
               />
+              {isSuperAdmin && (
+                  <React.Fragment>
               <MenuItem
                   leftIcon={<MapsLocalParking color="#005A82" />}
                   primaryText={importCSVParkings}
@@ -347,6 +353,8 @@ class Header extends React.Component {
                       )}
                   style={{ fontSize: 12, padding: 0 }}
               />
+                  </React.Fragment>
+        )}
               <MenuItem
                 primaryText={settings}
                 rightIcon={<ArrowDropRight />}
