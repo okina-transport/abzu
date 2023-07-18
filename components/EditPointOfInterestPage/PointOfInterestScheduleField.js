@@ -108,7 +108,7 @@ const PointOfInterestScheduleField = (props) => {
     useEffect(() => {
         const mappedOpeningHours = mapOpeningHours(pointOfInterest.pointOfInterestOpeningHours);
         setPointOfInterestOpeningHours(mappedOpeningHours);
-    }, [pointOfInterest]);
+    }, [pointOfInterest.id]);
 
 
     const handleFacilitiesChange = (day, facility) => {
