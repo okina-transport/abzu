@@ -88,9 +88,11 @@ export default class LeafLetMap extends React.Component {
               name="Atlas"
           >
             <TileLayer
-                attribution="Thunderforest"
+                attribution="Carte &copy; <a href='https://www.thunderforest.com/'>Thunderforest</a>,
+                Données cartographiques &copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap contributors</a>"
                 url="//{s}.tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey=0d925ffb1c7f4fa29c090405b4038b96"
                 maxZoom="19"
+
             />
           </BaseLayer>
           <BaseLayer
