@@ -239,6 +239,18 @@ const stopTypes = {
           value: 'telecabin'
         }
       ]
+    },
+    {
+      name: 'Taubane',
+      value: 'metroStation',
+      quayItemName: 'quay',
+      transportMode: 'funicular',
+      submodes: [
+        {
+          name: 'Taubane',
+          value: 'funicular'
+        }
+      ]
     }
   ],
 
@@ -470,6 +482,18 @@ const stopTypes = {
           value: 'telecabin'
         }
       ]
+    },
+    {
+      name: 'Funicular',
+      value: 'metroStation',
+      quayItemName: 'quay',
+      transportMode: 'funicular',
+      submodes: [
+        {
+          name: 'Funicular',
+          value: 'funicular'
+        }
+      ]
     }
   ],
 
@@ -696,6 +720,18 @@ const stopTypes = {
         {
           name: 'Télécabine',
           value: 'telecabin'
+        }
+      ]
+    },
+    {
+      name: 'Funiculaire',
+      value: 'metroStation',
+      quayItemName: 'quay',
+      transportMode: 'funicular',
+      submodes: [
+        {
+          name: 'Funiculaire',
+          value: 'funicular'
         }
       ]
     }
