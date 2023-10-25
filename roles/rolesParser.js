@@ -189,6 +189,11 @@ const doesRoleGrantAccessToStop = (roles, roleStopPlaceType, roleTransportMode, 
 
   if (!stopPlaceTypeValid && !isSubModeRestrictionRelevant) {
 
+    if (stopPlace.stopPlaceType === 'other') {
+      return true;
+    }
+
+
     if (!stopPlace.submode) {
       return false;
     }
