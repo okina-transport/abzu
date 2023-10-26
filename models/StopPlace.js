@@ -84,14 +84,12 @@ class StopPlace {
       }
 
       if (stop.tariffZones && stop.tariffZones.length) {
-        clientStop.tariffZones = stop.tariffZones.map(zone => {
-          if (zone.name && zone.name.value) {
-            return {
+        clientStop.tariffZones = stop.tariffZones
+            .filter(zone => zone.name && zone.name.value)
+            .map(zone => ({
               name: zone.name.value,
               id: zone.id,
-            };
-          }
-        });
+            }));
       } else {
         clientStop.tariffZones = [];
       }
