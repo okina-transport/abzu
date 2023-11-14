@@ -24,7 +24,7 @@ const junctionIcon = require('../../static/icons/junction-icon-2x.png');
 const quayIcon = require('../../static/icons/quay-marker.png');
 const newStopIcon = require('../../static/icons/new-stop-icon-2x.png');
 const parkAndRideIcon = require('../../static/icons/parking-icon.png');
-const bikeParkingIcon = require('../../static/icons/cycle-parking-icon.png');
+const bikeParkingIcon = require('../../static/icons/modalities/Parking_velo.png');
 
 class NewElementsBox extends React.Component {
   constructor(props) {

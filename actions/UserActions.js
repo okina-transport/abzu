@@ -268,6 +268,10 @@ UserActions.removeStopsNearbyForOverview = () => dispatch => {
   dispatch(createThunk(types.REMOVED_STOPS_NEARBY_FOR_OVERVIEW, null));
 };
 
+UserActions.removeParkingsNearbyForOverview = () => dispatch => {
+    dispatch(createThunk(types.REMOVED_PARKING_NEARBY_FOR_OVERVIEW, null));
+};
+
 UserActions.startCreatingPolyline = (coordinates, id, type) => dispatch => {
   dispatch(
     createThunk(types.STARTED_CREATING_POLYLINE, {

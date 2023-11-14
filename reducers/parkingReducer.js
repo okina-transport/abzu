@@ -37,6 +37,12 @@ const parkingReducer = (state = {}, action) => {
                 newParking: null
             });
 
+
+        case types.REMOVED_PARKING_NEARBY_FOR_OVERVIEW:
+            return Object.assign({}, state, {
+                neighbourParkings: [],
+            });
+
         case types.NAVIGATE_TO_MAIN_AFTER_DELETE:
             return Object.assign({}, state, {
                 searchResults: [],

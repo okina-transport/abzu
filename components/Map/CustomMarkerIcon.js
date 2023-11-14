@@ -47,7 +47,6 @@ class CustomMarkerIcon extends React.Component {
       imageStyle.filter=null;
     }
 
-
     if (type === 'other' && typeOfParkingRef !== null && typeOfParkingRef === 'IndividualBox'){
       imageStyle.background= '#32CD32';
       imageStyle.filter=null;
@@ -56,17 +55,15 @@ class CustomMarkerIcon extends React.Component {
     const icon = getIconIdByTypeOrSubmode(submode, type, isMultimodal, secure, typeOfParkingRef);
 
 
-    if (isABikeTransportMode(type, secure,typeOfParkingRef )){
+    if (isABikeTransportMode(typeOfParkingRef, type) || isASecureBikeParking(typeOfParkingRef, type) || isACycleRentalBike(type)) {
       this._typeIcon = (
-          <img style={{ width: 25, height: 25,objectFit: 'cover', ...imageStyle }} src={icon} />
+          <img style={{width: 20, height: 20, objectFit: 'cover', ...imageStyle}} src={icon}/>
       );
-
-    }else{
+    } else {
       this._typeIcon = (
           <img style={{ width: 20, height: 20, ...imageStyle }} src={icon} />
       );
     }
-
   }
 
   render() {
@@ -78,9 +75,17 @@ class CustomMarkerIcon extends React.Component {
   }
 }
 
-const isABikeTransportMode = ( type, secure, typeOfParkingRef) => {
-    return type === "cycleRental" ||  (typeOfParkingRef !== null &&
-        (typeOfParkingRef === 'IndividualBox' || typeOfParkingRef === 'SecureBikeParking' || typeOfParkingRef === 'BikeParking')) ;
+const isABikeTransportMode = (typeOfParkingRef, type) => {
+    return type !== "cycleRental" && (typeOfParkingRef !== null &&
+        (typeOfParkingRef === 'IndividualBox' || typeOfParkingRef === 'BikeParking'));
+}
+
+const isACycleRentalBike = (type) => {
+  return type === "cycleRental";
+}
+
+const isASecureBikeParking = (typeOfParkingRef, type) => {
+  return type !== "cycleRental" && (typeOfParkingRef !== null && typeOfParkingRef === 'SecureBikeParking');
 }
 
 const getIconIdByTypeOrSubmode = (submode, type, isMultimodal, secure, typeOfParkingRef) => {
@@ -97,8 +102,16 @@ const getIconIdByModality = (type, isMultimodal, secure, typeOfParkingRef) => {
     return require('../../static/icons/modalities/multiModal.png');
   }
 
-  if (isABikeTransportMode(type, secure, typeOfParkingRef)){
-    return require('../../static/icons/modalities/bike.png');
+  if ( isASecureBikeParking(typeOfParkingRef, type)){
+    return require('../../static/icons/modalities/bikeDeposit.png');
+  }
+
+  if (isABikeTransportMode(typeOfParkingRef, type)){
+    return require('../../static/icons/modalities/Parking_velo.png');
+  }
+
+  if (isACycleRentalBike(type)){
+    return require('../../static/icons/modalities/VLS.png');
   }
 
 
@@ -113,7 +126,7 @@ const getIconIdByModality = (type, isMultimodal, secure, typeOfParkingRef) => {
     harbourPort: 'harbour_port',
     liftStation: 'lift-without-box',
     parkAndRide: 'parking',
-    bikeParking: 'bikeParking',
+    bikeParking: 'Parking_velo',
     urbanParking: 'parking',
     airportParking: 'parking',
     trainStationParking: 'parking',
@@ -124,7 +137,7 @@ const getIconIdByModality = (type, isMultimodal, secure, typeOfParkingRef) => {
     roadside: 'parking',
     parkingZone: 'parking',
     undefined: 'parking',
-    cycleRental: 'bike',
+    cycleRental: 'VLS',
     storePoint: 'storepoint'
   };
 

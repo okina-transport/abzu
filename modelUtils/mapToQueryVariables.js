@@ -299,6 +299,10 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       parking.parkingLayout = source.parkingLayout;
     }
 
+    if (source.secure) {
+      parking.secure = source.secure;
+    }
+
     if (source.parkingPaymentProcess) {
       parking.parkingPaymentProcess = source.parkingPaymentProcess;
     }

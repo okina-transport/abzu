@@ -85,10 +85,8 @@ class Map extends React.Component {
       this.getNearbyParking(client, ignoreParkingId, bounds, includeExpired);
       this.getNearbyPointOfInterest(client, ignorePointOfInterestId, bounds, includeExpired);
     } else {
-      const { neighbourMarkersCount } = this.props;
-      if (neighbourMarkersCount) {
         dispatch(UserActions.removeStopsNearbyForOverview());
-      }
+        dispatch(UserActions.removeParkingsNearbyForOverview());
     }
   }
 
@@ -116,7 +114,8 @@ class Map extends React.Component {
 const mapStateToProps = state => {
   return {
     position: state.stopPlace.centerPosition,
-    neighbourMarkersCount: state.stopPlace.neighbourStops ? state.stopPlace.neighbourStops.length : 0,
+    neighbourMarkersCount: state.stopPlace.neighbourStops ? state.stopPlace.neighbourStops.length :
+        state.parking.neighbourParkings ? state.parking.neighbourParkings.length : 0,
     markers: getMarkersForMap(state),
     kc: state.roles.kc,
     zoom: state.stopPlace.zoom,

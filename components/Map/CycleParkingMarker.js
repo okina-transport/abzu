@@ -17,7 +17,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Marker, Popup } from 'react-leaflet';
 import L, { divIcon } from 'leaflet';
-import CycleParkingIcon from '../../static/icons/cycle-parking-icon.png';
+import CycleParkingIcon from '../../static/icons/modalities/Parking_velo.png';
 import { connect } from 'react-redux';
 import { getPrimaryDarkerColor } from '../../config/themeConfig';
 import { StopPlaceActions } from '../../actions/';
@@ -53,7 +53,7 @@ class CycleParkingMarker extends React.Component {
 
   handleSetFocus() {
     const { dispatch, index } = this.props;
-    dispatch(StopPlaceActions.setElementFocus(index, 'parking'));
+    dispatch(StopPlaceActions.setElementFocus(index, 'cycleRental'));
     const item = document.querySelector(".pr-item-expanded");
     if (item) {
       item.scrollIntoView(true);
