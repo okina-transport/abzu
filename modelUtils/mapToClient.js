@@ -638,9 +638,15 @@ helpers.updateCurrentParkingTypeOfParkingRef = (current, typeOfParkingRef) => {
 };
 
 helpers.updateCurrentParkingSecure = (current, secure) => {
+  let typeOfParkingRef;
+  if (secure === true){
+    typeOfParkingRef = 'SecureBikeParking';
+  } else {
+    typeOfParkingRef = 'BikeParking';
+  }
   return Object.assign({}, current, {
     secure: secure,
-    typeOfParkingRef: 'SecureBikeParking'
+    typeOfParkingRef: typeOfParkingRef
   });
 };
 

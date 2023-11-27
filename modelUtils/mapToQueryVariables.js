@@ -299,7 +299,7 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       parking.parkingLayout = source.parkingLayout;
     }
 
-    if (source.secure) {
+    if (source.secure !== undefined) {
       parking.secure = source.secure;
     }
 
