@@ -1,4 +1,5 @@
-FROM node:10.16.3
+FROM node:10.24.1
+
 # https://hub.docker.com/_/node/
 
 
