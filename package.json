@@ -44,7 +44,6 @@
     "graphql-fetch": "1.0.1",
     "graphql-tag": "2.4.2",
     "image-webpack-loader": "^4.6.0",
-    "seek-bzip" : "2.0.0",
     "intl": "1.2.5",
     "intl-locales-supported": "1.0.0",
     "jest": "^23.6.0",
