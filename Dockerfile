@@ -1,4 +1,4 @@
-FROM node:10.24.1
+FROM registry.okina.fr/oki/abzu-base:1.0.0
 
 # https://hub.docker.com/_/node/
 
