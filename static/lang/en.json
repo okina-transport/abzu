@@ -158,6 +158,7 @@
   "heating": "Heating",
   "help": "Help",
   "hide_quays": "Hide quays",
+  "import_accessibility" : "Import for accessibility update",
   "import_parking" : "Import Parking",
   "import_tad": "Import TAD",
   "import_sale_point" : "Import Sale point",

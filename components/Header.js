@@ -39,6 +39,7 @@ import {MapsLocalParking} from "material-ui/svg-icons/index.es";
 import {MapsStoreMallDirectory} from "material-ui/svg-icons/index.es";
 import {PoiIcon} from "./MainPage/PoiIcon";
 import {MapsDirectionsBike} from "material-ui/svg-icons/index.es";
+import {ActionAccessibility} from "material-ui/svg-icons/index.es";
 
 class Header extends React.Component {
   constructor(props) {
@@ -85,6 +86,9 @@ class Header extends React.Component {
       case 'GoToReports':
         this.goToReports();
         break;
+      case 'GoToImportAccessibility':
+        this.goToImportAccessibility();
+        break;
       case 'GoToImportParking':
         this.goToImportParking();
         break;
@@ -116,6 +120,10 @@ class Header extends React.Component {
 
   goToReports() {
     this.props.dispatch(UserActions.navigateTo(Routes.REPORTS, ''));
+  }
+
+  goToImportAccessibility() {
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_ACCESSIBILITY_CSV, ''));
   }
 
   goToImportParking() {
@@ -194,6 +202,7 @@ class Header extends React.Component {
     const showPathLinks = formatMessage({ id: 'show_path_links' });
     const showCompassBearing = formatMessage({ id: 'show_compass_bearing' });
     const reportSite = formatMessage({ id: 'report_site' });
+    const importCSVAccessibility = formatMessage({id: 'import_accessibility' })
     const importCSVParkings = formatMessage({id: 'import_parking'})
     const importCSVBikeParkings = formatMessage({id: 'import_bike_parking'})
     const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
@@ -286,6 +295,17 @@ class Header extends React.Component {
               />
               {isSuperAdmin && (
                   <React.Fragment>
+              <MenuItem
+                  leftIcon={<ActionAccessibility color="#005A82" />}
+                  primaryText={importCSVAccessibility}
+                  href = {Routes.IMPORT_ACCESSIBILITY_CSV}
+                  onClick={() =>
+                      this.handleConfirmChangeRoute(
+                          this.goToImportAccessibility.bind(this),
+                          'GoToImportAccessibility'
+                      )}
+                  style={{ fontSize: 12, padding: 0 }}
+              />
               <MenuItem
                   leftIcon={<MapsLocalParking color="#005A82" />}
                   primaryText={importCSVParkings}

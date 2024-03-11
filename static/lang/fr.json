@@ -177,6 +177,7 @@
   "heating": "Chauffage",
   "help": "Aide",
   "hide_quays": "Masquer les quais",
+  "import_accessibility" : "Import pour la mise à jour de l'accessibilité",
   "import_parking" : "Import Parking",
   "import_sale_point" : "Import Point de vente",
   "import_poi" : "Import POI",
