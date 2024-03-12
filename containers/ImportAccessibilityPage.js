@@ -128,6 +128,37 @@ class ImportAccessibilityPage extends Component {
                     </Grid>
                 </Grid>
 
+                <Grid container style={{ padding: 20 }}>
+                    Le fichier à importer doit :
+                    <ul>
+                        <li>
+                            être au format .csv
+                        </li>
+                        <li>
+                            contenir les colonnes dans cette ordre précis :
+                            <ul>
+                                <li>identifiant Lumidata</li>
+                                <li>nom</li>
+                                <li>code INSEE</li>
+                                <li>nom de la commune</li>
+                                <li>identifiant de l'arrêt</li>
+                                <li>direction</li>
+                                <li>lignes</li>
+                                <li>lignes > directions</li>
+                                <li>longitude</li>
+                                <li>latitude</li>
+                                <li>url</li>
+                                <li>wheelchair access</li>
+                                <li>step free access</li>
+                                <li>escalator free access</li>
+                                <li>lift free access</li>
+                                <li>audible signals available</li>
+                                <li>visual signs available</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </Grid>
+
                 {this.state.errors && this.state.errors.length > 0 && this.state.errors.map(error => alert(error.message))}
 
                 {this.state.result && this.state.result.length > 0 && alert(this.state.result)}
