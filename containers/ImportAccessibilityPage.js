@@ -87,7 +87,7 @@ class ImportAccessibilityPage extends Component {
                 <Grid container spacing={2} style={{ padding: 20 }}>
                     <Grid item xs={3} style={{ margin: 'auto' }}>
                         <Input
-                            id={"upload_csv_parking"}
+                            id={"upload_csv_accessibility"}
                             type={"file"}
                             accept={".csv"}
                             onChange={this.handleOnChange}
@@ -111,7 +111,7 @@ class ImportAccessibilityPage extends Component {
                     <Grid item xs={5} style={{ margin: 'auto', textAlign: 'center' }}>
                         <RaisedButton
                             style={{ marginTop: 10, marginLeft: 5, transform: 'scale(0.9)' }}
-                            label={formatMessage({ id: 'upload_parkings_file_submit' })}
+                            label={formatMessage({ id: 'upload_accessibility_file_submit' })}
                             onClick={(event) => {
                                 this.handleOnSubmit(event);
                             }}
