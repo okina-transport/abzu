@@ -478,6 +478,7 @@
   "update": "Mise à jour",
   "upload_file": "Charger fichier",
   "upload_parkings_file_submit": "Importer",
+  "upload_accessibility_file_submit": "Importer la mise à jour des accessibilités",
   "upload_bike_parkings_file_submit": "Importer les stationnements vélos",
   "upload_salePoint_file_submit": "Importer les points de vente",
   "upload_poi_file_submit": "Importer les POI",
