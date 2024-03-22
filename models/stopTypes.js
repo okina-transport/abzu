@@ -242,7 +242,7 @@ const stopTypes = {
     },
     {
       name: 'Taubane',
-      value: 'metroStation',
+      value: 'metroStation2',
       quayItemName: 'quay',
       transportMode: 'funicular',
       submodes: [
@@ -430,7 +430,7 @@ const stopTypes = {
     {
       name: 'Metro stop',
       quayItemName: 'track',
-      value: 'metroStation',
+      value: 'metroStation6',
       transportMode: 'metro',
       submodes: [
         {
@@ -485,7 +485,7 @@ const stopTypes = {
     },
     {
       name: 'Funicular',
-      value: 'metroStation',
+      value: 'metroStation3',
       quayItemName: 'quay',
       transportMode: 'funicular',
       submodes: [
@@ -669,7 +669,7 @@ const stopTypes = {
     },
     {
       name: 'Métro',
-      value: 'metroStation',
+      value: 'metroStation7',
       quayItemName: 'quay',
       transportMode: 'metro',
       submodes: [
@@ -725,7 +725,7 @@ const stopTypes = {
     },
     {
       name: 'Funiculaire',
-      value: 'metroStation',
+      value: 'metroStation4',
       quayItemName: 'quay',
       transportMode: 'funicular',
       submodes: [

@@ -153,8 +153,36 @@ UserActions.toggleShowParkings = value => dispatch => {
   dispatch(createThunk(types.TOGGLED_IS_SHOW_PARKINGS, value));
 };
 
-UserActions.toggleShowPointsOfInterest = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI, value));
+UserActions.toggleShowPoiShop = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_SHOP, value));
+};
+
+UserActions.toggleShowPoiAmenity = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_AMENITY, value));
+};
+
+UserActions.toggleShowPoiBuilding = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_BUILDING, value));
+};
+
+UserActions.toggleShowPoiHistoric = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_HISTORIC, value));
+};
+
+UserActions.toggleShowPoiLanduse = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_LANDUSE, value));
+};
+
+UserActions.toggleShowPoiLeisure = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_LEISURE, value));
+};
+
+UserActions.toggleShowPoiTourism = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_TOURISM, value));
+};
+
+UserActions.toggleShowPoiOffice = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_OFFICE, value));
 };
 
 UserActions.applyStopTypeSearchFilter = filters => dispatch => {

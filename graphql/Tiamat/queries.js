@@ -171,6 +171,22 @@ export const pointOfInterestBBQuery = gql`
                 fromDate
                 toDate
             }
+           classifications {
+                    id
+                name {
+                    value
+                }
+                osm
+                active
+                parent {
+                    id
+                    name {
+                        value
+                    }
+                    osm
+                    active
+                }
+            }
         }
     },
 `;

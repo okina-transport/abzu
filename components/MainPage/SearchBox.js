@@ -50,946 +50,1095 @@ import {Entities} from '../../models/Entities';
 import SettingsManager from "../../singletons/SettingsManager";
 
 class SearchBox extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showMoreFilterOptions: null,
-      createNewStopOpen: false,
-      coordinatesDialogOpen: false,
-      loading: false
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            showMoreFilterOptions: null,
+            showMapFilters: false,
+            createNewStopOpen: false,
+            coordinatesDialogOpen: false,
+            loading: false
+        };
 
-    const searchStop = (searchText, dataSource, params, filter) => {
-      const chips = filter ? filter.topoiChips : this.props.topoiChips;
-      const showFutureAndExpired = filter
-        ? filter.showFutureAndExpired
-        : this.props.showFutureAndExpired;
-      const stopPlaceTypes = filter
-        ? filter.stopType
-        : this.props.stopTypeFilter;
-      const filterByOrg = filter ? filter.filterByOrg : this.props.filterByOrg;
+        const searchStop = (searchText, dataSource, params, filter) => {
+            const chips = filter ? filter.topoiChips : this.props.topoiChips;
+            const showFutureAndExpired = filter
+                ? filter.showFutureAndExpired
+                : this.props.showFutureAndExpired;
+            const stopPlaceTypes = filter
+                ? filter.stopType
+                : this.props.stopTypeFilter;
+            const filterByOrg = filter ? filter.filterByOrg : this.props.filterByOrg;
 
-      let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
-      this.setState({ loading: true });
+            let optionalOrgCodeFilter = filterByOrg ? this.findOrgCodeFilter() : null;
+            this.setState({loading: true});
 
-      findEntitiesWithFilters(
-        this.props.client,
-        searchText,
-        stopPlaceTypes,
-        chips,
-        showFutureAndExpired,
-        optionalOrgCodeFilter,
-        this.props.showStops,
-        this.props.showParkings,
-        this.props.showPointsOfInterest
-      ).then(() => {
-        this.setState({ loading: false });
-      });
-    };
-    this.debouncedSearch = debounce(searchStop, 500);
-  }
-
-  handleSearchUpdate(searchText, dataSource, params, filter) {
-    // prevents ghost clicks
-    if (params && params.source === 'click') {
-      return;
+            findEntitiesWithFilters(
+                this.props.client,
+                searchText,
+                stopPlaceTypes,
+                chips,
+                showFutureAndExpired,
+                optionalOrgCodeFilter,
+                this.props.showStops,
+                this.props.showParkings,
+                this.props.showPoiShop,
+                this.props.showPointsOfInterest
+            ).then(() => {
+                this.setState({loading: false});
+            });
+        };
+        this.debouncedSearch = debounce(searchStop, 500);
     }
 
-    if (!searchText || !searchText.length) {
-      this.props.dispatch(UserActions.clearSearchResults());
-      this.props.dispatch(UserActions.setSearchText(''));
-    } else if (searchText.indexOf('(') > -1 && searchText.indexOf(')') > -1) {
-      return;
-    } else {
-      this.props.dispatch(UserActions.setSearchText(searchText));
-      this.debouncedSearch(searchText, dataSource, params, filter);
-    }
-  }
+    handleSearchUpdate(searchText, dataSource, params, filter) {
+        // prevents ghost clicks
+        if (params && params.source === 'click') {
+            return;
+        }
 
-  handleEdit(id, entityType) {
-    let route;
-      switch (entityType) {
-        case Entities.STOP_PLACE:
-          route = Routes.STOP_PLACE;
-          break;
-        case Entities.GROUP_OF_STOP_PLACE:
-          route = Routes.GROUP_OF_STOP_PLACE;
-          break;
-        case Entities.PARKING:
-          route = Routes.PARKING;
-          break;
-        case Entities.POINT_OF_INTEREST:
-          route = Routes.POINT_OF_INTEREST;
-          break;
-        default:
-          route = null;
-          break;
-      }
-    this.props.dispatch(UserActions.navigateTo(`/${route}/`, id));
-  }
-
-  handleSaveAsFavorite() {
-    this.props.dispatch(UserActions.openFavoriteNameDialog());
-  }
-
-  removeFiltersAndSearch() {
-    this.props.dispatch(UserActions.removeAllFilters());
-    this.handleSearchUpdate(this.props.searchText, null, null, {
-      topoiChips: [],
-      stopTypeFilter: []
-    });
-  }
-
-  handleRetrieveFilter(filter) {
-    this.props.dispatch(UserActions.loadFavoriteSearch(filter));
-    this.handleSearchUpdate(filter.searchText, null, null, filter);
-
-    this.refs.searchText.setState({
-      open: true,
-      anchorEl: ReactDOM.findDOMNode(this.refs.searchText)
-    });
-  }
-
-  handlePopoverDismiss(filters) {
-    this.props.dispatch(UserActions.applyStopTypeSearchFilter(filters));
-  }
-
-  toggleShowFutureAndExpired(value) {
-    const { searchText, topoiChips, stopTypeFilter } = this.props;
-    if (searchText) {
-      this.handleSearchUpdate(searchText, null, null, {
-        showFutureAndExpired: value,
-        topoiChips,
-        stopType: stopTypeFilter
-      });
-    }
-    this.props.dispatch(UserActions.toggleShowFutureAndExpired(value));
-    this.changeStateShowMoreFilterOptions();
-  }
-
-  toggleSearchWithOrgCode(value) {
-    const {
-      searchText,
-      topoiChips,
-      stopTypeFilter,
-      showFutureAndExpired
-    } = this.props;
-    if (searchText) {
-      this.handleSearchUpdate(searchText, null, null, {
-        filterByOrg: value,
-        topoiChips,
-        stopType: stopTypeFilter,
-        showFutureAndExpired
-      });
-    }
-    this.props.dispatch(UserActions.toggleSearchWithOrgCode(value));
-    this.changeStateShowMoreFilterOptions();
-  }
-
-  toggleSearchWithFullTAD(value) {
-    const {
-      searchText,
-      topoiChips,
-      stopTypeFilter,
-      showFutureAndExpired
-    } = this.props;
-    if (searchText) {
-      this.handleSearchUpdate(searchText, null, null, {
-        filterByFullTAD: value,
-        topoiChips,
-        stopType: stopTypeFilter,
-        showFutureAndExpired
-      });
-    }
-    if (value){
-      let Settings = new SettingsManager();
-      Settings.setFilterByPartialTAD(false);
+        if (!searchText || !searchText.length) {
+            this.props.dispatch(UserActions.clearSearchResults());
+            this.props.dispatch(UserActions.setSearchText(''));
+        } else if (searchText.indexOf('(') > -1 && searchText.indexOf(')') > -1) {
+            return;
+        } else {
+            this.props.dispatch(UserActions.setSearchText(searchText));
+            this.debouncedSearch(searchText, dataSource, params, filter);
+        }
     }
 
-
-    this.props.dispatch(UserActions.toggleSearchWithFullTAD(value));
-    this.changeStateShowMoreFilterOptions();
-  }
-
-  toggleSearchWithPartialTAD(value) {
-    const {
-      searchText,
-      topoiChips,
-      stopTypeFilter,
-      showFutureAndExpired
-    } = this.props;
-    if (searchText) {
-      this.handleSearchUpdate(searchText, null, null, {
-        filterByPartialTAD: value,
-        topoiChips,
-        stopType: stopTypeFilter,
-        showFutureAndExpired
-      });
-    }
-    if (value){
-      let Settings = new SettingsManager();
-      Settings.setFilterByFullTAD(false);
+    handleEdit(id, entityType) {
+        let route;
+        switch (entityType) {
+            case Entities.STOP_PLACE:
+                route = Routes.STOP_PLACE;
+                break;
+            case Entities.GROUP_OF_STOP_PLACE:
+                route = Routes.GROUP_OF_STOP_PLACE;
+                break;
+            case Entities.PARKING:
+                route = Routes.PARKING;
+                break;
+            case Entities.POINT_OF_INTEREST:
+                route = Routes.POINT_OF_INTEREST;
+                break;
+            default:
+                route = null;
+                break;
+        }
+        this.props.dispatch(UserActions.navigateTo(`/${route}/`, id));
     }
 
-    this.props.dispatch(UserActions.toggleSearchWithPartialTAD(value));
-    this.changeStateShowMoreFilterOptions();
-  }
-
-  toggleShowStops(value) {
-    this.props.dispatch(UserActions.toggleShowStops(value));
-  }
-
-  toggleShowParkings(value) {
-    this.props.dispatch(UserActions.toggleShowParkings(value));
-  }
-
-  toggleShowPointsOfInterest(value) {
-    this.props.dispatch(UserActions.toggleShowPointsOfInterest(value));
-  }
-
-  handleTopographicalPlaceInput(searchText) {
-    const { client } = this.props;
-    findTopographicalPlace(client, searchText);
-  }
-
-  handleNewRequest(result) {
-    if (typeof result.element !== 'undefined') {
-      this.props.dispatch(StopPlaceActions.setMarkerOnMap(result.element));
+    handleSaveAsFavorite() {
+        this.props.dispatch(UserActions.openFavoriteNameDialog());
     }
-  }
 
-  handleOpenCoordinatesDialog() {
-    this.setState({
-      coordinatesDialogOpen: true
-    });
-  }
-
-  handleOpenLookupCoordinatesDialog() {
-    this.props.dispatch(UserActions.openLookupCoordinatesDialog());
-  }
-
-  handleCloseLookupCoordinatesDialog() {
-    this.props.dispatch(UserActions.closeLookupCoordinatesDialog());
-  }
-
-  handleApplyModalityFilters(filters) {
-    const {
-      searchText,
-      showFutureAndExpired,
-      topoiChips,
-      filterByOrg,
-        filterByFullTAD,
-      filterByPartialTAD
-    } = this.props;
-    if (searchText) {
-      this.handleSearchUpdate(searchText, null, null, {
-        showFutureAndExpired,
-        topoiChips,
-        stopType: filters,
-        filterByOrg,
-        filterByFullTAD,
-        filterByPartialTAD
-      });
+    removeFiltersAndSearch() {
+        this.props.dispatch(UserActions.removeAllFilters());
+        this.handleSearchUpdate(this.props.searchText, null, null, {
+            topoiChips: [],
+            stopTypeFilter: []
+        });
     }
-    this.props.dispatch(UserActions.applyStopTypeSearchFilter(filters));
-    if(filters.length === 0){
+
+    handleRetrieveFilter(filter) {
+        this.props.dispatch(UserActions.loadFavoriteSearch(filter));
+        this.handleSearchUpdate(filter.searchText, null, null, filter);
+
+        this.refs.searchText.setState({
+            open: true,
+            anchorEl: ReactDOM.findDOMNode(this.refs.searchText)
+        });
+    }
+
+    handlePopoverDismiss(filters) {
+        this.props.dispatch(UserActions.applyStopTypeSearchFilter(filters));
+    }
+
+    toggleShowFutureAndExpired(value) {
+        const {searchText, topoiChips, stopTypeFilter} = this.props;
+        if (searchText) {
+            this.handleSearchUpdate(searchText, null, null, {
+                showFutureAndExpired: value,
+                topoiChips,
+                stopType: stopTypeFilter
+            });
+        }
+        this.props.dispatch(UserActions.toggleShowFutureAndExpired(value));
         this.changeStateShowMoreFilterOptions();
     }
-  }
 
-  handleSubmitCoordinates(position) {
-    this.props.dispatch(StopPlaceActions.changeMapCenter(position, 11));
-    this.props.dispatch(
-      UserActions.setMissingCoordinates(position, this.props.chosenResult.id)
-    );
-
-    this.setState({
-      coordinatesDialogOpen: false
-    });
-  }
-
-  handleAddChip({ text, type, id }) {
-    const {
-      searchText,
-      stopTypeFilters,
-      showFutureAndExpired,
-      topoiChips,
-      filterByOrg,
-      filterByFullTAD,
-      filterByPartialTAD
-    } = this.props;
-    if (searchText) {
-      this.handleSearchUpdate(searchText, null, null, {
-        showFutureAndExpired,
-        topoiChips: topoiChips.concat({
-          text,
-          type,
-          value: id
-        }),
-        stopType: stopTypeFilters,
-        filterByOrg,
-        filterByFullTAD,
-        filterByPartialTAD
-      });
-    }
-    this.props.dispatch(
-      UserActions.addToposChip({ text: text, type: type, value: id })
-    );
-    this.refs.topoFilter.setState({
-      searchText: ''
-    });
-  }
-
-  handleDeleteChip(chipValue) {
-    const {
-      dispatch,
-      searchText,
-      stopTypeFilters,
-      showFutureAndExpired,
-      topoiChips,
-      filterByOrg,
-      filterByFullTAD,
-      filterByPartialTAD
-    } = this.props;
-    if (searchText) {
-      this.handleSearchUpdate(searchText, null, null, {
-        showFutureAndExpired,
-        topoiChips: topoiChips.filter(chip => chip.value !== chipValue),
-        stopType: stopTypeFilters,
-        filterByOrg,
-        filterByFullTAD,
-        filterByPartialTAD
-      });
-    }
-    dispatch(UserActions.deleteChip(chipValue));
-    this.changeStateShowMoreFilterOptions();
-  }
-
-  handleNewStop(isMultiModal) {
-    this.props.dispatch(UserActions.toggleIsCreatingNewStop(isMultiModal));
-  }
-
-  handleNewParking() {
-    this.props.dispatch(UserActions.toggleIsCreatingNewParking());
-  }
-
-  handleLookupCoordinates(position) {
-    this.props.dispatch(UserActions.lookupCoordinates(position, false));
-    this.handleCloseLookupCoordinatesDialog();
-  }
-
-  handleClearSearch() {
-    this.refs.searchText.setState({
-      searchText: ''
-    });
-    this.props.dispatch(UserActions.setSearchText(''));
-  }
-
-  handleToggleFilter(value) {
-    this.setState({
-      showMoreFilterOptions: value
-    });
-  }
-
-  getTopographicalNames(topographicalPlace) {
-    let name = topographicalPlace.name.value;
-
-    if (
-      topographicalPlace.topographicPlaceType === 'municipality' &&
-      topographicalPlace.parentTopographicPlace
-    ) {
-      name += `, ${topographicalPlace.parentTopographicPlace.name.value}`;
-    }
-    return name;
-  }
-
-  getMenuItems(nextProps) {
-    const { dataSource, topoiChips, stopTypeFilter } = nextProps;
-    const { formatMessage } = nextProps.intl;
-    let menuItems = [];
-console.log({ dataSource });
-    if (dataSource && dataSource.length) {
-      menuItems = dataSource.filter(v => !v.permanentlyTerminated).map(element =>
-        createSearchMenuItem(element, formatMessage)
-      );
-    } else {
-      menuItems = [
-        {
-          text: '',
-          value: (
-            <MenuItem
-              style={{ paddingLeft: 10, paddingRight: 10, width: 'auto' }}
-              primaryText={
-                <div style={{ fontWeight: 600, fontSize: '0.8em' }}>
-                  {formatMessage({ id: 'no_results_found' })}
-                </div>
-              }
-            />
-          )
+    toggleSearchWithOrgCode(value) {
+        const {
+            searchText,
+            topoiChips,
+            stopTypeFilter,
+            showFutureAndExpired
+        } = this.props;
+        if (searchText) {
+            this.handleSearchUpdate(searchText, null, null, {
+                filterByOrg: value,
+                topoiChips,
+                stopType: stopTypeFilter,
+                showFutureAndExpired
+            });
         }
-      ];
+        this.props.dispatch(UserActions.toggleSearchWithOrgCode(value));
+        this.changeStateShowMoreFilterOptions();
     }
 
-    if (stopTypeFilter.length || topoiChips.length) {
-      const filterNotification = {
-        text: '',
-        value: (
-          <MenuItem
-            style={{
-              paddingRight: 10,
-              width: 'auto',
-              paddingTop: 2,
-              paddingBottom: 2
-            }}
-            disabled={true}
-            primaryText={
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  borderTop: '1px solid #000'
-                }}
-              >
-                <span style={{ fontSize: '0.8em', color: '#777' }}>
-                  {formatMessage({ id: 'filters_are_applied' })}
+    toggleSearchWithFullTAD(value) {
+        const {
+            searchText,
+            topoiChips,
+            stopTypeFilter,
+            showFutureAndExpired
+        } = this.props;
+        if (searchText) {
+            this.handleSearchUpdate(searchText, null, null, {
+                filterByFullTAD: value,
+                topoiChips,
+                stopType: stopTypeFilter,
+                showFutureAndExpired
+            });
+        }
+        if (value) {
+            let Settings = new SettingsManager();
+            Settings.setFilterByPartialTAD(false);
+        }
+
+
+        this.props.dispatch(UserActions.toggleSearchWithFullTAD(value));
+        this.changeStateShowMoreFilterOptions();
+    }
+
+    toggleSearchWithPartialTAD(value) {
+        const {
+            searchText,
+            topoiChips,
+            stopTypeFilter,
+            showFutureAndExpired
+        } = this.props;
+        if (searchText) {
+            this.handleSearchUpdate(searchText, null, null, {
+                filterByPartialTAD: value,
+                topoiChips,
+                stopType: stopTypeFilter,
+                showFutureAndExpired
+            });
+        }
+        if (value) {
+            let Settings = new SettingsManager();
+            Settings.setFilterByFullTAD(false);
+        }
+
+        this.props.dispatch(UserActions.toggleSearchWithPartialTAD(value));
+        this.changeStateShowMoreFilterOptions();
+    }
+
+    toggleShowStops(value) {
+        this.props.dispatch(UserActions.toggleShowStops(value));
+    }
+
+    toggleShowParkings(value) {
+        this.props.dispatch(UserActions.toggleShowParkings(value));
+    }
+
+    toggleShowPoiShop(value) {
+        this.props.dispatch(UserActions.toggleShowPoiShop(value));
+    }
+
+    toggleShowPoiAmenity(value) {
+        this.props.dispatch(UserActions.toggleShowPoiAmenity(value));
+    }
+
+    toggleShowPoiBuilding(value) {
+        this.props.dispatch(UserActions.toggleShowPoiBuilding(value));
+    }
+
+    toggleShowPoiHistoric(value) {
+        this.props.dispatch(UserActions.toggleShowPoiHistoric(value));
+    }
+
+    toggleShowPoiLanduse(value) {
+        this.props.dispatch(UserActions.toggleShowPoiLanduse(value));
+    }
+
+    toggleShowPoiLeisure(value) {
+        this.props.dispatch(UserActions.toggleShowPoiLeisure(value));
+    }
+
+    toggleShowPoiTourism(value) {
+        this.props.dispatch(UserActions.toggleShowPoiTourism(value));
+    }
+
+    toggleShowPoiOffice(value) {
+        this.props.dispatch(UserActions.toggleShowPoiOffice(value));
+    }
+
+
+
+
+    handleTopographicalPlaceInput(searchText) {
+        const {client} = this.props;
+        findTopographicalPlace(client, searchText);
+    }
+
+    handleNewRequest(result) {
+        if (typeof result.element !== 'undefined') {
+            this.props.dispatch(StopPlaceActions.setMarkerOnMap(result.element));
+        }
+    }
+
+    handleOpenCoordinatesDialog() {
+        this.setState({
+            coordinatesDialogOpen: true
+        });
+    }
+
+    handleOpenLookupCoordinatesDialog() {
+        this.props.dispatch(UserActions.openLookupCoordinatesDialog());
+    }
+
+    handleCloseLookupCoordinatesDialog() {
+        this.props.dispatch(UserActions.closeLookupCoordinatesDialog());
+    }
+
+    handleApplyModalityFilters(filters) {
+        const {
+            searchText,
+            showFutureAndExpired,
+            topoiChips,
+            filterByOrg,
+            filterByFullTAD,
+            filterByPartialTAD
+        } = this.props;
+        if (searchText) {
+            this.handleSearchUpdate(searchText, null, null, {
+                showFutureAndExpired,
+                topoiChips,
+                stopType: filters,
+                filterByOrg,
+                filterByFullTAD,
+                filterByPartialTAD
+            });
+        }
+        this.props.dispatch(UserActions.applyStopTypeSearchFilter(filters));
+        if (filters.length === 0) {
+            this.changeStateShowMoreFilterOptions();
+        }
+    }
+
+    handleSubmitCoordinates(position) {
+        this.props.dispatch(StopPlaceActions.changeMapCenter(position, 11));
+        this.props.dispatch(
+            UserActions.setMissingCoordinates(position, this.props.chosenResult.id)
+        );
+
+        this.setState({
+            coordinatesDialogOpen: false
+        });
+    }
+
+    handleAddChip({text, type, id}) {
+        const {
+            searchText,
+            stopTypeFilters,
+            showFutureAndExpired,
+            topoiChips,
+            filterByOrg,
+            filterByFullTAD,
+            filterByPartialTAD
+        } = this.props;
+        if (searchText) {
+            this.handleSearchUpdate(searchText, null, null, {
+                showFutureAndExpired,
+                topoiChips: topoiChips.concat({
+                    text,
+                    type,
+                    value: id
+                }),
+                stopType: stopTypeFilters,
+                filterByOrg,
+                filterByFullTAD,
+                filterByPartialTAD
+            });
+        }
+        this.props.dispatch(
+            UserActions.addToposChip({text: text, type: type, value: id})
+        );
+        this.refs.topoFilter.setState({
+            searchText: ''
+        });
+    }
+
+    handleDeleteChip(chipValue) {
+        const {
+            dispatch,
+            searchText,
+            stopTypeFilters,
+            showFutureAndExpired,
+            topoiChips,
+            filterByOrg,
+            filterByFullTAD,
+            filterByPartialTAD
+        } = this.props;
+        if (searchText) {
+            this.handleSearchUpdate(searchText, null, null, {
+                showFutureAndExpired,
+                topoiChips: topoiChips.filter(chip => chip.value !== chipValue),
+                stopType: stopTypeFilters,
+                filterByOrg,
+                filterByFullTAD,
+                filterByPartialTAD
+            });
+        }
+        dispatch(UserActions.deleteChip(chipValue));
+        this.changeStateShowMoreFilterOptions();
+    }
+
+    handleNewStop(isMultiModal) {
+        this.props.dispatch(UserActions.toggleIsCreatingNewStop(isMultiModal));
+    }
+
+    handleNewParking() {
+        this.props.dispatch(UserActions.toggleIsCreatingNewParking());
+    }
+
+    handleLookupCoordinates(position) {
+        this.props.dispatch(UserActions.lookupCoordinates(position, false));
+        this.handleCloseLookupCoordinatesDialog();
+    }
+
+    handleClearSearch() {
+        this.refs.searchText.setState({
+            searchText: ''
+        });
+        this.props.dispatch(UserActions.setSearchText(''));
+    }
+
+    handleToggleFilter(value) {
+        this.setState({
+            showMoreFilterOptions: value
+        });
+    }
+
+
+    handleToggleMapFilters(value) {
+        this.setState({
+            showMapFilters: value
+        });
+    }
+
+
+    getTopographicalNames(topographicalPlace) {
+        let name = topographicalPlace.name.value;
+
+        if (
+            topographicalPlace.topographicPlaceType === 'municipality' &&
+            topographicalPlace.parentTopographicPlace
+        ) {
+            name += `, ${topographicalPlace.parentTopographicPlace.name.value}`;
+        }
+        return name;
+    }
+
+    getMenuItems(nextProps) {
+        const {dataSource, topoiChips, stopTypeFilter} = nextProps;
+        const {formatMessage} = nextProps.intl;
+        let menuItems = [];
+        console.log({dataSource});
+        if (dataSource && dataSource.length) {
+            menuItems = dataSource.filter(v => !v.permanentlyTerminated).map(element =>
+                createSearchMenuItem(element, formatMessage)
+            );
+        } else {
+            menuItems = [
+                {
+                    text: '',
+                    value: (
+                        <MenuItem
+                            style={{paddingLeft: 10, paddingRight: 10, width: 'auto'}}
+                            primaryText={
+                                <div style={{fontWeight: 600, fontSize: '0.8em'}}>
+                                    {formatMessage({id: 'no_results_found'})}
+                                </div>
+                            }
+                        />
+                    )
+                }
+            ];
+        }
+
+        if (stopTypeFilter.length || topoiChips.length) {
+            const filterNotification = {
+                text: '',
+                value: (
+                    <MenuItem
+                        style={{
+                            paddingRight: 10,
+                            width: 'auto',
+                            paddingTop: 2,
+                            paddingBottom: 2
+                        }}
+                        disabled={true}
+                        primaryText={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    borderTop: '1px solid #000'
+                                }}
+                            >
+                <span style={{fontSize: '0.8em', color: '#777'}}>
+                  {formatMessage({id: 'filters_are_applied'})}
                 </span>
-                <span
-                  onClick={() => this.removeFiltersAndSearch()}
-                  style={{
-                    fontSize: '0.8em',
-                    color: getPrimaryDarkerColor(),
-                    marginRight: 5,
-                    cursor: 'pointer'
-                  }}
-                >
-                  {formatMessage({ id: 'remove' })}
+                                <span
+                                    onClick={() => this.removeFiltersAndSearch()}
+                                    style={{
+                                        fontSize: '0.8em',
+                                        color: getPrimaryDarkerColor(),
+                                        marginRight: 5,
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                  {formatMessage({id: 'remove'})}
                 </span>
-              </div>
+                            </div>
+                        }
+                    />
+                )
+            };
+
+            if (menuItems.length > 6) {
+                menuItems[6] = filterNotification;
+            } else {
+                menuItems.push(filterNotification);
             }
-          />
-        )
-      };
-
-      if (menuItems.length > 6) {
-        menuItems[6] = filterNotification;
-      } else {
-        menuItems.push(filterNotification);
-      }
-    }
-    return menuItems;
-  }
-
-  findOrgCodeFilter() {
-    const rolesToSearchIn = ['editStops', ''];
-    let firstOrgFound = null;
-    if (this.props.roles) {
-      let firstUserRoleFound = this.props.roles.find(userRole =>
-        rolesToSearchIn.includes(JSON.parse(userRole).r)
-      );
-      if (firstUserRoleFound !== undefined) {
-        firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
-        if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
-          return firstOrgFound;
         }
-      }
+        return menuItems;
     }
-    return firstOrgFound;
-  }
 
-  displayMoreFilters(){
-      if(this.state.showMoreFilterOptions === null){
-          if(this.props.showFutureAndExpired || this.props.searchWithCode || this.props.topoiChips.length > 0 || this.props.stopTypeFilter.length > 0){
-              return true;
-          }
-          else{
-              return null;
-          }
-      }
-  }
-
-  changeStateShowMoreFilterOptions(){
-      if(this.state.showMoreFilterOptions === null){
-          this.setState({ showMoreFilterOptions: true});
-      }
-  }
-
-  render() {
-    const {
-      chosenResult,
-      isCreatingNewStop,
-      isCreatingNewParking,
-      favorited,
-      missingCoordinatesMap,
-      intl,
-      stopTypeFilter,
-      topoiChips,
-      topographicalPlaces,
-      canEdit,
-      isGuest,
-      lookupCoordinatesOpen,
-      newStopIsMultiModal,
-      dataSource,
-      showFutureAndExpired,
-      filterByOrg,
-      showStops,
-      showParkings,
-      showPointsOfInterest,
-      filterByFullTAD,
-      filterByPartialTAD
-    } = this.props;
-
-    const {
-      coordinatesDialogOpen,
-      showMoreFilterOptions,
-      loading
-    } = this.state;
-
-    const { formatMessage, locale } = intl;
-    const menuItems = this.getMenuItems(this.props);
-
-    const Loading = loading &&
-      !dataSource.length && [
-        {
-          text: '',
-          value: (
-            <MenuItem
-              style={{ paddingRight: 10, width: 'auto' }}
-              primaryText={
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: '0.8em',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
-                >
-                  <MdSpinner />
-                  <div style={{ marginLeft: 5 }}>
-                    {formatMessage({ id: 'loading' })}
-                  </div>
-                </div>
-              }
-            />
-          )
+    findOrgCodeFilter() {
+        const rolesToSearchIn = ['editStops', ''];
+        let firstOrgFound = null;
+        if (this.props.roles) {
+            let firstUserRoleFound = this.props.roles.find(userRole =>
+                rolesToSearchIn.includes(JSON.parse(userRole).r)
+            );
+            if (firstUserRoleFound !== undefined) {
+                firstOrgFound = JSON.parse(firstUserRoleFound).o.toLowerCase();
+                if (firstOrgFound !== window.config.netexPrefix.toLowerCase()) {
+                    return firstOrgFound;
+                }
+            }
         }
-      ];
+        return firstOrgFound;
+    }
 
-    const topographicalPlacesDataSource = topographicalPlaces
-      .filter(
-        place =>
-          place.topographicPlaceType === 'county' ||
-          place.topographicPlaceType === 'municipality' ||
-          place.topographicPlaceType === 'country'
-      )
-      .filter(
-        place => topoiChips.map(chip => chip.value).indexOf(place.id) == -1
-      )
-      .map(place => {
-        const name = this.getTopographicalNames(place);
-        return {
-          text: name,
-          id: place.id,
-          value: (
-            <MenuItem
-              primaryText={
-                  <span style={{ marginRight: 50 }}>
+    displayMoreFilters() {
+        if (this.state.showMoreFilterOptions === null) {
+            if (this.props.showFutureAndExpired || this.props.searchWithCode || this.props.topoiChips.length > 0 || this.props.stopTypeFilter.length > 0) {
+                return true;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    changeStateShowMoreFilterOptions() {
+        if (this.state.showMoreFilterOptions === null) {
+            this.setState({showMoreFilterOptions: true});
+        }
+    }
+
+    render() {
+        const {
+            chosenResult,
+            isCreatingNewStop,
+            isCreatingNewParking,
+            favorited,
+            missingCoordinatesMap,
+            intl,
+            stopTypeFilter,
+            topoiChips,
+            topographicalPlaces,
+            canEdit,
+            isGuest,
+            lookupCoordinatesOpen,
+            newStopIsMultiModal,
+            dataSource,
+            showFutureAndExpired,
+            filterByOrg,
+            showStops,
+            showParkings,
+            showPoiShop,
+            showPoiAmenity,
+            showPoiBuilding,
+            showPoiHistoric,
+            showPoiLanduse,
+            showPoiLeisure,
+            showPoiTourism,
+            showPoiOffice,
+            filterByFullTAD,
+            filterByPartialTAD
+        } = this.props;
+
+        const {
+            coordinatesDialogOpen,
+            showMoreFilterOptions,
+            showMapFilters,
+            loading
+        } = this.state;
+
+        const {formatMessage, locale} = intl;
+        const menuItems = this.getMenuItems(this.props);
+
+        const Loading = loading &&
+            !dataSource.length && [
+                {
+                    text: '',
+                    value: (
+                        <MenuItem
+                            style={{paddingRight: 10, width: 'auto'}}
+                            primaryText={
+                                <div
+                                    style={{
+                                        fontWeight: 600,
+                                        fontSize: '0.8em',
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <MdSpinner/>
+                                    <div style={{marginLeft: 5}}>
+                                        {formatMessage({id: 'loading'})}
+                                    </div>
+                                </div>
+                            }
+                        />
+                    )
+                }
+            ];
+
+        const topographicalPlacesDataSource = topographicalPlaces
+            .filter(
+                place =>
+                    place.topographicPlaceType === 'county' ||
+                    place.topographicPlaceType === 'municipality' ||
+                    place.topographicPlaceType === 'country'
+            )
+            .filter(
+                place => topoiChips.map(chip => chip.value).indexOf(place.id) == -1
+            )
+            .map(place => {
+                const name = this.getTopographicalNames(place);
+                return {
+                    text: name,
+                    id: place.id,
+                    value: (
+                        <MenuItem
+                            primaryText={
+                                <span style={{marginRight: 50}}>
                       {name}
                   </span>
-              }
-              style={{
-                  fontSize: '0.8em',
-                  overflow: 'hidden',
-                  whiteSpace: 'no-wrap',
-                  textOverflow: 'ellipsis',
-                  lineHeight: '20px',
-                  paddingBottom: '15px',
-                  paddingTop: '15px'
-              }}
-              secondaryText={formatMessage({ id: place.topographicPlaceType })}
-            />
-          ),
-          type: place.topographicPlaceType
+                            }
+                            style={{
+                                fontSize: '0.8em',
+                                overflow: 'hidden',
+                                whiteSpace: 'no-wrap',
+                                textOverflow: 'ellipsis',
+                                lineHeight: '20px',
+                                paddingBottom: '15px',
+                                paddingTop: '15px'
+                            }}
+                            secondaryText={formatMessage({id: place.topographicPlaceType})}
+                        />
+                    ),
+                    type: place.topographicPlaceType
+                };
+            });
+
+        const newStopText = {
+            headerText: formatMessage({
+                id: newStopIsMultiModal
+                    ? 'making_parent_stop_place_title'
+                    : 'making_stop_place_title'
+            }),
+            bodyText: formatMessage({id: 'making_hint'})
         };
-      });
 
-    const newStopText = {
-      headerText: formatMessage({
-        id: newStopIsMultiModal
-          ? 'making_parent_stop_place_title'
-          : 'making_stop_place_title'
-      }),
-      bodyText: formatMessage({ id: 'making_hint' })
-    };
+        const newParkingText = {
+            headerText: formatMessage({
+                id: 'making_parking_title'
+            }),
+            bodyText: formatMessage({id: 'making_hint'})
+        };
 
-    const newParkingText = {
-      headerText: formatMessage({
-        id: 'making_parking_title'
-      }),
-      bodyText: formatMessage({ id: 'making_hint' })
-    };
+        let favoriteText = {
+            title: formatMessage({id: 'favorites_title'}),
+            noFavoritesFoundText: formatMessage({id: 'no_favorites_found'})
+        };
 
-    let favoriteText = {
-      title: formatMessage({ id: 'favorites_title' }),
-      noFavoritesFoundText: formatMessage({ id: 'no_favorites_found' })
-    };
+        const text = {
+            emptyDescription: formatMessage({id: 'empty_description'}),
+            edit: formatMessage({id: 'edit'}),
+            view: formatMessage({id: 'view'})
+        };
 
-    const text = {
-      emptyDescription: formatMessage({ id: 'empty_description' }),
-      edit: formatMessage({ id: 'edit' }),
-      view: formatMessage({ id: 'view' })
-    };
+        const searchBoxWrapperStyle = {
+            top: 60,
+            background: '#fff',
+            height: 'auto',
+            width: 460,
+            margin: 8,
+            position: 'absolute',
+            zIndex: 999,
+            padding: 8,
+            border: '1px solid rgb(81, 30, 18)'
+        };
 
-    const searchBoxWrapperStyle = {
-      top: 60,
-      background: '#fff',
-      height: 'auto',
-      width: 460,
-      margin: 8,
-      position: 'absolute',
-      zIndex: 999,
-      padding: 8,
-      border: '1px solid rgb(81, 30, 18)'
-    };
+        return (
+            <div>
+                <CoordinatesDialog
+                    open={lookupCoordinatesOpen}
+                    handleClose={this.handleCloseLookupCoordinatesDialog.bind(this)}
+                    handleConfirm={this.handleLookupCoordinates.bind(this)}
+                    titleId={'lookup_coordinates'}
+                    intl={intl}
+                />
+                <CoordinatesDialog
+                    open={coordinatesDialogOpen}
+                    handleClose={() => this.setState({coordinatesDialogOpen: false})}
+                    handleConfirm={this.handleSubmitCoordinates.bind(this)}
+                    intl={intl}
+                />
+                <FavoriteNameDialog/>
 
-    return (
-      <div>
-        <CoordinatesDialog
-          open={lookupCoordinatesOpen}
-          handleClose={this.handleCloseLookupCoordinatesDialog.bind(this)}
-          handleConfirm={this.handleLookupCoordinates.bind(this)}
-          titleId={'lookup_coordinates'}
-          intl={intl}
-        />
-        <CoordinatesDialog
-          open={coordinatesDialogOpen}
-          handleClose={() => this.setState({ coordinatesDialogOpen: false })}
-          handleConfirm={this.handleSubmitCoordinates.bind(this)}
-          intl={intl}
-        />
-        <FavoriteNameDialog />
-        <div style={searchBoxWrapperStyle}>
-          <div key="search-name-wrapper">
-            <div style={{display: 'flex'}}>
-              <FavoritePopover
-                  caption={formatMessage({ id: 'favorites' })}
-                  items={[]}
-                  filter={stopTypeFilter}
-                  onItemClick={this.handleRetrieveFilter.bind(this)}
-                  onDismiss={this.handlePopoverDismiss.bind(this)}
-                  text={favoriteText}
-              />
-              <CheckBox
-                  checked={showStops}
-                  onCheck={(e, value) => this.toggleShowStops(value)}
-                  label={formatMessage({ id: 'show_stops' })}
-                  labelStyle={{ fontSize: '0.8em' }}
-                  style={{ paddingTop: '5' }}
-              />
-              <CheckBox
-                  checked={showParkings}
-                  onCheck={(e, value) => this.toggleShowParkings(value)}
-                  label={formatMessage({ id: 'show_parkings' })}
-                  labelStyle={{ fontSize: '0.8em' }}
-                  style={{ paddingTop: '5' }}
-              />
-              <CheckBox
-                  checked={showPointsOfInterest}
-                  onCheck={(e, value) => this.toggleShowPointsOfInterest(value)}
-                  label={formatMessage({ id: 'show_poi' })}
-                  labelStyle={{ fontSize: '0.8em' }}
-                  style={{ paddingTop: '5' }}
-              />
-            </div>
-            <div
-              style={{
-                width: '100%',
-                margin: 'auto',
-                border: '1px solid rgb(219, 219, 219)',
-                backgroundColor: 'rgb(245, 245, 245)'
-              }}
-            >
-              <ModalityFilter
-                locale={locale}
-                stopTypeFilter={stopTypeFilter}
-                handleApplyFilters={this.handleApplyModalityFilters.bind(this)}
-              />
-              {this.displayMoreFilters() || showMoreFilterOptions ? (
-                <div>
-                  <div
-                    style={{
-                      width: '100%',
-                      textAlign: 'center',
-                      marginBottom: 15
-                    }}
-                  >
-                    <FlatButton
-                      onClick={() => this.handleToggleFilter(false)}
-                      style={{ fontSize: 12 }}
-                    >
-                      {formatMessage({ id: 'filters_less' })}
-                    </FlatButton>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <AutoComplete
-                      floatingLabelText={formatMessage({
-                        id: 'filter_by_topography'
-                      })}
-                      hintText={formatMessage({ id: 'filter_by_topography' })}
-                      hintStyle={{ fontSize: 15, marginLeft: 5, lineHeight: 1.2}}
-                      floatingLabelStyle={{ marginTop: -20, marginLeft: 5, lineHeight: 1.1 }}
-                      dataSource={topographicalPlacesDataSource}
-                      onUpdateInput={this.handleTopographicalPlaceInput.bind(
-                        this
-                      )}
-                      listStyle={{ width: 'auto', minWidth: 300 }}
-                      filter={AutoComplete.caseInsensitiveFilter}
-                      style={{
-                        margin: 'auto',
-                        width: '100%',
-                        marginTop: -20,
-                        marginLeft: 5
-                      }}
-                      maxSearchResults={7}
-                      ref="topoFilter"
-                      onNewRequest={this.handleAddChip.bind(this)}
-                    />
-                  </div>
-                  <CheckBox
-                    checked={showFutureAndExpired}
-                    onCheck={(e, value) =>
-                      this.toggleShowFutureAndExpired(value)
-                    }
-                    label={formatMessage({ id: 'show_future_and_expired' })}
-                    labelStyle={{ fontSize: '0.8em' }}
-                  />
-                  <CheckBox
-                    checked={filterByOrg}
-                    onCheck={(e, value) => this.toggleSearchWithOrgCode(value)}
-                    label={formatMessage({ id: 'search_with_code' })}
-                    labelStyle={{ fontSize: '0.8em' }}
-                  />
-                  <CheckBox
-                      checked={filterByPartialTAD}
-                      onCheck={(e, value) => this.toggleSearchWithPartialTAD(value)}
-                      label={formatMessage({ id: 'search_partial_TAD' })}
-                      labelStyle={{ fontSize: '0.8em' }}
-                  />
-                  <CheckBox
-                      checked={filterByFullTAD}
-                      onCheck={(e, value) => this.toggleSearchWithFullTAD(value)}
-                      label={formatMessage({ id: 'search_full_TAD' })}
-                      labelStyle={{ fontSize: '0.8em' }}
-                  />
-                  <TopographicalFilter
-                    topoiChips={topoiChips}
-                    handleDeleteChip={this.handleDeleteChip.bind(this)}
-                  />
+
+                <div style={searchBoxWrapperStyle}>
+                    <div key="search-name-wrapper">
+
+
+                        <div style={{display: 'flex'}}>
+                            <FavoritePopover
+                                caption={formatMessage({id: 'favorites'})}
+                                items={[]}
+                                filter={stopTypeFilter}
+                                onItemClick={this.handleRetrieveFilter.bind(this)}
+                                onDismiss={this.handlePopoverDismiss.bind(this)}
+                                text={favoriteText}
+                            />
+
+
+                            {showMapFilters ? (
+                                <div>
+                                    <div
+                                        // style={{
+                                        //     width: '100%',
+                                        //     textAlign: 'center',
+                                        //     marginBottom: 15
+                                        // }}
+  >
+                                        <FlatButton
+                                            onClick={() => this.handleToggleMapFilters(false)}
+                                            style={{fontSize: 12}}
+                                        >
+                                            {formatMessage({id: 'close_map_filters'})}
+                                        </FlatButton>
+                                    </div>
+
+                                    <div
+
+                                        style={{minWidth: 300}}
+                                         >
+
+                                        <CheckBox
+                                            checked={showStops}
+                                            onCheck={(e, value) => this.toggleShowStops(value)}
+                                            label={formatMessage({id: 'show_stops'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                        <CheckBox
+                                            checked={showParkings}
+                                            onCheck={(e, value) => this.toggleShowParkings(value)}
+                                            label={formatMessage({id: 'show_parkings'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                        <CheckBox
+                                            checked={showPoiShop}
+                                            onCheck={(e, value) => this.toggleShowPoiShop(value)}
+                                            label={formatMessage({id: 'show_poi_shop'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+
+                                        <CheckBox
+                                            checked={showPoiAmenity}
+                                            onCheck={(e, value) => this.toggleShowPoiAmenity(value)}
+                                            label={formatMessage({id: 'show_poi_amenity'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                        <CheckBox
+                                            checked={showPoiBuilding}
+                                            onCheck={(e, value) => this.toggleShowPoiBuilding(value)}
+                                            label={formatMessage({id: 'show_poi_building'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                        <CheckBox
+                                            checked={showPoiHistoric}
+                                            onCheck={(e, value) => this.toggleShowPoiHistoric(value)}
+                                            label={formatMessage({id: 'show_poi_historic'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                        <CheckBox
+                                            checked={showPoiLanduse}
+                                            onCheck={(e, value) => this.toggleShowPoiLanduse(value)}
+                                            label={formatMessage({id: 'show_poi_landuse'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                        <CheckBox
+                                            checked={showPoiLeisure}
+                                            onCheck={(e, value) => this.toggleShowPoiLeisure(value)}
+                                            label={formatMessage({id: 'show_poi_leisure'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                        <CheckBox
+                                            checked={showPoiTourism}
+                                            onCheck={(e, value) => this.toggleShowPoiTourism(value)}
+                                            label={formatMessage({id: 'show_poi_tourism'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                        <CheckBox
+                                            checked={showPoiOffice}
+                                            onCheck={(e, value) => this.toggleShowPoiOffice(value)}
+                                            label={formatMessage({id: 'show_poi_office'})}
+                                            labelStyle={{fontSize: '0.8em'}}
+                                            style={{paddingTop: '5'}}
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                <div style={{minWidth:'300'}}>
+                                    <FlatButton
+                                        onClick={() => this.handleToggleMapFilters(true)}
+                                        style={{fontSize: 12}}
+                                    >
+                                        {formatMessage({id: 'map_filters'})}
+                                    </FlatButton>
+                                </div>
+                            )}
+
+                        </div>
+                        <div
+                            style={{
+                                width: '100%',
+                                margin: 'auto',
+                                border: '1px solid rgb(219, 219, 219)',
+                                backgroundColor: 'rgb(245, 245, 245)'
+                            }}
+                        >
+                            <ModalityFilter
+                                locale={locale}
+                                stopTypeFilter={stopTypeFilter}
+                                handleApplyFilters={this.handleApplyModalityFilters.bind(this)}
+                            />
+                            {this.displayMoreFilters() || showMoreFilterOptions ? (
+                                <div>
+                                    <div
+                                        style={{
+                                            width: '100%',
+                                            textAlign: 'center',
+                                            marginBottom: 15
+                                        }}
+                                    >
+                                        <FlatButton
+                                            onClick={() => this.handleToggleFilter(false)}
+                                            style={{fontSize: 12}}
+                                        >
+                                            {formatMessage({id: 'filters_less'})}
+                                        </FlatButton>
+                                    </div>
+                                    <div style={{display: 'flex', alignItems: 'center'}}>
+                                        <AutoComplete
+                                            floatingLabelText={formatMessage({
+                                                id: 'filter_by_topography'
+                                            })}
+                                            hintText={formatMessage({id: 'filter_by_topography'})}
+                                            hintStyle={{fontSize: 15, marginLeft: 5, lineHeight: 1.2}}
+                                            floatingLabelStyle={{marginTop: -20, marginLeft: 5, lineHeight: 1.1}}
+                                            dataSource={topographicalPlacesDataSource}
+                                            onUpdateInput={this.handleTopographicalPlaceInput.bind(
+                                                this
+                                            )}
+                                            listStyle={{width: 'auto', minWidth: 300}}
+                                            filter={AutoComplete.caseInsensitiveFilter}
+                                            style={{
+                                                margin: 'auto',
+                                                width: '100%',
+                                                marginTop: -20,
+                                                marginLeft: 5
+                                            }}
+                                            maxSearchResults={7}
+                                            ref="topoFilter"
+                                            onNewRequest={this.handleAddChip.bind(this)}
+                                        />
+                                    </div>
+                                    <CheckBox
+                                        checked={showFutureAndExpired}
+                                        onCheck={(e, value) =>
+                                            this.toggleShowFutureAndExpired(value)
+                                        }
+                                        label={formatMessage({id: 'show_future_and_expired'})}
+                                        labelStyle={{fontSize: '0.8em'}}
+                                    />
+                                    <CheckBox
+                                        checked={filterByOrg}
+                                        onCheck={(e, value) => this.toggleSearchWithOrgCode(value)}
+                                        label={formatMessage({id: 'search_with_code'})}
+                                        labelStyle={{fontSize: '0.8em'}}
+                                    />
+                                    <CheckBox
+                                        checked={filterByPartialTAD}
+                                        onCheck={(e, value) => this.toggleSearchWithPartialTAD(value)}
+                                        label={formatMessage({id: 'search_partial_TAD'})}
+                                        labelStyle={{fontSize: '0.8em'}}
+                                    />
+                                    <CheckBox
+                                        checked={filterByFullTAD}
+                                        onCheck={(e, value) => this.toggleSearchWithFullTAD(value)}
+                                        label={formatMessage({id: 'search_full_TAD'})}
+                                        labelStyle={{fontSize: '0.8em'}}
+                                    />
+
+                                    <TopographicalFilter
+                                        topoiChips={topoiChips}
+                                        handleDeleteChip={this.handleDeleteChip.bind(this)}
+                                    />
+                                </div>
+                            ) : (
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                    <FlatButton
+                                        style={{fontSize: 12}}
+                                        onClick={() => this.handleToggleFilter(true)}
+                                    >
+                                        {formatMessage({id: 'filters_more'})}
+                                    </FlatButton>
+                                </div>
+                            )}
+                        </div>
+                        <SearchIcon
+                            style={{
+                                verticalAlign: 'middle',
+                                marginRight: 5,
+                                height: 22,
+                                width: 22
+                            }}
+                        />
+                        <AutoComplete
+                            textFieldStyle={{width: 380}}
+                            animated={false}
+                            openOnFocus
+                            hintText={formatMessage({id: 'filter_by_name'})}
+                            dataSource={
+                                loading && !dataSource.length ? Loading : menuItems || []
+                            }
+                            filter={(searchText, key) => searchText !== ''}
+                            onUpdateInput={this.handleSearchUpdate.bind(this)}
+                            maxSearchResults={10}
+                            searchText={this.props.searchText}
+                            ref="searchText"
+                            onNewRequest={this.handleNewRequest.bind(this)}
+                            listStyle={{width: 'auto'}}
+                        />
+                        <div style={{float: 'right'}}>
+                            <IconButton
+                                style={{verticalAlign: 'middle'}}
+                                iconStyle={{fontSize: 22}}
+                                onClick={this.handleClearSearch.bind(this)}
+                                iconClassName="material-icons"
+                            >
+                                clear
+                            </IconButton>
+                        </div>
+                        <Divider/>
+                    </div>
+                    <div style={{marginBottom: 5, textAlign: 'right', marginRight: 10}}>
+                        <FlatButton
+                            style={{marginLeft: 10, fontSize: 12}}
+                            disabled={!!favorited}
+                            onClick={() => {
+                                this.handleSaveAsFavorite(!!favorited);
+                            }}
+                        >
+                            {formatMessage({id: 'filter_save_favorite'})}
+                        </FlatButton>
+                    </div>
+                    <div key="searchbox-edit">
+                        {chosenResult ? (
+                            <SearchBoxDetails
+                                handleEdit={this.handleEdit.bind(this)}
+                                result={chosenResult}
+                                handleChangeCoordinates={this.handleOpenCoordinatesDialog.bind(
+                                    this
+                                )}
+                                userSuppliedCoordinates={
+                                    missingCoordinatesMap &&
+                                    missingCoordinatesMap[chosenResult.id]
+                                }
+                                text={text}
+                                canEdit={canEdit}
+                                formatMessage={formatMessage}
+                            />
+                        ) : null}
+                        {!isGuest && (
+                            <div style={{marginTop: 10}}>
+                                {isCreatingNewStop ? (
+                                    <NewStopPlace
+                                        text={newStopText}
+                                        onClose={() => this.setState({createNewStopOpen: false})}
+                                    />
+                                ) : isCreatingNewParking ? (
+                                    <NewParking
+                                        text={newParkingText}
+                                        onClose={() => this.setState({createNewStopOpen: false})}
+                                    />
+                                ) : (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between'
+                                        }}
+                                    >
+                                        <RaisedButton
+                                            onClick={this.handleOpenLookupCoordinatesDialog.bind(
+                                                this
+                                            )}
+                                            icon={
+                                                <MdLocationSearching
+                                                    style={{width: 20, height: 20}}
+                                                />
+                                            }
+                                            primary={false}
+                                            labelStyle={{fontSize: 11}}
+                                            label={formatMessage({id: 'lookup_coordinates'})}
+                                        />
+                                        <RaisedButton
+                                            onClick={e => {
+                                                this.setState({
+                                                    createNewStopOpen: true,
+                                                    anchorEl: e.currentTarget
+                                                });
+                                            }}
+                                            icon={<MdMore style={{width: 20, height: 20}}/>}
+                                            primary={true}
+                                            labelStyle={{fontSize: 11}}
+                                            label={formatMessage({id: 'new_mobility_point'})}
+                                        />
+                                        <Popover
+                                            open={this.state.createNewStopOpen}
+                                            anchorEl={this.state.anchorEl}
+                                            anchorOrigin={{
+                                                horizontal: 'left',
+                                                vertical: 'bottom'
+                                            }}
+                                            targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                            onRequestClose={() => {
+                                                this.setState({createNewStopOpen: false});
+                                            }}
+                                        >
+                                            <Menu>
+                                                <MenuItem
+                                                    onClick={() => this.handleNewStop(false)}
+                                                    style={{fontSize: '0.9em'}}
+                                                    primaryText={formatMessage({id: 'new_stop'})}
+                                                />
+                                                <MenuItem
+                                                    onClick={() => this.handleNewStop(true)}
+                                                    style={{fontSize: '0.9em'}}
+                                                    primaryText={formatMessage({
+                                                        id: 'new__multi_stop'
+                                                    })}
+                                                />
+                                                <MenuItem
+                                                    onClick={() => this.handleNewParking(true)}
+                                                    style={{fontSize: '0.9em'}}
+                                                    primaryText={formatMessage({
+                                                        id: 'new_parking'
+                                                    })}
+                                                />
+                                            </Menu>
+                                        </Popover>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
-              ) : (
-                <div style={{ width: '100%', textAlign: 'center' }}>
-                  <FlatButton
-                    style={{ fontSize: 12 }}
-                    onClick={() => this.handleToggleFilter(true)}
-                  >
-                    {formatMessage({ id: 'filters_more' })}
-                  </FlatButton>
-                </div>
-              )}
             </div>
-            <SearchIcon
-              style={{
-                verticalAlign: 'middle',
-                marginRight: 5,
-                height: 22,
-                width: 22
-              }}
-            />
-            <AutoComplete
-              textFieldStyle={{ width: 380 }}
-              animated={false}
-              openOnFocus
-              hintText={formatMessage({ id: 'filter_by_name' })}
-              dataSource={
-                loading && !dataSource.length ? Loading : menuItems || []
-              }
-              filter={(searchText, key) => searchText !== ''}
-              onUpdateInput={this.handleSearchUpdate.bind(this)}
-              maxSearchResults={10}
-              searchText={this.props.searchText}
-              ref="searchText"
-              onNewRequest={this.handleNewRequest.bind(this)}
-              listStyle={{ width: 'auto' }}
-            />
-            <div style={{ float: 'right' }}>
-              <IconButton
-                style={{ verticalAlign: 'middle' }}
-                iconStyle={{ fontSize: 22 }}
-                onClick={this.handleClearSearch.bind(this)}
-                iconClassName="material-icons"
-              >
-                clear
-              </IconButton>
-            </div>
-            <Divider />
-          </div>
-          <div style={{ marginBottom: 5, textAlign: 'right', marginRight: 10 }}>
-            <FlatButton
-              style={{ marginLeft: 10, fontSize: 12 }}
-              disabled={!!favorited}
-              onClick={() => {
-                this.handleSaveAsFavorite(!!favorited);
-              }}
-            >
-              {formatMessage({ id: 'filter_save_favorite' })}
-            </FlatButton>
-          </div>
-          <div key="searchbox-edit">
-            {chosenResult ? (
-              <SearchBoxDetails
-                handleEdit={this.handleEdit.bind(this)}
-                result={chosenResult}
-                handleChangeCoordinates={this.handleOpenCoordinatesDialog.bind(
-                  this
-                )}
-                userSuppliedCoordinates={
-                  missingCoordinatesMap &&
-                  missingCoordinatesMap[chosenResult.id]
-                }
-                text={text}
-                canEdit={canEdit}
-                formatMessage={formatMessage}
-              />
-            ) : null}
-            {!isGuest && (
-              <div style={{ marginTop: 10 }}>
-                {isCreatingNewStop ? (
-                    <NewStopPlace
-                        text={newStopText}
-                        onClose={() => this.setState({createNewStopOpen: false})}
-                    />
-                ) : isCreatingNewParking ? (
-                        <NewParking
-                            text={newParkingText}
-                            onClose={() => this.setState({createNewStopOpen: false})}
-                        />
-                    ) : (
-                    <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between'
-                        }}
-                    >
-                      <RaisedButton
-                          onClick={this.handleOpenLookupCoordinatesDialog.bind(
-                              this
-                          )}
-                      icon={
-                        <MdLocationSearching
-                          style={{ width: 20, height: 20 }}
-                        />
-                      }
-                      primary={false}
-                      labelStyle={{ fontSize: 11 }}
-                      label={formatMessage({ id: 'lookup_coordinates' })}
-                    />
-                    <RaisedButton
-                      onClick={e => {
-                        this.setState({
-                          createNewStopOpen: true,
-                          anchorEl: e.currentTarget
-                        });
-                      }}
-                      icon={<MdMore style={{ width: 20, height: 20 }} />}
-                      primary={true}
-                      labelStyle={{ fontSize: 11 }}
-                      label={formatMessage({ id: 'new_mobility_point' })}
-                    />
-                    <Popover
-                      open={this.state.createNewStopOpen}
-                      anchorEl={this.state.anchorEl}
-                      anchorOrigin={{
-                        horizontal: 'left',
-                        vertical: 'bottom'
-                      }}
-                      targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-                      onRequestClose={() => {
-                        this.setState({ createNewStopOpen: false });
-                      }}
-                    >
-                      <Menu>
-                        <MenuItem
-                            onClick={() => this.handleNewStop(false)}
-                            style={{fontSize: '0.9em'}}
-                            primaryText={formatMessage({id: 'new_stop'})}
-                        />
-                        <MenuItem
-                            onClick={() => this.handleNewStop(true)}
-                            style={{fontSize: '0.9em'}}
-                            primaryText={formatMessage({
-                              id: 'new__multi_stop'
-                            })}
-                        />
-                        <MenuItem
-                            onClick={() => this.handleNewParking(true)}
-                            style={{fontSize: '0.9em'}}
-                            primaryText={formatMessage({
-                              id: 'new_parking'
-                            })}
-                        />
-                      </Menu>
-                    </Popover>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
+        );
+    }
 }
 
 const mapStateToProps = state => {
-  const favoriteManager = new FavoriteManager();
-  const { stopType, topoiChips, text } = state.user.searchFilters;
-  const favoriteContent = favoriteManager.createSavableContent(
-    '',
-    text,
-    stopType,
-    topoiChips
-  );
-  const favorited = favoriteManager.isFavoriteAlreadyStored(favoriteContent);
+    const favoriteManager = new FavoriteManager();
+    const {stopType, topoiChips, text} = state.user.searchFilters;
+    const favoriteContent = favoriteManager.createSavableContent(
+        '',
+        text,
+        stopType,
+        topoiChips
+    );
+    const favorited = favoriteManager.isFavoriteAlreadyStored(favoriteContent);
 
-  return {
-    chosenResult: state.stopPlace.activeSearchResult,
-    dataSource: state.stopPlace.searchResults || [],
-    isCreatingNewStop: state.user.isCreatingNewStop,
-    isCreatingNewParking: state.user.isCreatingNewParking,
-    isCreatingNewPointOfInterest: state.user.isCreatingNewPointOfInterest,
-    stopTypeFilter: state.user.searchFilters.stopType,
-    topoiChips: state.user.searchFilters.topoiChips,
-    favorited,
-    missingCoordinatesMap: state.user.missingCoordsMap,
-    searchText: state.user.searchFilters.text,
-    topographicalPlaces: state.stopPlace.topographicalPlaces || [],
-    canEdit: getIn(
-        state.roles,
-        ['allowanceInfoSearchResult', 'canEdit'],
-        false
-    ),
-    isGuest: state.roles.isGuest,
-    lookupCoordinatesOpen: state.user.lookupCoordinatesOpen,
-    newStopIsMultiModal: state.user.newStopIsMultiModal,
-    showFutureAndExpired: state.user.searchFilters.showFutureAndExpired,
-    filterByOrg: state.user.searchFilters.filterByOrg,
-    orgCode: state.user.searchFilters.orgCode,
-    roles: state.roles.kc.tokenParsed.roles,
-    showStops: state.user.showStops,
-    showParkings: state.user.showParkings,
-    showPointsOfInterest: state.user.showPointsOfInterest,
-    filterByFullTAD : state.user.searchFilters.filterByFullTAD,
-    filterByPartialTAD:state.user.searchFilters.filterByPartialTAD,
-  };
+    return {
+        chosenResult: state.stopPlace.activeSearchResult,
+        dataSource: state.stopPlace.searchResults || [],
+        isCreatingNewStop: state.user.isCreatingNewStop,
+        isCreatingNewParking: state.user.isCreatingNewParking,
+        isCreatingNewPointOfInterest: state.user.isCreatingNewPointOfInterest,
+        stopTypeFilter: state.user.searchFilters.stopType,
+        topoiChips: state.user.searchFilters.topoiChips,
+        favorited,
+        missingCoordinatesMap: state.user.missingCoordsMap,
+        searchText: state.user.searchFilters.text,
+        topographicalPlaces: state.stopPlace.topographicalPlaces || [],
+        canEdit: getIn(
+            state.roles,
+            ['allowanceInfoSearchResult', 'canEdit'],
+            false
+        ),
+        isGuest: state.roles.isGuest,
+        lookupCoordinatesOpen: state.user.lookupCoordinatesOpen,
+        newStopIsMultiModal: state.user.newStopIsMultiModal,
+        showFutureAndExpired: state.user.searchFilters.showFutureAndExpired,
+        filterByOrg: state.user.searchFilters.filterByOrg,
+        orgCode: state.user.searchFilters.orgCode,
+        roles: state.roles.kc.tokenParsed.roles,
+        showStops: state.user.showStops,
+        showParkings: state.user.showParkings,
+        showPoiShop: state.user.showPoiShop,
+        showPointsOfInterest: state.user.showPointsOfInterest,
+        filterByFullTAD: state.user.searchFilters.filterByFullTAD,
+        filterByPartialTAD: state.user.searchFilters.filterByPartialTAD,
+        showPoiAmenity: state.user.showPoiAmenity,
+        showPoiBuilding: state.user.showPoiBuilding,
+        showPoiHistoric: state.user.showPoiHistoric,
+        showPoiLanduse: state.user.showPoiLanduse,
+        showPoiLeisure: state.user.showPoiLeisure,
+        showPoiTourism: state.user.showPoiTourism,
+        showPoiOffice: state.user.showPoiOffice
+
+    };
 };
 
 export default withApollo(injectIntl(connect(mapStateToProps)(SearchBox)));
