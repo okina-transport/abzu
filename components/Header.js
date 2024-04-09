@@ -89,20 +89,14 @@ class Header extends React.Component {
       case 'GoToImportAccessibility':
         this.goToImportAccessibility();
         break;
-      case 'GoToImportParking':
-        this.goToImportParking();
-        break;
-      case 'GoToImportBikeParking':
-        this.goToImportBikeParking();
+      case 'GoToImportParkings':
+        this.goToImportParkings();
         break;
       case 'GoToImportSalePoint':
         this.goToImportSalePoint();
         break;
       case 'GoToImportPOI':
         this.goToImportPOI();
-        break;
-      case 'GoToImportRentalBike':
-        this.goToImportRentalBike();
         break;
       default:
         () => {
@@ -126,12 +120,8 @@ class Header extends React.Component {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_ACCESSIBILITY_CSV, ''));
   }
 
-  goToImportParking() {
-    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_PARKING_CSV, ''));
-  }
-
-  goToImportBikeParking() {
-    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_BIKE_PARKING_CSV, ''));
+  goToImportParkings() {
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_PARKINGS, ''));
   }
 
   goToImportSalePoint() {
@@ -145,11 +135,6 @@ class Header extends React.Component {
   goToImportTAD() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_TAD, ''));
   }
-
-  goToImportRentalBike() {
-    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_RENTAL_BIKE, ''));
-  }
-
 
   handleTogglePublicCodePrivateCodeOnStopPlaces(value) {
     this.props.dispatch(UserActions.toggleEnablePublicCodePrivateCodeOnStopPlaces(value));
@@ -203,12 +188,10 @@ class Header extends React.Component {
     const showCompassBearing = formatMessage({ id: 'show_compass_bearing' });
     const reportSite = formatMessage({ id: 'report_site' });
     const importCSVAccessibility = formatMessage({id: 'import_accessibility' })
-    const importCSVParkings = formatMessage({id: 'import_parking'})
-    const importCSVBikeParkings = formatMessage({id: 'import_bike_parking'})
+    const importCSVParkings = formatMessage({id: 'import_parkings'})
     const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
     const importPOI = formatMessage({id: 'import_poi'})
     const importTAD = formatMessage({id: 'import_tad'})
-    const importRentalBike = formatMessage({id: 'import_rental_bikes'})
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
     const userGuide = formatMessage({ id: 'user_guide' });
     const username = getIn(kc, ['tokenParsed', 'preferred_username'], '');
@@ -260,15 +243,6 @@ class Header extends React.Component {
               targetOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
-            {/*
-              <MenuItem
-                  leftIcon={<MdSupervisorAccount color="#005A82" />}
-                  primaryText={portalAdmin}
-                  href="/admin"
-                  target="_blank"
-                  style={{ fontSize: 12, padding: 0 }}
-              />
-            */}
               <MenuItem
                   leftIcon={<MdLocalOffer color="#005A82" />}
                   primaryText={portalOffers}
@@ -295,83 +269,61 @@ class Header extends React.Component {
               />
               {isSuperAdmin && (
                   <React.Fragment>
-              <MenuItem
-                  leftIcon={<ActionAccessibility color="#005A82" />}
-                  primaryText={importCSVAccessibility}
-                  href = {Routes.IMPORT_ACCESSIBILITY_CSV}
-                  onClick={() =>
-                      this.handleConfirmChangeRoute(
-                          this.goToImportAccessibility.bind(this),
-                          'GoToImportAccessibility'
-                      )}
-                  style={{ fontSize: 12, padding: 0 }}
-              />
-              <MenuItem
-                  leftIcon={<MapsLocalParking color="#005A82" />}
-                  primaryText={importCSVParkings}
-                  href = {Routes.IMPORT_PARKING_CSV}
-                  onClick={() =>
-                      this.handleConfirmChangeRoute(
-                          this.goToImportParking.bind(this),
-                          'GoToImportParking'
-                      )}
-                  style={{ fontSize: 12, padding: 0 }}
-              />
-              <MenuItem
-                  leftIcon={<MapsDirectionsBike color="#005A82" />}
-                  primaryText={importCSVBikeParkings}
-                  href = {Routes.IMPORT_BIKE_PARKING_CSV}
-                  onClick={() =>
-                      this.handleConfirmChangeRoute(
-                          this.goToImportBikeParking().bind(this),
-                          'GoToImportBikeParking'
-                      )}
-                  style={{ fontSize: 12, padding: 0 }}
-              />
-              <MenuItem
-                  leftIcon={<MapsStoreMallDirectory color="#005A82" />}
-                  primaryText={importCSVSalePoints}
-                  href = {Routes.IMPORT_SALE_POINT_CSV}
-                  onClick={() =>
-                      this.handleConfirmChangeRoute(
-                          this.goToImportSalePoint.bind(this),
-                          'GoToImportSalePoint'
-                      )}
-                  style={{ fontSize: 12, padding: 0 }}
-              />
-              <MenuItem
-                  leftIcon={<PoiIcon color="#005A82" />}
-                  primaryText={importPOI}
-                  href = {Routes.IMPORT_POI}
-                  onClick={() =>
-                      this.handleConfirmChangeRoute(
-                          this.goToImportPOI().bind(this),
-                          'GoToImportPOI'
-                      )}
-                  style={{ fontSize: 12, padding: 0 }}
-              />
-              <MenuItem
-                  leftIcon={<PoiIcon color="#005A82" />}
-                  primaryText={importTAD}
-                  href = {Routes.IMPORT_TAD}
-                  onClick={() =>
-                      this.handleConfirmChangeRoute(
-                          this.goToImportTAD().bind(this),
-                          'GoToImportTAD'
-                      )}
-                  style={{ fontSize: 12, padding: 0 }}
-              />
-              <MenuItem
-                  leftIcon={<MapsDirectionsBike color="#005A82" />}
-                  primaryText={importRentalBike}
-                  href = {Routes.IMPORT_RENTAL_BIKE}
-                  onClick={() =>
-                      this.handleConfirmChangeRoute(
-                          this.goToImportRentalBike().bind(this),
-                          'GoToImportRentalBike'
-                      )}
-                  style={{ fontSize: 12, padding: 0 }}
-              />
+                      <MenuItem
+                          leftIcon={<ActionAccessibility color="#005A82" />}
+                          primaryText={importCSVAccessibility}
+                          href = {Routes.IMPORT_ACCESSIBILITY_CSV}
+                          onClick={() =>
+                              this.handleConfirmChangeRoute(
+                                  this.goToImportAccessibility.bind(this),
+                                  'GoToImportAccessibility'
+                              )}
+                          style={{ fontSize: 12, padding: 0 }}
+                      />
+                      <MenuItem
+                        leftIcon={<MapsLocalParking color="#005A82" />}
+                        primaryText={importCSVParkings}
+                        href = {Routes.IMPORT_PARKINGS}
+                        onClick={() =>
+                          this.handleConfirmChangeRoute(
+                            this.goToImportParkings.bind(this),
+                            'GoToImportParkings'
+                          )}
+                        style={{ fontSize: 12, padding: 0 }}
+                      />
+                      <MenuItem
+                          leftIcon={<MapsStoreMallDirectory color="#005A82" />}
+                          primaryText={importCSVSalePoints}
+                          href = {Routes.IMPORT_SALE_POINT_CSV}
+                          onClick={() =>
+                              this.handleConfirmChangeRoute(
+                                  this.goToImportSalePoint.bind(this),
+                                  'GoToImportSalePoint'
+                              )}
+                          style={{ fontSize: 12, padding: 0 }}
+                      />
+                      <MenuItem
+                          leftIcon={<PoiIcon color="#005A82" />}
+                          primaryText={importPOI}
+                          href = {Routes.IMPORT_POI}
+                          onClick={() =>
+                              this.handleConfirmChangeRoute(
+                                  this.goToImportPOI().bind(this),
+                                  'GoToImportPOI'
+                              )}
+                          style={{ fontSize: 12, padding: 0 }}
+                      />
+                      <MenuItem
+                          leftIcon={<PoiIcon color="#005A82" />}
+                          primaryText={importTAD}
+                          href = {Routes.IMPORT_TAD}
+                          onClick={() =>
+                              this.handleConfirmChangeRoute(
+                                  this.goToImportTAD().bind(this),
+                                  'GoToImportTAD'
+                              )}
+                          style={{ fontSize: 12, padding: 0 }}
+                      />
                   </React.Fragment>
         )}
               <MenuItem

@@ -100,31 +100,25 @@ convictPromise
       res.send(getPage());
     });
 
-      app.get(ENDPOINTBASE + Routes.IMPORT_ACCESSIBILITY_CSV, function(req, res) {
-          res.send(getPage());
-      });
+    app.get(ENDPOINTBASE + Routes.IMPORT_ACCESSIBILITY_CSV, function(req, res) {
+        res.send(getPage());
+    });
 
-      app.get(ENDPOINTBASE + Routes.IMPORT_PARKING_CSV, function(req, res) {
-          res.send(getPage());
-      });
+    app.get(ENDPOINTBASE + Routes.IMPORT_PARKINGS, function(req, res) {
+      res.send(getPage());
+    })
 
-      app.get(ENDPOINTBASE + Routes.IMPORT_BIKE_PARKING_CSV, function(req, res) {
-          res.send(getPage());
-      });
+    app.get(ENDPOINTBASE + Routes.IMPORT_SALE_POINT_CSV, function(req, res) {
+        res.send(getPage());
+    });
 
-      app.get(ENDPOINTBASE + Routes.IMPORT_SALE_POINT_CSV, function(req, res) {
-          res.send(getPage());
-      });
+    app.get(ENDPOINTBASE + Routes.IMPORT_POI, function(req, res) {
+        res.send(getPage());
+    });
+    app.get(ENDPOINTBASE + Routes.IMPORT_TAD, function(req, res) {
+        res.send(getPage());
+    });
 
-      app.get(ENDPOINTBASE + Routes.IMPORT_POI, function(req, res) {
-          res.send(getPage());
-      });
-      app.get(ENDPOINTBASE + Routes.IMPORT_TAD, function(req, res) {
-          res.send(getPage());
-      });
-      app.get(ENDPOINTBASE + Routes.IMPORT_RENTAL_BIKE, function(req, res) {
-          res.send(getPage());
-      });
     app.get(ENDPOINTBASE + '_health', function(req, res) {
       res.sendStatus(200);
     });

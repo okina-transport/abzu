@@ -21,15 +21,13 @@ import StopPlace from './StopPlace';
 import ReportPage from './ReportPage';
 import Routes from '../routes/';
 import GroupOfStopPlaces from './GroupOfStopPlaces';
-import ImportParkingPage from './ImportParkingPage';
 import ImportSalePointPage from './ImportSalePointPage';
 import Parking from "./Parking";
 import ImportPOIPage from "./ImportPOIPage";
-import ImportRentalBikePage from "./ImportRentalBikePage";
-import ImportBikeParkingPage from "./ImportBikeParkingPage";
 import PointOfInterest from "./PointOfInterest";
 import ImportTADPage from "./ImportTADPage";
 import ImportAccessibilityPage from "./ImportAccessibilityPage";
+import ImportParkingGlobalPage from './import_parkings/ImportParkingGlobalPage';
 
 class RouterContainer extends React.Component {
   render() {
@@ -44,12 +42,10 @@ class RouterContainer extends React.Component {
         <Route path={path + Routes.PARKING + '/:parkingId'} component={Parking} />
         <Route path={path + Routes.POINT_OF_INTEREST + '/:pointOfInterestId'} component={PointOfInterest} />
         <Route path={path + Routes.IMPORT_ACCESSIBILITY_CSV} component={ImportAccessibilityPage} />
-        <Route path={path + Routes.IMPORT_PARKING_CSV} component={ImportParkingPage} />
-        <Route path={path + Routes.IMPORT_BIKE_PARKING_CSV} component={ImportBikeParkingPage} />
+        <Route path={path + Routes.IMPORT_PARKINGS} component={ImportParkingGlobalPage} />
         <Route path={path + Routes.IMPORT_SALE_POINT_CSV} component={ImportSalePointPage} />
         <Route path={path + Routes.IMPORT_POI} component={ImportPOIPage} />
         <Route path={path + Routes.IMPORT_TAD} component={ImportTADPage} />
-        <Route path={path + Routes.IMPORT_RENTAL_BIKE} component={ImportRentalBikePage} />
       </Route>
     );
 

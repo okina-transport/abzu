@@ -2,14 +2,14 @@ import {withApollo} from "react-apollo";
 import {connect} from "react-redux";
 import React, {Component} from 'react';
 import {injectIntl} from "react-intl";
-import {httpCall} from '../utils/httpCall';
+import {httpCall} from '../../utils/httpCall';
 import RaisedButton from "material-ui/RaisedButton";
-import {Input} from '@material-ui/core';
-import ReportFilterBox from "../components/ReportPage/ReportFilterBox";
-import {getIn} from "../utils";
+import { Grid, Input, Typography } from '@material-ui/core';
+import {getIn} from "../../utils";
+import Box from '@material-ui/core/Box';
 
 
-class ImportParkingPage extends Component{
+class ImportParkingNetexPage extends Component{
 
     constructor(props) {
         super(props);
@@ -34,7 +34,7 @@ class ImportParkingPage extends Component{
             this.fileReader.onload = (event) => {
                 const csvOutput = event.target.result;
                 const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-                const url = tiamatBaseUrl + "parkings_import_csv";
+                const url = tiamatBaseUrl + "parkings_netex_import_xml";
 
                 const bodyFormData = new FormData();
 
@@ -69,25 +69,43 @@ class ImportParkingPage extends Component{
     render(){
 
         const {intl:{formatMessage}} = this.props;
+        const isSubmitDisabled = this.state.file === "";
 
         return(
             <div>
-                <ReportFilterBox style={{width: '60%'}}>
-                        <Input
-                            id={"upload_csv_parking"}
-                            type={"file"}
-                            accept={".csv"}
-                            onChange={this.handleOnChange}
-                        />
-                        <RaisedButton
-                            style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
-                            label={formatMessage({id: 'upload_parkings_file_submit'})}
-                            onClick={(event) => {
-                                this.handleOnSubmit(event);
-                            }}
-                            primary={true}
-                        />
-                </ReportFilterBox>
+              <Grid container spacing={2} style={{ padding: 20 }}>
+                <Grid item xs={12} style={{ textAlign: 'center' }}>
+                  <Typography variant="h4">{formatMessage({id: 'import_parking_netex'})}</Typography>
+                </Grid>
+                <Grid item md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
+                  <Input
+                      id={"upload_csv_parkings_netex"}
+                      type={"file"}
+                      accept={".xml"}
+                      onChange={this.handleOnChange}
+                  />
+                  <Box style={{ marginTop: 10 }}>
+                    <Typography>Le fichier doit être au format .xml</Typography>
+                  </Box>
+                </Grid>
+                <Grid item md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
+                  <RaisedButton
+                      style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
+                      label={formatMessage({id: 'upload_parkings_file_submit'})}
+                      onClick={(event) => {
+                          this.handleOnSubmit(event);
+                      }}
+                      primary={true}
+                      disabled={isSubmitDisabled}
+                  />
+                  {isSubmitDisabled ?
+                    <Box style={{ marginTop: 10 }}>
+                      <Typography style={{ color: 'orangered' }}>Un fichier doit être chargé pour l'import</Typography>
+                    </Box>
+                    : null
+                  }
+                </Grid>
+              </Grid>
 
                 {this.state.errors.length>0 && this.state.errors.map(error => alert(error.message))}
 
@@ -104,6 +122,6 @@ const mapStateToProps = state => ({
     kc: state.roles.kc
 });
 
-export default withApollo(connect(mapStateToProps)(injectIntl(ImportParkingPage)));
+export default withApollo(connect(mapStateToProps)(injectIntl(ImportParkingNetexPage)));
 
 
