@@ -23,11 +23,11 @@ import Routes from '../routes/';
 import GroupOfStopPlaces from './GroupOfStopPlaces';
 import ImportSalePointPage from './ImportSalePointPage';
 import Parking from "./Parking";
-import ImportPOIPage from "./ImportPOIPage";
 import PointOfInterest from "./PointOfInterest";
 import ImportTADPage from "./ImportTADPage";
 import ImportAccessibilityPage from "./ImportAccessibilityPage";
 import ImportParkingGlobalPage from './import_parkings/ImportParkingGlobalPage';
+import ImportPOIGlobalPage from './import_poi/ImportPOIGlobalPage';
 
 class RouterContainer extends React.Component {
   render() {
@@ -44,7 +44,7 @@ class RouterContainer extends React.Component {
         <Route path={path + Routes.IMPORT_ACCESSIBILITY_CSV} component={ImportAccessibilityPage} />
         <Route path={path + Routes.IMPORT_PARKINGS} component={ImportParkingGlobalPage} />
         <Route path={path + Routes.IMPORT_SALE_POINT_CSV} component={ImportSalePointPage} />
-        <Route path={path + Routes.IMPORT_POI} component={ImportPOIPage} />
+        <Route path={path + Routes.IMPORT_POI} component={ImportPOIGlobalPage} />
         <Route path={path + Routes.IMPORT_TAD} component={ImportTADPage} />
       </Route>
     );
