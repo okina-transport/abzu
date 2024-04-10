@@ -73,7 +73,6 @@ class ImportParkingNetexPage extends Component{
 
 
     render(){
-
         const {intl:{formatMessage}} = this.props;
         const isSubmitDisabled = this.state.file === "";
 
