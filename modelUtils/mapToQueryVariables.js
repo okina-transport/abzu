@@ -400,11 +400,7 @@ helpers.mapPointOfInterestToVariables = (poi, parentRef) => {
         value : source.description,
         lang : 'fr'
       },
-      pointOfInterestFacilitySet: {},
-      pointOfInterestOpeningHours: {
-        value : source.pointOfInterestOpeningHours,
-        lang : 'fr'
-      }
+      pointOfInterestFacilitySet: {}
     };
     if (source.id) {
       pointOfInterest.id = source.id;
