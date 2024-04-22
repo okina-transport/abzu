@@ -14,9 +14,10 @@ class ImportParkingNetexPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            file: "",
-            errors :[],
-            result : ""
+          file: "",
+          errors: [],
+          result: "",
+          fileError: ""
         };
         this.fileReader = new FileReader();
         this.handleOnChange = this.handleOnChange.bind(this);
@@ -24,7 +25,12 @@ class ImportParkingNetexPage extends Component{
     }
 
      handleOnChange(e){
-        this.setState({["file"]:e.target.files[0]});
+       const file = e.target.files[0];
+       const isXmlFile = file && file.name.endsWith('.xml');
+       this.setState({
+         file: isXmlFile ? file : "",
+         fileError: isXmlFile ? "" : "Le fichier doit être au format .xml"
+       });
     }
 
     handleOnSubmit(e){
@@ -84,9 +90,11 @@ class ImportParkingNetexPage extends Component{
                       accept={".xml"}
                       onChange={this.handleOnChange}
                   />
-                  <Box style={{ marginTop: 10 }}>
-                    <Typography>Le fichier doit être au format .xml</Typography>
-                  </Box>
+                  {this.state.fileError && (
+                    <Box style={{ marginTop: 10 }}>
+                      <Typography style={{ color: 'orangered' }}>{this.state.fileError}</Typography>
+                    </Box>
+                  )}
                 </Grid>
                 <Grid item md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
                   <RaisedButton
@@ -107,11 +115,9 @@ class ImportParkingNetexPage extends Component{
                 </Grid>
               </Grid>
 
-                {this.state.errors.length>0 && this.state.errors.map(error => alert(error.message))}
+              {this.state.errors.length>0 && this.state.errors.map(error => alert(error.message))}
 
-                {this.state.result.length>0 && alert(this.state.result)}
-
-
+              {this.state.result.length>0 && alert(this.state.result)}
             </div>
         );
     }
