@@ -43,7 +43,8 @@ class ImportParkingNetexPage extends Component{
         bodyFormData.append('file_name',this.state.file.name);
 
         const username = getIn(this.props.kc, ['tokenParsed', 'preferred_username'], '');
-        bodyFormData.append('user', username);
+        bodyFormData.append('provider', username);
+        bodyFormData.append('folder', "");
 
         httpCall(
           url,
