@@ -101,7 +101,7 @@ class ImportPOIPage extends Component{
               />
               {isSubmitDisabled ?
                 <Box style={{ marginTop: 10 }}>
-                  <Typography style={{ color: 'orangered' }}>Un fichier doit être chargé pour l'import</Typography>
+                  <Typography style={{ color: 'orangered' }}>{formatMessage({id: 'is_missing_file_for_import'})}</Typography>
                 </Box>
                 : null
               }

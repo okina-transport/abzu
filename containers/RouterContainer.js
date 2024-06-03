@@ -28,6 +28,7 @@ import ImportTADPage from "./ImportTADPage";
 import ImportAccessibilityPage from "./ImportAccessibilityPage";
 import ImportParkingGlobalPage from './import_parkings/ImportParkingGlobalPage';
 import ImportPOIGlobalPage from './import_poi/ImportPOIGlobalPage';
+import ImportStopPlacesNetexPage from './import_stop_places/ImportStopPlacesNetexPage';
 
 class RouterContainer extends React.Component {
   render() {
@@ -46,6 +47,7 @@ class RouterContainer extends React.Component {
         <Route path={path + Routes.IMPORT_SALE_POINT_CSV} component={ImportSalePointPage} />
         <Route path={path + Routes.IMPORT_POI} component={ImportPOIGlobalPage} />
         <Route path={path + Routes.IMPORT_TAD} component={ImportTADPage} />
+        <Route path={path + Routes.IMPORT_STOP_PLACES} component={ImportStopPlacesNetexPage} />
       </Route>
     );
 
