@@ -8,7 +8,8 @@ const Routes = {
   IMPORT_SALE_POINT_CSV:'sale_point_import',
   IMPORT_POI:'poi_import',
   IMPORT_TAD:'tad_import',
-  IMPORT_PARKINGS: 'import_parkings'
+  IMPORT_PARKINGS: 'import_parkings',
+  IMPORT_STOP_PLACES: 'import_stop_places'
 };
 
 module.exports = Routes;

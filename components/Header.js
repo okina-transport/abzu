@@ -98,6 +98,9 @@ class Header extends React.Component {
       case 'GoToImportPOI':
         this.goToImportPOI();
         break;
+      case 'GoToImportStopPlaces':
+        this.goToImportStopPlaces();
+        break;
       default:
         () => {
           console.info('Invalid action', actionOnDone, ' ignored');
@@ -134,6 +137,10 @@ class Header extends React.Component {
 
   goToImportTAD() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_TAD, ''));
+  }
+
+  goToImportStopPlaces() {
+    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_STOP_PLACES, ''));
   }
 
   handleTogglePublicCodePrivateCodeOnStopPlaces(value) {
@@ -192,6 +199,7 @@ class Header extends React.Component {
     const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
     const importPOI = formatMessage({id: 'import_poi'})
     const importTAD = formatMessage({id: 'import_tad'})
+    const importStopPlaces = formatMessage({id: 'import_stop_places'})
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
     const userGuide = formatMessage({ id: 'user_guide' });
     const username = getIn(kc, ['tokenParsed', 'preferred_username'], '');
@@ -324,6 +332,17 @@ class Header extends React.Component {
                               )}
                           style={{ fontSize: 12, padding: 0 }}
                       />
+                    <MenuItem
+                      leftIcon={<PoiIcon color="#005A82" />}
+                      primaryText={importStopPlaces}
+                      href = {Routes.IMPORT_STOP_PLACES}
+                      onClick={() =>
+                        this.handleConfirmChangeRoute(
+                          this.goToImportStopPlaces().bind(this),
+                          'GoToImportStopPlaces'
+                        )}
+                      style={{ fontSize: 12, padding: 0 }}
+                    />
                   </React.Fragment>
         )}
               <MenuItem

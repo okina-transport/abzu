@@ -9,7 +9,7 @@ import {getIn} from "../../utils";
 import Box from '@material-ui/core/Box';
 
 
-class ImportParkingNetexPage extends Component{
+class ImportStopPlacesNetexPage extends Component{
 
   constructor(props) {
     super(props);
@@ -34,7 +34,7 @@ class ImportParkingNetexPage extends Component{
       this.fileReader.onload = (event) => {
         const csvOutput = event.target.result;
         const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-        const url = tiamatBaseUrl + "poi_netex_import_xml";
+        const url = tiamatBaseUrl + "stop_places_netex_import_xml";
 
         const bodyFormData = new FormData();
 
@@ -76,7 +76,7 @@ class ImportParkingNetexPage extends Component{
       <div>
         <Grid container spacing={2} style={{ padding: 20 }}>
           <Grid item xs={12} style={{ textAlign: 'center' }}>
-            <Typography variant="h4">POI</Typography>
+            <Typography variant="h4">{ formatMessage({ id: 'upload_stop_places_file_submit' }) }</Typography>
           </Grid>
           <Grid item md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
             <Input
@@ -92,7 +92,7 @@ class ImportParkingNetexPage extends Component{
           <Grid item md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
             <RaisedButton
               style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
-              label={formatMessage({id: 'upload_poi_file_submit'})}
+              label={formatMessage({id: 'upload_stop_places_file_submit'})}
               onClick={(event) => {
                 this.handleOnSubmit(event);
               }}
@@ -123,6 +123,6 @@ const mapStateToProps = state => ({
   kc: state.roles.kc
 });
 
-export default withApollo(connect(mapStateToProps)(injectIntl(ImportParkingNetexPage)));
+export default withApollo(connect(mapStateToProps)(injectIntl(ImportStopPlacesNetexPage)));
 
 
