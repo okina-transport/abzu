@@ -76,6 +76,7 @@ class ImportStopPlacesNetexPage extends Component{
       <div>
         <Grid container spacing={2} style={{ padding: 20 }}>
           <Grid item xs={12} style={{ textAlign: 'center' }}>
+            <Typography variant="h4">Imports au format Netex</Typography>
             <Typography variant="h4">{ formatMessage({ id: 'upload_stop_places_file_submit' }) }</Typography>
           </Grid>
           <Grid item md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
