@@ -26,13 +26,13 @@ class ImportParkingGlobalPage extends Component{
           <Grid item xs={12} style={{ textAlign: 'center' }}>
             <Typography variant="h4">Imports au format CSV</Typography>
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={12} style={{ border: '1px solid #ccc', padding: '16px' }}>
             <ImportParkingPage />
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={12} style={{ border: '1px solid #ccc', padding: '16px' }}>
             <ImportBikeParkingPage />
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={12} style={{ border: '1px solid #ccc', padding: '16px' }}>
             <ImportRentalBikePage />
           </Grid>
         </Grid>
