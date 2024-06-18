@@ -160,6 +160,7 @@
   "heating": "Heating",
   "help": "Help",
   "hide_quays": "Hide quays",
+  "import_progress_message" : "Import in progress, it may take a few minutes",
   "import_accessibility" : "Import for accessibility update",
   "import_parking_netex" : "Parkings, rental bikes, bicycle parking",
   "import_parkings" : "Import Parkings",

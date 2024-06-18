@@ -7,6 +7,7 @@ import RaisedButton from "material-ui/RaisedButton";
 import { Grid, Input, Typography } from '@material-ui/core';
 import {getIn} from "../../utils";
 import Box from '@material-ui/core/Box';
+import { CircularProgress } from 'material-ui';
 
 
 class ImportParkingNetexPage extends Component{
@@ -16,7 +17,8 @@ class ImportParkingNetexPage extends Component{
     this.state = {
       file: "",
       errors :[],
-      result : ""
+      result : "",
+      loading: false
     };
     this.fileReader = new FileReader();
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -31,6 +33,7 @@ class ImportParkingNetexPage extends Component{
     e.preventDefault();
 
     if(this.state.file !== ""){
+      this.setState({ loading: true });
       this.fileReader.onload = (event) => {
         const csvOutput = event.target.result;
         const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
@@ -57,9 +60,9 @@ class ImportParkingNetexPage extends Component{
             data: bodyFormData
           }).then(response=>{
           console.log("response =>", response)
-          this.setState({result:"file uploaded"});
+          this.setState({result:"file uploaded", loading: false});
         }).catch(error =>{
-          this.setState({errors:error});
+          this.setState({errors:error, loading: false});
         });
       };
       this.fileReader.readAsText(this.state.file);
@@ -97,8 +100,14 @@ class ImportParkingNetexPage extends Component{
                 this.handleOnSubmit(event);
               }}
               primary={true}
-              disabled={isSubmitDisabled}
+              disabled={isSubmitDisabled || this.state.isLoading}
             />
+            {this.state.loading && (
+              <Box>
+                <CircularProgress size={24} style={{ marginRight: 10 }} />
+                <Typography>{ formatMessage({ id: 'import_progress_message' }) }</Typography>
+              </Box>
+            )}
             {isSubmitDisabled ?
               <Box style={{ marginTop: 10 }}>
                 <Typography style={{ color: 'orangered' }}>{formatMessage({id: 'is_missing_file_for_import'})}</Typography>
