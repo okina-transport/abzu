@@ -114,7 +114,7 @@ class Parking {
       numberOfCarsharingSpaces: this.isParkAndRide ? this.numberOfCarsharingSpaces : null,
       numberOfCarpoolingSpaces: this.isParkAndRide ? this.numberOfCarpoolingSpaces : null,
       numberOfSpacesForRegisteredDisabledUserType: this.isParkAndRide ? this.numberOfSpacesForRegisteredDisabledUserType : null,
-      parkingLayout: this.isParkAndRide ? this.parking.parkingLayout : null,
+      parkingLayout: this.parking.parkingLayout ? this.parking.parkingLayout : 'undefined',
       totalCapacity: parking.totalCapacity,
       parentSiteRef: parking.parentSiteRef,
       secure: parking.secure,

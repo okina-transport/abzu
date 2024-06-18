@@ -92,6 +92,7 @@ const getIconIdByModality = type => {
     parkAndRide: 'parking',
     bikeParking: 'parking',
     urbanParking: 'parking',
+    liftShareParking: 'parking',
     airportParking: 'parking',
     trainStationParking: 'parking',
     exhibitionCentreParking: 'parking',

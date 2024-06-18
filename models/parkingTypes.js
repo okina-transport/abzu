@@ -2,69 +2,69 @@
 const parkingTypes = {
     fr: [
         {
-            name: 'Parking relais',
+            name: 'parkAndRide : P+R',
             value: 'parkAndRide',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Parking urbain',
+            name: 'urbanParking : Parking urbain',
             value: 'urbanParking',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Parking Aéroport',
+            name: 'liftShareParking : Parking pour covoiturage',
+            value: 'liftShareParking',
+            parkingVehiculeType: 'car'
+        },
+        {
+            name: 'airportParking : Parking d’aéroport',
             value: 'airportParking',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Parking Gare',
+            name: 'trainStationParking : Parking de gare',
             value: 'trainStationParking',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Parking Parc des expositions',
+            name: 'exhibitionCentreParking : Parking de parc d’exposition',
             value: 'exhibitionCentreParking',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Parking de location de véhicules',
+            name: 'rentalCarParking : Parking pour loueur',
             value: 'rentalCarParking',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Parking Centre Commercial',
+            name: 'shoppingCentreParking : Parking de centre comercial',
             value: 'shoppingCentreParking',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Parking d\'autoroute',
+            name: 'motorwayParking : Parking d\'autoroute',
             value: 'motorwayParking',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Stationnement bord de route',
+            name: 'roadside : Parking en voirie',
             value: 'roadside',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Zone de stationnement',
+            name: 'parkingZone : Zone de parking',
             value: 'parkingZone',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Indéfini',
+            name: 'undefined : Type non précisé',
             value: 'undefined',
             parkingVehiculeType: 'car'
         },
         {
-            name: 'Location de vélos',
+            name: 'cycleRental : Parking de location de vélo/trotinettes/etc.',
             value: 'cycleRental',
             parkingVehiculeType: 'pedalCycle'
-        },
-        {
-            name: 'Autre',
-            value: 'other',
-            parkingVehiculeType: 'undefined'
         }
     ]
 };

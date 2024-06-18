@@ -128,6 +128,7 @@ const getIconIdByModality = (type, isMultimodal, secure, typeOfParkingRef) => {
     parkAndRide: 'parking',
     bikeParking: 'Parking_velo',
     urbanParking: 'parking',
+    liftShareParking: 'parking',
     airportParking: 'parking',
     trainStationParking: 'parking',
     exhibitionCentreParking: 'parking',
