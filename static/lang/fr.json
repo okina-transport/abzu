@@ -178,6 +178,7 @@
   "heating": "Chauffage",
   "help": "Aide",
   "hide_quays": "Masquer les quais",
+  "import_progress_message" : "Import en cours, cela peut prendre quelques minutes",
   "import_accessibility" : "Import pour la mise à jour de l'accessibilité",
   "import_parking_netex" : "Parkings, VLS, stationnement vélo",
   "import_parkings" : "Import Parkings",
