@@ -27,6 +27,15 @@ To run Abzu for development, simply do:
 
 ```
 npm install
+
+# with local Tiamat
+export TIAMAT_BASE_URL=http://0.0.0.0:8484/services/stop_places/graphql
+npm run prebuild
+npm run dev-local
+
+# with tiamat from docker stack
+export TIAMAT_BASE_URL=http://tiamat-ara:8585/services/stop_places/graphql
+npm run prebuild
 npm run dev
 ```
 
