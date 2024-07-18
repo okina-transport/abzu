@@ -48,6 +48,7 @@ class ImportStopPlacesNetexPage extends Component{
         const username = getIn(this.props.kc, ['tokenParsed', 'preferred_username'], '');
         bodyFormData.append('provider', username);
         bodyFormData.append('folder', "");
+        bodyFormData.append("containsMobiitiIds", true);
 
         httpCall(
           url,
