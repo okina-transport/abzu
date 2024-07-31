@@ -43,7 +43,7 @@ class ImportParkingNetexPage extends Component{
             this.fileReader.onload = (event) => {
                 const csvOutput = event.target.result;
                 const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-                const url = tiamatBaseUrl + "parkings_netex_import_xml";
+                const url = tiamatBaseUrl + "netex_parking/parking_async_import_netex";
 
                 const bodyFormData = new FormData();
 
@@ -66,7 +66,7 @@ class ImportParkingNetexPage extends Component{
                         data: bodyFormData
                     }).then(response=>{
                         console.log("response =>", response)
-                        this.setState({result:"file uploaded", loading: false});
+                        this.setState({result:"import démarré", loading: false});
                     }).catch(error =>{
                         this.setState({errors:error, loading: false});
                     });

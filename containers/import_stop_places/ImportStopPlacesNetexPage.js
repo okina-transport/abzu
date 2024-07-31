@@ -8,6 +8,8 @@ import { Grid, Input, Typography } from '@material-ui/core';
 import {getIn} from "../../utils";
 import Box from '@material-ui/core/Box';
 import { CircularProgress, FontIcon } from 'material-ui';
+import ImportPOIStats from "../import_poi/ImportPOIStats";
+import ImportStopPlaceStats from "./ImportStopPlaceStats";
 
 
 class ImportStopPlacesNetexPage extends Component{
@@ -37,7 +39,7 @@ class ImportStopPlacesNetexPage extends Component{
       this.fileReader.onload = (event) => {
         const csvOutput = event.target.result;
         const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-        const url = tiamatBaseUrl + "stop_places_netex_import_xml";
+        const url = tiamatBaseUrl + "netex_stops/stops_async_import_netex";
 
         const bodyFormData = new FormData();
 
@@ -61,7 +63,7 @@ class ImportStopPlacesNetexPage extends Component{
             data: bodyFormData
           }).then(response => {
           console.log("response =>", response);
-          this.setState({result:"file uploaded", loading: false});
+          this.setState({result:"Import démarré", loading: false});
         }).catch(error => {
           this.setState({errors:error, loading: false});
         });
@@ -116,6 +118,12 @@ class ImportStopPlacesNetexPage extends Component{
               </Box>
               : null
             }
+          </Grid>
+
+
+          <Grid item xs={12} style={{ textAlign: 'center', marginTop: 5 }}>
+            <Typography variant="h4">Historique des imports Arrets</Typography>
+            <ImportStopPlaceStats />
           </Grid>
         </Grid>
 

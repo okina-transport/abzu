@@ -61,7 +61,7 @@ class ImportParkingPage extends Component{
             this.fileReader.onload = (event) => {
                 const csvOutput = event.target.result;
                 const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-                const url = tiamatBaseUrl + "parkings_import_csv";
+                const url = tiamatBaseUrl + "parking/parking_async_import_csv";
 
                 const bodyFormData = new FormData();
 
@@ -72,7 +72,7 @@ class ImportParkingPage extends Component{
                 bodyFormData.append('parking_type', this.state.parkingType);
                 bodyFormData.append('parking_layout', this.state.parkingLayout);
                 bodyFormData.append('park_and_ride_detection', this.state.parkAndRideDetection);
-                debugger;;
+
 
                 const username = getIn(this.props.kc, ['tokenParsed', 'preferred_username'], '');
                 bodyFormData.append('user', username);
@@ -88,7 +88,7 @@ class ImportParkingPage extends Component{
                         data: bodyFormData
                     }).then(response=>{
                         console.log("response =>", response)
-                        this.setState({result:"file uploaded"});
+                        this.setState({result:"Import démarré"});
                     }).catch(error =>{
                         this.setState({errors:error});
                     });

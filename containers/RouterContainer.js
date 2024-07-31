@@ -21,7 +21,7 @@ import StopPlace from './StopPlace';
 import ReportPage from './ReportPage';
 import Routes from '../routes/';
 import GroupOfStopPlaces from './GroupOfStopPlaces';
-import ImportSalePointPage from './ImportSalePointPage';
+import ImportSalePointPage from './import_sales_points/ImportSalePointPage';
 import Parking from "./Parking";
 import PointOfInterest from "./PointOfInterest";
 import ImportTADPage from "./ImportTADPage";

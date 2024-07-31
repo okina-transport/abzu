@@ -2,11 +2,12 @@ import {withApollo} from "react-apollo";
 import {connect} from "react-redux";
 import React, {Component} from 'react';
 import {injectIntl} from "react-intl";
-import {httpCall} from '../utils/httpCall';
+import {httpCall} from '../../utils/httpCall';
 import RaisedButton from "material-ui/RaisedButton";
-import {Input} from '@material-ui/core';
-import ReportFilterBox from "../components/ReportPage/ReportFilterBox";
-import {getIn} from "../utils";
+import {Grid, Input, Typography} from '@material-ui/core';
+import ReportFilterBox from "../../components/ReportPage/ReportFilterBox";
+import {getIn} from "../../utils";
+import ImportSalePointStats from "./ImportSalePointStats";
 
 
 class ImportSalePointPage extends Component{
@@ -35,7 +36,7 @@ class ImportSalePointPage extends Component{
             this.fileReader.onload = (event) => {
                 const csvOutput = event.target.result;
                 const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-                const url = tiamatBaseUrl + "poi/shop_import_csv";
+                const url = tiamatBaseUrl + "poi/shop_async_import_csv";
 
 
 
@@ -58,7 +59,7 @@ class ImportSalePointPage extends Component{
                         data: bodyFormData
                     }).then(response => {
                         console.log("response =>", response);
-                        this.setState({result:"file uploaded"});
+                        this.setState({result:"import démarré"});
                     }).catch(error  => {
                         this.setState({errors:error});
                     });
@@ -75,23 +76,33 @@ class ImportSalePointPage extends Component{
         return(
             <div>
 
+                <Grid container spacing={2} style={{ padding: 20 }}>
+                    <Grid item xs={12} style={{ textAlign: 'center' }}>
+                        <ReportFilterBox style={{width: '60%'}}>
+                            <Input
+                                id={"upload_csv_sale_point"}
+                                type={"file"}
+                                accept={".csv"}
+                                onChange={this.handleOnChange}
+                            />
+                            <RaisedButton
+                                style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
+                                label={formatMessage({id: 'upload_salePoint_file_submit'})}
+                                onClick={(event) => {
+                                    this.handleOnSubmit(event);
+                                }}
+                                primary={true}
+                            />
+                        </ReportFilterBox>
+                       </Grid>
 
-                <ReportFilterBox style={{width: '60%'}}>
-                        <Input
-                            id={"upload_csv_sale_point"}
-                            type={"file"}
-                            accept={".csv"}
-                            onChange={this.handleOnChange}
-                        />
-                        <RaisedButton
-                            style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
-                            label={formatMessage({id: 'upload_salePoint_file_submit'})}
-                            onClick={(event) => {
-                                this.handleOnSubmit(event);
-                            }}
-                            primary={true}
-                        />
-                </ReportFilterBox>
+                    <Grid item xs={12} style={{ textAlign: 'center', marginTop: 5 }}>
+                        <Typography variant="h4">Historique des imports points de vente</Typography>
+                        <ImportSalePointStats />
+                    </Grid>
+                </Grid>
+
+
 
                 {this.state.errors.length>0 && this.state.errors.map(error => alert(error.message))}
 

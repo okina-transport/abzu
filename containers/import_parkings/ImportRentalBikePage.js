@@ -35,7 +35,7 @@ class ImportRentalBikePage extends Component{
             this.fileReader.onload = (event) => {
                 const csvOutput = event.target.result;
                 const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-                const url = tiamatBaseUrl + "rental_bike_import";
+                const url = tiamatBaseUrl + "rental_bike/rental_bike_async_import_csv";
 
 
 
@@ -58,7 +58,7 @@ class ImportRentalBikePage extends Component{
                         data: bodyFormData
                     }).then(response => {
                         console.log("response =>", response);
-                        this.setState({result:"file uploaded"});
+                        this.setState({result:"import démarré"});
                     }).catch(error  => {
                         this.setState({errors:error});
                     });
