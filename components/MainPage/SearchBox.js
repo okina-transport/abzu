@@ -62,7 +62,7 @@ class SearchBox extends React.Component {
         };
 
         const searchStop = (searchText, dataSource, params, filter) => {
-            if (searchText.length < 2) {
+            if (searchText.length < 3) {
                 return;
             }
 
