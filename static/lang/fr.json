@@ -156,6 +156,7 @@
   "favorites": "Favoris",
   "field_is_required": "Le champ est requis",
   "filter_by_name": "Chercher un point d'arrêt par son nom / identifiant",
+  "filter_by_name_text_helper": "Veuillez saisir au moins 3 caractères pour déclencher la recherche",
   "filter_by_tags": "Filtrer par étiquettes",
   "filter_by_topography": "Commune ou communauté d'agglomérations",
   "filter_report_by_modality": "Filtrer par modalité",

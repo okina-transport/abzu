@@ -378,48 +378,45 @@ export const getPointOfInterestByIdQuery = gql`
     },
 `;
 
+/* disabled because not used and slows PDM search
+* if reactivation add to findStop query
+
+  groupOfStopPlaces(query: $query, size: 7, ignoreStops: $ignoreStops) {
+      id
+      name {
+          value
+      }
+      members {
+          __typename
+          id
+          name {
+              value
+          }
+          geometry {
+              type
+              coordinates
+          }
+          topographicPlace {
+              name {
+                  value
+              }
+              parentTopographicPlace {
+                  name {
+                      value
+                  }
+              }
+          }
+          ...on StopPlace {
+              submode
+              stopPlaceType
+          }
+      }
+  }
+*/
 export const findStop = gql`
-    query findStop($query: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $countryReference: [String], $pointInTime: DateTime, $versionValidity: VersionValidity, $code: String, $ignoreStops: Boolean, $ignoreParkings: Boolean, $ignorePointsOfInterest: Boolean) {
-        groupOfStopPlaces(query: $query, size: 7, ignoreStops: $ignoreStops) {
-            id
-            name {
-                value
-            }
-            members {
-                __typename
-                id
-                name {
-                    value
-                }
-                geometry {
-                    type 
-                    coordinates
-                }
-                topographicPlace {
-                    name {
-                        value
-                    }
-                    parentTopographicPlace {
-                        name {
-                            value
-                        }
-                    }
-                }
-                ...on StopPlace {
-                    submode
-                    stopPlaceType
-                }
-            }
-        }
+    query findStop($query: String, $municipalityReference: [String], $stopPlaceType: [StopPlaceType], $countyReference: [String], $countryReference: [String], $pointInTime: DateTime, $versionValidity: VersionValidity, $code: String, $ignoreStops: Boolean, $ignoreParkings: Boolean, $ignorePointsOfInterest: Boolean) { 
         stopPlace(query: $query, municipalityReference: $municipalityReference, stopPlaceType: $stopPlaceType, countyReference: $countyReference, countryReference: $countryReference, size: 7, pointInTime: $pointInTime, versionValidity: $versionValidity, code: $code, ignoreStops: $ignoreStops) {
             id
-            groups {
-                id
-                name {
-                  value
-                }
-            }
-            __typename
             keyValues {
                 key
                 values

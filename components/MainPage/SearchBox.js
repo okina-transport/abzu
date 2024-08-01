@@ -48,6 +48,7 @@ import CheckBox from 'material-ui/Checkbox';
 import Routes from '../../routes/';
 import {Entities} from '../../models/Entities';
 import SettingsManager from "../../singletons/SettingsManager";
+import { grey700 } from 'material-ui/styles/colors';
 
 class SearchBox extends React.Component {
     constructor(props) {
@@ -61,6 +62,10 @@ class SearchBox extends React.Component {
         };
 
         const searchStop = (searchText, dataSource, params, filter) => {
+            if (searchText.length < 2) {
+                return;
+            }
+
             const chips = filter ? filter.topoiChips : this.props.topoiChips;
             const showFutureAndExpired = filter
                 ? filter.showFutureAndExpired
@@ -970,6 +975,7 @@ class SearchBox extends React.Component {
                                 clear
                             </IconButton>
                         </div>
+                        <p style={{marginTop: 0, color: grey700, textAlign: 'center'}}><small>{formatMessage({id: 'filter_by_name_text_helper'})}</small></p>
                         <Divider/>
                     </div>
                     <div style={{marginBottom: 5, textAlign: 'right', marginRight: 10}}>

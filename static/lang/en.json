@@ -138,6 +138,7 @@
   "favorites": "Favorites",
   "field_is_required": "Field is required",
   "filter_by_name": "Search for stop place by name or id",
+  "filter_by_name_text_helper": "Please enter at least 3 characters to trigger the search",
   "filter_by_tags": "Filter by tags",
   "filter_by_topography": "Muncipality / county / country",
   "filter_report_by_modality": "Filter by modality",
