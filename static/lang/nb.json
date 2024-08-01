@@ -137,6 +137,7 @@
   "favorites" : "Favoritter",
   "field_is_required" : "Feltet er påkrevd",
   "filter_by_name": "Søk etter stoppested ved navn eller id ...",
+  "filter_by_name_text_helper": "Vennligst skriv inn minst 3 tegn for å utløse søket",
   "filter_by_tags": "Filtrer på tagger",
   "filter_by_topography" : "Kommune / fylke",
   "filter_report_by_modality": "Filtrer på modalitet",
