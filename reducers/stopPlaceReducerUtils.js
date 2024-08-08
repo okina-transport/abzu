@@ -78,8 +78,6 @@ export const getStateByOperation = (state, action) => {
       return Object.assign({}, state, {
         searchResults: [
           ...formatHelpers.mapSearchResultToStopPlaces(action.result.data.stopPlace),
-          // disabled because not used and slows PDM search
-          // ...formatHelpers.mapSearchResultatGroup(action.result.data.groupOfStopPlaces),
           ...formatHelpers.mapSearchResultToParkings(action.result.data.parking),
           ...formatHelpers.mapSearchResultToPointsOfInterest(action.result.data.pointOfInterest)
           ]
