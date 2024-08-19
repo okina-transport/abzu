@@ -274,12 +274,6 @@ export const getStopById = gql`
             name {
                 value
             }
-            groups {
-              id
-              name {
-                value
-              }
-            }
             tags {
                 name
                 comment
