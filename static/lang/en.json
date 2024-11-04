@@ -272,6 +272,7 @@
   "overwrite_alt_name_cancel": "Keep previous",
   "overwrite_alt_name_confirm": "Overwrite",
   "overwrite_alt_name_title": "Conflicting alternative name",
+  "other_transport_modes_title": "Configuring other transport modes",
   "page": "Page",
   "parent_stop_place_requires_children": "A multimodal stop place must contain children stop places in order to exist",
   "parentStopPlace": "Multimodal StopPlace",

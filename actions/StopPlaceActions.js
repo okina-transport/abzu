@@ -460,4 +460,11 @@ StopPlaceActions.removeTariffZone = tariffZoneId => dispatch => {
   );
 };
 
+StopPlaceActions.changeOtherTransportModes = (updatedModes) => dispatch => {
+  dispatch({
+    type: types.CHANGE_OTHER_TRANSPORT_MODES,
+    payload: updatedModes,
+  });
+};
+
 export default StopPlaceActions;

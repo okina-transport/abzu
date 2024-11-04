@@ -251,6 +251,7 @@ Fragments.stopPlace = {
             toDate
         }
         modificationEnumeration
+        otherTransportModes
     }
     ${Fragments.quay.verbose},
     ${Fragments.placeEquipments.verbose},
@@ -378,6 +379,7 @@ Fragments.parentStopPlace = {
               }
               topographicPlaceType
           }
+          otherTransportModes
       },
       ${Fragments.stopPlace.verbose},
   `,

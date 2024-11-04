@@ -54,12 +54,15 @@ import AutoComplete from 'material-ui/AutoComplete';
 import MenuItem from 'material-ui/MenuItem';
 import MdSpinner from '../../static/icons/spinner';
 import {getName} from "../../graphql/Tiamat/actions";
+import OtherTransportModesMenuItems from './OtherTransportModesMenuItems';
+import Dialog from 'material-ui/Dialog';
 
 class StopPlaceDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       stopTypeOpen: false,
+      otherTransportModesOpen: false,
       weightingOpen: false,
       name: props.stopPlace.name || '',
       publicCode: props.stopPlace.publicCode || '',
@@ -69,7 +72,7 @@ class StopPlaceDetails extends React.Component {
       tariffZoneOpen: false,
       tagsOpen: false,
       loading: false,
-      currentStopPlaceName: props.stopPlace.name || ''
+      currentStopPlaceName: props.stopPlace.name || '',
     };
 
     this.updateStopName = debounce(value => {
@@ -190,6 +193,13 @@ class StopPlaceDetails extends React.Component {
             weightingOpen: false,
             tagsOpen: false
         });
+    }
+
+    handleOpenOtherTransportModesPopover(event) {
+      this.setState({
+        otherTransportModesOpen: true,
+        otherTransportModesAnchorEl: event.currentTarget,
+      });
     }
 
     getWeightingStateColor(stopPlace) {
@@ -342,7 +352,17 @@ class StopPlaceDetails extends React.Component {
         }
     }
 
-    getStopTypeTranslation(locale, stopPlaceType, submode) {
+  handleOtherTransportModeChange(selectedModes) {
+    this.props.stopPlace.otherTransportModes = selectedModes;
+    this.props.dispatch(StopPlaceActions.changeOtherTransportModes(selectedModes));
+  }
+
+
+  handleCloseOtherTransportModesModal = () => {
+    this.setState({ otherTransportModesOpen: false });
+  };
+
+  getStopTypeTranslation(locale, stopPlaceType, submode) {
         let translations = stopTypes[locale].filter(
             type => type.value === stopPlaceType
         );
@@ -460,6 +480,11 @@ class StopPlaceDetails extends React.Component {
       stopPlace.stopPlaceType,
       stopPlace.submode
     );
+      const stopTypeOtherModeHint = this.getStopTypeTranslation(
+        locale,
+        stopPlace.stopPlaceType,
+        stopPlace.otherTransportModes
+      );
     const weightingStateHint = this.getNameForWeightingState(stopPlace, locale);
     const expirationText = formatMessage({ id: 'stop_has_expired' });
     const permanentlyTerminatedText = formatMessage({ id: 'stop_has_been_permanently_terminated' });
@@ -608,6 +633,43 @@ class StopPlaceDetails extends React.Component {
                     stopTypes={stopTypes[locale]}
                   />
                 </Popover>
+
+                <ToolTippable toolTipText={formatMessage({id: 'other_transport_modes_title'})}>
+                  <IconButton
+                    style={{
+                      borderBottom: disabled ? 'none' : '1px dotted grey',
+                      marginLeft: 5
+                    }}
+                    onClick={this.handleOpenOtherTransportModesPopover.bind(this)}
+                  >
+                    <ModalityIconSvg type="localPassengerFerry"/>
+                  </IconButton>
+                </ToolTippable>
+
+                <div style={{ display: 'flex', marginLeft: 'auto' }}>
+                  <Dialog
+                    title={formatMessage({id: 'other_transport_modes_title'})}
+                    actions={[
+                      <FlatButton
+                        label={formatMessage({id: 'confirm'}) + " / " + formatMessage({id: 'close'})}
+                        primary={true}
+                        onClick={this.handleCloseOtherTransportModesModal}
+                      />,
+                    ]}
+                    modal={false}
+                    open={this.state.otherTransportModesOpen}
+                    onRequestClose={this.handleCloseOtherTransportModesModal}
+                    contentStyle={{ maxWidth: '600px' }}
+                    autoScrollBodyContent={true}
+                  >
+                    <OtherTransportModesMenuItems
+                      otherTransportModesChosen={stopPlace.otherTransportModes}
+                      handleOtherTransportModeChange={this.handleOtherTransportModeChange.bind(this)}
+                      locale={locale}
+                    />
+                  </Dialog>
+                </div>
+
               </div>
             </div>
           </div>

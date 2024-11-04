@@ -189,6 +189,7 @@ helpers.mapStopToVariables = (original, userInput) => {
     publicCode: stop.publicCode,
     description: stop.description || null,
     stopPlaceType: stop.stopPlaceType,
+    otherTransportModes: stop.otherTransportModes,
     quays: stop.quays.map(quay => helpers.mapQuayToVariables(quay)),
     accessibilityAssessment: formatAccessibilityAssements(
       stop.accessibilityAssessment

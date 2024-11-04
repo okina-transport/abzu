@@ -119,6 +119,7 @@ const getIconIdByModality = (type, secure, typeOfParkingRef) => {
     undefined: 'parking',
     cycleRental: 'bikeRentalSvg',
     storepoint: 'storepoint',
+
   };
   return modalityMap[type] || 'no-information';
 };

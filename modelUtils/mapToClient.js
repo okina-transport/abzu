@@ -394,7 +394,8 @@ helpers.mapSearchResultParentStopPlace = stop => {
       hasExpired: hasExpired(stop.validBetween),
       tags: stop.tags,
       geometry: stop.geometry,
-      entityType: Entities.STOP_PLACE
+      entityType: Entities.STOP_PLACE,
+      otherTransportModes: stop.otherTransportModes,
     };
 
     if (stop.groups && stop.groups.length) {

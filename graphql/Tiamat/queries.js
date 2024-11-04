@@ -89,6 +89,7 @@ export const stopPlaceBBQuery = gql`
                 __typename
                 stopPlaceType
                 submode
+                otherTransportModes
             }
             ...on ParentStopPlace {
                 children {

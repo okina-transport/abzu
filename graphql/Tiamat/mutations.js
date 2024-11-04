@@ -114,7 +114,7 @@ export const mutateAddToMultiModalStopPlace = gql`
 `;
 
 export const mutateStopPlace = gql`
-    mutation mutateStopPlace($id: String, $name: String, $publicCode: String, $privateCode: PrivateCodeInput, $description: String, $coordinates: Coordinates!, $stopPlaceType: StopPlaceType, $quays: [QuayInput], $validBetween: ValidBetweenInput, $accessibilityAssessment: AccessibilityAssessmentInput, $placeEquipments: PlaceEquipmentsInput, $alternativeNames: [AlternativeNameInput], $versionComment: String, $weighting: InterchangeWeightingType, $keyValues: [KeyValuesInput], $submode: SubmodeType, $transportMode: TransportModeType, $tariffZones: [VersionLessEntityRefInput]) {
+    mutation mutateStopPlace($id: String, $name: String, $publicCode: String, $privateCode: PrivateCodeInput, $description: String, $coordinates: Coordinates!, $stopPlaceType: StopPlaceType, $quays: [QuayInput], $validBetween: ValidBetweenInput, $accessibilityAssessment: AccessibilityAssessmentInput, $placeEquipments: PlaceEquipmentsInput, $alternativeNames: [AlternativeNameInput], $versionComment: String, $weighting: InterchangeWeightingType, $keyValues: [KeyValuesInput], $submode: SubmodeType, $transportMode: TransportModeType, $tariffZones: [VersionLessEntityRefInput], $otherTransportModes: [VehicleModeEnumeration]) {
         mutateStopPlace(StopPlace: {
             id: $id
             keyValues: $keyValues
@@ -136,7 +136,9 @@ export const mutateStopPlace = gql`
             accessibilityAssessment: $accessibilityAssessment
             placeEquipments: $placeEquipments
             tariffZones: $tariffZones
-            stopPlaceType: $stopPlaceType}) {
+            stopPlaceType: $stopPlaceType
+            otherTransportModes: $otherTransportModes
+            }) {
             ...VerboseStopPlace
         }
     }

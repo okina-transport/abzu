@@ -30,6 +30,16 @@ const stopPlaceReducer = (state = {}, action) => {
     case types.APOLLO_MUTATION_RESULT:
       return getStateByOperation(state, action);
 
+    case types.CHANGE_OTHER_TRANSPORT_MODES:
+      return {
+        ...state,
+        current: {
+          ...state.current,
+          otherTransportModes: action.payload,  // Liste simple des modes de transport
+        },
+        stopHasBeenModified: true,
+      };
+
     case types.CLEAR_SEARCH_RESULTS:
       return Object.assign({}, state, {
         searchResults: [],
