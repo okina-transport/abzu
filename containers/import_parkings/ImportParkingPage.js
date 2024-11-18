@@ -105,7 +105,7 @@ class ImportParkingPage extends Component{
 
         const labelStyle = {
             width: '350px',
-            textAlign: 'left',
+            textAlign: 'right',
             marginRight: '10px'
         };
 
@@ -181,15 +181,24 @@ class ImportParkingPage extends Component{
                               onChange={this.handleParkingLayoutSelectChange}
                               style={selectStyle}
                           >
-                              <option value="undefined">undefined:non précisé</option>
-                              <option value="covered">covered:couvert</option>
-                              <option value="openSpace">openSpace:espace ouvert</option>
-                              <option value="multistorey">multistorey:à plusieurs étages/niveaux</option>
-                              <option value="underground">underground:sous terrain</option>
-                              <option value="roadside">roadside:bord de route</option>
-                              <option value="cycleHire">cycleHire:location de cycle et trotinettes, inclus les vehicules partagés</option>
+                              <option value="undefined">undefined: non précisé</option>
+                              <option value="covered">covered: couvert</option>
+                              <option value="openSpace">openSpace: espace ouvert</option>
+                              <option value="multistorey">multistorey: à plusieurs étages/niveaux</option>
+                              <option value="underground">underground: sous terrain</option>
+                              <option value="roadside">roadside: bord de route</option>
+                              <option value="cycleHire">cycleHire: location de cycle et trotinettes, inclus les vehicules partagés</option>
                           </select>
                       </div>
+                      {this.state.parkingLayout === "undefined" ?
+                        <Box style={{ marginTop: 10 }}>
+                            <small style={{ color: 'blue' }}>Le champ "type_ouvrage" du csv sera prit en compte comme valeur de ParkingLayout</small>
+                        </Box>
+                        :
+                        <Box style={{ marginTop: 10 }}>
+                            <small style={{ color: 'blue' }}>Le champ "type_ouvrage" du csv ne sera pas prit en compte comme valeur de ParkingLayout mais : {this.state.parkingLayout}</small>
+                        </Box>
+                      }
                   </Grid>
 
                   <Grid item md={12} xs={12} style={{margin: 'auto', textAlign: 'center'}}>
