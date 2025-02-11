@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import React, {Component} from 'react';
 import {injectIntl} from "react-intl";
 import ImportParkingPage from './ImportParkingPage';
+import ImportGbfsPage from './ImportGbfsPage';
 import { Grid, Typography } from '@material-ui/core';
 import ImportBikeParkingPage from './ImportBikeParkingPage';
 import ImportRentalBikePage from './ImportRentalBikePage';
@@ -16,12 +17,21 @@ class ImportParkingGlobalPage extends Component{
   render(){
     return(
       <div>
-        <Grid container spacing={6} style={{ marginTop: 5 }}>
+        <Grid container spacing={6} style={{ marginTop: 3 , justifyContent:"center", alignItems:"center"}}>
           <Grid item xs={12} style={{ textAlign: 'center' }}>
             <Typography variant="h4">Imports au format Netex</Typography>
           </Grid>
           <Grid item md={6} xs={12}>
             <ImportParkingNetexPage />
+          </Grid>
+        </Grid>
+        <hr/>
+        <Grid container spacing={6} style={{ marginTop: 3 , justifyContent:"center", alignItems:"center"}}>
+          <Grid item xs={12} style={{ textAlign: 'center' }}>
+            <Typography variant="h4">Imports au format GBFS</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <ImportGbfsPage />
           </Grid>
         </Grid>
         <hr/>
