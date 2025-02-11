@@ -84,7 +84,7 @@ class ImportParkingNetexPage extends Component{
             <div>
               <Grid container spacing={2} style={{ padding: 20 }}>
                 <Grid item xs={12} style={{ textAlign: 'center' }}>
-                  <Typography variant="h4">{formatMessage({id: 'import_parking_netex'})}</Typography>
+                  <Typography variant="h5">{formatMessage({id: 'import_parking_netex'})}</Typography>
                 </Grid>
                 <Grid item md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
                   <Input
