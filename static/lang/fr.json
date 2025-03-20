@@ -193,6 +193,7 @@
   "import_gbfs_url_input_label" : "GBFS URL : ",
   "import_gbfs_url_input_error" : "Url invalide",
   "import_gbfs_url_parking_label" : "Parking type : ",
+  "import_gbfs_url_parking_area_type_label": "Typologie de zone de stationnement",
   "import_gbfs_submit_button_label" : "Importer",
   "import_file_extension_help_text": "Le fichier doit être au format .xml",
   "important_quay_usages_found": "Le quai source est utilisé dans au moins une course planififée. Utilisé par :",

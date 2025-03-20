@@ -17,12 +17,13 @@ class ImportGbfsPage extends Component {
             errors :[],
             result : "",
             parkingType: "cycleRental",
-
+            parkingAreaType: "aucun",
         };
         this.isValidUrl = this.isValidUrl.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
         this.handleOnSubmit = this.handleOnSubmit.bind(this);
         this.handleParkingTypeSelectChange = this.handleParkingTypeSelectChange.bind(this);
+        this.handleParkingAreaTypeSelectChange = this.handleParkingAreaTypeSelectChange.bind(this);
 
     }
 
@@ -45,6 +46,9 @@ class ImportGbfsPage extends Component {
         this.setState({ parkingType: event.target.value });
     };
 
+    handleParkingAreaTypeSelectChange = (event) => {
+        this.setState({ parkingAreaType: event.target.value });
+    };
 
     handleOnSubmit(e){
         e.preventDefault();
@@ -56,6 +60,7 @@ class ImportGbfsPage extends Component {
             const jsonBody = {};
             jsonBody["globalUrl"] = this.state.url;
             jsonBody["parkingType"] = this.state.parkingType;
+            jsonBody["parkingAreaType"] = this.state.parkingAreaType;
 
             httpCall(
                 url,
@@ -99,7 +104,7 @@ class ImportGbfsPage extends Component {
                     <Grid item xs={12} style={{ textAlign: 'center', margin:'1rem' }}>
                         <Typography variant="h5">Parkings</Typography>
                     </Grid>
-                    <Grid item lg={4} md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
+                    <Grid item xl={4} lg={6} md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
                         <label style={{fontWeight: 'bold', color: '#1e2864'}} htmlFor="url_gbfs_parking">{formatMessage({id: 'import_gbfs_url_input_label'})}</label>
                         <Input
                             style={{width: "75%"}}
@@ -109,7 +114,7 @@ class ImportGbfsPage extends Component {
                             onChange={this.handleOnChange}
                         />
                     </Grid>
-                    <Grid item lg={4} md={6} xs={12} style={{margin: 'auto', textAlign: 'center'}}>
+                    <Grid item xl={4} lg={6} md={6} xs={12} style={{margin: 'auto', textAlign: 'center'}}>
                         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                             <label htmlFor="parkingType"  style={labelStyle}>{formatMessage({id: 'import_gbfs_url_parking_label'})}</label>
                             <select
@@ -134,7 +139,22 @@ class ImportGbfsPage extends Component {
                             </select>
                         </div>
                     </Grid>
-                    <Grid item lg={4} md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
+                    <Grid item xl={4} lg={6} md={6} xs={12} style={{margin: 'auto', textAlign: 'center'}}>
+                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                            <label htmlFor="parkingAreaType"  style={labelStyle}>{formatMessage({id: 'import_gbfs_url_parking_area_type_label'})}</label>
+                            <select
+                                id="parkingAreaType"
+                                value={this.state.parkingAreaType}
+                                onChange={this.handleParkingAreaTypeSelectChange}
+                                style={selectStyle}
+                            >
+                                <option value="aucun">Aucun</option>
+                                <option value="autopartage">Autopartage</option>
+                                <option value="covoiturage">Covoiturage</option>
+                            </select>
+                        </div>
+                    </Grid>
+                    <Grid item xl={4} lg={6} md={6} xs={12} style={{ margin: 'auto', textAlign: 'center' }}>
                         <RaisedButton
                             style={{marginTop: 10, marginLeft: 5, transform: 'scale(0.9)'}}
                             label={formatMessage({id: 'import_gbfs_submit_button_label'})}
