@@ -76,6 +76,7 @@ class StopPlace extends React.Component {
       .substring(window.location.pathname.lastIndexOf('/'))
       .replace('/', '');
 
+
     if (idFromPath === 'new' && !this.props.stopPlace) {
       dispatch(UserActions.navigateTo('/', ''));
     }

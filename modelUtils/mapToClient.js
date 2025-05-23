@@ -304,6 +304,9 @@ helpers.mapNeighbourStopsToClientStops = (stops, currentStopPlace) => {
 };
 
 helpers.mapNeighbourParkingsToClientParkings = (parkings) => {
+  if (parkings === null){
+    return [];
+  }
   return parkings.map(parking => helpers.mapParkingToClientParking(parking, false));
 };
 

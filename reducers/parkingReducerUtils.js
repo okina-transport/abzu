@@ -30,6 +30,14 @@ export const getStateByOperation = (state, action) => {
         case 'mutateParking':
             return updateParkingStateAfterMutate(state, action, 'mutateParking');
 
+        case 'allParkings':
+            return Object.assign({}, state, {
+                neighbourParkings: formatHelpers.mapNeighbourParkingsToClientParkings(
+                    action.result.data.allParkings,
+                    state.current
+                )
+            });
+
         default:
             return state;
     }

@@ -163,7 +163,6 @@ const stopPlaceReducer = (state = {}, action) => {
       });
 
     case types.CREATED_NEW_STOP:
-
       const { location, isMultimodal } = action.payLoad;
       const stopToBeCreated = isMultimodal
         ? formatHelpers.createNewParentStopFromLocation(location)

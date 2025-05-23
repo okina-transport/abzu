@@ -122,6 +122,91 @@ export const stopPlaceBBQuery = gql`
     },
 `;
 
+export const allStopPlacesQuery = gql`
+    query allStopPlaces {
+        allStopPlaces {
+            id
+            geometry {
+                coordinates
+            }
+            name {
+                value
+            }
+            ...on StopPlace {
+                __typename
+                stopPlaceType
+            }
+            ...on ParentStopPlace {
+                children {
+                    id
+                    stopPlaceType
+                    geometry {
+                        coordinates
+                    }
+                    name {
+                        value
+                    }
+                }
+                name {
+                    value
+                }
+                __typename
+            }
+        }
+    },
+`;
+
+export const allParkingsQuery = gql`
+    query allParkings {
+        allParkings {
+            id
+            geometry {
+                coordinates
+            }
+            name {
+                value
+            }
+            ...on Parking {
+                __typename
+                parkingType
+                secure
+                typeOfParkingRef
+            }
+        }
+    },
+`;
+
+export const allPointsOfInterestQuery = gql`
+    query allPointsOfInterest {
+        allPointsOfInterest {
+            id
+            geometry {
+                coordinates
+            }
+            name {
+                value
+            }
+            classifications {
+                id
+                name {
+                    value
+                    }
+                osm
+                active
+                parent {
+                    id
+                    name {
+                        value
+                    }
+                    osm
+                    active
+                }
+            }
+        }
+    },
+`;
+
+
 export const parkingBBQuery = gql`
     query parkingBBox($ignoreParkingId: String, $lonMin: BigDecimal!, $lonMax: BigDecimal!, $latMin: BigDecimal!, $latMax: BigDecimal!, $includeExpired: Boolean) {
         parkingBBox(ignoreParkingId: $ignoreParkingId, latMin: $latMin, latMax: $latMax, lonMin: $lonMin, lonMax: $lonMax, size: 500, includeExpired: $includeExpired) {

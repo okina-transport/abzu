@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require("path");
 const useSourceMap = process.env.GENERATE_SOURCEMAPS && process.env.GENERATE_SOURCEMAPS === "true";
 
 module.exports = {
@@ -74,6 +75,14 @@ module.exports = {
           'file-loader?hash=sha512&digest=hex&name=[hash].[ext]'
         ],
       },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+        include: [
+          path.resolve(__dirname, 'node_modules'),
+          path.resolve(__dirname, 'src') // ou ton dossier source
+        ]
+      }
     ],
   },
 };

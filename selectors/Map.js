@@ -16,7 +16,20 @@ limitations under the Licence. */
 import { getFilteredStops } from '../utils/FilteringUtils';
 
 
+
+const addTomarkers = function (markers, tadFilteredStops) {
+  for (let currStop of tadFilteredStops){
+    let isAlreadyExisting = markers.some(marker => marker.id === currStop.id);
+    if (!isAlreadyExisting){
+      markers = markers.concat(currStop);
+    }
+  }
+  return markers;
+};
+
+
 export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) => {
+
   const {
     newStop,
     findCoordinates,
@@ -62,7 +75,8 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) 
   }
 
   if (neighbourStops && neighbourStops.length && showStops) {
-    markers = markers.concat(getFilteredStops(neighbourStops, filterByFullTAD, filterByPartialTAD));
+    let tadFilteredStops = getFilteredStops(neighbourStops, filterByFullTAD, filterByPartialTAD);
+    markers = addTomarkers(markers, tadFilteredStops);
   }
 
   if (neighbourParkings && neighbourParkings.length && showParkings) {

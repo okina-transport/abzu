@@ -30,6 +30,14 @@ export const getStateByOperation = (state, action) => {
         case 'mutatePointOfInterest':
             return updatePointOfInterestStateAfterMutate(state, action, 'mutatePointOfInterest');
 
+        case 'allPointsOfInterest':
+            return Object.assign({}, state, {
+                neighbourPointsOfInterest: formatHelpers.mapNeighbourPointsOfInterestToClientPointsOfInterest(
+                    action.result.data.allPointsOfInterest,
+                    state.current
+                )
+            });
+
         default:
             return state;
     }

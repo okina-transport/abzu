@@ -21,7 +21,6 @@ import { injectIntl } from 'react-intl';
 import { setDecimalPrecision } from '../../utils';
 import CoordinatesDialog from '../Dialogs/CoordinatesDialog';
 import CompassBearingDialog from '../Dialogs/CompassBearingDialog';
-import debounce from 'lodash.debounce';
 import { withApollo } from 'react-apollo';
 import {getNeighbourParkings, getNeighbourPointsOfInterest, getNeighbourStops} from '../../graphql/Tiamat/actions';
 import Settings from '../../singletons/SettingsManager';
@@ -33,20 +32,7 @@ class EditMap extends React.Component {
       coordinatesDialogOpen: false,
       compassBearingDialogOpen: false,
     };
-    const mapEnd = (event, { leafletElement }) => {
-      let { ignoreStopId, ignoreParkingId, ignorePointOfInterestId, client } = this.props;
-
-      const zoom = leafletElement.getZoom();
-
-      if (zoom > 12) {
-        const bounds = leafletElement.getBounds();
-        let includeExpired = new Settings().getShowExpiredStops();
-        getNeighbourStops(client, ignoreStopId, bounds, includeExpired);
-        getNeighbourParkings(client, ignoreParkingId, bounds, includeExpired);
-        getNeighbourPointsOfInterest(client, ignorePointOfInterestId, bounds, includeExpired);
-      }
-    };
-    this.handleMapMoveEnd = debounce(mapEnd, 500);
+    this.leafletMap = React.createRef();
   }
 
   handleMapOnClick(event, map) {
@@ -91,11 +77,11 @@ class EditMap extends React.Component {
 
     if (isQuay) {
       dispatch(
-        StopPlaceActions.changeElementPosition(
-          index,
-          'quay',
-          formattedPosition,
-        ),
+          StopPlaceActions.changeElementPosition(
+              index,
+              'quay',
+              formattedPosition,
+          ),
       );
     } else if (isParking) {
       dispatch(ParkingActions.changeCurrentParkingPosition(formattedPosition));
@@ -171,20 +157,27 @@ class EditMap extends React.Component {
   handleSubmitChangeCompassBearing(compassBearing) {
     const { compassBearingOwner } = this.state;
     this.props.dispatch(
-      StopPlaceActions.changeQuayCompassBearing(
-        compassBearingOwner,
-        compassBearing,
-      ),
+        StopPlaceActions.changeQuayCompassBearing(
+            compassBearingOwner,
+            compassBearing,
+        ),
     );
     this.setState({
       compassBearingDialogOpen: false,
     });
   }
 
-  componentDidMount() {
-    const { leafletElement } = this.refs.leafletMap.refs.map;
-    const { dispatch, client, ignoreStopId, ignoreParkingId, ignorePointOfInterestId } = this.props;
+
+
+  handleMapReady(leafletElement) {
+    const { dispatch, ignoreStopId, ignoreParkingId, ignorePointOfInterestId } = this.props;
     dispatch(StopPlaceActions.setActiveMap(leafletElement));
+    this.reloadNeighbours(leafletElement);
+
+  }
+
+  reloadNeighbours(leafletElement) {
+    const { client, ignoreStopId, ignoreParkingId, ignorePointOfInterestId } = this.props;
     const bounds = leafletElement.getBounds();
     let includeExpired = new Settings().getShowExpiredStops();
     getNeighbourStops(client, ignoreStopId, bounds, includeExpired);
@@ -192,64 +185,63 @@ class EditMap extends React.Component {
     getNeighbourPointsOfInterest(client, ignorePointOfInterestId, bounds, includeExpired);
   }
 
+
+  checkNeighboursAndReload(leafletElement) {
+    const {   ignoreStopId,  ignoreParkingId,isNeighbourRefreshNeeded, ignorePointOfInterestId } = this.props;
+    if (isNeighbourRefreshNeeded){
+      this.reloadNeighbours(leafletElement);
+    }
+  }
+
   render() {
-    const { position, markers, zoom, minZoom, disabled } = this.props;
+    const { position, markers, ignoreStopId, zoom, ignoreParkingId, minZoom, disabled,  ignorePointOfInterestId } = this.props;
     const { coordinatesDialogOpen, compassBearingDialogOpen } = this.state;
 
     return (
-      <div>
-        <LeafletMap
-          position={position}
-          markers={markers}
-          zoom={zoom}
-          boundsOptions={{ padding: [50, 50] }}
-          ref="leafletMap"
-          key="leafletmap-edit"
-          handleOnClick={this.handleMapOnClick.bind(this)}
-          handleDragEnd={this.handleMapDragEnd.bind(this)}
-          handleMapMoveEnd={this.handleMapMoveEnd.bind(this)}
-          handleChangeCoordinates={this.handleChangeCoordinates.bind(this)}
-          dragableMarkers={!disabled}
-          activeBaselayer={this.props.activeBaselayer}
-          handleBaselayerChanged={this.handleBaselayerChanged.bind(this)}
-          enablePolylines={this.props.enablePolylines}
-          minZoom={minZoom}
-          handleZoomEnd={this.handleZoomEnd.bind(this)}
-          handleSetCompassBearing={this.handleSetCompassBearing.bind(this)}
-        />
-        <CoordinatesDialog
-          intl={this.props.intl}
-          open={coordinatesDialogOpen}
-          coordinates={this.state.coordinates}
-          handleClose={this.handleCoordinatesDialogClose.bind(this)}
-          handleConfirm={this.handleSubmitChangeCoordinates.bind(this)}
-        />
-        <CompassBearingDialog
-          open={compassBearingDialogOpen}
-          intl={this.props.intl}
-          compassBearing={this.state.compassBearing}
-          handleClose={this.handleCompassBearingDialogClose.bind(this)}
-          handleConfirm={this.handleSubmitChangeCompassBearing.bind(this)}
-        />
-      </div>
+
+        <div>
+          <LeafletMap
+              position={position}
+              markers={markers}
+              zoom={zoom}
+              boundsOptions={{ padding: [50, 50] }}
+              ref={this.leafletMap}
+              key="leafletmap-edit"
+              handleOnClick={this.handleMapOnClick.bind(this)}
+              handleDragEnd={this.handleMapDragEnd.bind(this)}
+              handleChangeCoordinates={this.handleChangeCoordinates.bind(this)}
+              dragableMarkers={!disabled}
+              activeBaselayer={this.props.activeBaselayer}
+              handleBaselayerChanged={this.handleBaselayerChanged.bind(this)}
+              enablePolylines={this.props.enablePolylines}
+              minZoom={minZoom}
+              handleZoomEnd={this.handleZoomEnd.bind(this)}
+              handleSetCompassBearing={this.handleSetCompassBearing.bind(this)}
+              checkNeighboursAndReload={this.checkNeighboursAndReload.bind(this)}
+              onMapReady={this.handleMapReady.bind(this)}
+          />
+          <CoordinatesDialog
+              intl={this.props.intl}
+              open={coordinatesDialogOpen}
+              coordinates={this.state.coordinates}
+              handleClose={this.handleCoordinatesDialogClose.bind(this)}
+              handleConfirm={this.handleSubmitChangeCoordinates.bind(this)}
+          />
+          <CompassBearingDialog
+              open={compassBearingDialogOpen}
+              intl={this.props.intl}
+              compassBearing={this.state.compassBearing}
+              handleClose={this.handleCompassBearingDialogClose.bind(this)}
+              handleConfirm={this.handleSubmitChangeCompassBearing.bind(this)}
+          />
+        </div>
     );
   }
 }
 
-const mapStateToProps = state => {
-  // function checkIfInChildren (currentStopPlace, neighbourStops, showStops) {
-  //   if (neighbourStops !== undefined && neighbourStops.length > 0 && currentStopPlace !== null && currentStopPlace !== undefined && currentStopPlace.children !== undefined && currentStopPlace.children.length > 0 && showStops) {
-  //     return neighbourStops.filter(neighbourStop =>
-  //         !currentStopPlace.children.find(childStop =>
-  //             childStop.id === neighbourStop.id && childStop.isChildOfParent
-  //         )
-  //     );
-  //     }
-  //   else {
-  //     return neighbourStops;
-  //   }
-  // }
 
+
+const mapStateToProps = state => {
   const currentStopPlace = state.stopPlace.current;
   const showStops =  state.user.showStops;
   const neighbourStops = state.stopPlace.neighbourStops;
@@ -266,6 +258,7 @@ const mapStateToProps = state => {
   let position;
   let zoom;
   let minZoom;
+  let isNeighbourRefreshNeeded = false;
 
   if (currentStopPlace) {
     markers = markers.concat(currentStopPlace);
@@ -300,6 +293,10 @@ const mapStateToProps = state => {
     markers = markers.concat(neighbourPointsOfInterest);
   }
 
+  if (Array.isArray(neighbourStops) && neighbourStops.length > 0 && currentStopPlace !== undefined && currentStopPlace !== null){
+    isNeighbourRefreshNeeded = neighbourStops.some(neighbourStop => neighbourStop.id === currentStopPlace.id);
+  }
+
   return {
     position: position,
     zoom: zoom,
@@ -314,7 +311,8 @@ const mapStateToProps = state => {
     ignorePointOfInterestId: state.pointOfInterest.current ? state.pointOfInterest.current.id : -1,
     currentParking: state.parking.current,
     currentStopPlace: state.stopPlace.current,
-    currentPointOfInterest: state.pointOfInterest.current
+    currentPointOfInterest: state.pointOfInterest.current,
+    isNeighbourRefreshNeeded: isNeighbourRefreshNeeded
   };
 };
 

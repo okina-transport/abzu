@@ -106,6 +106,7 @@ class StopPlaceMarker extends React.Component {
       isGroupMember,
     } = this.props;
 
+
     const markerLocation = position || missingCoordinatesMap[id];
 
     if (!markerLocation) return null;

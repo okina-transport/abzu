@@ -19,6 +19,10 @@ import {LayersControl, Map as Lmap, ScaleControl, TileLayer, ZoomControl,} from 
 import MultiPolylineList from './PathLink';
 import MultimodalStopEdges from './MultimodalStopEdges';
 import StopPlaceGroupList from './StopPlaceGroupList';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 export default class LeafLetMap extends React.Component {
   getCheckedBaseLayerByValue(value) {
@@ -38,6 +42,18 @@ export default class LeafLetMap extends React.Component {
       : [Number(position.lat), Number(position.lng)];
   }
 
+  componentDidMount() {
+    if (this.props.onMapReady && this.refs.map) {
+      this.props.onMapReady(this.refs.map.leafletElement);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.onMapReady && this.refs.map) {
+      this.props.checkNeighboursAndReload(this.refs.map.leafletElement);
+    }
+  }
+
   render() {
 
     const {
@@ -50,10 +66,10 @@ export default class LeafLetMap extends React.Component {
       handleSetCompassBearing,
       markers,
       dragableMarkers,
-      handleMapMoveEnd,
       onDoubleClick,
       handleZoomEnd
     } = this.props;
+
 
     const { BaseLayer } = LayersControl;
 
@@ -74,9 +90,6 @@ export default class LeafLetMap extends React.Component {
         zoomControl={false}
         minZoom={minZoom || null}
         onDblclick={e => onDoubleClick && onDoubleClick(e, this.refs.map)}
-        onMoveEnd={event => {
-          handleMapMoveEnd(event, this.refs.map);
-        }}
         OnBaselayerChange={this.handleBaselayerChanged.bind(this)}
         onclick={event => {
           handleOnClick && handleOnClick(event, this.refs.map);
@@ -107,13 +120,15 @@ export default class LeafLetMap extends React.Component {
         </LayersControl>
         <ScaleControl imperial={false} position="bottomright" />
         <ZoomControl position="bottomright" />
-        <MarkerList
-          changeCoordinates={handleChangeCoordinates}
-          markers={markers}
-          handleDragEnd={handleDragEnd}
-          dragableMarkers={dragableMarkers}
-          handleSetCompassBearing={handleSetCompassBearing}
-        />
+        <MarkerClusterGroup>
+          <MarkerList
+              changeCoordinates={handleChangeCoordinates}
+              markers={markers}
+              handleDragEnd={handleDragEnd}
+              dragableMarkers={dragableMarkers}
+              handleSetCompassBearing={handleSetCompassBearing}
+          />
+        </MarkerClusterGroup>
         <MultimodalStopEdges
           stops={markers}
         />

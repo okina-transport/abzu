@@ -26,6 +26,7 @@ import axios from 'axios';
 import Promise from 'promise-polyfill';
 import 'babel-polyfill';
 import ErrorBoundry from './containers/ErrorBoundry';
+import './leaflet-style-loader';
 
 if (!window.Promise) {
   window.Promise = Promise;

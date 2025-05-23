@@ -57,7 +57,10 @@ import {
     findTariffones,
     getNameWithRecommendations,
     parkingBBQuery,
-    pointOfInterestBBQuery
+    pointOfInterestBBQuery,
+    allParkingsQuery,
+    allPointsOfInterestQuery,
+    allStopPlacesQuery
 } from './queries';
 import mapToMutationVariables from '../../modelUtils/mapToQueryVariables';
 
@@ -339,6 +342,27 @@ export const getNeighbourStops = (client, ignoreStopPlaceId, bounds, includeExpi
             lonMin: bounds.getSouthWest().lng,
             lonMax: bounds.getNorthEast().lng,
         }
+    })
+);
+
+export const getStopsLight = (client) => (
+    client.query({
+        fetchPolicy: 'network-only',
+        query: allStopPlacesQuery
+    })
+);
+
+export const getParkingsLight = (client) => (
+    client.query({
+        fetchPolicy: 'network-only',
+        query: allParkingsQuery
+    })
+);
+
+export const getPOILight = (client) => (
+    client.query({
+        fetchPolicy: 'network-only',
+        query: allPointsOfInterestQuery
     })
 );
 

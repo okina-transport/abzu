@@ -70,6 +70,14 @@ module.exports = {
           'image-webpack-loader?' + JSON.stringify(imageLoaderQuery),
         ],
       },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+        include: [
+          path.resolve(__dirname, 'node_modules'),
+          path.resolve(__dirname, 'src') // ou ton dossier source
+        ]
+      }
     ],
   },
 };

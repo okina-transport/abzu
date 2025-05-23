@@ -252,7 +252,7 @@ class EditParentGeneral extends React.Component {
     });
 
     getStopPlaceVersions(client, stopPlaceId).then(() => {
-      dispatch(UserActions.navigateTo('/edit/', stopPlaceId));
+     // dispatch(UserActions.navigateTo('/edit/', stopPlaceId));
       dispatch(
         UserActions.openSnackbar(types.SUCCESS)
       );

@@ -65,6 +65,7 @@ import {
 } from '../../modelUtils/shouldMutate';
 import ToolTippable from "./ToolTippable";
 import Warning from 'material-ui/svg-icons/alert/warning';
+import LZString from "lz-string";
 
 class EditStopGeneral extends React.Component {
   constructor(props) {
@@ -156,6 +157,7 @@ class EditStopGeneral extends React.Component {
         this.handleCloseMergeStopDialog();
         getStopPlaceWithAll(client, stopPlace.id).then(() => {
           this.setState({ isLoading: false });
+
           if (activeMap) {
             let includeExpired = new Settings().getShowExpiredStops();
             getNeighbourStops(
@@ -166,10 +168,20 @@ class EditStopGeneral extends React.Component {
             );
           }
         });
+        this.removeStopFromLocalStorage(mergeSource.id);
       })
       .catch(() => {
         this.setState({ isLoading: false });
       });
+  }
+
+  removeStopFromLocalStorage(stopId){
+    const compressed = sessionStorage.getItem("markersStorage");
+    if (compressed !== null) {
+      let markersDecompressed = JSON.parse(LZString.decompress(compressed));
+      markersDecompressed = markersDecompressed.filter(marker => marker.id !== stopId);
+      sessionStorage.setItem("markersStorage", LZString.compress(JSON.stringify(markersDecompressed)));
+    }
   }
 
   handleMergeQuays(versionComment) {
@@ -235,6 +247,7 @@ class EditStopGeneral extends React.Component {
   handleTerminateStop(shouldHardDelete, shouldTerminatePermanently, comment, dateTime) {
     const { client, stopPlace, dispatch } = this.props;
     this.setState({ isLoading: true });
+    this.removeStopFromLocalStorage(stopPlace.id);
 
     if (shouldHardDelete) {
       deleteStopPlace(client, stopPlace.id)
@@ -342,6 +355,7 @@ class EditStopGeneral extends React.Component {
       confirmGoBack: false
     });
     this.props.dispatch(UserActions.navigateTo('/', ''));
+
     if (activeMap) {
       let includeExpired = new Settings().getShowExpiredStops();
       getNeighbourStops(
