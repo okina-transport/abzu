@@ -16,8 +16,8 @@ class ImportGbfsPage extends Component {
             url: "",
             errors :[],
             result : "",
-            parkingType: "cycleRental",
-            parkingAreaType: "aucun",
+            parkingType: "CYCLE_RENTAL",
+            parkingAreaType: "NONE",
         };
         this.isValidUrl = this.isValidUrl.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
@@ -123,19 +123,19 @@ class ImportGbfsPage extends Component {
                                 onChange={this.handleParkingTypeSelectChange}
                                 style={selectStyle}
                             >
-                                <option value="parkingZone">parkingZone:Zone de parking</option>
-                                <option value="parkAndRide">parkAndRide:P+R</option>
-                                <option value="liftShareParking">liftShareParking:Parking pour covoiturage</option>
-                                <option value="urbanParking">urbanParking:Parking urbain</option>
-                                <option value="airportParking">airportParking:Parking d’aéroport</option>
-                                <option value="trainStationParking">trainStationParking:Parking de gare</option>
-                                <option value="exhibitionCentreParking">exhibitionCentreParking:Parking de parc d’exposition</option>
-                                <option value="rentalCarParking">rentalCarParking:Parking pour loueur</option>
-                                <option value="shoppingCentreParking">shoppingCentreParking:Parking de centre comercial</option>
-                                <option value="motorwayParking">motorwayParking:Parking d’autoroute</option>
-                                <option value="roadside">roadside:Parking en voirie</option>
-                                <option value="undefined">undefined:Type non précisé</option>
-                                <option value="cycleRental">cycleRental:Parking de location de vélo/trotinettes/etc.</option>
+                                <option value="PARKING_ZONE">parkingZone:Zone de parking</option>
+                                <option value="PARK_AND_RIDE">parkAndRide:P+R</option>
+                                <option value="LIFT_SHARE_PARKING">liftShareParking:Parking pour covoiturage</option>
+                                <option value="URBAN_PARKING">urbanParking:Parking urbain</option>
+                                <option value="AIRPORT_PARKING">airportParking:Parking d’aéroport</option>
+                                <option value="TRAIN_STATION_PARKING">trainStationParking:Parking de gare</option>
+                                <option value="EXHIBITION_CENTRE_PARKING">exhibitionCentreParking:Parking de parc d’exposition</option>
+                                <option value="RENTAL_CAR_PARKING">rentalCarParking:Parking pour loueur</option>
+                                <option value="SHOPPING_CENTRE_PARKING">shoppingCentreParking:Parking de centre comercial</option>
+                                <option value="MOTORWAY_PARKING">motorwayParking:Parking d’autoroute</option>
+                                <option value="ROADSIDE">roadside:Parking en voirie</option>
+                                <option value="UNDEFINED">undefined:Type non précisé</option>
+                                <option value="CYCLE_RENTAL">cycleRental:Parking de location de vélo/trotinettes/etc.</option>
                             </select>
                         </div>
                     </Grid>
@@ -148,9 +148,9 @@ class ImportGbfsPage extends Component {
                                 onChange={this.handleParkingAreaTypeSelectChange}
                                 style={selectStyle}
                             >
-                                <option value="aucun">Aucun</option>
-                                <option value="autopartage">Autopartage</option>
-                                <option value="covoiturage">Covoiturage</option>
+                                <option value="NONE">Aucun</option>
+                                <option value="CARSHARE">Autopartage</option>
+                                <option value="CARPOOL">Covoiturage</option>
                             </select>
                         </div>
                     </Grid>
