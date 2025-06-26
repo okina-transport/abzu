@@ -311,6 +311,9 @@ helpers.mapNeighbourParkingsToClientParkings = (parkings) => {
 };
 
 helpers.mapNeighbourPointsOfInterestToClientPointsOfInterest = (pointsOfInterest) => {
+  if (pointsOfInterest === null) {
+    return [];
+  }
   return pointsOfInterest.map(pointOfInterest => helpers.mapPointOfInterestToClientPointOfInterest(pointOfInterest, false));
 };
 

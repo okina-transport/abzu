@@ -280,7 +280,7 @@ class MarkerList extends React.Component {
             popupMarkers.push(...parkingMarkers);
         }
 
-        let poiMarkers = this.createPoiMarkers(markers, showExpiredStops,isEditingPointOfInterest, CustomPopupMarkerText);
+        let poiMarkers = this.createPoiMarkers(markers, showExpiredStops,isEditingPointOfInterest, CustomPopupMarkerText, handleDragEnd, dragableMarkers, changeCoordinates, missingCoordinatesMap);
         if (poiMarkers != null && poiMarkers.length > 0) {
             popupMarkers.push(...poiMarkers);
         }
@@ -695,7 +695,7 @@ class MarkerList extends React.Component {
         return parkingMarkers;
     }
 
-    createPoiMarkers(markers, showExpiredStops,isEditingPointOfInterest, CustomPopupMarkerText) {
+    createPoiMarkers(markers, showExpiredStops,isEditingPointOfInterest, CustomPopupMarkerText, handleDragEnd, dragableMarkers, changeCoordinates, missingCoordinatesMap) {
         let poiMarkers = [];
         if (!Array.isArray(markers) || markers.length === 0) {
             return poiMarkers;
@@ -745,6 +745,7 @@ class MarkerList extends React.Component {
                 );
             }
         });
+        return poiMarkers;
     }
 
     createCoordinatePinMarkers(markers) {
