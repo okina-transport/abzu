@@ -213,6 +213,7 @@ class Header extends React.Component {
     const portalOffers = formatMessage({id: 'portal_offers'});
 
     const isSuperAdmin = roles.includes('ROLE_SUPER_ADMINISTRATEUR');
+    const isAdmin = roles.includes('ROLE_ADMINISTRATEUR');
 
     const tiamatEnv = getTiamatEnv();
     const logo = getLogo();
@@ -289,17 +290,6 @@ class Header extends React.Component {
                           style={{ fontSize: 12, padding: 0 }}
                       />
                       <MenuItem
-                        leftIcon={<MapsLocalParking color="#005A82" />}
-                        primaryText={importCSVParkings}
-                        href = {Routes.IMPORT_PARKINGS}
-                        onClick={() =>
-                          this.handleConfirmChangeRoute(
-                            this.goToImportParkings.bind(this),
-                            'GoToImportParkings'
-                          )}
-                        style={{ fontSize: 12, padding: 0 }}
-                      />
-                      <MenuItem
                           leftIcon={<MapsStoreMallDirectory color="#005A82" />}
                           primaryText={importCSVSalePoints}
                           href = {Routes.IMPORT_SALE_POINT_CSV}
@@ -307,17 +297,6 @@ class Header extends React.Component {
                               this.handleConfirmChangeRoute(
                                   this.goToImportSalePoint.bind(this),
                                   'GoToImportSalePoint'
-                              )}
-                          style={{ fontSize: 12, padding: 0 }}
-                      />
-                      <MenuItem
-                          leftIcon={<PoiIcon color="#005A82" />}
-                          primaryText={importPOI}
-                          href = {Routes.IMPORT_POI}
-                          onClick={() =>
-                              this.handleConfirmChangeRoute(
-                                  this.goToImportPOI().bind(this),
-                                  'GoToImportPOI'
                               )}
                           style={{ fontSize: 12, padding: 0 }}
                       />
@@ -344,7 +323,33 @@ class Header extends React.Component {
                       style={{ fontSize: 12, padding: 0 }}
                     />
                   </React.Fragment>
-        )}
+              )}
+              {(isSuperAdmin || isAdmin) && (
+                  <React.Fragment>
+                    <MenuItem
+                        leftIcon={<MapsLocalParking color="#005A82" />}
+                        primaryText={importCSVParkings}
+                        href = {Routes.IMPORT_PARKINGS}
+                        onClick={() =>
+                            this.handleConfirmChangeRoute(
+                                this.goToImportParkings.bind(this),
+                                'GoToImportParkings'
+                            )}
+                        style={{ fontSize: 12, padding: 0 }}
+                    />
+                    <MenuItem
+                        leftIcon={<PoiIcon color="#005A82" />}
+                        primaryText={importPOI}
+                        href = {Routes.IMPORT_POI}
+                        onClick={() =>
+                            this.handleConfirmChangeRoute(
+                                this.goToImportPOI().bind(this),
+                                'GoToImportPOI'
+                            )}
+                        style={{ fontSize: 12, padding: 0 }}
+                    />
+                  </React.Fragment>
+              )}
               <MenuItem
                 primaryText={settings}
                 rightIcon={<ArrowDropRight />}
