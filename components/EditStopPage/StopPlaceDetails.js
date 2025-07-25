@@ -12,7 +12,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-
 import React from 'react';
 import ModalityIconSvg from '../MainPage/ModalityIconSvg';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
@@ -58,52 +57,293 @@ import OtherTransportModesMenuItems from './OtherTransportModesMenuItems';
 import Dialog from 'material-ui/Dialog';
 
 class StopPlaceDetails extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      stopTypeOpen: false,
-      otherTransportModesOpen: false,
-      weightingOpen: false,
-      name: props.stopPlace.name || '',
-      publicCode: props.stopPlace.publicCode || '',
-      privateCode: props.stopPlace.privateCode || '',
-      description: props.stopPlace.description || '',
-      altNamesDialogOpen: false,
-      tariffZoneOpen: false,
-      tagsOpen: false,
-      loading: false,
-      currentStopPlaceName: props.stopPlace.name || '',
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            stopTypeOpen: false,
+            otherTransportModesOpen: false,
+            weightingOpen: false,
+            // ✅ OPTIMISATION : Données locales pour éviter les re-renders Redux
+            localData: {
+                name: (props.stopPlace && props.stopPlace.name) || '',
+                publicCode: (props.stopPlace && props.stopPlace.publicCode) || '',
+                privateCode: (props.stopPlace && props.stopPlace.privateCode) || '',
+                description: (props.stopPlace && props.stopPlace.description) || ''
+            },
+            altNamesDialogOpen: false,
+            tariffZoneOpen: false,
+            tagsOpen: false,
+            loading: false,
+            currentStopPlaceName: (props.stopPlace && props.stopPlace.name) || '',
+            dataSource: null,
+            // ✅ OPTIMISATION : Flags pour éviter les boucles de synchronisation
+            isLocalEditing: false,
+            hasLocalChanges: false,
+            lastSyncTimestamp: null
+        };
 
-    this.updateStopName = debounce(value => {
-        this.setState({loading: true});
-        this.props.dispatch(StopPlaceActions.changeStopName(value));
-    }, 5);
+        // ✅ OPTIMISATION : Debounce pour notifier le parent (au lieu de Redux direct)
+        this.notifyParentChange = debounce((field, value) => {
+            if (this.props.onFieldChange) {
+                this.props.onFieldChange(field, value, true);
+            } else {
+                // Fallback vers Redux si pas de callback parent
+                this.dispatchToRedux(field, value);
+            }
+        }, 300);
 
-    this.updateStopPublicCode = debounce(value => {
-        this.props.dispatch(StopPlaceActions.changeStopPublicCode(value));
-    }, 200);
+        // ORIGINAL : Méthodes debouncées vers Redux (maintenues pour compatibilité)
+        this.updateStopName = debounce(value => {
+            this.setState({loading: true});
+            this.props.dispatch(StopPlaceActions.changeStopName(value));
+        }, 300); // ✅ Optimisé : 300ms au lieu de 5ms
 
-    this.updateStopPrivateCode = debounce(value => {
-      this.props.dispatch(StopPlaceActions.changeStopPrivateCode(value));
-    }, 200);
+        this.updateStopPublicCode = debounce(value => {
+            this.props.dispatch(StopPlaceActions.changeStopPublicCode(value));
+        }, 300); // ✅ Optimisé : 300ms au lieu de 200ms
 
-    this.updateStopDescription = debounce(value => {
-      this.props.dispatch(StopPlaceActions.changeStopDescription(value));
-    }, 200);
+        this.updateStopPrivateCode = debounce(value => {
+            this.props.dispatch(StopPlaceActions.changeStopPrivateCode(value));
+        }, 300); // ✅ Optimisé : 300ms au lieu de 200ms
 
-    const searchStopName = (searchText) => {
-        getName(this.props.client, searchText).then(result => {
-            this.setState({
-                dataSource: result.data.nameRecommendations,
-                loading: false
+        this.updateStopDescription = debounce(value => {
+            this.props.dispatch(StopPlaceActions.changeStopDescription(value));
+        }, 300); // ✅ Optimisé : 300ms au lieu de 200ms
+
+        // ✅ OPTIMISATION : Recherche optimisée
+        const searchStopName = (searchText) => {
+            if (searchText && searchText.length > 2) {
+                getName(this.props.client, searchText).then(result => {
+                    this.setState({
+                        dataSource: result.data.nameRecommendations,
+                        loading: false
+                    });
+                }).catch(() => {
+                    this.setState({ loading: false });
+                });
+            } else {
+                this.setState({ dataSource: null, loading: false });
+            }
+        };
+
+        this.debouncedSearchStopName = debounce(searchStopName, 500);
+
+        // ✅ OPTIMISATION : Bind des méthodes pour éviter re-création
+        this.handleLocalFieldChange = this.handleLocalFieldChange.bind(this);
+        this.hasLocalChanges = this.hasLocalChanges.bind(this);
+        this.syncToReduxBeforeSave = this.syncToReduxBeforeSave.bind(this);
+        this.resetToOriginalState = this.resetToOriginalState.bind(this);
+    }
+
+    // ✅ OPTIMISATION : Empêcher les re-renders inutiles MAIS permettre ceux nécessaires
+    shouldComponentUpdate(nextProps, nextState) {
+        // Props importantes à surveiller
+        const importantProps = [
+            'stopPlace.id',
+            'stopPlace.name',
+            'stopPlace.publicCode',
+            'stopPlace.privateCode',
+            'stopPlace.description',
+            'stopPlace.stopPlaceType',
+            'stopPlace.submode',
+            'stopPlace.weighting',
+            'stopPlace.version',
+            'disabled',
+            'expanded',
+            'keyValuesDialogOpen'
+        ];
+
+        // État important à surveiller
+        const importantState = [
+            'stopTypeOpen',
+            'otherTransportModesOpen',
+            'weightingOpen',
+            'altNamesDialogOpen',
+            'tariffZoneOpen',
+            'tagsOpen',
+            'loading',
+            'hasLocalChanges' // Important pour l'édition
+        ];
+
+        // Vérifier les changements dans les props importantes
+        for (const prop of importantProps) {
+            const currentValue = this.getNestedValue(this.props, prop);
+            const nextValue = this.getNestedValue(nextProps, prop);
+            if (currentValue !== nextValue) {
+                return true;
+            }
+        }
+
+        // Vérifier les changements d'état importants
+        for (const stateKey of importantState) {
+            if (this.state[stateKey] !== nextState[stateKey]) {
+                return true;
+            }
+        }
+
+        // Vérifier les données locales seulement si elles changent vraiment
+        if (JSON.stringify(this.state.localData) !== JSON.stringify(nextState.localData)) {
+            return true;
+        }
+
+        // TOUJOURS permettre le re-render si on n'a pas de stopPlace
+        if (!this.props.stopPlace || !nextProps.stopPlace) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ✅ OPTIMISATION : Helper pour accéder aux propriétés imbriquées
+    getNestedValue(obj, path) {
+        return path.split('.').reduce((current, key) => current && current[key], obj);
+    }
+
+    // ✅ OPTIMISATION : API publique pour le parent - détecteur de changements locaux
+    hasLocalChanges() {
+        return this.state.hasLocalChanges;
+    }
+
+    // ✅ OPTIMISATION : API publique pour le parent - synchronisation vers Redux
+    syncToReduxBeforeSave() {
+        if (this.state.hasLocalChanges) {
+            const { localData } = this.state;
+
+            // Synchroniser tous les champs modifiés vers Redux
+            Object.keys(localData).forEach(field => {
+                this.dispatchToRedux(field, localData[field]);
             });
+
+            this.setState({
+                hasLocalChanges: false,
+                lastSyncTimestamp: Date.now()
+            });
+        }
+    }
+
+    // ✅ OPTIMISATION : API publique pour le parent - reset vers l'état original
+    resetToOriginalState() {
+        const { stopPlace } = this.props;
+
+        this.setState({
+            localData: {
+                name: (stopPlace && stopPlace.name) || '',
+                publicCode: (stopPlace && stopPlace.publicCode) || '',
+                privateCode: (stopPlace && stopPlace.privateCode) || '',
+                description: (stopPlace && stopPlace.description) || ''
+            },
+            hasLocalChanges: false,
+            isLocalEditing: false,
+            dataSource: null,
+            loading: false
         });
-    };
+    }
 
-      this.debouncedSearchStopName = debounce(searchStopName, 1000);
-  }
+    // ✅ OPTIMISATION : Fallback Redux pour compatibilité
+    dispatchToRedux(field, value) {
+        switch (field) {
+            case 'name':
+                this.updateStopName(value);
+                break;
+            case 'publicCode':
+                this.updateStopPublicCode(value);
+                break;
+            case 'privateCode':
+                this.updateStopPrivateCode(value);
+                break;
+            case 'description':
+                this.updateStopDescription(value);
+                break;
+        }
+    }
 
+    // ✅ OPTIMISATION : Mise à jour locale immédiate
+    handleLocalFieldChange(field, value) {
+        this.setState(prevState => ({
+            localData: {
+                ...prevState.localData,
+                [field]: value
+            },
+            isLocalEditing: true,
+            hasLocalChanges: true
+        }));
+
+        // ✅ Notifier le parent avec debounce pour éviter trop d'appels
+        this.notifyParentChange(field, value);
+
+        // ✅ Reset du flag après un délai
+        setTimeout(() => {
+            this.setState({ isLocalEditing: false });
+        }, 400);
+    }
+
+    // ORIGINAL : componentWillReceiveProps (maintenu mais optimisé)
+    componentWillReceiveProps(nextProps) {
+        // ✅ OPTIMISATION : Synchroniser seulement si pas d'édition locale en cours
+        if (!this.state.isLocalEditing && !this.state.hasLocalChanges) {
+            const newLocalData = {
+                name: (nextProps.stopPlace && nextProps.stopPlace.name) || '',
+                publicCode: (nextProps.stopPlace && nextProps.stopPlace.publicCode) || '',
+                privateCode: (nextProps.stopPlace && nextProps.stopPlace.privateCode) || '',
+                description: (nextProps.stopPlace && nextProps.stopPlace.description) || ''
+            };
+
+            // Vérifier si les données ont vraiment changé avant de setState
+            if (JSON.stringify(newLocalData) !== JSON.stringify(this.state.localData)) {
+                this.setState({
+                    localData: newLocalData
+                });
+            }
+        }
+
+        // ORIGINAL : Logique de dialog
+        if (
+            nextProps.keyValuesDialogOpen &&
+            this.props.keyValuesDialogOpen !== nextProps.keyValuesDialogOpen
+        ) {
+            this.setState({
+                stopTypes: false,
+                wheelChairOpen: false,
+                altNamesDialogOpen: false,
+                weightingOpen: false,
+                tariffZoneOpen: false,
+                tagsOpen: false
+            });
+        }
+    }
+
+    // ✅ OPTIMISATION : Gestion du nom avec état local
+    handleUpdateStopName(searchText, dataSource) {
+        this.handleLocalFieldChange('name', searchText);
+
+        if (searchText && searchText.length > 2) {
+            this.setState({ loading: true });
+            this.debouncedSearchStopName(searchText);
+        }
+    }
+
+    handleStopNameSelected(event) {
+        const name = (event.value && event.value.props && event.value.props.primaryText && event.value.props.primaryText.props && event.value.props.primaryText.props.children) || event;
+        this.handleLocalFieldChange('name', name);
+        this.setState({ dataSource: null, loading: false });
+    }
+
+    handleStopPublicCodeChange(event) {
+        const publicCode = event.target.value;
+        this.handleLocalFieldChange('publicCode', publicCode);
+    }
+
+    handleStopPrivateCodeChange(event) {
+        const privateCode = event.target.value;
+        this.handleLocalFieldChange('privateCode', privateCode);
+    }
+
+    handleStopDescriptionChange(event) {
+        const description = event.target.value;
+        this.handleLocalFieldChange('description', description);
+    }
+
+    // ORIGINAL : Toutes les méthodes de gestion des dialogs et états
     handleOpenTags() {
         this.setState({
             stopTypeOpen: false,
@@ -116,28 +356,6 @@ class StopPlaceDetails extends React.Component {
             this.props.dispatch(UserActions.closeKeyValuesDialog());
         }
     }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      name: nextProps.stopPlace.name || '',
-      publicCode: nextProps.stopPlace.publicCode || '',
-      privateCode: nextProps.stopPlace.privateCode || '',
-      description: nextProps.stopPlace.description || ''
-    });
-    if (
-      nextProps.keyValuesDialogOpen &&
-      this.props.keyValuesDialogOpen !== nextProps.keyValuesDialogOpen
-    ) {
-      this.setState({
-        stopTypes: false,
-        wheelChairOpen: false,
-        altNamesDialogOpen: false,
-        weightingOpen: false,
-        tariffZoneOpen: false,
-        tagsOpen: false
-      });
-    }
-  }
 
     handleCloseStopPlaceTypePopover() {
         this.setState({
@@ -196,12 +414,13 @@ class StopPlaceDetails extends React.Component {
     }
 
     handleOpenOtherTransportModesPopover(event) {
-      this.setState({
-        otherTransportModesOpen: true,
-        otherTransportModesAnchorEl: event.currentTarget,
-      });
+        this.setState({
+            otherTransportModesOpen: true,
+            otherTransportModesAnchorEl: event.currentTarget,
+        });
     }
 
+    // ORIGINAL : Méthodes de gestion des couleurs et états
     getWeightingStateColor(stopPlace) {
         const weightingValue = stopPlace.weighting;
         return weightColors[weightingValue] || 'grey';
@@ -227,46 +446,6 @@ class StopPlaceDetails extends React.Component {
             stopTypeOpen: false,
             altNamesDialogOpen: false
         });
-    }
-
-    handleUpdateStopName(searchText, dataSource) {
-        this.updateStopName(searchText);
-        this.debouncedSearchStopName(searchText, dataSource);
-    }
-
-    handleStopNameSelected(event) {
-        const name = event.value.props.primaryText.props.children;
-        this.setState({
-            name: name
-        });
-        this.updateStopName(name);
-    }
-
-  handleStopPublicCodeChange(event) {
-    const publicCode = event.target.value;
-    this.setState({
-      publicCode
-    });
-
-    this.updateStopPublicCode(publicCode);
-  }
-
-  handleStopPrivateCodeChange(event) {
-    const privateCode = event.target.value;
-    this.setState({
-      privateCode
-    });
-
-    this.updateStopPrivateCode(privateCode);
-  }
-
-  handleStopDescriptionChange(event) {
-    const description = event.target.value;
-    this.setState({
-      description: description
-    });
-
-        this.updateStopDescription(description);
     }
 
     handleHandleWheelChair(value) {
@@ -352,23 +531,22 @@ class StopPlaceDetails extends React.Component {
         }
     }
 
-  handleOtherTransportModeChange(selectedModes) {
-    this.props.stopPlace.otherTransportModes = selectedModes;
-    this.props.dispatch(StopPlaceActions.changeOtherTransportModes(selectedModes));
-  }
+    handleOtherTransportModeChange(selectedModes) {
+        this.props.stopPlace.otherTransportModes = selectedModes;
+        this.props.dispatch(StopPlaceActions.changeOtherTransportModes(selectedModes));
+    }
 
+    handleCloseOtherTransportModesModal = () => {
+        this.setState({ otherTransportModesOpen: false });
+    };
 
-  handleCloseOtherTransportModesModal = () => {
-    this.setState({ otherTransportModesOpen: false });
-  };
-
-  getStopTypeTranslation(locale, stopPlaceType, submode) {
+    // ORIGINAL : Méthodes utilitaires
+    getStopTypeTranslation(locale, stopPlaceType, submode) {
         let translations = stopTypes[locale].filter(
             type => type.value === stopPlaceType
         );
 
         if (translations && translations.length) {
-
             let submodes = translations[0].submodes;
 
             if (submode && submodes) {
@@ -385,6 +563,7 @@ class StopPlaceDetails extends React.Component {
         return unknownStopPlaceType[locale];
     }
 
+    // ORIGINAL : Méthode complète pour les menu items
     getMenuItems(dataSource, nextProps, currentStopPlaceName) {
         const {formatMessage} = nextProps.intl;
         let menuItems = [];
@@ -433,31 +612,29 @@ class StopPlaceDetails extends React.Component {
         return menuItems;
     }
 
+    // ORIGINAL : Render complet avec toutes les fonctionnalités
     render() {
-
         const fixedHeader = {
             position: 'relative',
             display: 'block'
         };
 
-    const { stopPlace, intl, expanded, disabled, isPublicCodePrivateCodeEnabled } = this.props;
-    const { formatMessage, locale } = intl;
+        const { stopPlace, intl, expanded, disabled, isPublicCodePrivateCodeEnabled } = this.props;
+        const { formatMessage, locale } = intl;
 
         const isChildOfParent = stopPlace.isChildOfParent;
 
-    const {
-      name,
-      publicCode,
-      privateCode,
-      description,
-      altNamesDialogOpen,
-      weightingOpen,
-      weightingAnchorEl,
-      tariffZoneOpen,
-      loading,
-      dataSource,
-      currentStopPlaceName
-    } = this.state;
+        // ✅ OPTIMISATION : Utiliser les données locales
+        const { localData } = this.state;
+        const {
+            altNamesDialogOpen,
+            weightingOpen,
+            weightingAnchorEl,
+            tariffZoneOpen,
+            loading,
+            dataSource,
+            currentStopPlaceName
+        } = this.state;
 
         const wheelchairAccess = getIn(
             stopPlace,
@@ -475,21 +652,16 @@ class StopPlaceDetails extends React.Component {
             stopPlace.alternativeNames && stopPlace.alternativeNames.length
         );
 
-    const stopTypeHint = this.getStopTypeTranslation(
-      locale,
-      stopPlace.stopPlaceType,
-      stopPlace.submode
-    );
-      const stopTypeOtherModeHint = this.getStopTypeTranslation(
-        locale,
-        stopPlace.stopPlaceType,
-        stopPlace.otherTransportModes
-      );
-    const weightingStateHint = this.getNameForWeightingState(stopPlace, locale);
-    const expirationText = formatMessage({ id: 'stop_has_expired' });
-    const permanentlyTerminatedText = formatMessage({ id: 'stop_has_been_permanently_terminated' });
-    const versionLabel = formatMessage({ id: 'version' });
-    const keyValuesHint = formatMessage({ id: 'key_values_hint' });
+        const stopTypeHint = this.getStopTypeTranslation(
+            locale,
+            stopPlace.stopPlaceType,
+            stopPlace.submode
+        );
+        const weightingStateHint = this.getNameForWeightingState(stopPlace, locale);
+        const expirationText = formatMessage({ id: 'stop_has_expired' });
+        const permanentlyTerminatedText = formatMessage({ id: 'stop_has_been_permanently_terminated' });
+        const versionLabel = formatMessage({ id: 'version' });
+        const keyValuesHint = formatMessage({ id: 'key_values_hint' });
 
         const wheelChairHint =
             accessibilityAssessments.wheelchairAccess.values[locale][
@@ -549,168 +721,169 @@ class StopPlaceDetails extends React.Component {
                 <div style={{display: 'flex', alignItems: 'center'}}>
                     <div style={{flex: 1}}>
                         {isChildOfParent &&
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <span style={{fontWeight: 600, fontSize: '0.9em'}}>{belongsToParent}</span>
-                            <a target="_blank" style={{fontSize: '0.8em'}} href={parentStopHref}>{stopPlace.parentStop.id}</a>
-                        </div>
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <span style={{fontWeight: 600, fontSize: '0.9em'}}>{belongsToParent}</span>
+                                <a target="_blank" style={{fontSize: '0.8em'}} href={parentStopHref}>{stopPlace.parentStop.id}</a>
+                            </div>
                         }
                         {!stopPlace.isNewStop &&
-                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                 <span style={{fontWeight: 600}}>
                   {versionLabel} {stopPlace.version}
                 </span>
-                {stopPlace.hasExpired &&
-                  <div style={{ display: 'flex', alignItems: 'center', flex: 2 }}>
-                    <MdWarning
-                      color="orange"
-                      style={{ marginTop: -5, marginLeft: 10 }}
-                    />
-                    <span style={{ color: '#bb271c', marginLeft: 5, fontSize: '0.8em' }}>
+                                {stopPlace.hasExpired &&
+                                    <div style={{ display: 'flex', alignItems: 'center', flex: 2 }}>
+                                        <MdWarning
+                                            color="orange"
+                                            style={{ marginTop: -5, marginLeft: 10 }}
+                                        />
+                                        <span style={{ color: '#bb271c', marginLeft: 5, fontSize: '0.8em' }}>
                       {stopPlace.permanentlyTerminated ? permanentlyTerminatedText: expirationText}
                     </span>
-                  </div>}
-                <FlatButton onClick={this.handleOpenTags.bind(this)} style={{marginTop: -8}} label={formatMessage({id: 'tags'})}/>
-              </div>}
-              <div style={{padding: 5}}>
-                <TagTray
-                  tags={stopPlace.tags}
-                  textSize={'0.7em'}
-                  style={{display: 'flex', flexWrap: 'wrap'}}
-                />
-              </div>
-            <div style={{ display: 'flex'}}>
-              <ImportedId
-                id={stopPlace.importedId}
-                text={formatMessage({ id: 'local_reference' })}
-              />
-              <div style={{display: 'flex', marginLeft: 'auto'}}>
-                <ToolTippable toolTipText={keyValuesHint}>
-                  <IconButton
-                    style={{
-                      borderBottom: disabled ? 'none' : '1px dotted grey'
-                    }}
-                    onClick={this.handleOpenKeyValues.bind(this)}
-                  >
-                    <MdKey
-                      color={
-                        (stopPlace.keyValues || []).length
-                          ? primaryDarker
-                          : '#000'
-                      }
-                    />
-                  </IconButton>
-                </ToolTippable>
-                <ToolTippable toolTipText={stopTypeHint}>
-                  <IconButton
-                    style={{
-                      borderBottom: disabled ? 'none' : '1px dotted grey',
-                      marginLeft: 5
-                    }}
-                    onClick={e => {
-                      this.handleOpenStopPlaceTypePopover(e);
-                    }}
-                  >
-                    <ModalityIconSvg type={stopPlace.stopPlaceType} submode={stopPlace.submode}/>
-                  </IconButton>
-                </ToolTippable>
-                <Popover
-                  open={this.state.stopTypeOpen}
-                  anchorEl={this.state.stopTypeAnchorEl}
-                  anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-                  targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-                  onRequestClose={this.handleCloseStopPlaceTypePopover.bind(
-                    this
-                  )}
-                  animation={PopoverAnimationVertical}
-                  style={{ overflowY: 'none' }}
-                  animated={true}
-                >
-                  <ModalitiesMenuItems
-                    handleSubModeTypeChange={this.handleSubModeTypeChange.bind(this)}
-                    handleStopTypeChange={this.handleStopTypeChange.bind(this)}
-                    stopPlaceTypeChosen={stopPlace.stopPlaceType}
-                    submodeChosen={stopPlace.submode}
-                    stopTypes={stopTypes[locale]}
-                  />
-                </Popover>
+                                    </div>}
+                                <FlatButton onClick={this.handleOpenTags.bind(this)} style={{marginTop: -8}} label={formatMessage({id: 'tags'})}/>
+                            </div>}
+                        <div style={{padding: 5}}>
+                            <TagTray
+                                tags={stopPlace.tags}
+                                textSize={'0.7em'}
+                                style={{display: 'flex', flexWrap: 'wrap'}}
+                            />
+                        </div>
+                        <div style={{ display: 'flex'}}>
+                            <ImportedId
+                                id={stopPlace.importedId}
+                                text={formatMessage({ id: 'local_reference' })}
+                            />
+                            <div style={{display: 'flex', marginLeft: 'auto'}}>
+                                <ToolTippable toolTipText={keyValuesHint}>
+                                    <IconButton
+                                        style={{
+                                            borderBottom: disabled ? 'none' : '1px dotted grey'
+                                        }}
+                                        onClick={this.handleOpenKeyValues.bind(this)}
+                                    >
+                                        <MdKey
+                                            color={
+                                                (stopPlace.keyValues || []).length
+                                                    ? primaryDarker
+                                                    : '#000'
+                                            }
+                                        />
+                                    </IconButton>
+                                </ToolTippable>
+                                <ToolTippable toolTipText={stopTypeHint}>
+                                    <IconButton
+                                        style={{
+                                            borderBottom: disabled ? 'none' : '1px dotted grey',
+                                            marginLeft: 5
+                                        }}
+                                        onClick={e => {
+                                            this.handleOpenStopPlaceTypePopover(e);
+                                        }}
+                                    >
+                                        <ModalityIconSvg type={stopPlace.stopPlaceType} submode={stopPlace.submode}/>
+                                    </IconButton>
+                                </ToolTippable>
+                                <Popover
+                                    open={this.state.stopTypeOpen}
+                                    anchorEl={this.state.stopTypeAnchorEl}
+                                    anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                                    targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+                                    onRequestClose={this.handleCloseStopPlaceTypePopover.bind(
+                                        this
+                                    )}
+                                    animation={PopoverAnimationVertical}
+                                    style={{ overflowY: 'none' }}
+                                    animated={true}
+                                >
+                                    <ModalitiesMenuItems
+                                        handleSubModeTypeChange={this.handleSubModeTypeChange.bind(this)}
+                                        handleStopTypeChange={this.handleStopTypeChange.bind(this)}
+                                        stopPlaceTypeChosen={stopPlace.stopPlaceType}
+                                        submodeChosen={stopPlace.submode}
+                                        stopTypes={stopTypes[locale]}
+                                    />
+                                </Popover>
 
-                <ToolTippable toolTipText={formatMessage({id: 'other_transport_modes_title'})}>
-                  <IconButton
-                    style={{
-                      borderBottom: disabled ? 'none' : '1px dotted grey',
-                      marginLeft: 5
-                    }}
-                    onClick={this.handleOpenOtherTransportModesPopover.bind(this)}
-                  >
-                    <ModalityIconSvg type="localPassengerFerry"/>
-                  </IconButton>
-                </ToolTippable>
+                                <ToolTippable toolTipText={formatMessage({id: 'other_transport_modes_title'})}>
+                                    <IconButton
+                                        style={{
+                                            borderBottom: disabled ? 'none' : '1px dotted grey',
+                                            marginLeft: 5
+                                        }}
+                                        onClick={this.handleOpenOtherTransportModesPopover.bind(this)}
+                                    >
+                                        <ModalityIconSvg type="localPassengerFerry"/>
+                                    </IconButton>
+                                </ToolTippable>
 
-                <div style={{ display: 'flex', marginLeft: 'auto' }}>
-                  <Dialog
-                    title={formatMessage({id: 'other_transport_modes_title'})}
-                    actions={[
-                      <FlatButton
-                        label={formatMessage({id: 'confirm'}) + " / " + formatMessage({id: 'close'})}
-                        primary={true}
-                        onClick={this.handleCloseOtherTransportModesModal}
-                      />,
-                    ]}
-                    modal={false}
-                    open={this.state.otherTransportModesOpen}
-                    onRequestClose={this.handleCloseOtherTransportModesModal}
-                    contentStyle={{ maxWidth: '600px' }}
-                    autoScrollBodyContent={true}
-                  >
-                    <OtherTransportModesMenuItems
-                      otherTransportModesChosen={stopPlace.otherTransportModes}
-                      handleOtherTransportModeChange={this.handleOtherTransportModeChange.bind(this)}
-                      locale={locale}
-                    />
-                  </Dialog>
+                                <div style={{ display: 'flex', marginLeft: 'auto' }}>
+                                    <Dialog
+                                        title={formatMessage({id: 'other_transport_modes_title'})}
+                                        actions={[
+                                            <FlatButton
+                                                label={formatMessage({id: 'confirm'}) + " / " + formatMessage({id: 'close'})}
+                                                primary={true}
+                                                onClick={this.handleCloseOtherTransportModesModal}
+                                            />,
+                                        ]}
+                                        modal={false}
+                                        open={this.state.otherTransportModesOpen}
+                                        onRequestClose={this.handleCloseOtherTransportModesModal}
+                                        contentStyle={{ maxWidth: '600px' }}
+                                        autoScrollBodyContent={true}
+                                    >
+                                        <OtherTransportModesMenuItems
+                                            otherTransportModesChosen={stopPlace.otherTransportModes}
+                                            handleOtherTransportModeChange={this.handleOtherTransportModeChange.bind(this)}
+                                            locale={locale}
+                                        />
+                                    </Dialog>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-        {stopPlace.belongsToGroup && (
-          <BelongsToGroup
-            formatMessage={formatMessage}
-            groups={stopPlace.groups}
-            style={{marginTop: 5}}
-            />
-        )}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-            <AutoComplete
-                textFieldStyle={{width: 300}}
-                animated={false}
-                openOnFocus
-                hintText={formatMessage({id: 'name'})}
-                dataSource={
-                    loading ? Loading : menuItems || []
-                }
-                filter={(searchText, key) => searchText !== ''}
-                onUpdateInput={this.handleUpdateStopName.bind(this)}
-                searchText={this.props.searchText || name}
-                ref="searchText"
-                onNewRequest={this.handleStopNameSelected.bind(this)}
-                listStyle={{width: 'auto'}}
-                errorText={(name && name.trim().length) ? '' : formatMessage({id: 'name_is_required'})}
-                style={{marginTop: -10, width: 300}}
-            />
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <ToolTippable toolTipText={tariffZonesHint}>
-              <div
-                onClick={this.handleOpenTZDialog.bind(this)}
-                style={{
-                  borderBottom: '1px dotted',
-                  marginTop: 13,
-                  paddingBottom: 4,
-                  marginLeft: 8,
-                  cursor: 'pointer'
-                }}
-              >
+                {stopPlace.belongsToGroup && (
+                    <BelongsToGroup
+                        formatMessage={formatMessage}
+                        groups={stopPlace.groups}
+                        style={{marginTop: 5}}
+                    />
+                )}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <AutoComplete
+                        textFieldStyle={{width: 300}}
+                        animated={false}
+                        openOnFocus
+                        hintText={formatMessage({id: 'name'})}
+                        dataSource={
+                            loading ? Loading : menuItems || []
+                        }
+                        filter={(searchText, key) => searchText !== ''}
+                        onUpdateInput={this.handleUpdateStopName.bind(this)}
+                        searchText={this.props.searchText || localData.name} // ✅ Données locales
+                        ref="searchText"
+                        onNewRequest={this.handleStopNameSelected.bind(this)}
+                        listStyle={{width: 'auto'}}
+                        errorText={(localData.name && localData.name.trim().length) ? '' : formatMessage({id: 'name_is_required'})}
+                        style={{marginTop: -10, width: 300}}
+                        disabled={disabled}
+                    />
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <ToolTippable toolTipText={tariffZonesHint}>
+                            <div
+                                onClick={this.handleOpenTZDialog.bind(this)}
+                                style={{
+                                    borderBottom: '1px dotted',
+                                    marginTop: 13,
+                                    paddingBottom: 4,
+                                    marginLeft: 8,
+                                    cursor: 'pointer'
+                                }}
+                            >
                 <span
                     style={{
                         fontSize: 18,
@@ -721,25 +894,25 @@ class StopPlaceDetails extends React.Component {
                 >
                   Tz
                 </span>
-              </div>
-            </ToolTippable>
-            <div
-              style={{
-                borderBottom: '1px dotted',
-                marginLeft: 19,
-                marginTop: -3
-              }}
-            >
-              <ToolTippable toolTipText={altNamesHint}>
-                <IconButton onClick={this.handleOpenAltNames.bind(this)}>
-                  <MdLanguage
-                    color={hasAltNames ? primaryDarker : '#000'}
-                  />
-                </IconButton>
-              </ToolTippable>
-            </div>
-          </div>
-        </div>
+                            </div>
+                        </ToolTippable>
+                        <div
+                            style={{
+                                borderBottom: '1px dotted',
+                                marginLeft: 19,
+                                marginTop: -3
+                            }}
+                        >
+                            <ToolTippable toolTipText={altNamesHint}>
+                                <IconButton onClick={this.handleOpenAltNames.bind(this)}>
+                                    <MdLanguage
+                                        color={hasAltNames ? primaryDarker : '#000'}
+                                    />
+                                </IconButton>
+                            </ToolTippable>
+                        </div>
+                    </div>
+                </div>
                 {isPublicCodePrivateCodeEnabled && (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <TextField
@@ -747,190 +920,190 @@ class StopPlaceDetails extends React.Component {
                             floatingLabelText={formatMessage({ id: 'publicCode' })}
                             style={{ width: 170, marginTop: -10, marginRight: 25 }}
                             disabled={disabled}
-                            value={publicCode}
+                            value={localData.publicCode} // ✅ Données locales
                             onChange={this.handleStopPublicCodeChange.bind(this)} />
                         <TextField
                             hintText={formatMessage({ id: 'privateCode' })}
                             floatingLabelText={formatMessage({ id: 'privateCode' })}
                             style={{ width: 170, marginTop: -10, marginRight: 25 }}
                             disabled={disabled}
-                            value={privateCode}
+                            value={localData.privateCode} // ✅ Données locales
                             onChange={this.handleStopPrivateCodeChange.bind(this)} />
                     </div>
                 )}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <TextField
-            hintText={formatMessage({ id: 'description' })}
-            floatingLabelText={formatMessage({ id: 'description' })}
-            style={{ width: 340, marginTop: -10 }}
-            disabled={disabled}
-            value={description}
-            onChange={this.handleStopDescriptionChange.bind(this)}
-          />
-          <ToolTippable
-            toolTipText={weightingStateHint}
-            style={{ marginLeft: 6, borderBottom: '1px dotted', marginTop: -3 }}
-          >
-            <IconButton
-              onClick={e => {
-                this.handleOpenWeightPopover(e);
-              }}
-            >
-              <MdTransfer color={this.getWeightingStateColor(stopPlace)} />
-            </IconButton>
-            <WeightingPopover
-              open={!disabled && weightingOpen}
-              anchorEl={this.state.weightingAnchorEl}
-              handleChange={v => this.handleWeightChange(v)}
-              locale={locale}
-              handleClose={() => {
-                this.setState({ weightingOpen: false });
-              }}
-            />
-          </ToolTippable>
-        </div>
-        {expanded
-          ? null
-          : <div
-              style={{
-                marginTop: 10,
-                marginBottom: 10,
-                height: 15,
-                display: 'flex',
-                justifyContent: 'space-around',
-                alignItems: 'center'
-              }}
-            >
-              <ToolTippable toolTipText={wheelChairHint}>
-                <WheelChairPopover
-                  intl={intl}
-                  handleChange={this.handleHandleWheelChair.bind(this)}
-                  wheelchairAccess={wheelchairAccess}
-                />
-              </ToolTippable>
-              <ToolTippable toolTipText={ticketMachineHint}>
-                <Checkbox
-                  checkedIcon={<TicketMachine />}
-                  uncheckedIcon={
-                    <TicketMachine
-                      style={{ fill: '#8c8c8c', opacity: '0.8' }}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <TextField
+                        hintText={formatMessage({ id: 'description' })}
+                        floatingLabelText={formatMessage({ id: 'description' })}
+                        style={{ width: 340, marginTop: -10 }}
+                        disabled={disabled}
+                        value={localData.description} // ✅ Données locales
+                        onChange={this.handleStopDescriptionChange.bind(this)}
                     />
-                  }
-                  style={{ width: 'auto' }}
-                  checked={ticketMachine}
-                  onCheck={(e, v) => {
-                    this.handleTicketMachineChange(v);
-                  }}
+                    <ToolTippable
+                        toolTipText={weightingStateHint}
+                        style={{ marginLeft: 6, borderBottom: '1px dotted', marginTop: -3 }}
+                    >
+                        <IconButton
+                            onClick={e => {
+                                this.handleOpenWeightPopover(e);
+                            }}
+                        >
+                            <MdTransfer color={this.getWeightingStateColor(stopPlace)} />
+                        </IconButton>
+                        <WeightingPopover
+                            open={!disabled && weightingOpen}
+                            anchorEl={this.state.weightingAnchorEl}
+                            handleChange={v => this.handleWeightChange(v)}
+                            locale={locale}
+                            handleClose={() => {
+                                this.setState({ weightingOpen: false });
+                            }}
+                        />
+                    </ToolTippable>
+                </div>
+                {expanded
+                    ? null
+                    : <div
+                        style={{
+                            marginTop: 10,
+                            marginBottom: 10,
+                            height: 15,
+                            display: 'flex',
+                            justifyContent: 'space-around',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <ToolTippable toolTipText={wheelChairHint}>
+                            <WheelChairPopover
+                                intl={intl}
+                                handleChange={this.handleHandleWheelChair.bind(this)}
+                                wheelchairAccess={wheelchairAccess}
+                            />
+                        </ToolTippable>
+                        <ToolTippable toolTipText={ticketMachineHint}>
+                            <Checkbox
+                                checkedIcon={<TicketMachine />}
+                                uncheckedIcon={
+                                    <TicketMachine
+                                        style={{ fill: '#8c8c8c', opacity: '0.8' }}
+                                    />
+                                }
+                                style={{ width: 'auto' }}
+                                checked={ticketMachine}
+                                onCheck={(e, v) => {
+                                    this.handleTicketMachineChange(v);
+                                }}
+                            />
+                        </ToolTippable>
+                        <ToolTippable toolTipText={busShelterHint}>
+                            <Checkbox
+                                checkedIcon={<BusShelter />}
+                                uncheckedIcon={
+                                    <BusShelter style={{ fill: '#8c8c8c', opacity: '0.8' }} />
+                                }
+                                style={{ width: 'auto' }}
+                                checked={busShelter}
+                                onCheck={(e, v) => {
+                                    this.handleBusShelterChange(v);
+                                }}
+                            />
+                        </ToolTippable>
+                        <ToolTippable toolTipText={WCHint}>
+                            <Checkbox
+                                checkedIcon={<MdWC />}
+                                uncheckedIcon={
+                                    <MdWC style={{ fill: '#8c8c8c', opacity: '0.8' }} />
+                                }
+                                style={{ width: 'auto' }}
+                                checked={WC}
+                                onCheck={(e, v) => {
+                                    this.handleWCChange(v);
+                                }}
+                            />
+                        </ToolTippable>
+                        <ToolTippable toolTipText={waitingRoomHint}>
+                            <Checkbox
+                                checkedIcon={<WaitingRoom />}
+                                uncheckedIcon={
+                                    <WaitingRoom style={{ fill: '#8c8c8c', opacity: '0.8' }} />
+                                }
+                                style={{ width: 'auto' }}
+                                checked={waitingRoom}
+                                onCheck={(e, v) => {
+                                    this.handleWaitingRoomChange(v);
+                                }}
+                            />
+                        </ToolTippable>
+                        <ToolTippable toolTipText={transportSignHint}>
+                            <Checkbox
+                                checkedIcon={
+                                    <Sign512
+                                        style={{
+                                            transform:
+                                                'scale(1) translateY(-12px) translateX(-12px)'
+                                        }}
+                                    />
+                                }
+                                uncheckedIcon={
+                                    <Sign512
+                                        style={{
+                                            transform:
+                                                'scale(1) translateY(-12px) translateX(-12px)',
+                                            fill: '#8c8c8c',
+                                            opacity: '0.8'
+                                        }}
+                                    />
+                                }
+                                style={{ width: 'auto' }}
+                                checked={sign512}
+                                onCheck={(e, v) => {
+                                    this.handleChangeSign512(v);
+                                }}
+                            />
+                        </ToolTippable>
+                    </div>}
+                <AltNamesDialog
+                    open={altNamesDialogOpen}
+                    altNames={stopPlace.alternativeNames}
+                    intl={intl}
+                    disabled={disabled}
+                    handleClose={() => {
+                        this.setState({ altNamesDialogOpen: false });
+                    }}
                 />
-              </ToolTippable>
-              <ToolTippable toolTipText={busShelterHint}>
-                <Checkbox
-                  checkedIcon={<BusShelter />}
-                  uncheckedIcon={
-                    <BusShelter style={{ fill: '#8c8c8c', opacity: '0.8' }} />
-                  }
-                  style={{ width: 'auto' }}
-                  checked={busShelter}
-                  onCheck={(e, v) => {
-                    this.handleBusShelterChange(v);
-                  }}
+                <TagsDialog
+                    open={this.state.tagsOpen}
+                    tags={stopPlace.tags}
+                    intl={intl}
+                    disabled={disabled}
+                    handleClose={() => {
+                        this.setState({ tagsOpen: false });
+                    }}
                 />
-              </ToolTippable>
-              <ToolTippable toolTipText={WCHint}>
-                <Checkbox
-                  checkedIcon={<MdWC />}
-                  uncheckedIcon={
-                    <MdWC style={{ fill: '#8c8c8c', opacity: '0.8' }} />
-                  }
-                  style={{ width: 'auto' }}
-                  checked={WC}
-                  onCheck={(e, v) => {
-                    this.handleWCChange(v);
-                  }}
+                <TariffZonesDialog
+                    open={tariffZoneOpen}
+                    tariffZones={stopPlace.tariffZones}
+                    intl={intl}
+                    disabled={disabled}
+                    handleClose={() => {
+                        this.setState({ tariffZoneOpen: false });
+                    }}
                 />
-              </ToolTippable>
-              <ToolTippable toolTipText={waitingRoomHint}>
-                <Checkbox
-                  checkedIcon={<WaitingRoom />}
-                  uncheckedIcon={
-                    <WaitingRoom style={{ fill: '#8c8c8c', opacity: '0.8' }} />
-                  }
-                  style={{ width: 'auto' }}
-                  checked={waitingRoom}
-                  onCheck={(e, v) => {
-                    this.handleWaitingRoomChange(v);
-                  }}
+                <KeyValuesDialog
+                    intl={intl}
+                    disabled={disabled}
                 />
-              </ToolTippable>
-              <ToolTippable toolTipText={transportSignHint}>
-                <Checkbox
-                  checkedIcon={
-                    <Sign512
-                      style={{
-                        transform:
-                          'scale(1) translateY(-12px) translateX(-12px)'
-                      }}
-                    />
-                  }
-                  uncheckedIcon={
-                    <Sign512
-                      style={{
-                        transform:
-                          'scale(1) translateY(-12px) translateX(-12px)',
-                        fill: '#8c8c8c',
-                        opacity: '0.8'
-                      }}
-                    />
-                  }
-                  style={{ width: 'auto' }}
-                  checked={sign512}
-                  onCheck={(e, v) => {
-                    this.handleChangeSign512(v);
-                  }}
-                />
-              </ToolTippable>
-            </div>}
-        <AltNamesDialog
-          open={altNamesDialogOpen}
-          altNames={stopPlace.alternativeNames}
-          intl={intl}
-          disabled={disabled}
-          handleClose={() => {
-            this.setState({ altNamesDialogOpen: false });
-          }}
-        />
-        <TagsDialog
-          open={this.state.tagsOpen}
-          tags={stopPlace.tags}
-          intl={intl}
-          disabled={disabled}
-          handleClose={() => {
-            this.setState({ tagsOpen: false });
-          }}
-        />
-        <TariffZonesDialog
-          open={tariffZoneOpen}
-          tariffZones={stopPlace.tariffZones}
-          intl={intl}
-          disabled={disabled}
-          handleClose={() => {
-            this.setState({ tariffZoneOpen: false });
-          }}
-        />
-        <KeyValuesDialog
-          intl={intl}
-          disabled={disabled}
-        />
-      </div>
-    );
-  }
+            </div>
+        );
+    }
 }
 
 const mapStateToProps = state => ({
-  stopPlace: state.stopPlace.current,
-  isPublicCodePrivateCodeEnabled: state.stopPlace.enablePublicCodePrivateCodeOnStopPlaces,
-  keyValuesDialogOpen: state.user.keyValuesDialogOpen,
-  client: state.user.client
+    stopPlace: state.stopPlace.current,
+    isPublicCodePrivateCodeEnabled: state.stopPlace.enablePublicCodePrivateCodeOnStopPlaces,
+    keyValuesDialogOpen: state.user.keyValuesDialogOpen,
+    client: state.user.client
 });
 
 export default connect(mapStateToProps)(StopPlaceDetails);

@@ -55,7 +55,6 @@ import VisualSignsAvailablePopover from "./VisualSignsAvailablePopover";
 
 class QuayItem extends React.Component {
   static propTypes = {
-    publicCode: PropTypes.string.isRequired,
     quay: PropTypes.object.isRequired,
     handleRemoveQuay: PropTypes.func.isRequired,
     handleLocateOnMap: PropTypes.func.isRequired,
@@ -162,7 +161,6 @@ class QuayItem extends React.Component {
   render() {
     const {
       quay,
-      publicCode,
       expanded,
       index,
       handleToggleCollapse,
@@ -171,7 +169,7 @@ class QuayItem extends React.Component {
       disabled,
     } = this.props;
     const { formatMessage, locale } = intl;
-    const { additionalExpanded, coordinatesDialogOpen } = this.state;
+    const { additionalExpanded } = this.state;
 
     const wheelchairAccess = getIn(
       quay,

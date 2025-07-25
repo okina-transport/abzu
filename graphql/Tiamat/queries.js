@@ -291,7 +291,7 @@ export const allEntities = gql`
             ...VerboseParking
         },
         versions:
-            stopPlace(id: $id, allVersions: true, size: 100) {
+            stopPlace(id: $id, allVersions: true, size: 10) {
                     id
                     validBetween {
                         fromDate

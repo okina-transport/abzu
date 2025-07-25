@@ -28,8 +28,7 @@ import SaveDialog from '../Dialogs/SaveDialog';
 import {MutationErrorCodes} from '../../models/ErrorCodes';
 import {
   savePointOfInterest,
-  deletePointOfInterest,
-  getNeighbourPointsOfInterest
+  deletePointOfInterest
 } from '../../graphql/Tiamat/actions';
 import {getIsCurrentVersionMax} from '../../utils/';
 import RequiredFieldsMissingDialog from '../Dialogs/RequiredFieldsMissingDialog';
@@ -37,7 +36,6 @@ import Routes from '../../routes/';
 import PointOfInterestActions from "../../actions/PointOfInterestActions";
 import PointOfInterestDetails from "./PointOfInterestDetails";
 import TerminatePointOfInterestDialog from "../Dialogs/TerminatePointOfInterestDialog";
-import Settings from "../../singletons/SettingsManager";
 
 class EditPointOfInterestGeneral extends React.Component {
   constructor(props) {
@@ -123,20 +121,10 @@ class EditPointOfInterestGeneral extends React.Component {
   }
 
   handleGoBack() {
-    const { client, activeMap } = this.props;
     this.setState({
       confirmGoBack: false
     });
     this.props.dispatch(UserActions.navigateTo('/', ''));
-    if (activeMap) {
-      let includeExpired = new Settings().getShowExpiredStops();
-      getNeighbourPointsOfInterest(
-          client,
-          null,
-          activeMap.getBounds(),
-          includeExpired
-      );
-    }
   }
 
   handleAllowUserToGoBack() {

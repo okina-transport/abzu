@@ -154,20 +154,10 @@ class EditParentGeneral extends React.Component {
   }
 
   handleGoBack() {
-    const { client, activeMap } = this.props;
     this.setState({
       confirmGoBack: false
     });
     this.props.dispatch(UserActions.navigateTo('/', ''));
-    if (activeMap) {
-      let includeExpired = new Settings().getShowExpiredStops();
-      getNeighbourStops(
-          client,
-          null,
-          activeMap.getBounds(),
-          includeExpired
-      );
-    }
   }
 
   handleAllowUserToGoBack() {

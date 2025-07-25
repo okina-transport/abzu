@@ -12,10 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-
 import { getFilteredStops } from '../utils/FilteringUtils';
-
-
 
 const addTomarkers = function (markers, tadFilteredStops) {
   for (let currStop of tadFilteredStops){
@@ -27,24 +24,26 @@ const addTomarkers = function (markers, tadFilteredStops) {
   return markers;
 };
 
-
 export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) => {
 
   const {
     newStop,
     findCoordinates,
     activeSearchResult,
-    neighbourStops
+    neighbourStops,
+    current: currentStopPlace
   } = stopPlace;
 
   const {
     newParking,
-    neighbourParkings
+    neighbourParkings,
+    current: currentParking
   } = parking;
 
   const {
     newPointOfInterest,
-    neighbourPointsOfInterest
+    neighbourPointsOfInterest,
+    current: currentPointOfInterest
   } = pointOfInterest;
 
   const { isCreatingNewStop, isCreatingNewParking, isCreatingNewPointOfInterest, showParkings, showStops, showPoiShop, showPoiAmenity, showPoiBuilding, showPoiHistoric, showPoiLanduse, showPoiLeisure, showPoiTourism, showPoiOffice, searchFilters } = user;
@@ -55,9 +54,9 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) 
   let filterByPartialTAD = searchFilters !== undefined && searchFilters.filterByPartialTAD;
 
   if (
-    activeSearchResult &&
-    activeSearchResult.isParent &&
-    activeSearchResult.children
+      activeSearchResult &&
+      activeSearchResult.isParent &&
+      activeSearchResult.children
   ) {
     markers = markers.concat(activeSearchResult.children);
   }
@@ -115,10 +114,63 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) 
     markers = addPOImarkers(markers, neighbourPointsOfInterest,'office');
   }
 
-
   if (findCoordinates) {
     markers = markers.concat(findCoordinates);
   }
+
+  markers = markers.map(marker => {
+    let isActive;
+    let updatedMarker = { ...marker };
+    if (currentStopPlace && marker.id === currentStopPlace.id) {
+      isActive = true;
+
+      updatedMarker = {
+        ...marker,
+        location: currentStopPlace.centroid || currentStopPlace.location || marker.location,
+        name: currentStopPlace.name || marker.name,
+      };
+
+      if (currentStopPlace.quays && Array.isArray(currentStopPlace.quays)) {
+        updatedMarker.quays = currentStopPlace.quays;
+      }
+    }
+    else if (currentParking && marker.id === currentParking.id) {
+      isActive = true;
+
+      updatedMarker = {
+        ...marker,
+        location: currentParking.centroid || currentParking.location || marker.location,
+        name: currentParking.name || marker.name,
+      };
+    }
+    else if (currentPointOfInterest && marker.id === currentPointOfInterest.id) {
+      isActive = true;
+      updatedMarker = {
+        ...marker,
+        location: currentPointOfInterest.centroid || currentPointOfInterest.location || marker.location,
+        name: currentPointOfInterest.name || marker.name,
+      };
+    }
+    else if (activeSearchResult && marker.id === activeSearchResult.id) {
+      isActive = activeSearchResult.isActive === true;
+
+      updatedMarker = {
+        ...marker,
+        location: activeSearchResult.location || marker.location,
+        name: activeSearchResult.name || marker.name,
+        entityType: activeSearchResult.entityType || marker.entityType,
+        quays: activeSearchResult.quays || marker.quays
+      };
+    }
+    else {
+      isActive = marker.isActive === true;
+    }
+
+    return {
+      ...updatedMarker,
+      isActive: isActive
+    };
+  });
 
   return markers;
 };
@@ -179,5 +231,4 @@ const isClassificationOfType = ( classification, classificationType ) => {
     return false;
   }
   return  isClassificationOfType(classification.parent, classificationType);
-
 }

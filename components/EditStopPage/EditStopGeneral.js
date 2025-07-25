@@ -76,26 +76,73 @@ class EditStopGeneral extends React.Component {
       saveDialogOpen: false,
       errorMessage: '',
       requiredFieldsMissingOpen: false,
-      isLoading: false
+      isLoading: false,
+
+      // ✅ SIMPLE : Référence vers les méthodes de la Map
+      mapMethods: null
     };
+
+    this.stopPlaceDetailsRef = React.createRef();
+
+    // Bind des méthodes
+    this.handleSave = this.handleSave.bind(this);
+    this.handleGoBack = this.handleGoBack.bind(this);
+    this.handleDiscardChanges = this.handleDiscardChanges.bind(this);
+    this.handleMapReady = this.handleMapReady.bind(this);
+  }
+
+  // ✅ SIMPLE : Callback quand la Map est prête
+  handleMapReady(mapMethods) {
+    this.setState({ mapMethods: mapMethods });
+    console.log('Map prête avec méthodes:', mapMethods);
+  }
+
+  // ✅ SIMPLE : Vérifier s'il y a des changements (Redux + Map)
+  hasAnyChanges() {
+    const hasReduxChanges = this.props.stopHasBeenModified;
+    const hasMapChanges = this.state.mapMethods && this.state.mapMethods.hasChanges
+        ? this.state.mapMethods.hasChanges()
+        : false;
+
+    const hasStopPlaceDetailsChanges = this.stopPlaceDetailsRef.current &&
+    typeof this.stopPlaceDetailsRef.current.hasLocalChanges === 'function'
+        ? this.stopPlaceDetailsRef.current.hasLocalChanges()
+        : false;
+
+    return hasReduxChanges || hasMapChanges || hasStopPlaceDetailsChanges;
   }
 
   handleSave() {
-    const { stopPlace } = this.props;
-    if (
-      !stopPlace.name ||
-      !stopPlace.name.trim().length ||
-      !stopPlace.stopPlaceType
-    ) {
-      this.setState({
-        requiredFieldsMissingOpen: true
-      });
-    } else {
-      this.setState({
-        saveDialogOpen: true,
-        errorMessage: ''
-      });
+    // ✅ SIMPLE : Synchroniser les positions de la carte vers Redux avant sauvegarde
+    if (this.state.mapMethods && this.state.mapMethods.syncPositions) {
+      console.log('Synchronisation des positions avant sauvegarde...');
+      this.state.mapMethods.syncPositions();
     }
+
+    // Synchroniser les détails du StopPlace si nécessaire
+    if (this.stopPlaceDetailsRef.current &&
+        typeof this.stopPlaceDetailsRef.current.syncToReduxBeforeSave === 'function') {
+      this.stopPlaceDetailsRef.current.syncToReduxBeforeSave();
+    }
+
+    // Attendre que Redux soit mis à jour avant de valider
+    setTimeout(() => {
+      const { stopPlace } = this.props;
+      if (
+          !stopPlace.name ||
+          !stopPlace.name.trim().length ||
+          !stopPlace.stopPlaceType
+      ) {
+        this.setState({
+          requiredFieldsMissingOpen: true
+        });
+      } else {
+        this.setState({
+          saveDialogOpen: true,
+          errorMessage: ''
+        });
+      }
+    }, 100);
   }
 
   handleCloseMergeStopDialog() {
@@ -129,8 +176,13 @@ class EditStopGeneral extends React.Component {
       saveDialogOpen: false
     });
 
+    // ✅ SIMPLE : Reset des positions locales après sauvegarde réussie
+    if (this.state.mapMethods && this.state.mapMethods.resetPositions) {
+      this.state.mapMethods.resetPositions();
+    }
+
     getStopPlaceVersions(client, stopPlaceId).then(() => {
-      dispatch(UserActions.navigateTo(`/${Routes.STOP_PLACE}/`, stopPlaceId));
+      dispatch(UserActions.navigateTo('/' + Routes.STOP_PLACE + '/', stopPlaceId));
       dispatch(UserActions.openSnackbar(types.SUCCESS));
     });
   }
@@ -146,33 +198,33 @@ class EditStopGeneral extends React.Component {
     this.setState({ isLoading: true });
 
     mergeAllQuaysFromStop(
-      client,
-      mergeSource.id,
-      stopPlace.id,
-      fromVersionComment,
-      toVersionComment
+        client,
+        mergeSource.id,
+        stopPlace.id,
+        fromVersionComment,
+        toVersionComment
     )
-      .then(() => {
-        dispatch(UserActions.openSnackbar(types.SUCCESS));
-        this.handleCloseMergeStopDialog();
-        getStopPlaceWithAll(client, stopPlace.id).then(() => {
-          this.setState({ isLoading: false });
+        .then(() => {
+          dispatch(UserActions.openSnackbar(types.SUCCESS));
+          this.handleCloseMergeStopDialog();
+          getStopPlaceWithAll(client, stopPlace.id).then(() => {
+            this.setState({ isLoading: false });
 
-          if (activeMap) {
-            let includeExpired = new Settings().getShowExpiredStops();
-            getNeighbourStops(
-              client,
-              stopPlace.id,
-              activeMap.getBounds(),
-              includeExpired
-            );
-          }
+            if (activeMap) {
+              let includeExpired = new Settings().getShowExpiredStops();
+              getNeighbourStops(
+                  client,
+                  stopPlace.id,
+                  activeMap.getBounds(),
+                  includeExpired
+              );
+            }
+          });
+          this.removeStopFromLocalStorage(mergeSource.id);
+        })
+        .catch(() => {
+          this.setState({ isLoading: false });
         });
-        this.removeStopFromLocalStorage(mergeSource.id);
-      })
-      .catch(() => {
-        this.setState({ isLoading: false });
-      });
   }
 
   removeStopFromLocalStorage(stopId){
@@ -190,58 +242,58 @@ class EditStopGeneral extends React.Component {
     this.setState({ isLoading: true });
 
     mergeQuays(
-      client,
-      stopPlace.id,
-      mergingQuay.fromQuay.id,
-      mergingQuay.toQuay.id,
-      versionComment
+        client,
+        stopPlace.id,
+        mergingQuay.fromQuay.id,
+        mergingQuay.toQuay.id,
+        versionComment
     )
-      .then(() => {
-        this.setState({ isLoading: false });
-        dispatch(UserActions.openSnackbar(types.SUCCESS));
-        this.handleCloseMergeQuaysDialog();
-        getStopPlaceWithAll(client, stopPlace.id);
-      })
-      .catch(() => {
-        this.setState({ isLoading: false });
-      });
+        .then(() => {
+          this.setState({ isLoading: false });
+          dispatch(UserActions.openSnackbar(types.SUCCESS));
+          this.handleCloseMergeQuaysDialog();
+          getStopPlaceWithAll(client, stopPlace.id);
+        })
+        .catch(() => {
+          this.setState({ isLoading: false });
+        });
   }
 
   handleDeleteQuay() {
     const { client, deletingQuay, dispatch, stopPlace } = this.props;
     this.setState({ isLoading: true });
     deleteQuay(client, deletingQuay)
-      .then(() => {
-        this.setState({ isLoading: false });
-        dispatch(UserActions.hideDeleteQuayDialog());
-        getStopPlaceWithAll(client, stopPlace.id).then(() => {
-          dispatch(UserActions.openSnackbar(types.SUCCESS));
+        .then(() => {
+          this.setState({ isLoading: false });
+          dispatch(UserActions.hideDeleteQuayDialog());
+          getStopPlaceWithAll(client, stopPlace.id).then(() => {
+            dispatch(UserActions.openSnackbar(types.SUCCESS));
+          });
+        })
+        .catch(() => {
+          this.setState({ isLoading: false });
         });
-      })
-      .catch(() => {
-        this.setState({ isLoading: false });
-      });
   }
 
   handleMoveQuay(fromVersionComment, toVersionComment) {
     const { client, movingQuay, dispatch, stopPlace } = this.props;
     this.setState({ isLoading: true });
     moveQuaysToStop(
-      client,
-      stopPlace.id,
-      movingQuay.id,
-      fromVersionComment,
-      toVersionComment
+        client,
+        stopPlace.id,
+        movingQuay.id,
+        fromVersionComment,
+        toVersionComment
     )
-      .then(() => {
-        this.setState({ isLoading: false });
-        dispatch(UserActions.closeMoveQuayDialog());
-        dispatch(UserActions.openSnackbar(types.SUCCESS));
-        getStopPlaceWithAll(client, stopPlace.id);
-      })
-      .catch(() => {
-        this.setState({ isLoading: false });
-      });
+        .then(() => {
+          this.setState({ isLoading: false });
+          dispatch(UserActions.closeMoveQuayDialog());
+          dispatch(UserActions.openSnackbar(types.SUCCESS));
+          getStopPlaceWithAll(client, stopPlace.id);
+        })
+        .catch(() => {
+          this.setState({ isLoading: false });
+        });
   }
 
   handleTerminateStop(shouldHardDelete, shouldTerminatePermanently, comment, dateTime) {
@@ -251,102 +303,103 @@ class EditStopGeneral extends React.Component {
 
     if (shouldHardDelete) {
       deleteStopPlace(client, stopPlace.id)
-        .then(response => {
-          this.setState({ isLoading: false });
-          dispatch(UserActions.hideDeleteStopDialog());
-          if (response.data.deleteStopPlace) {
-            dispatch(UserActions.navigateToMainAfterDelete());
-          }
-        })
-        .catch(() => {
-          this.setState({ isLoading: false });
-          dispatch(UserActions.hideDeleteStopDialog(true));
-        });
+          .then(response => {
+            this.setState({ isLoading: false });
+            dispatch(UserActions.hideDeleteStopDialog());
+            if (response.data.deleteStopPlace) {
+              dispatch(UserActions.navigateToMainAfterDelete());
+            }
+          })
+          .catch(() => {
+            this.setState({ isLoading: false });
+            dispatch(UserActions.hideDeleteStopDialog(true));
+          });
     } else {
       terminateStop(client, stopPlace.id, shouldTerminatePermanently, comment, dateTime)
-        .then(result => {
-          this.setState({ isLoading: false });
-          this.handleSaveSuccess(stopPlace.id);
-          this.handleCloseDeleteStop();
-        })
-        .catch(err => {
-          this.setState({ isLoading: false });
-        });
+          .then(result => {
+            this.setState({ isLoading: false });
+            this.handleSaveSuccess(stopPlace.id);
+            this.handleCloseDeleteStop();
+          })
+          .catch(err => {
+            this.setState({ isLoading: false });
+          });
     }
   }
 
   handleSaveAllEntities(userInput) {
+    // ✅ SIMPLE : Les positions ont déjà été synchronisées dans handleSave()
     const { stopPlace, pathLink, originalPathLink, client } = this.props;
 
     const saveParking = shouldMutateParking(stopPlace.parking);
 
     const pathLinkVariables = mapToMutationVariables.mapPathLinkToVariables(
-      pathLink
+        pathLink
     );
 
     const savePathLinks = shouldMutatePathLinks(
-      pathLinkVariables,
-      pathLink,
-      originalPathLink
+        pathLinkVariables,
+        pathLink,
+        originalPathLink
     );
 
     let id = null;
 
     saveStopPlaceBasedOnType(client, stopPlace, userInput)
-      .then(resultId => {
-        id = resultId;
-        if (!saveParking && !savePathLinks) {
-          this.handleSaveSuccess(id);
-        } else {
-          const parkingVariables = mapToMutationVariables.mapParkingToVariables(
-            stopPlace.parking,
-            stopPlace.id || id
-          );
+        .then(resultId => {
+          id = resultId;
+          if (!saveParking && !savePathLinks) {
+            this.handleSaveSuccess(id);
+          } else {
+            const parkingVariables = mapToMutationVariables.mapParkingToVariables(
+                stopPlace.parking,
+                stopPlace.id || id
+            );
 
-          if (savePathLinks) {
-            client
-              .mutate({
-                variables: { PathLink: pathLinkVariables },
-                mutation: mutatePathLink
-              })
-              .then(() => {
-                if (saveParking) {
-                  client
-                    .mutate({
-                      variables: { Parking: parkingVariables },
-                      mutation: mutateParking
-                    })
-                    .then(result => {
+            if (savePathLinks) {
+              client
+                  .mutate({
+                    variables: { PathLink: pathLinkVariables },
+                    mutation: mutatePathLink
+                  })
+                  .then(() => {
+                    if (saveParking) {
+                      client
+                          .mutate({
+                            variables: { Parking: parkingVariables },
+                            mutation: mutateParking
+                          })
+                          .then(result => {
+                            this.handleSaveSuccess(id);
+                          })
+                          .catch(err => {
+                            this.handleSaveError(MutationErrorCodes.ERROR_PARKING);
+                          });
+                    } else {
                       this.handleSaveSuccess(id);
-                    })
-                    .catch(err => {
-                      this.handleSaveError(MutationErrorCodes.ERROR_PARKING);
-                    });
-                } else {
-                  this.handleSaveSuccess(id);
-                }
-              })
-              .catch(err => {
-                this.handleSaveError(MutationErrorCodes.ERROR_PATH_LINKS);
-              });
-          } else if (saveParking) {
-            client
-              .mutate({
-                variables: { Parking: parkingVariables },
-                mutation: mutateParking
-              })
-              .then(result => {
-                this.handleSaveSuccess(id);
-              })
-              .catch(err => {
-                this.handleSaveError(MutationErrorCodes.ERROR_PARKING);
-              });
+                    }
+                  })
+                  .catch(err => {
+                    this.handleSaveError(MutationErrorCodes.ERROR_PATH_LINKS);
+                  });
+            } else if (saveParking) {
+              client
+                  .mutate({
+                    variables: { Parking: parkingVariables },
+                    mutation: mutateParking
+                  })
+                  .then(result => {
+                    this.handleSaveSuccess(id);
+                  })
+                  .catch(err => {
+                    this.handleSaveError(MutationErrorCodes.ERROR_PARKING);
+                  });
+            }
           }
-        }
-      })
-      .catch(err => {
-        this.handleSaveError(MutationErrorCodes.ERROR_STOP_PLACE);
-      });
+        })
+        .catch(err => {
+          this.handleSaveError(MutationErrorCodes.ERROR_STOP_PLACE);
+        });
   }
 
   handleGoBack() {
@@ -355,20 +408,10 @@ class EditStopGeneral extends React.Component {
       confirmGoBack: false
     });
     this.props.dispatch(UserActions.navigateTo('/', ''));
-
-    if (activeMap) {
-      let includeExpired = new Settings().getShowExpiredStops();
-      getNeighbourStops(
-          client,
-          null,
-          activeMap.getBounds(),
-          includeExpired
-      );
-    }
   }
 
   handleAllowUserToGoBack() {
-    if (this.props.stopHasBeenModified) {
+    if (this.hasAnyChanges()) {
       this.setState({
         confirmGoBack: true
       });
@@ -381,6 +424,18 @@ class EditStopGeneral extends React.Component {
     this.setState({
       confirmUndoOpen: false
     });
+
+    // ✅ SIMPLE : Reset des positions locales
+    if (this.state.mapMethods && this.state.mapMethods.resetPositions) {
+      this.state.mapMethods.resetPositions();
+    }
+
+    // Reset des changements dans StopPlaceDetails
+    if (this.stopPlaceDetailsRef.current &&
+        typeof this.stopPlaceDetailsRef.current.resetToOriginalState === 'function') {
+      this.stopPlaceDetailsRef.current.resetToOriginalState();
+    }
+
     this.props.dispatch(StopPlaceActions.discardChangesForEditingStop());
   }
 
@@ -411,54 +466,54 @@ class EditStopGeneral extends React.Component {
     this.setState({ isLoading: true });
 
     moveQuaysToNewStop(client, quayIds, fromVersionComment, toVersionComment)
-      .then(response => {
-        this.setState({ isLoading: false });
-        if (
-          response.data &&
-          response.data.moveQuaysToStop &&
-          response.data.moveQuaysToStop.id
-        ) {
-          newStopPlaceId = response.data.moveQuaysToStop.id;
-        }
-        dispatch(UserActions.closeMoveQuayToNewStopDialog());
-        dispatch(UserActions.openSnackbar(types.SUCCESS));
-        getStopPlaceWithAll(client, stopPlace.id).then(response => {
-          if (newStopPlaceId) {
-            dispatch(
-              UserActions.openSuccessfullyCreatedNewStop(newStopPlaceId)
-            );
+        .then(response => {
+          this.setState({ isLoading: false });
+          if (
+              response.data &&
+              response.data.moveQuaysToStop &&
+              response.data.moveQuaysToStop.id
+          ) {
+            newStopPlaceId = response.data.moveQuaysToStop.id;
           }
+          dispatch(UserActions.closeMoveQuayToNewStopDialog());
+          dispatch(UserActions.openSnackbar(types.SUCCESS));
+          getStopPlaceWithAll(client, stopPlace.id).then(response => {
+            if (newStopPlaceId) {
+              dispatch(
+                  UserActions.openSuccessfullyCreatedNewStop(newStopPlaceId)
+              );
+            }
+          });
+        })
+        .catch(() => {
+          this.setState({ isLoading: false });
         });
-      })
-      .catch(() => {
-        this.setState({ isLoading: false });
-      });
   }
 
-  handleLoadVersion = ({ id, version }) => {
+  handleLoadVersion = function(versionInfo) {
     const { client } = this.props;
+    const id = versionInfo.id;
+    const version = versionInfo.version;
     client.query({
       fetchPolicy: 'network-only',
       query: stopPlaceAndPathLinkByVersion,
       variables: {
-        id,
-        version
+        id: id,
+        version: version
       }
     });
   };
 
-  getTitleText = (stopPlace, originalStopPlace, formatMessage) => {
+  getTitleText = function(stopPlace, originalStopPlace, formatMessage) {
     const stopPlaceName = originalStopPlace
-      ? originalStopPlace.name
-      : stopPlace.name;
+        ? originalStopPlace.name
+        : stopPlace.name;
     return stopPlace && stopPlace.id
-      ? `${stopPlaceName}, ${stopPlace.parentTopographicPlace} (${
-          stopPlace.id
-        })`
-      : formatMessage({ id: 'new_stop_title' });
+        ? stopPlaceName + ', ' + stopPlace.parentTopographicPlace + ' (' + stopPlace.id + ')'
+        : formatMessage({ id: 'new_stop_title' });
   };
 
-  getQuayItemName = (locale, stopPlace) => {
+  getQuayItemName = function(locale, stopPlace) {
     stopTypes[locale].forEach(stopType => {
       if (stopType.value === stopPlace.stopPlaceType) {
         return stopType.quayItemName;
@@ -469,8 +524,8 @@ class EditStopGeneral extends React.Component {
   getQuaysForMoveQuayToNewStop() {
     const { stopPlace, movingQuayToNewStop, neighbourStopQuays } = this.props;
     if (!movingQuayToNewStop || !stopPlace) return [];
-    const { stopPlaceId } = movingQuayToNewStop;
-    if (stopPlaceId == stopPlace.id) {
+    const stopPlaceId = movingQuayToNewStop.stopPlaceId;
+    if (stopPlaceId === stopPlace.id) {
       return stopPlace.quays;
     } else {
       return neighbourStopQuays[stopPlaceId] || [];
@@ -482,12 +537,12 @@ class EditStopGeneral extends React.Component {
     let importerIdDataProducer = [];
     let severalDP = false;
     if(stopPlace.importedId !== undefined) {
-    stopPlace.importedId.forEach((element) => {
+      stopPlace.importedId.forEach((element) => {
         if(importerIdDataProducer[stopPlace.importedId.indexOf(element) - 1] && importerIdDataProducer[stopPlace.importedId.indexOf(element) - 1] !== element.substring(0,3)){
-            severalDP = true;
+          severalDP = true;
         }
         importerIdDataProducer.push(element.substring(0, 3));
-    });
+      });
     }
     return severalDP;
   }
@@ -538,14 +593,14 @@ class EditStopGeneral extends React.Component {
     };
 
     const stopPlaceLabel = this.getTitleText(
-      stopPlace,
-      originalStopPlace,
-      formatMessage
+        stopPlace,
+        originalStopPlace,
+        formatMessage
     );
     const isCurrentVersionMax = getIsCurrentVersionMax(
-      versions,
-      stopPlace.version,
-      stopPlace.isChildOfParent
+        versions,
+        stopPlace.version,
+        stopPlace.isChildOfParent
     );
 
     const style = {
@@ -580,283 +635,219 @@ class EditStopGeneral extends React.Component {
 
     const tabStyle = { color: '#000', fontSize: 10, fontWeight: 600 };
     const disableTerminate =
-      stopPlace.isNewStop ||
-      disabled ||
-      (stopPlace.hasExpired && !isCurrentVersionMax);
+        stopPlace.isNewStop ||
+        disabled ||
+        (stopPlace.hasExpired && !isCurrentVersionMax);
     const quaysForMoveQuayToNewStop = this.getQuaysForMoveQuayToNewStop();
 
+    // ✅ SIMPLE : Détecter tous les changements (Redux + Map + StopPlaceDetails)
+    const hasAnyModifications = this.hasAnyChanges();
+
     return (
-      <div style={style}>
-        <div style={stopBoxBar}>
-          <div style={{ display: 'flex', alignItems: 'center', color: '#fff' }}>
-            <MdBack
-              color="#fff"
-              style={{
-                cursor: 'pointer',
-                marginRight: 2,
-                transform: 'scale(0.8)'
-              }}
-              onClick={() => this.handleAllowUserToGoBack()}
-            />
-            <div>{stopPlaceLabel}</div>
-              {this.severalDataProducers() &&
-              <ToolTippable
-                  toolTipText={translations.severalDataProducers}
-              >
-                  <Warning
-                      color="orange"
-                      style={{ width: 20, height: 20, marginRight: 25 }}
-                  />
-              </ToolTippable>}
-          </div>
-          <VersionsPopover
-            versions={versions}
-            buttonLabel={translations.versions}
-            disabled={!versions.length}
-            hide={stopPlace.isChildOfParent}
-            handleSelect={this.handleLoadVersion.bind(this)}
-            defaultValue={translations.notAssigned}
-          />
-        </div>
-        <div id="scroll-body" style={scrollable}>
-          <div style={{ padding: '5 5' }}>
-            <StopPlaceDetails
-              disabled={disabled}
-              intl={intl}
-              expanded={showEditStopAdditional}
-              showLessStopPlace={this.showLessStopPlace.bind(this)}
-              showMoreStopPlace={this.showMoreStopPlace.bind(this)}
-            />
-            {showEditStopAdditional ? (
-              <EditStopAdditional disabled={disabled} />
-            ) : null}
-            <div style={{ textAlign: 'center', marginBottom: 5 }}>
-              {showEditStopAdditional ? (
-                <FlatButton
-                  icon={<MdLess />}
-                  onClick={() => this.showLessStopPlace()}
-                />
-              ) : (
-                <FlatButton
-                  label={formatMessage({ id: 'more' })}
-                  labelStyle={{ fontSize: 12 }}
-                  onClick={() => this.showMoreStopPlace()}
-                />
-              )}
-            </div>
-            <Divider inset={true} />
-            <Tabs
-              onChange={this.handleSlideChange.bind(this)}
-              value={activeElementTab}
-              tabItemContainerStyle={{ backgroundColor: '#fff' }}
-            >
-              <Tab
-                style={tabStyle}
-                label={`${formatMessage({ id: 'quays' })} (${
-                  stopPlace.quays ? stopPlace.quays.length : 0
-                })`}
-                value={0}
-              />
-              {
-                /*
-                <Tab
-                  style={tabStyle}
-                  label={`${formatMessage({ id: 'navigation' })} (${stopPlace
-                    .pathJunctions.length + stopPlace.entrances.length})`}
-                  value={1}
-                />
-                */
-                // ROR-272: Hide this elements until they are supported by backend
-              }
-              <Tab
-                style={tabStyle}
-                label={`${formatMessage({ id: 'parking_general' })} (${
-                  stopPlace.parking.length
-                })`}
-                value={2}
-              />
-            </Tabs>
-            <EditStopBoxTabs
-              disabled={disabled}
-              activeStopPlace={stopPlace}
-              itemTranslation={translations}
-              intl={intl}
-            />
-          </div>
-          <ConfirmDialog
-            open={this.state.confirmUndoOpen}
-            handleClose={() => {
-              this.handleDialogClose('confirmUndoOpen');
-            }}
-            handleConfirm={() => {
-              this.handleDiscardChanges();
-            }}
-            messagesById={{
-              title: 'discard_changes_title',
-              body: 'discard_changes_body',
-              confirm: 'discard_changes_confirm',
-              cancel: 'discard_changes_cancel'
-            }}
-            intl={intl}
-          />
-          <ConfirmDialog
-            open={this.state.confirmGoBack}
-            handleClose={() => {
-              this.handleDialogClose('confirmGoBack');
-            }}
-            handleConfirm={() => {
-              this.handleGoBack();
-            }}
-            messagesById={{
-              title: 'discard_changes_title',
-              body: 'discard_changes_body',
-              confirm: 'discard_changes_confirm',
-              cancel: 'discard_changes_cancel'
-            }}
-            intl={intl}
-          />
-          {this.state.saveDialogOpen && !disabled ? (
-            <SaveDialog
-              open={this.state.saveDialogOpen}
-              handleClose={() => {
-                this.handleDialogClose();
-              }}
-              handleConfirm={this.handleSaveAllEntities.bind(this)}
-              errorMessage={this.state.errorMessage}
-              intl={intl}
-              serverTimeDiff={this.props.serverTimeDiff}
-              currentValidBetween={stopPlace.validBetween}
-              severalDataProducers={this.severalDataProducers()}
-              canTerminateValidBetween={this.props.canEditParentStop}
-            />
-          ) : null}
-          <MergeStopDialog
-            open={mergeStopDialogOpen}
-            handleClose={this.handleCloseMergeStopDialog.bind(this)}
-            handleConfirm={this.handleMergeQuaysFromStop.bind(this)}
-            isFetchingQuays={this.props.isFetchingMergeInfo}
-            isLoading={this.state.isLoading}
-            intl={intl}
-            hasStopBeenModified={stopHasBeenModified}
-            sourceElement={this.props.mergeSource}
-            targetElement={{
-              id: stopPlace.id,
-              name: stopPlace.name
-            }}
-          />
-          <MergeQuaysDialog
-            open={this.props.mergingQuayDialogOpen}
-            handleClose={this.handleCloseMergeQuaysDialog.bind(this)}
-            handleConfirm={this.handleMergeQuays.bind(this)}
-            intl={intl}
-            mergingQuays={this.props.mergingQuay}
-            hasStopBeenModified={stopHasBeenModified}
-            isLoading={this.state.isLoading}
-            OTPFetchIsLoading={fetchOTPInfoMergeLoading}
-            mergeQuayWarning={mergeQuayWarning}
-          />
-          <DeleteQuayDialog
-            open={this.props.deleteQuayDialogOpen}
-            handleClose={this.handleCloseDeleteQuay.bind(this)}
-            handleConfirm={this.handleDeleteQuay.bind(this)}
-            intl={intl}
-            deletingQuay={this.props.deletingQuay}
-            isLoading={this.state.isLoading}
-            importedId={deleteQuayImportedId}
-            warningInfo={deleteQuayWarning}
-            fetchingOTPInfoLoading={fetchOTPInfoDeleteLoading}
-          />
-          <TerminateStopPlaceDialog
-            open={this.props.deleteStopDialogOpen}
-            handleClose={this.handleCloseDeleteStop.bind(this)}
-            handleConfirm={this.handleTerminateStop.bind(this)}
-            intl={intl}
-            previousValidBetween={stopPlace.validBetween}
-            stopPlace={stopPlace}
-            canDeleteStop={canDeleteStop}
-            isLoading={this.state.isLoading}
-            serverTimeDiff={this.props.serverTimeDiff}
-            warningInfo={this.props.deleteStopDialogWarning}
-          />
-          <MoveQuayDialog
-            open={this.props.moveQuayDialogOpen}
-            handleClose={this.handleCloseMoveQuay.bind(this)}
-            handleConfirm={this.handleMoveQuay.bind(this)}
-            intl={intl}
-            stopPlaceId={stopPlace.id}
-            quay={this.props.movingQuay}
-            hasStopBeenModified={stopHasBeenModified}
-            isLoading={this.state.isLoading}
-          />
-          <MoveQuayNewStopDialog
-            open={this.props.moveQuayToNewStopDialogOpen}
-            handleClose={this.handleCloseMoveQuayNewStop.bind(this)}
-            quays={quaysForMoveQuayToNewStop}
-            handleConfirm={this.handleMoveQuaysNewStop.bind(this)}
-            intl={intl}
-            quay={this.props.movingQuayToNewStop}
-            hasStopBeenModified={stopHasBeenModified}
-            isLoading={this.state.isLoading}
-          />
-          <RequiredFieldsMissingDialog
-            open={this.state.requiredFieldsMissingOpen}
-            handleClose={() => {
-              this.setState({ requiredFieldsMissingOpen: false });
-            }}
-            requiredMissing={{
-              name: !stopPlace.name || !stopPlace.name.trim().length,
-              type: !stopPlace.stopPlaceType
-            }}
-            formatMessage={formatMessage}
-            isNewStop={stopPlace.isNewStop}
-          />
-        </div>
-        <div
-          style={{
-            border: '1px solid #efeeef',
-            textAlign: 'right',
-            width: '100%',
-            display: isCurrentVersionMax ? 'flex' : 'none',
-            justifyContent: 'space-around'
-          }}
-        >
-          {!stopPlace.permanentlyTerminated && !stopPlace.isChildOfParent &&
-            isCurrentVersionMax && (
-              <FlatButton
-                disabled={disableTerminate}
-                label={formatMessage({ id: 'terminate_stop_place' })}
-                style={{ margin: '8 5', zIndex: 999 }}
-                labelStyle={{
-                  fontSize: '0.7em',
-                  color: disableTerminate ? 'rgba(0, 0, 0, 0.3)' : 'initial'
-                }}
-                onClick={() => {
-                  this.props.dispatch(
+        React.createElement('div', { style: style }, [
+          React.createElement('div', { key: 'header', style: stopBoxBar }, [
+            React.createElement('div', {
+              key: 'title',
+              style: { display: 'flex', alignItems: 'center', color: '#fff' }
+            }, [
+              React.createElement(MdBack, {
+                key: 'back',
+                color: "#fff",
+                style: {
+                  cursor: 'pointer',
+                  marginRight: 2,
+                  transform: 'scale(0.8)'
+                },
+                onClick: () => this.handleAllowUserToGoBack()
+              }),
+              React.createElement('div', { key: 'label' }, stopPlaceLabel),
+              this.severalDataProducers() &&
+              React.createElement(ToolTippable, {
+                key: 'warning',
+                toolTipText: translations.severalDataProducers
+              }, React.createElement(Warning, {
+                color: "orange",
+                style: { width: 20, height: 20, marginRight: 25 }
+              }))
+            ]),
+            React.createElement(VersionsPopover, {
+              key: 'versions',
+              versions: versions,
+              buttonLabel: translations.versions,
+              disabled: !versions.length,
+              hide: stopPlace.isChildOfParent,
+              handleSelect: this.handleLoadVersion.bind(this),
+              defaultValue: translations.notAssigned
+            })
+          ]),
+
+          React.createElement('div', { key: 'content', id: "scroll-body", style: scrollable }, [
+            React.createElement('div', { key: 'main', style: { padding: '5 5' } }, [
+              React.createElement(StopPlaceDetails, {
+                key: 'details',
+                ref: this.stopPlaceDetailsRef,
+                disabled: disabled,
+                intl: intl,
+                expanded: showEditStopAdditional,
+                showLessStopPlace: this.showLessStopPlace.bind(this),
+                showMoreStopPlace: this.showMoreStopPlace.bind(this),
+                onMapReady: this.handleMapReady
+              }),
+
+              showEditStopAdditional ? React.createElement(EditStopAdditional, {
+                key: 'additional',
+                disabled: disabled
+              }) : null,
+
+              React.createElement('div', {
+                    key: 'more-btn',
+                    style: { textAlign: 'center', marginBottom: 5 }
+                  }, showEditStopAdditional ?
+                      React.createElement(FlatButton, {
+                        icon: React.createElement(MdLess),
+                        onClick: () => this.showLessStopPlace()
+                      }) :
+                      React.createElement(FlatButton, {
+                        label: formatMessage({ id: 'more' }),
+                        labelStyle: { fontSize: 12 },
+                        onClick: () => this.showMoreStopPlace()
+                      })
+              ),
+
+              React.createElement(Divider, { key: 'divider', inset: true }),
+
+              React.createElement(Tabs, {
+                key: 'tabs',
+                onChange: this.handleSlideChange.bind(this),
+                value: activeElementTab,
+                tabItemContainerStyle: { backgroundColor: '#fff' }
+              }, [
+                React.createElement(Tab, {
+                  key: 'quays-tab',
+                  style: tabStyle,
+                  label: formatMessage({ id: 'quays' }) + ' (' + (stopPlace.quays ? stopPlace.quays.length : 0) + ')',
+                  value: 0
+                }),
+                React.createElement(Tab, {
+                  key: 'parking-tab',
+                  style: tabStyle,
+                  label: formatMessage({ id: 'parking_general' }) + ' (' + stopPlace.parking.length + ')',
+                  value: 2
+                })
+              ]),
+
+              React.createElement(EditStopBoxTabs, {
+                key: 'tabs-content',
+                disabled: disabled,
+                activeStopPlace: stopPlace,
+                itemTranslation: translations,
+                intl: intl
+              })
+            ]),
+
+            // Dialogs
+            React.createElement(ConfirmDialog, {
+              key: 'confirm-undo',
+              open: this.state.confirmUndoOpen,
+              handleClose: () => this.handleDialogClose('confirmUndoOpen'),
+              handleConfirm: () => this.handleDiscardChanges(),
+              messagesById: {
+                title: 'discard_changes_title',
+                body: 'discard_changes_body',
+                confirm: 'discard_changes_confirm',
+                cancel: 'discard_changes_cancel'
+              },
+              intl: intl
+            }),
+
+            React.createElement(ConfirmDialog, {
+              key: 'confirm-goback',
+              open: this.state.confirmGoBack,
+              handleClose: () => this.handleDialogClose('confirmGoBack'),
+              handleConfirm: () => this.handleGoBack(),
+              messagesById: {
+                title: 'discard_changes_title',
+                body: 'discard_changes_body',
+                confirm: 'discard_changes_confirm',
+                cancel: 'discard_changes_cancel'
+              },
+              intl: intl
+            }),
+
+            this.state.saveDialogOpen && !disabled ? React.createElement(SaveDialog, {
+              key: 'save-dialog',
+              open: this.state.saveDialogOpen,
+              handleClose: () => this.handleDialogClose(),
+              handleConfirm: this.handleSaveAllEntities.bind(this),
+              errorMessage: this.state.errorMessage,
+              intl: intl,
+              serverTimeDiff: this.props.serverTimeDiff,
+              currentValidBetween: stopPlace.validBetween,
+              severalDataProducers: this.severalDataProducers(),
+              canTerminateValidBetween: this.props.canEditParentStop
+            }) : null,
+
+            React.createElement(RequiredFieldsMissingDialog, {
+              key: 'required-fields',
+              open: this.state.requiredFieldsMissingOpen,
+              handleClose: () => this.setState({ requiredFieldsMissingOpen: false }),
+              requiredMissing: {
+                name: !stopPlace.name || !stopPlace.name.trim().length,
+                type: !stopPlace.stopPlaceType
+              },
+              formatMessage: formatMessage,
+              isNewStop: stopPlace.isNewStop
+            })
+          ]),
+
+          React.createElement('div', {
+            key: 'buttons',
+            style: {
+              border: '1px solid #efeeef',
+              textAlign: 'right',
+              width: '100%',
+              display: isCurrentVersionMax ? 'flex' : 'none',
+              justifyContent: 'space-around'
+            }
+          }, [
+            !stopPlace.permanentlyTerminated && !stopPlace.isChildOfParent &&
+            isCurrentVersionMax && React.createElement(FlatButton, {
+              key: 'terminate',
+              disabled: disableTerminate,
+              label: formatMessage({ id: 'terminate_stop_place' }),
+              style: { margin: '8 5', zIndex: 999 },
+              labelStyle: {
+                fontSize: '0.7em',
+                color: disableTerminate ? 'rgba(0, 0, 0, 0.3)' : 'initial'
+              },
+              onClick: () => {
+                this.props.dispatch(
                     UserActions.requestTerminateStopPlace(stopPlace.id)
-                  );
-                }}
-              />
-            )}
-          <FlatButton
-            icon={<MdUndo style={{ height: '1.3em', width: '1.3em' }} />}
-            disabled={!stopHasBeenModified}
-            label={formatMessage({ id: 'undo_changes' })}
-            style={{ margin: '8 5', zIndex: 999, minWidth: '120px' }}
-            labelStyle={{ fontSize: '0.7em' }}
-            onClick={() => {
-              this.setState({ confirmUndoOpen: true });
-            }}
-          />
-          <FlatButton
-            icon={<MdSave style={{ height: '1.3em', width: '1.3em' }} />}
-            disabled={disabled || !stopHasBeenModified}
-            label={formatMessage({ id: 'save_new_version' })}
-            style={{ margin: '8 5', zIndex: 999 }}
-            labelStyle={{ fontSize: '0.7em' }}
-            onClick={this.handleSave.bind(this)}
-          />
-        </div>
-      </div>
+                );
+              }
+            }),
+
+            React.createElement(FlatButton, {
+              key: 'undo',
+              icon: React.createElement(MdUndo, { style: { height: '1.3em', width: '1.3em' } }),
+              disabled: !hasAnyModifications,
+              label: formatMessage({ id: 'undo_changes' }),
+              style: { margin: '8 5', zIndex: 999, minWidth: '120px' },
+              labelStyle: { fontSize: '0.7em' },
+              onClick: () => this.setState({ confirmUndoOpen: true })
+            }),
+
+            React.createElement(FlatButton, {
+              key: 'save',
+              icon: React.createElement(MdSave, { style: { height: '1.3em', width: '1.3em' } }),
+              disabled: disabled || !hasAnyModifications,
+              label: formatMessage({ id: 'save_new_version' }),
+              style: { margin: '8 5', zIndex: 999 },
+              labelStyle: { fontSize: '0.7em' },
+              onClick: this.handleSave
+            })
+          ])
+        ])
     );
   }
 }
@@ -864,8 +855,8 @@ class EditStopGeneral extends React.Component {
 const mapStateToProps = state => ({
   stopPlace: state.stopPlace.current,
   mergeStopDialogOpen: state.stopPlace.mergeStopDialog
-    ? state.stopPlace.mergeStopDialog.isOpen
-    : false,
+      ? state.stopPlace.mergeStopDialog.isOpen
+      : false,
   mergeSource: state.stopPlace.mergeStopDialog,
   pathLink: state.stopPlace.pathLink,
   stopHasBeenModified: state.stopPlace.stopHasBeenModified,
@@ -900,5 +891,5 @@ const mapStateToProps = state => ({
 });
 
 export default withApollo(
-  injectIntl(connect(mapStateToProps)(EditStopGeneral))
+    injectIntl(connect(mapStateToProps)(EditStopGeneral))
 );

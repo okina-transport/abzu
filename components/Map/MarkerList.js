@@ -20,7 +20,6 @@ import {ParkingActions, StopPlaceActions, StopPlacesGroupActions, UserActions} f
 import {connect} from 'react-redux';
 import {injectIntl} from 'react-intl';
 import stopTypes from '../../models/stopTypes';
-import JunctionMarker from './JunctionMarker';
 import NeighbourMarker from './NeighbourMarker';
 import ParkAndRideMarker from './ParkAndRideMarker';
 import CycleParkingMarker from './CycleParkingMarker';
@@ -80,9 +79,9 @@ class MarkerList extends React.Component {
                         id: id
                     }
                 })
-                .then(result => {
-                    dispatch(UserActions.navigateTo(`/${Routes.STOP_PLACE}/`, id));
-                });
+                .then(
+                    dispatch(UserActions.navigateTo(`/${Routes.STOP_PLACE}/`, id))
+                )
         }
     }
 
@@ -100,9 +99,9 @@ class MarkerList extends React.Component {
                         id: id
                     }
                 })
-                .then(result => {
-                    dispatch(UserActions.navigateTo(`/${Routes.PARKING}/`, id));
-                });
+                .then(
+                    dispatch(UserActions.navigateTo(`/${Routes.PARKING}/`, id))
+                )
         }
     }
 
@@ -120,9 +119,9 @@ class MarkerList extends React.Component {
                         id: id
                     }
                 })
-                .then(result => {
-                    dispatch(UserActions.navigateTo(`/${Routes.POINT_OF_INTEREST}/`, id));
-                });
+                .then(
+                    dispatch(UserActions.navigateTo(`/${Routes.POINT_OF_INTEREST}/`, id))
+                )
         }
     }
 

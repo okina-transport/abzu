@@ -127,20 +127,10 @@ class EditParkingGeneral extends React.Component {
   }
 
   handleGoBack() {
-    const { client, activeMap } = this.props;
     this.setState({
       confirmGoBack: false
     });
     this.props.dispatch(UserActions.navigateTo('/', ''));
-    if (activeMap) {
-      let includeExpired = new Settings().getShowExpiredStops();
-      getNeighbourParkings(
-          client,
-          null,
-          activeMap.getBounds(),
-          includeExpired
-      );
-    }
   }
 
   handleAllowUserToGoBack() {
