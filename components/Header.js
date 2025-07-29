@@ -127,10 +127,6 @@ class Header extends React.Component {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_PARKINGS, ''));
   }
 
-  goToImportSalePoint() {
-    this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_SALE_POINT_CSV, ''));
-  }
-
   goToImportPOI() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_POI, ''));
   }
@@ -196,7 +192,6 @@ class Header extends React.Component {
     const reportSite = formatMessage({ id: 'report_site' });
     const importCSVAccessibility = formatMessage({id: 'import_accessibility' })
     const importCSVParkings = formatMessage({id: 'import_parkings'})
-    const importCSVSalePoints = formatMessage({id: 'import_sale_point'})
     const importPOI = formatMessage({id: 'import_poi'})
     const importTAD = formatMessage({id: 'import_tad'})
     const importStopPlaces = formatMessage({id: 'import_stop_places'})
@@ -290,17 +285,6 @@ class Header extends React.Component {
                           style={{ fontSize: 12, padding: 0 }}
                       />
                       <MenuItem
-                          leftIcon={<MapsStoreMallDirectory color="#005A82" />}
-                          primaryText={importCSVSalePoints}
-                          href = {Routes.IMPORT_SALE_POINT_CSV}
-                          onClick={() =>
-                              this.handleConfirmChangeRoute(
-                                  this.goToImportSalePoint.bind(this),
-                                  'GoToImportSalePoint'
-                              )}
-                          style={{ fontSize: 12, padding: 0 }}
-                      />
-                      <MenuItem
                           leftIcon={<PoiIcon color="#005A82" />}
                           primaryText={importTAD}
                           href = {Routes.IMPORT_TAD}
@@ -338,7 +322,7 @@ class Header extends React.Component {
                         style={{ fontSize: 12, padding: 0 }}
                     />
                     <MenuItem
-                        leftIcon={<PoiIcon color="#005A82" />}
+                        leftIcon={<MapsStoreMallDirectory color="#005A82" />}
                         primaryText={importPOI}
                         href = {Routes.IMPORT_POI}
                         onClick={() =>
