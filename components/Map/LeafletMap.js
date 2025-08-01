@@ -120,7 +120,14 @@ export default class LeafLetMap extends React.Component {
         </LayersControl>
         <ScaleControl imperial={false} position="bottomright" />
         <ZoomControl position="bottomright" />
-        <MarkerClusterGroup>
+        <MarkerClusterGroup
+            disableClusteringAtZoom={14}
+            animate={false}
+            maxClusterRadius={60}
+            removeOutsideVisibleBounds={true}
+            showCoverageOnHover={false}
+            zoomToBoundsOnClick={true}
+        >
           <MarkerList
               changeCoordinates={handleChangeCoordinates}
               markers={markers}
