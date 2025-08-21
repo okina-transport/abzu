@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import axios from 'axios';
+
+import axios from 'axios';
 
 /*
 Reading config json as served out of the node application.
@@ -28,7 +29,7 @@ configreader.readConfig = callback => {
   }
 
   axios({
-    url: 'config.json',
+    url: 'conf.json',
     timeout: 2000,
     method: 'get',
     responseType: 'json',

@@ -54,10 +54,10 @@ convictPromise
       });
     }
 
-    const configEndpoints = getRouteEntries(ENDPOINTBASE, '/config.json');
+    const configEndpoints = getRouteEntries(ENDPOINTBASE, '/conf.json');
 
     app.get(
-      [ENDPOINTBASE + 'config.json', [...configEndpoints]],
+      [ENDPOINTBASE + 'conf.json', [...configEndpoints]],
       function(req, res) {
 
         const cfg = {
