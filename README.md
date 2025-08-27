@@ -4,7 +4,7 @@ Stop place register frontend.
 Uses stop place register backend tiamat's graphQL API
 
 ## Production
-
+ 
 In order to build the webpack bundle and run the application, use
 
 ```
