@@ -42,6 +42,9 @@ import NeighbourMarkerParking from "./NeighbourMarkerParking";
 import ParkingMarker from "./ParkingMarker";
 import PointOfInterestMarker from "./PointOfInterestMarker";
 import NeighbourMarkerPointOfInterest from "./NeighbourMarkerPointOfInterest";
+import CustomClusterMarker from "./CustomClusterMarker";
+
+
 
 class MarkerList extends React.Component {
     static propTypes = {
@@ -274,6 +277,21 @@ class MarkerList extends React.Component {
             popupMarkers.push(...stopPlaceMarkers);
         }
 
+        let spClusterMarkers = this.createClusterMarkers(markers, Entities.SP_CLUSTER_MARKER);
+        if (spClusterMarkers != null && spClusterMarkers.length > 0) {
+            popupMarkers.push(...spClusterMarkers);
+        }
+
+        let poiClusterMarkers = this.createClusterMarkers(markers, Entities.POI_CLUSTER_MARKER);
+        if (poiClusterMarkers != null && poiClusterMarkers.length > 0) {
+            popupMarkers.push(...poiClusterMarkers);
+        }
+
+        let parkingClusterMarkers = this.createClusterMarkers(markers, Entities.PARKING_CLUSTER_MARKER);
+        if (parkingClusterMarkers != null && parkingClusterMarkers.length > 0) {
+            popupMarkers.push(...parkingClusterMarkers);
+        }
+
 
         let parkingMarkers = this.createParkingMarkers(markers, isEditingParking, newParkingMarkerText, showExpiredStops, handleDragEnd, dragableMarkers,changeCoordinates,tokenParsed, CustomPopupMarkerText);
         if (parkingMarkers != null && parkingMarkers.length > 0) {
@@ -313,7 +331,6 @@ class MarkerList extends React.Component {
         stopPlaces.forEach((marker, parentIndex) => {
 
             const localeStopType = getLocaleStopTypeName(marker.stopPlaceType, intl);
-
             if (marker.isNewStop && !isEditingStop) {
                 stopPlaceMarkers.push(
                     <NewStopMarker
@@ -767,6 +784,29 @@ class MarkerList extends React.Component {
 
         return coordinatePinMarkers;
     }
+
+
+
+    createClusterMarkers(markers, entityType) {
+        let clusterMarkers = [];
+        if (!Array.isArray(markers) || markers.length === 0) {
+            return clusterMarkers;
+        }
+
+        let clusterEntities = markers.filter(marker => marker.entityType === entityType);
+        if (clusterEntities == null || clusterEntities.length === 0) {
+            return clusterMarkers;
+        }
+
+        clusterEntities.forEach((marker) => {
+            clusterMarkers.push(
+                <CustomClusterMarker position={marker.location} id={marker.clusterId} key={entityType + '-' + marker.clusterId} size={marker.size} onClick={() => handleClick(marker)} />
+            );
+        });
+        return clusterMarkers;
+    }
+
+
 }
 
 const mapStateToProps = state => ({

@@ -131,6 +131,18 @@ const pointOfInterestReducer = (state = {}, action) => {
                 zoom: action.payLoad
             });
 
+        case types.MAP_MOVE_END:
+            const zoom = action.payLoad.zoom;
+            if (Number(zoom) < 9 ){
+                return Object.assign({}, state, {
+                    neighbourPointsOfInterest: []
+                });
+            }else{
+                return Object.assign({}, state, {
+                });
+            }
+
+
         case types.CREATED_KEY_VALUES_PAIR_POI:
             return Object.assign({}, state, {
                 current: formatHelpers.createKeyValuesPair(

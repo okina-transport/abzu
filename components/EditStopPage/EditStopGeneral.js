@@ -168,21 +168,14 @@ class EditStopGeneral extends React.Component {
             );
           }
         });
-        this.removeStopFromLocalStorage(mergeSource.id);
+
       })
       .catch(() => {
         this.setState({ isLoading: false });
       });
   }
 
-  removeStopFromLocalStorage(stopId){
-    const compressed = sessionStorage.getItem("markersStorage");
-    if (compressed !== null) {
-      let markersDecompressed = JSON.parse(LZString.decompress(compressed));
-      markersDecompressed = markersDecompressed.filter(marker => marker.id !== stopId);
-      sessionStorage.setItem("markersStorage", LZString.compress(JSON.stringify(markersDecompressed)));
-    }
-  }
+
 
   handleMergeQuays(versionComment) {
     const { mergingQuay, client, stopPlace, dispatch } = this.props;
@@ -247,7 +240,7 @@ class EditStopGeneral extends React.Component {
   handleTerminateStop(shouldHardDelete, shouldTerminatePermanently, comment, dateTime) {
     const { client, stopPlace, dispatch } = this.props;
     this.setState({ isLoading: true });
-    this.removeStopFromLocalStorage(stopPlace.id);
+
 
     if (shouldHardDelete) {
       deleteStopPlace(client, stopPlace.id)

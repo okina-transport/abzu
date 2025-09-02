@@ -60,7 +60,10 @@ import {
     pointOfInterestBBQuery,
     allParkingsQuery,
     allPointsOfInterestQuery,
-    allStopPlacesQuery
+    allStopPlacesQuery,
+    stopPlaceClusterMarkerQuery,
+    poiClusterMarkerQuery,
+    parkingClusterMarkerQuery
 } from './queries';
 import mapToMutationVariables from '../../modelUtils/mapToQueryVariables';
 
@@ -330,8 +333,8 @@ export const moveQuaysToNewStop = (client, quayIds, fromVersionComment, toVersio
     })
 );
 
-export const getNeighbourStops = (client, ignoreStopPlaceId, bounds, includeExpired) => (
-    client.query({
+export const getNeighbourStops = (client, ignoreStopPlaceId, bounds, includeExpired) => {
+    return client.query({
         fetchPolicy: 'network-only',
         query: stopPlaceBBQuery,
         variables: {
@@ -342,6 +345,27 @@ export const getNeighbourStops = (client, ignoreStopPlaceId, bounds, includeExpi
             lonMin: bounds.getSouthWest().lng,
             lonMax: bounds.getNorthEast().lng,
         }
+    })
+}
+
+export const getStopPlaceClusterMarkers = (client) => (
+    client.query({
+        fetchPolicy: 'network-only',
+        query: stopPlaceClusterMarkerQuery
+    })
+);
+
+export const getPoiClusterMarkers = (client) => (
+    client.query({
+        fetchPolicy: 'network-only',
+        query: poiClusterMarkerQuery
+    })
+);
+
+export const getParkingClusterMarkers = (client) => (
+    client.query({
+        fetchPolicy: 'network-only',
+        query: parkingClusterMarkerQuery
     })
 );
 

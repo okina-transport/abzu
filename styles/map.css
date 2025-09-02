@@ -21,3 +21,16 @@ limitations under the Licence. */
    margin-top: 5px;
    cursor: -webkit-grab;
 }
+
+.green-icon {
+   background-image: url("../static/icons/cluster-marker-icon.svg");
+   background-repeat: no-repeat;
+   background-size: contain;
+   margin: 0 auto;
+   text-align: center;
+   color: white;
+   font-weight: bold;
+   display: grid;
+   align-items: center;
+   overflow: visible;
+}

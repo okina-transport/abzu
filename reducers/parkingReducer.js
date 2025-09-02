@@ -311,6 +311,17 @@ const parkingReducer = (state = {}, action) => {
                 parkingHasBeenModified: true,
             });
 
+        case types.MAP_MOVE_END:
+            const zoom = action.payLoad.zoom;
+            if (Number(zoom) < 9 ){
+                return Object.assign({}, state, {
+                    neighbourParkings: []
+                });
+            }else{
+                return Object.assign({}, state, {
+                });
+            }
+
         case types.CHANGED_PARKING_DESCRIPTION:
             return {
                 ...state,

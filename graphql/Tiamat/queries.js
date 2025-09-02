@@ -61,9 +61,44 @@ export const neighbourStopPlaceQuays = gql`
   }
 `;
 
+export const stopPlaceClusterMarkerQuery = gql`
+    query stopPlaceClusterMarkers {
+        stopPlaceClusterMarkers {
+            clusterId            
+            longitude
+            latitude
+            size
+        }
+    }
+`;
+
+
+export const poiClusterMarkerQuery = gql`
+    query poiClusterMarkers {
+        poiClusterMarkers {
+            clusterId            
+            longitude
+            latitude
+            size
+        }
+    }
+`;
+
+export const parkingClusterMarkerQuery = gql`
+    query parkingClusterMarkers {
+        parkingClusterMarkers {
+            clusterId            
+            longitude
+            latitude
+            size
+        }
+    }
+`;
+
+
 export const stopPlaceBBQuery = gql`
     query stopPlaceBBox($ignoreStopPlaceId: String, $lonMin: BigDecimal!, $lonMax: BigDecimal!, $latMin: BigDecimal!, $latMax: BigDecimal!, $includeExpired: Boolean) {
-        stopPlaceBBox(ignoreStopPlaceId: $ignoreStopPlaceId, latMin: $latMin, latMax: $latMax, lonMin: $lonMin, lonMax: $lonMax, size: 500, includeExpired: $includeExpired) {
+        stopPlaceBBox(ignoreStopPlaceId: $ignoreStopPlaceId, latMin: $latMin, latMax: $latMax, lonMin: $lonMin, lonMax: $lonMax, size: 1500, includeExpired: $includeExpired) {
             id
             geometry {
                 coordinates

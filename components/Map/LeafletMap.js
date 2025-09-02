@@ -49,9 +49,6 @@ export default class LeafLetMap extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.onMapReady && this.refs.map) {
-      this.props.checkNeighboursAndReload(this.refs.map.leafletElement);
-    }
   }
 
   render() {
@@ -67,7 +64,8 @@ export default class LeafLetMap extends React.Component {
       markers,
       dragableMarkers,
       onDoubleClick,
-      handleZoomEnd
+      handleZoomEnd,
+      handleMoveEnd
     } = this.props;
 
 
@@ -79,6 +77,37 @@ export default class LeafLetMap extends React.Component {
 
     const centerPosition = this.getCenterPosition(position);
 
+
+
+    const markerContent = zoom >= 9 ? (
+        <MarkerClusterGroup
+            disableClusteringAtZoom={14}
+            animate={false}
+            maxClusterRadius={60}
+            removeOutsideVisibleBounds={true}
+            showCoverageOnHover={false}
+            zoomToBoundsOnClick={true}
+        >
+          <MarkerList
+              changeCoordinates={handleChangeCoordinates}
+              markers={markers}
+              handleDragEnd={handleDragEnd}
+              dragableMarkers={dragableMarkers}
+              handleSetCompassBearing={handleSetCompassBearing}
+          />
+        </MarkerClusterGroup>
+    ) : (
+        <MarkerList
+            changeCoordinates={handleChangeCoordinates}
+            markers={markers}
+            handleDragEnd={handleDragEnd}
+            dragableMarkers={dragableMarkers}
+            handleSetCompassBearing={handleSetCompassBearing}
+        />
+    );
+
+
+
     return (
       <Lmap
         ref="map"
@@ -86,6 +115,7 @@ export default class LeafLetMap extends React.Component {
         center={centerPosition}
         className="leaflet-map"
         onZoomEnd={e => handleZoomEnd && handleZoomEnd(e)}
+        onMoveEnd={e => handleMoveEnd && handleMoveEnd(e)}
         zoom={zoom}
         zoomControl={false}
         minZoom={minZoom || null}
@@ -120,22 +150,7 @@ export default class LeafLetMap extends React.Component {
         </LayersControl>
         <ScaleControl imperial={false} position="bottomright" />
         <ZoomControl position="bottomright" />
-        <MarkerClusterGroup
-            disableClusteringAtZoom={14}
-            animate={false}
-            maxClusterRadius={60}
-            removeOutsideVisibleBounds={true}
-            showCoverageOnHover={false}
-            zoomToBoundsOnClick={true}
-        >
-          <MarkerList
-              changeCoordinates={handleChangeCoordinates}
-              markers={markers}
-              handleDragEnd={handleDragEnd}
-              dragableMarkers={dragableMarkers}
-              handleSetCompassBearing={handleSetCompassBearing}
-          />
-        </MarkerClusterGroup>
+        {markerContent}
         <MultimodalStopEdges
           stops={markers}
         />
