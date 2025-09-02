@@ -131,6 +131,8 @@ const pointOfInterestReducer = (state = {}, action) => {
                 zoom: action.payLoad
             });
 
+
+
         case types.CREATED_KEY_VALUES_PAIR_POI:
             return Object.assign({}, state, {
                 current: formatHelpers.createKeyValuesPair(

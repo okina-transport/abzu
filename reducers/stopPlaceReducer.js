@@ -117,6 +117,7 @@ const stopPlaceReducer = (state = {}, action) => {
         zoom: action.payLoad.zoom
       });
 
+
     case types.CLEAR_LAST_MUTATED_STOP_PLACE_IDS:
       return Object.assign({}, state, {
         lastMutatedStopPlaceId: []
@@ -573,9 +574,19 @@ const stopPlaceReducer = (state = {}, action) => {
       });
 
     case types.SET_ZOOM_LEVEL:
-      return Object.assign({}, state, {
-        zoom: action.payLoad
-      });
+
+      const newZoom = action.payLoad;
+      if (newZoom < 9 ){
+        return Object.assign({}, state, {
+          zoom: action.payLoad,
+          neighbourStops: []
+        });
+      }else{
+        return Object.assign({}, state, {
+          zoom: action.payLoad
+        });
+      }
+
 
     case types.ADDED_TARIFF_ZONE:
       return Object.assign({}, state, {

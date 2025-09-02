@@ -38,6 +38,11 @@ export const getStateByOperation = (state, action) => {
                 )
             });
 
+        case 'poiClusterMarkers':
+            return Object.assign({}, state, {
+                poiClusterMarkers:  action.result.data.poiClusterMarkers
+            });
+
         default:
             return state;
     }

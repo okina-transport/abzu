@@ -14,6 +14,7 @@ limitations under the Licence. */
 
 
 import { getFilteredStops } from '../utils/FilteringUtils';
+import {Entities} from "../models/Entities";
 
 
 
@@ -28,31 +29,36 @@ const addTomarkers = function (markers, tadFilteredStops) {
 };
 
 
-export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) => {
+export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest}) => {
+
 
   const {
     newStop,
     findCoordinates,
     activeSearchResult,
-    neighbourStops
+    neighbourStops,
+    stopPlaceClusterMarkers
   } = stopPlace;
 
   const {
     newParking,
-    neighbourParkings
+    neighbourParkings,
+    parkingClusterMarkers
   } = parking;
 
   const {
     newPointOfInterest,
-    neighbourPointsOfInterest
+    neighbourPointsOfInterest,
+    poiClusterMarkers
   } = pointOfInterest;
 
-  const { isCreatingNewStop, isCreatingNewParking, isCreatingNewPointOfInterest, showParkings, showStops, showPoiShop, showPoiAmenity, showPoiBuilding, showPoiHistoric, showPoiLanduse, showPoiLeisure, showPoiTourism, showPoiOffice, searchFilters } = user;
+  const { isCreatingNewStop, isCreatingNewParking, isCreatingNewPointOfInterest, showParkings, showStops, showPoiShop, showPoiAmenity, showPoiBuilding, showPoiHistoric, showPoiLanduse, showPoiLeisure, showPoiTourism, showPoiOffice, searchFilters, clusterThreshold } = user;
 
   let markers = activeSearchResult ? [activeSearchResult] : [];
 
   let filterByFullTAD = searchFilters !== undefined && searchFilters.filterByFullTAD;
   let filterByPartialTAD = searchFilters !== undefined && searchFilters.filterByPartialTAD;
+
 
   if (
     activeSearchResult &&
@@ -65,6 +71,36 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) 
   if (newStop && isCreatingNewStop) {
     markers = markers.concat(newStop);
   }
+  const zoom = stopPlace.zoom;
+  const showPoiClusters = showPoiShop || showPoiAmenity || showPoiBuilding || showPoiHistoric || showPoiLanduse || showPoiLeisure || showPoiTourism || showPoiOffice;
+
+  if(zoom != undefined && zoom < clusterThreshold){
+
+    if (stopPlaceClusterMarkers){
+      for (let stopPlaceClusterMarker of stopPlaceClusterMarkers) {
+        stopPlaceClusterMarker.entityType = Entities.SP_CLUSTER_MARKER;
+        stopPlaceClusterMarker.location = [stopPlaceClusterMarker.latitude, stopPlaceClusterMarker.longitude];
+        markers = markers.concat(stopPlaceClusterMarker);
+      }
+    }
+
+
+    if (poiClusterMarkers && showPoiClusters){
+      for (let poiClusterMarker of poiClusterMarkers) {
+        poiClusterMarker.entityType = Entities.POI_CLUSTER_MARKER;
+        poiClusterMarker.location = [poiClusterMarker.latitude, poiClusterMarker.longitude];
+        markers = markers.concat(poiClusterMarker);
+      }
+    }
+
+    if (parkingClusterMarkers && showParkings){
+      for (let parkingClusterMarker of parkingClusterMarkers) {
+        parkingClusterMarker.entityType = Entities.PARKING_CLUSTER_MARKER;
+        parkingClusterMarker.location = [parkingClusterMarker.latitude, parkingClusterMarker.longitude];
+        markers = markers.concat(parkingClusterMarker);
+      }
+    }
+  }
 
   if (newParking && isCreatingNewParking) {
     markers = markers.concat(newParking);
@@ -74,7 +110,9 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest }) 
     markers = markers.concat(newPointOfInterest);
   }
 
-  if (neighbourStops && neighbourStops.length && showStops) {
+
+
+  if (zoom != undefined && zoom >= clusterThreshold && neighbourStops && neighbourStops.length && showStops) {
     let tadFilteredStops = getFilteredStops(neighbourStops, filterByFullTAD, filterByPartialTAD);
     markers = addTomarkers(markers, tadFilteredStops);
   }

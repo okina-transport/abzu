@@ -42,6 +42,9 @@ import NeighbourMarkerParking from "./NeighbourMarkerParking";
 import ParkingMarker from "./ParkingMarker";
 import PointOfInterestMarker from "./PointOfInterestMarker";
 import NeighbourMarkerPointOfInterest from "./NeighbourMarkerPointOfInterest";
+import CustomClusterMarker from "./CustomClusterMarker";
+
+
 
 class MarkerList extends React.Component {
     static propTypes = {
@@ -256,7 +259,8 @@ class MarkerList extends React.Component {
             isEditingPointOfInterest,
             currentIsNewStop,
             currentStopIsMultiModal,
-            tokenParsed
+            tokenParsed,
+            clusterThreshold
         } = props;
         const {formatMessage} = intl;
 
@@ -272,6 +276,21 @@ class MarkerList extends React.Component {
                         handleDragEnd,changeCoordinates,missingCoordinatesMap,dragableMarkers, handleSetCompassBearing,currentIsNewStop, CustomPopupMarkerText);
         if (stopPlaceMarkers != null && stopPlaceMarkers.length > 0) {
             popupMarkers.push(...stopPlaceMarkers);
+        }
+
+        let spClusterMarkers = this.createClusterMarkers(markers, Entities.SP_CLUSTER_MARKER, clusterThreshold);
+        if (spClusterMarkers != null && spClusterMarkers.length > 0) {
+            popupMarkers.push(...spClusterMarkers);
+        }
+
+        let poiClusterMarkers = this.createClusterMarkers(markers, Entities.POI_CLUSTER_MARKER, clusterThreshold);
+        if (poiClusterMarkers != null && poiClusterMarkers.length > 0) {
+            popupMarkers.push(...poiClusterMarkers);
+        }
+
+        let parkingClusterMarkers = this.createClusterMarkers(markers, Entities.PARKING_CLUSTER_MARKER,clusterThreshold);
+        if (parkingClusterMarkers != null && parkingClusterMarkers.length > 0) {
+            popupMarkers.push(...parkingClusterMarkers);
         }
 
 
@@ -313,7 +332,6 @@ class MarkerList extends React.Component {
         stopPlaces.forEach((marker, parentIndex) => {
 
             const localeStopType = getLocaleStopTypeName(marker.stopPlaceType, intl);
-
             if (marker.isNewStop && !isEditingStop) {
                 stopPlaceMarkers.push(
                     <NewStopMarker
@@ -767,10 +785,34 @@ class MarkerList extends React.Component {
 
         return coordinatePinMarkers;
     }
+
+
+
+    createClusterMarkers(markers, entityType, clusterThreshold) {
+        let clusterMarkers = [];
+        if (!Array.isArray(markers) || markers.length === 0) {
+            return clusterMarkers;
+        }
+
+        let clusterEntities = markers.filter(marker => marker.entityType === entityType);
+        if (clusterEntities == null || clusterEntities.length === 0) {
+            return clusterMarkers;
+        }
+
+        clusterEntities.forEach((marker) => {
+            clusterMarkers.push(
+                <CustomClusterMarker position={marker.location} id={marker.clusterId} key={entityType + '-' + marker.clusterId} size={marker.size} onClick={() => handleClick(marker)} clusterThreshold={clusterThreshold} />
+            );
+        });
+        return clusterMarkers;
+    }
+
+
 }
 
 const mapStateToProps = state => ({
     path: state.user.path,
+    clusterThreshold: state.user.clusterThreshold,
     isCreatingPolylines: state.stopPlace.isCreatingPolylines,
     currentIsNewStop: getIn(state.stopPlace, ['current', 'isNewStop'], false),
     currentIsNewParking: getIn(state.parking, ['current', 'isNewParking'], false),

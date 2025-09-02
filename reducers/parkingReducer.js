@@ -311,6 +311,7 @@ const parkingReducer = (state = {}, action) => {
                 parkingHasBeenModified: true,
             });
 
+
         case types.CHANGED_PARKING_DESCRIPTION:
             return {
                 ...state,

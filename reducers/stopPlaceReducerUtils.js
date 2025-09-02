@@ -14,7 +14,7 @@ limitations under the Licence. */
 
 
 import formatHelpers from '../modelUtils/mapToClient';
-import LZString from "lz-string";
+
 
 
 
@@ -30,9 +30,6 @@ export const getStateByOperation = (state, action) => {
                 versions: getAllVersionFromResult(state, action),
                 stopHasBeenModified: false
             });
-
-        case 'removeParentStopPlace':
-            return updateLocalCacheAfterParentStopRemoval(state, action);
 
         case 'mutateDeleteQuay':
             return updateStopPlaceStateAfterMutate(state, action, 'deleteQuay');
@@ -69,6 +66,12 @@ export const getStateByOperation = (state, action) => {
                     state.current
                 )
             });
+
+        case 'stopPlaceClusterMarkers':
+            return Object.assign({}, state, {
+                stopPlaceClusterMarkers:  action.result.data.stopPlaceClusterMarkers
+            });
+
 
         case 'allStopPlaces':
             return Object.assign({}, state, {
@@ -210,22 +213,6 @@ const getStateWithEntitiesFromQuery = (state, action) => {
 };
 
 
-const updateLocalCacheAfterParentStopRemoval = (state, action) => {
-
-    if (action.variables.stopPlaceId !== null){
-        let child = action.variables.stopPlaceId;
-
-        for (let neighbour of state.neighbourStops){
-            if (neighbour.id === child){
-                neighbour.hasExpired = false;
-            }
-        }
-    }
-
-    removeFromLocalMarkers(state.current)
-    return state;
-
-}
 
 const getAllVersionFromResult = (state, action) => {
     const data = action.result.data.versions && action.result.data.versions.length
@@ -235,23 +222,8 @@ const getAllVersionFromResult = (state, action) => {
     return formatHelpers.mapVersionToClientVersion(data);
 };
 
-function addToLocalMarkers(newStop) {
-    const compressed = sessionStorage.getItem("markersStorage");
-    if (compressed !== null) {
-        let markersDecompressed = JSON.parse(LZString.decompress(compressed));
-        markersDecompressed = markersDecompressed.concat(newStop);
-        sessionStorage.setItem("markersStorage", LZString.compress(JSON.stringify(markersDecompressed)));
-    }
-}
 
-function removeFromLocalMarkers(newStop) {
-    const compressed = sessionStorage.getItem("markersStorage");
-    if (compressed !== null) {
-        let markersDecompressed = JSON.parse(LZString.decompress(compressed));
-        markersDecompressed = markersDecompressed.filter(marker => marker.id !== newStop.id);
-        sessionStorage.setItem("markersStorage", LZString.compress(JSON.stringify(markersDecompressed)));
-    }
-}
+
 
 
 const updateStopPlaceStateAfterMutate = (state, action, dataResource) => {

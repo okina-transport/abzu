@@ -38,6 +38,11 @@ export const getStateByOperation = (state, action) => {
                 )
             });
 
+        case 'parkingClusterMarkers':
+            return Object.assign({}, state, {
+                parkingClusterMarkers:  action.result.data.parkingClusterMarkers
+            });
+
         default:
             return state;
     }
