@@ -172,25 +172,7 @@ class EditMap extends React.Component {
   handleMapReady(leafletElement) {
     const { dispatch, ignoreStopId, ignoreParkingId, ignorePointOfInterestId } = this.props;
     dispatch(StopPlaceActions.setActiveMap(leafletElement));
-    this.reloadNeighbours(leafletElement);
 
-  }
-
-  reloadNeighbours(leafletElement) {
-    const { client, ignoreStopId, ignoreParkingId, ignorePointOfInterestId } = this.props;
-    const bounds = leafletElement.getBounds();
-    let includeExpired = new Settings().getShowExpiredStops();
-    getNeighbourStops(client, ignoreStopId, bounds, includeExpired);
-    getNeighbourParkings(client, ignoreParkingId, bounds, includeExpired);
-    getNeighbourPointsOfInterest(client, ignorePointOfInterestId, bounds, includeExpired);
-  }
-
-
-  checkNeighboursAndReload(leafletElement) {
-    const {   ignoreStopId,  ignoreParkingId,isNeighbourRefreshNeeded, ignorePointOfInterestId } = this.props;
-    if (isNeighbourRefreshNeeded){
-      this.reloadNeighbours(leafletElement);
-    }
   }
 
   render() {
@@ -217,7 +199,6 @@ class EditMap extends React.Component {
               minZoom={minZoom}
               handleZoomEnd={this.handleZoomEnd.bind(this)}
               handleSetCompassBearing={this.handleSetCompassBearing.bind(this)}
-              checkNeighboursAndReload={this.checkNeighboursAndReload.bind(this)}
               onMapReady={this.handleMapReady.bind(this)}
           />
           <CoordinatesDialog
