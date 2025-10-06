@@ -151,7 +151,7 @@ const stopPlaceReducer = (state = {}, action) => {
           coordinatePin: true
         },
         centerPosition: action.payLoad.triggeredByDrag ? state.centerPosition : action.payLoad.position,
-        zoom: action.payLoad.triggeredByDrag ? state.zoom : 5,
+        zoom: action.payLoad.triggeredByDrag ? state.zoom : 12,
       });
 
     case types.CHANGED_WEIGHTING_STOP_PLACE:
