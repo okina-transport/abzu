@@ -236,10 +236,6 @@ const updateStopPlaceStateAfterMutate = (state, action, dataResource) => {
 
     const clientStop = formatHelpers.mapStopToClientStop(stopPlace, true);
 
-    if (state.newStop != null && state.newStop.isNewStop) {
-        addToLocalMarkers(clientStop);
-    }
-
     if (action.operationName === "removeStopPlaceFromParent"){
         let detachedChildId = action.variables.stopPlaceId;
         for (let neighbour of state.neighbourStops){

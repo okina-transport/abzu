@@ -208,10 +208,11 @@ class QuayItem extends React.Component {
     const busShelter = equipmentHelpers.getShelterEquipmentState(quay);
     const sign512 = equipmentHelpers.get512SignEquipment(quay);
 
-    const wheelChairHint =
+    const wheelChairHint = wheelchairAccess != null ?
       accessibilityAssessments.wheelchairAccess.values[locale][
         wheelchairAccess
-      ];
+      ] : "UNKNOWN";
+
     const ticketMachineHint = ticketMachine
       ? formatMessage({ id: 'ticketMachine' })
       : formatMessage({ id: 'ticketMachine_no' });
@@ -224,25 +225,25 @@ class QuayItem extends React.Component {
     const stepFreeHint =
       accessibilityAssessments.stepFreeAccess.values[locale][stepFreeAccess];
 
-    const escalatorFreeHint =
+    const escalatorFreeHint = escalatorFreeAccess != null ?
         accessibilityAssessments.EscalatorFreeAccess.values[locale][
             escalatorFreeAccess
-            ];
+            ] : "UNKNOWN";
 
-    const liftFreeHint =
+    const liftFreeHint = liftFreeAccess != null ?
         accessibilityAssessments.LiftFreeAccess.values[locale][
             liftFreeAccess
-            ];
+            ] : "UNKNOWN";
 
-    const audibleSignalsAvailableHint =
+    const audibleSignalsAvailableHint = audibleSignalsAvailable != null ?
         accessibilityAssessments.AudibleSignalsAvailable.values[locale][
             audibleSignalsAvailable
-            ];
+            ] : "UNKNOWN";
 
-    const visualSignsAvailableHint =
+    const visualSignsAvailableHint = visualSignsAvailable != null ?
         accessibilityAssessments.VisualSignsAvailable.values[locale][
             visualSignsAvailable
-            ];
+            ] : "UNKNOWN";
 
     let quayItemName = null;
 
