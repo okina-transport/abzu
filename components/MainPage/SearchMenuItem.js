@@ -145,8 +145,9 @@ const createParentStopPlaceMenuItem = (element, formatMessage) => {
                 </div>
               </div>
               <div style={topographicPlaceStyle}>
-                <div
-                >{`${element.topographicPlace}, ${element.parentTopographicPlace}`}</div>
+                {element.topographicPlace && element.parentTopographicPlace &&
+                  <div>{`${element.topographicPlace}, ${element.parentTopographicPlace}`}</div>
+                }
                 {futureOrExpiredLabel &&
                   <div key={'valid-label' + element.id} style={{marginRight: 5}}>
                     {formatMessage({ id: futureOrExpiredLabel})}
@@ -198,8 +199,9 @@ const createStopPlaceMenuItem = (element, formatMessage) => {
                 </div>
               </div>
               <div style={topographicPlaceStyle}>
-                <div
-                >{`${element.topographicPlace}, ${element.parentTopographicPlace}`}</div>
+                {element.topographicPlace && element.parentTopographicPlace &&
+                  <div>{`${element.topographicPlace}, ${element.parentTopographicPlace}`}</div>
+                }
                 {futureOrExpiredLabel &&
                 <div key={'valid-label' + element.id} style={{marginRight: 5}}>
                   {formatMessage({ id: futureOrExpiredLabel})}
