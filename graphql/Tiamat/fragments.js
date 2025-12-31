@@ -529,7 +529,7 @@ Fragments.pointOfInterest = {
             name {
                 value
             }
-            zipCode
+            inseeCode
             address
             city
             postalCode

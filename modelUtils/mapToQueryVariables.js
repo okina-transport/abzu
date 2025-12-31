@@ -407,8 +407,8 @@ helpers.mapPointOfInterestToVariables = (poi, parentRef) => {
       pointOfInterest.id = source.id;
     }
 
-    if (source.zipCode) {
-      pointOfInterest.zipCode = source.zipCode;
+    if (source.inseeCode) {
+      pointOfInterest.inseeCode = source.inseeCode;
     }
 
     if (source.address) {

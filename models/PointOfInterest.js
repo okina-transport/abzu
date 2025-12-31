@@ -33,7 +33,7 @@ class PointOfInterest {
     let clientPointOfInterest = {
       id: pointOfInterest.id,
       name: getIn(pointOfInterest, ['name', 'value'], ''),
-      zipCode : pointOfInterest.zipCode,
+      inseeCode : pointOfInterest.inseeCode,
       address : pointOfInterest.address,
       city : pointOfInterest.city,
       postalCode : pointOfInterest.postalCode,
