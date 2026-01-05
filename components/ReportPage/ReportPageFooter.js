@@ -23,8 +23,8 @@ import {
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-import moment from 'moment';
 import { getDarkColor } from '../../config/themeConfig';
+import dayjs from "dayjs";
 
 class ReportPageFooter extends React.Component {
   constructor(props) {
@@ -48,7 +48,7 @@ class ReportPageFooter extends React.Component {
     const content = BOM + csv;
     let element = document.createElement('a');
     let blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-    let dateNow = moment(new Date()).format('DD-MM-YYYY');
+    let dateNow = dayjs().format('DD-MM-YYYY');
     let fullFilename = filename + '-' + dateNow + '.csv';
     let url = URL.createObjectURL(blob);
     element.href = url;
@@ -57,8 +57,8 @@ class ReportPageFooter extends React.Component {
 
     let event = document.createEvent("MouseEvents");
     event.initMouseEvent(
-      "click", true, false, window, 0, 0, 0, 0, 0
-      , false, false, false, false, 0, null
+      "click", true, false, window, 0, 0, 0, 0, 0,
+      false, false, false, false, 0, null
     );
 
     element.dispatchEvent(event);
@@ -80,15 +80,15 @@ class ReportPageFooter extends React.Component {
   handleGetCSVQuays() {
     const { results, quaysColumnOptions } = this.props;
     let items = [];
-    let finalColumns = quaysColumnOptions.slice()
+    let finalColumns = quaysColumnOptions.slice();
     let prependedColumns = ['stopPlaceId', 'stopPlaceName'];
 
     prependedColumns.forEach( pc => {
       finalColumns.unshift({
         id: pc,
         checked: true
-      })
-    })
+      });
+    });
 
     results.forEach(result => {
       const quays = result.quays.map(quay => ({

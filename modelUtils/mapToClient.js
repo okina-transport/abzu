@@ -14,7 +14,6 @@ limitations under the Licence. */
 
 import {getIn, getInTransform, setDecimalPrecision} from '../utils/';
 import * as types from '../actions/Types';
-import moment from 'moment';
 import {hasExpired} from '../modelUtils/validBetween';
 import {getImportedId} from '../models/stopPlaceUtils';
 import {calculateDistance, calculateEstimate, getUniquePathLinks} from '../modelUtils/leafletUtils';
@@ -32,6 +31,7 @@ import PointOfInterest from "../models/PointOfInterest";
 import pointOfInterestType from "../models/pointOfInterestType";
 import { getFilteredStops } from '../utils/FilteringUtils';
 import SettingsManager from '../singletons/SettingsManager';
+import dayjs from "dayjs";
 
 const helpers = {};
 const Settings = new SettingsManager();
@@ -185,7 +185,7 @@ helpers.updatePathLinkWithNewEntry = (action, pathLink) => {
 
 helpers.mapVersionToClientVersion = source => {
   if (source) {
-    const transformer = value => moment(value).format('DD-MM-YYYY HH:mm');
+    const transformer = value => dayjs(value).format('DD-MM-YYYY HH:mm');
 
     return source
       .sort((a, b) => Number(b.version) - Number(a.version))

@@ -12,15 +12,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import moment from 'moment';
 
 // determines whether an entity has expired based on validBetweens
+import dayjs from "dayjs";
+
 export const hasExpired = validBetween => {
   if (!validBetween) return false;
 
   if (validBetween.toDate === null) return false;
 
-  return moment().isAfter(moment(validBetween.toDate));
+  return dayjs().isAfter(dayjs(validBetween.toDate));
 };
 
 export const isFuture = validBetween => {
@@ -30,5 +31,5 @@ export const isFuture = validBetween => {
 
   if (validBetween.fromDate === null) return false;
 
-  return moment().isBefore(moment(validBetween.fromDate));
+  return dayjs().isBefore(dayjs(validBetween.fromDate));
 };

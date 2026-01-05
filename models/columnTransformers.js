@@ -27,7 +27,7 @@ import ModalityIconTray from '../components/ReportPage/ModalityIconTray';
 import { darkColor } from '../config/themes/default/defaultTheme';
 import TagTray from '../components/MainPage/TagTray';
 import ToolTippable from '../components/EditStopPage/ToolTippable';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const getParkingElements = (parking = []) => {
   if (!parking || !parking.length) {
@@ -90,7 +90,7 @@ export const ColumnTransformerStopPlaceJsx = {
               {stop.hasExpired ? formatMessage({ id: 'search_result_expired' })
                 : <div style={{display: 'flex', color: '#ffa500'}}>
                     <div>{formatMessage({id: 'valid_from'})}</div>
-                    <div style={{marginLeft: 5}}>{moment(stop.validBetween.fromDate).format('YYYY-MM-DD')}</div>
+                    <div style={{marginLeft: 5}}>{dayjs(stop.validBetween.fromDate).format('YYYY-MM-DD')}</div>
                 </div>}
             </span>}
           {isParentOrChild &&
@@ -101,7 +101,7 @@ export const ColumnTransformerStopPlaceJsx = {
             </span>}
           {stop.validBetween && stop.validBetween.toDate && !isFutureOrExpired &&
           <span style={{ ...infoTextStyle, color: '#ffa500'}}>
-            {formatMessage({id: 'expires'})} {moment(stop.validBetween.toDate).format('YYYY-MM-DD')}
+            {formatMessage({id: 'expires'})} {dayjs(stop.validBetween.toDate).format('YYYY-MM-DD')}
             </span>}
         </div>
       </div>
