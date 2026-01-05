@@ -13,10 +13,13 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 
-import moment from 'moment';
 import { defaultLimitations } from '../models/Limitations';
 import { netexifyPlaceEquipment } from '../models/stopPlaceUtils'
 import PARKING_TYPE from "../models/parkingType";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const helpers = {};
 
@@ -52,11 +55,11 @@ helpers.mapQuayToVariables = quay => {
 };
 
 helpers.getFullUTCString = (time, date) => {
-  const timeString = moment(time).utc().format('HH:mm:ss');
+  const timeString = dayjs(time).utc().format('HH:mm:ss');
   // Do not format this to UTC in order to retain correct date, 2017-09-1500:02+GMT will be 2017-08... in UTC
-  const dateString = moment(date).format('YYYY-MM-DD');
+  const dateString = dayjs(date).format('YYYY-MM-DD');
   return (
-    moment(`${dateString} ${timeString}`).format(
+    dayjs(`${dateString} ${timeString}`).format(
       'YYYY-MM-DDTHH:mm:ss.SSS'
     ).toString() + 'Z'
   );

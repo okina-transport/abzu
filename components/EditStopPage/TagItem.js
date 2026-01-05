@@ -14,9 +14,9 @@ limitations under the Licence. */
 
 import React, { Component } from 'react';
 import Tag from '../MainPage/Tag';
-import moment from 'moment';
 import MdDelete from 'material-ui/svg-icons/action/delete';
 import IconButton from 'material-ui/IconButton';
+import dayjs from "dayjs";
 
 class TagItem extends Component {
   render() {
@@ -46,7 +46,7 @@ class TagItem extends Component {
           {tag.createdBy || notAssigned}
         </div>
         <div style={{ ...columnStyle, flex: 3, fontSize: '0.7em' }}>
-          {moment(tag.created).locale('nb').format('DD-MM-YYYY HH:mm')}
+          {dayjs(tag.created).format('DD-MM-YYYY HH:mm')}
         </div>
         <div style={{ ...columnStyle, flex: 1, padding: 0 }}>
           <IconButton onClick={() => handleDelete(tag.name, tag.idReference)}>
