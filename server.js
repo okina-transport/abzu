@@ -238,10 +238,10 @@ convictPromise
       `<html>
       <head>
         <title>Référentiel PDM</title>
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha384-vE+16m4967W2kZS6iZkYOqJ4lwBlnVTEkYhdn4pC+hehUp4OSRYDA9Luwc3FLGW5" crossorigin="anonymous">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <script src='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js' integrity="sha384-E8pjJ8gPGXcNJkbcpPElb/1x9rdzvCy9BCQrxpsozUkeM+XLxa7hF+iSky8D21qR" crossorigin="anonymous"></script>
-        <link href='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' integrity="sha384-NZZFesDhOllBkYyQO3moITQ60Xn83A9DHs40LcogUY7+88k19Xzgi23zIgKs6cjk" crossorigin="anonymous"/>
+        <script src='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="favicon.ico">
