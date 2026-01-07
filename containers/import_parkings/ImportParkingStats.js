@@ -23,8 +23,15 @@ class ImportPOIStats extends Component{
             const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
             const url = tiamatBaseUrl + "parking/parking_import_list";
 
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("ABZU::jwt"),
+                }
+            });
 
-            const response = await fetch(url);
+
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

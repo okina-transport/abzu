@@ -24,7 +24,12 @@ class ImportPOIStats extends Component{
             const url = tiamatBaseUrl + "netex_stops/stop_place_import_list";
 
 
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("ABZU::jwt"),
+                }
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
