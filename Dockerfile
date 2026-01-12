@@ -11,10 +11,14 @@ ENV port=8000
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . .
-RUN --mount=type=secret,id=tiamat_client_id,env=TIAMAT_CLIENT_ID \
-    --mount=type=secret,id=tiamat_secret,env=TIAMAT_CLIENT_SECRET \
-    --mount=type=secret,id=keycloak_url,env=MOBI_ITI_KEYCLOAK_URL \
-    --mount=type=secret,id=realm,env=MOBI_ITI_REALM \
+RUN --mount=type=secret,id=tiamat_client_id \
+    --mount=type=secret,id=tiamat_secret \
+    --mount=type=secret,id=keycloak_url \
+    --mount=type=secret,id=realm \
+    export TIAMAT_CLIENT_ID=$(cat /run/secrets/tiamat_client_id) && \
+    export TIAMAT_CLIENT_SECRET=$(cat /run/secrets/tiamat_secret) && \
+    export MOBI_ITI_KEYCLOAK_URL=$(cat /run/secrets/keycloak_url) && \
+    export MOBI_ITI_REALM=$(cat /run/secrets/realm) && \
     npm install && npm run build
 
 CMD [ "dumb-init", "npm", "run", "prod" ]
