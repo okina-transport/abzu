@@ -12,7 +12,7 @@ module.exports = {
       'react-redux',
       'react-router',
       'react-router-redux',
-      'moment',
+      'dayjs',
       'leaflet',
     ],
   },
