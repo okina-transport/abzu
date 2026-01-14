@@ -81,7 +81,7 @@ function authWithKeyCloak(path) {
   let kc = new Keycloak(config.endpointBase + 'config/keycloak.json');
 
   kc
-    .init({ onLoad: 'login-required', checkLoginIframe: false })
+    .init({ onLoad: 'login-required', checkLoginIframe: false, useNonce:false })
     .success(authenticated => {
       if (authenticated) {
         localStorage.setItem('ABZU::jwt', kc.token);

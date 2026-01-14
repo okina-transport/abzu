@@ -50,7 +50,7 @@
     "jest": "^23.6.0",
     "jsdom": "11.1.0",
     "jsdom-global": "3.0.2",
-    "keycloak-js": "3.2.1",
+    "keycloak-js": "10.0.2",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lodash.debounce": "4.0.8",
