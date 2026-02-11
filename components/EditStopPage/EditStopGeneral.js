@@ -435,7 +435,7 @@ class EditStopGeneral extends React.Component {
       query: stopPlaceAndPathLinkByVersion,
       variables: {
         id,
-        version
+        version: parseInt(version)
       }
     });
   };
