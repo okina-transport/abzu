@@ -111,7 +111,15 @@ class Header extends React.Component {
 
   handleLogOut() {
     if (this.props.kc) {
-      this.props.kc.logout();
+      const host = window.location.origin;
+      const abzuRoot = window.location.pathname;
+      let logoutUrl = this.props.kc.endpoints.logout();
+      logoutUrl += '?post_logout_redirect_uri=' + encodeURIComponent(`${host}${abzuRoot}`)
+      logoutUrl += '&client_id=' + encodeURIComponent(this.props.kc.clientId)
+      if (this.props.kc.idToken) {
+        logoutUrl += '&id_token_hint=' + encodeURIComponent(this.props.kc.idToken);
+      }
+      window.location = logoutUrl;
     }
   }
 
