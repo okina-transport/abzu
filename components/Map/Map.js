@@ -27,6 +27,7 @@ import {
 
 } from '../../graphql/Tiamat/actions';
 import {getMarkersForMap} from '../../selectors/Map';
+import {getPOIClassifications, poiTypeMapping} from "../../utils/mapUtils";
 
 
 class Map extends React.Component {
@@ -44,16 +45,26 @@ class Map extends React.Component {
         const {client} = this.props;
 
        await getStopPlaceClusterMarkers(client);
-        getPoiClusterMarkers(client);
+        getPoiClusterMarkers(client, []);
         getParkingClusterMarkers(client);
     }
-
-
 
     componentWillUpdate(nextProps) {
         if (this.props.intl.locale !== nextProps.intl.locale) {
             const {formatMessage} = nextProps.intl;
             document.title = formatMessage({id: '_title_short'});
+        }
+
+        const { client } = nextProps;
+
+        const classifications = getPOIClassifications(nextProps);
+
+        const hasPoiFilterChanged = Object.keys(poiTypeMapping).some(
+            key => this.props[key] !== nextProps[key]
+        );
+
+        if (hasPoiFilterChanged && classifications.length > 0) {
+            getPoiClusterMarkers(client, classifications);
         }
     }
 
@@ -115,6 +126,19 @@ class Map extends React.Component {
 }
 
 const mapStateToProps = state => {
+    const {
+        showPoiShop,
+        showPoiAmenity,
+        showPoiBuilding,
+        showPoiHistoric,
+        showPoiLanduse,
+        showPoiLeisure,
+        showPoiTourism,
+        showPoiOffice,
+        showParkings,
+        showStops
+    } = state.user;
+
     return {
         position: state.stopPlace.centerPosition,
         clusterThreshold: state.user.clusterThreshold,
@@ -125,6 +149,16 @@ const mapStateToProps = state => {
         isCreatingNewParking: state.user.isCreatingNewParking,
         isCreatingNewPointOfInterest: state.user.isCreatingNewPointOfInterest,
         activeBaselayer: state.user.activeBaselayer,
+        showPoiShop,
+        showPoiAmenity,
+        showPoiBuilding,
+        showPoiHistoric,
+        showPoiLanduse,
+        showPoiLeisure,
+        showPoiTourism,
+        showPoiOffice,
+        showParkings,
+        showStops,
         activeMap: state.mapUtils.activeMap,
         ignoreStopId: getIn(
             state.stopPlace,

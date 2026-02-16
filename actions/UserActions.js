@@ -29,6 +29,7 @@ import Routes from '../routes/';
 import {createThunk} from './';
 import {checkQuayUsage, checkStopPlaceUsage} from '../graphql/OTP/actions';
 import debounce from "lodash.debounce";
+import {getPOIClassifications} from "../utils/mapUtils";
 
 var UserActions = {};
 
@@ -41,20 +42,6 @@ const goToRoute = (path, id) => {
     }
     browserHistory.push(basePath + path + id);
 };
-
-
-const debouncedGetNeighbourStops = debounce((client, bounds) => {
-    getNeighbourStops(client, null, bounds, false);
-}, 500);
-
-const debouncedGetNeighbourPointsOfInterest = debounce((client, bounds) => {
-    getNeighbourPointsOfInterest(client,null,bounds,false);
-}, 500);
-
-const debouncedGetNeighbourParkings = debounce((client, bounds) => {
-    getNeighbourParkings(client,null,bounds,false);;
-}, 500);
-
 
 UserActions.navigateTo = (path, id) => dispatch => {
     dispatch(createThunk(types.NAVIGATE_TO, id));
@@ -249,28 +236,42 @@ UserActions.deleteChip = key => dispatch => {
     dispatch(createThunk(types.DELETED_TOPOS_CHIP, key));
 };
 
+const syncMapData = debounce((dispatch, client, bounds, options, classifications) => {
+    if (options.showPois) {
+        getNeighbourPointsOfInterest(client, null, bounds, false, classifications)
+            .then(res => dispatch({type: 'UPDATE_POIS', data: res.data.pointOfInterestBBox}))
+            .catch(err => console.error(err));
+    }
+
+    else if (options.showParkings) {
+        getNeighbourParkings(client, null, bounds, false)
+            .then(res => dispatch({ type: 'UPDATE_PARKINGS', data: res.data.parkingBBox }))
+            .catch(err => console.error(err));
+    }
+
+    else {
+        getNeighbourStops(client, null, bounds, false)
+            .then(res => dispatch({type: 'UPDATE_STOPS', data: res.data.stopPlaceBBox}))
+            .catch(err => console.error(err));
+    }
+}, 500);
+
 UserActions.mapMoveEnd = (zoom) => (dispatch, getState) => {
     const state = getState();
-    let client = state.user.client;
-    let newZoom = zoom || state.stopPlace.zoom;
+    const { client, clusterThreshold, showParkings } = state.user;
 
+    const classifications = getPOIClassifications(state.user);
 
-    if (zoom >= state.user.clusterThreshold && state.mapUtils.activeMap && client){
+    const showPois = classifications.length > 0;
+
+    if (zoom >= clusterThreshold && state.mapUtils.activeMap && client) {
         const bounds = state.mapUtils.activeMap.getBounds();
-        debouncedGetNeighbourStops(client, bounds);
-        const showPois = state.user.showPoiShop || state.user.showPoiAmenity || state.user.showPoiBuilding || state.user.showPoiHistoric|| state.user.showPoiLanduse|| state.user.showPoiLeisure|| state.user.showPoiTourism|| state.user.showPoiOffice;
-        if (showPois){
-            debouncedGetNeighbourPointsOfInterest(client, bounds);
-        }
 
-        const showParkings = state.user.showParkings;
-        if (showParkings){
-            debouncedGetNeighbourParkings(client,bounds);
-        }
-
+        syncMapData(dispatch, client, bounds, { showPois, showParkings }, classifications);
     }
-    dispatch(createThunk(types.MAP_MOVE_END, {zoom: newZoom }));
-}
+
+    dispatch({ type: types.MAP_MOVE_END, zoom });
+};
 
 UserActions.setCenterAndZoom = (position, zoom) => (dispatch, getState) => {
     const state = getState();

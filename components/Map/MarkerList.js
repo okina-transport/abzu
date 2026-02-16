@@ -30,7 +30,7 @@ import {withApollo} from 'react-apollo';
 import {
     allEntities,
     allEntitiesParkings,
-    allEntitiesPointsOfInterest,
+    getStopById,
     neighbourStopPlaceQuays
 } from '../../graphql/Tiamat/queries';
 import CoordinateMarker from './CoordinateMarker';
@@ -113,12 +113,11 @@ class MarkerList extends React.Component {
         const {dispatch, client, path} = this.props;
 
         const isAlreadyActive = id === path;
-
         if (!isAlreadyActive) {
             client
                 .query({
                     fetchPolicy: 'network-only',
-                    query: allEntitiesPointsOfInterest,
+                    query: getStopById,
                     variables: {
                         id: id
                     }
@@ -500,7 +499,8 @@ class MarkerList extends React.Component {
 
 
                 } else if ((showExpiredStops && marker.hasExpired) || !marker.hasExpired) {
-                    if (!alreadyProcessedStops.includes(marker.id)) {
+                    const isCurrentlyEditingThisId = markers.some(m => m.isActive && m.id === marker.id);
+                    if (!alreadyProcessedStops.includes(marker.id) && !isCurrentlyEditingThisId) {
                         stopPlaceMarkers.push(
                             <NeighbourMarker
                                 key={'neighbourStop-' + marker.belongsToGroup + '-' + marker.id}
@@ -689,23 +689,26 @@ class MarkerList extends React.Component {
                         });
                     }
                 } else if ((showExpiredStops && marker.hasExpired) || !marker.hasExpired) {
-                    parkingMarkers.push(
-                        <NeighbourMarkerParking
-                            key={'neighbourParking-' + marker.id}
-                            id={marker.id}
-                            position={marker.location}
-                            name={marker.name}
-                            handleOnClick={() => {
-                                this.handleParkingOnClick(marker.id);
-                            }}
-                            index={parentIndex}
-                            translations={CustomPopupMarkerText}
-                            type={marker.parkingType}
-                            parking={marker}
-                            tokenParsed={tokenParsed}
-                            isEditingParking={isEditingParking}
-                        />
-                    );
+                    const isCurrentlyEditingThisId = markers.some(m => m.isActive && m.id === marker.id);
+                    if (!isCurrentlyEditingThisId) {
+                        parkingMarkers.push(
+                            <NeighbourMarkerParking
+                                key={'neighbourParking-' + marker.id}
+                                id={marker.id}
+                                position={marker.location}
+                                name={marker.name}
+                                handleOnClick={() => {
+                                    this.handleParkingOnClick(marker.id);
+                                }}
+                                index={parentIndex}
+                                translations={CustomPopupMarkerText}
+                                type={marker.parkingType}
+                                parking={marker}
+                                tokenParsed={tokenParsed}
+                                isEditingParking={isEditingParking}
+                            />
+                        );
+                    }
                 }
             }
         });
@@ -746,21 +749,24 @@ class MarkerList extends React.Component {
                     />
                 );
             } else if ((showExpiredStops && marker.hasExpired) || !marker.hasExpired) {
-                poiMarkers.push(
-                    <NeighbourMarkerPointOfInterest
-                        key={'neighbourPointOfInterest' + marker.id}
-                        id={marker.id}
-                        position={marker.location}
-                        name={marker.name}
-                        handleOnClick={() => {
-                            this.handlePointOfInterestOnClick(marker.id);
-                        }}
-                        index={parentIndex}
-                        translations={CustomPopupMarkerText}
-                        type='storePoint'
-                        isEditingPointOfInterest={isEditingPointOfInterest}
-                    />
-                );
+                const isCurrentlyEditingThisId = markers.some(m => m.isActive && m.id === marker.id);
+                if (!isCurrentlyEditingThisId) {
+                    poiMarkers.push(
+                        <NeighbourMarkerPointOfInterest
+                            key={'neighbourPointOfInterest' + marker.id}
+                            id={marker.id}
+                            position={marker.location}
+                            name={marker.name}
+                            handleOnClick={() => {
+                                this.handlePointOfInterestOnClick(marker.id);
+                            }}
+                            index={parentIndex}
+                            translations={CustomPopupMarkerText}
+                            type='storePoint'
+                            isEditingPointOfInterest={isEditingPointOfInterest}
+                        />
+                    );
+                }
             }
         });
         return poiMarkers;

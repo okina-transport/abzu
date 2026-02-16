@@ -91,3 +91,20 @@ export const calculatePolygonCenter = members => {
   const center = polygon.getBounds().getCenter();
   return [center.lat, center.lng];
 };
+
+export const poiTypeMapping = {
+  showPoiShop: 'shop',
+  showPoiAmenity: 'amenity',
+  showPoiBuilding: 'building',
+  showPoiHistoric: 'historic',
+  showPoiLanduse: 'landuse',
+  showPoiLeisure: 'leisure',
+  showPoiTourism: 'tourism',
+  showPoiOffice: 'office'
+};
+
+export const getPOIClassifications = (object) => {
+  return Object.keys(poiTypeMapping)
+      .filter(key => object[key])
+      .map(key => poiTypeMapping[key]);
+}

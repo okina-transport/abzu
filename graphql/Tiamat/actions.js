@@ -355,10 +355,13 @@ export const getStopPlaceClusterMarkers = (client) => (
     })
 );
 
-export const getPoiClusterMarkers = (client) => (
+export const getPoiClusterMarkers = (client, classifications) => (
     client.query({
         fetchPolicy: 'network-only',
-        query: poiClusterMarkerQuery
+        query: poiClusterMarkerQuery,
+        variables: {
+            classifications: classifications
+        }
     })
 );
 
@@ -405,11 +408,12 @@ export const getNeighbourParkings = (client, ignoreParkingId, bounds, includeExp
     })
 );
 
-export const getNeighbourPointsOfInterest= (client, ignorePointOfInterestId, bounds, includeExpired) => (
+export const getNeighbourPointsOfInterest= (client, ignorePointOfInterestId, bounds, includeExpired, classifications) => (
     client.query({
         fetchPolicy: 'network-only',
         query: pointOfInterestBBQuery,
         variables: {
+            classifications: classifications,
             includeExpired: includeExpired,
             ignorePointOfInterestId,
             latMin: bounds.getSouthWest().lat,

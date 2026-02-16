@@ -22,8 +22,7 @@ export const getStateByOperation = (state, action) => {
         case 'parkingBBox':
             return Object.assign({}, state, {
                 neighbourParkings: formatHelpers.mapNeighbourParkingsToClientParkings(
-                    action.result.data.parkingBBox,
-                    state.current
+                    action.result.data.parkingBBox
                 )
             });
 
@@ -33,8 +32,7 @@ export const getStateByOperation = (state, action) => {
         case 'allParkings':
             return Object.assign({}, state, {
                 neighbourParkings: formatHelpers.mapNeighbourParkingsToClientParkings(
-                    action.result.data.allParkings,
-                    state.current
+                    action.result.data.allParkings
                 )
             });
 

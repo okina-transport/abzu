@@ -113,7 +113,7 @@ export const getStateByOperation = (state, action) => {
 
         case 'mutatePointOfInterest':
             let pointOfInterest = Object.assign({}, state.current, {
-                pointOfInterest: formatHelpers.mapPointOfInterestToClient(
+                pointOfInterest: formatHelpers.pointOfInterest(
                     action.result.data.mutatePointOfInterest
                 )
             });

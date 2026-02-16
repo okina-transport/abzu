@@ -76,7 +76,7 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest}) =
 
   if(zoom != undefined && zoom < clusterThreshold){
 
-    if (stopPlaceClusterMarkers){
+    if (stopPlaceClusterMarkers && showStops){
       for (let stopPlaceClusterMarker of stopPlaceClusterMarkers) {
         stopPlaceClusterMarker.entityType = Entities.SP_CLUSTER_MARKER;
         stopPlaceClusterMarker.location = [stopPlaceClusterMarker.latitude, stopPlaceClusterMarker.longitude];
@@ -111,48 +111,48 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest}) =
   }
 
 
+  if(zoom != undefined && zoom >= clusterThreshold) {
+      if (neighbourStops && neighbourStops.length && showStops) {
+       let tadFilteredStops = getFilteredStops(neighbourStops, filterByFullTAD, filterByPartialTAD);
+       markers = addTomarkers(markers, tadFilteredStops);
+      }
 
-  if (zoom != undefined && zoom >= clusterThreshold && neighbourStops && neighbourStops.length && showStops) {
-    let tadFilteredStops = getFilteredStops(neighbourStops, filterByFullTAD, filterByPartialTAD);
-    markers = addTomarkers(markers, tadFilteredStops);
+      if (neighbourParkings && neighbourParkings.length && showParkings) {
+       markers = markers.concat(neighbourParkings);
+      }
+
+      if (showPoiShop) {
+       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'shop');
+      }
+
+      if (showPoiAmenity) {
+       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'amenity');
+      }
+
+      if (showPoiBuilding) {
+       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'building');
+      }
+
+      if (showPoiHistoric) {
+       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'historic');
+      }
+
+      if (showPoiLanduse) {
+       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'landuse');
+      }
+
+      if (showPoiLeisure) {
+       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'leisure');
+      }
+
+      if (showPoiTourism) {
+       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'tourism');
+      }
+
+      if (showPoiOffice) {
+       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'office');
+      }
   }
-
-  if (neighbourParkings && neighbourParkings.length && showParkings) {
-    markers = markers.concat(neighbourParkings);
-  }
-
-  if ( showPoiShop) {
-    markers = addPOImarkers(markers, neighbourPointsOfInterest,'shop');
-  }
-
-  if ( showPoiAmenity) {
-    markers = addPOImarkers(markers, neighbourPointsOfInterest,'amenity');
-  }
-
-  if ( showPoiBuilding) {
-    markers = addPOImarkers(markers, neighbourPointsOfInterest,'building');
-  }
-
-  if ( showPoiHistoric) {
-    markers = addPOImarkers(markers, neighbourPointsOfInterest,'historic');
-  }
-
-  if ( showPoiLanduse) {
-    markers = addPOImarkers(markers, neighbourPointsOfInterest,'landuse');
-  }
-
-  if ( showPoiLeisure) {
-    markers = addPOImarkers(markers, neighbourPointsOfInterest,'leisure');
-  }
-
-  if ( showPoiTourism) {
-    markers = addPOImarkers(markers, neighbourPointsOfInterest,'tourism');
-  }
-
-  if ( showPoiOffice) {
-    markers = addPOImarkers(markers, neighbourPointsOfInterest,'office');
-  }
-
 
   if (findCoordinates) {
     markers = markers.concat(findCoordinates);
@@ -172,7 +172,6 @@ const addPOImarkers = ( markers , neighbourPointsOfInterest,  classificationType
 }
 
 const filterPoiByClassification = ( pointOfInterests , classificationType) => {
-
   if (!pointOfInterests || pointOfInterests.length === 0){
     return;
   }

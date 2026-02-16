@@ -74,8 +74,8 @@ export const stopPlaceClusterMarkerQuery = gql`
 
 
 export const poiClusterMarkerQuery = gql`
-    query poiClusterMarkers {
-        poiClusterMarkers {
+    query poiClusterMarkers($classifications: [String]) {
+        poiClusterMarkers(classifications: $classifications) {
             clusterId            
             longitude
             latitude
@@ -273,8 +273,8 @@ export const parkingBBQuery = gql`
 `;
 
 export const pointOfInterestBBQuery = gql`
-    query pointOfInterestBBox($ignorePointOfInterestId: String, $lonMin: BigDecimal!, $lonMax: BigDecimal!, $latMin: BigDecimal!, $latMax: BigDecimal!, $includeExpired: Boolean) {
-        pointOfInterestBBox(ignorePointOfInterestId: $ignorePointOfInterestId, latMin: $latMin, latMax: $latMax, lonMin: $lonMin, lonMax: $lonMax, size: 500, includeExpired: $includeExpired) {
+    query pointOfInterestBBox($ignorePointOfInterestId: String, $lonMin: BigDecimal!, $lonMax: BigDecimal!, $latMin: BigDecimal!, $latMax: BigDecimal!, $includeExpired: Boolean, $classifications: [String]) {
+        pointOfInterestBBox(ignorePointOfInterestId: $ignorePointOfInterestId, latMin: $latMin, latMax: $latMax, lonMin: $lonMin, lonMax: $lonMax, size: 500, includeExpired: $includeExpired, classifications: $classifications) {
             id
             geometry {
                 coordinates
