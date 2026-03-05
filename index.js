@@ -82,18 +82,59 @@ function authWithKeyCloak(path) {
 
   kc
     .init({ onLoad: 'login-required', checkLoginIframe: false, useNonce:false })
-    .success(authenticated => {
+    .then(authenticated => {
       if (authenticated) {
         localStorage.setItem('ABZU::jwt', kc.token);
+        const url = new URL(window.location.href);
+        let parsed = parseCallbackParams(url.hash.substring(1), ['code', 'state', 'session_state', 'kc_action_status', 'kc_action', 'iss']);
+          if (parsed.oauthParams && kc.authServerUrl + '/realms/' + kc.realm === parsed.oauthParams.iss) {
+              setInterval(() => {
+                  kc.updateToken(10).error(() => kc.logout());
+                  localStorage.setItem('ABZU::jwt', kc.token);
+              }, 10000);
+              removeFragment();
+              renderIndex(path, kc);
+          } else {
+            kc.logout();
+          }
 
-        setInterval(() => {
-          kc.updateToken(10).error(() => kc.logout());
-          localStorage.setItem('ABZU::jwt', kc.token);
-        }, 10000);
-
-        renderIndex(path, kc);
       } else {
         kc.login();
       }
     });
+}
+
+function parseCallbackParams(paramsString, supportedParams) {
+    const params = paramsString.split('&')
+    const oauthParams = {}
+    let result = ''
+
+    for (const param of params.reverse()) {
+        const entry = new URLSearchParams(param).entries().next().value
+
+        if (!entry) {
+            result = '&' + result
+            continue
+        }
+
+        const [key, value] = entry
+
+        if (supportedParams.includes(key) && !(key in oauthParams)) {
+            oauthParams[key] = value
+        } else {
+            result = result.length === 0 ? param : param + '&' + result
+        }
+    }
+
+    return {
+        paramsString: result,
+        oauthParams
+    }
+}
+
+function removeFragment() {
+    window.location.replace("#");
+    if (typeof window.history.replaceState == 'function') {
+        history.replaceState({}, '', window.location.href.slice(0, -1));
+    }
 }
