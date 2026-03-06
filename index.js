@@ -87,7 +87,7 @@ function authWithKeyCloak(path) {
         localStorage.setItem('ABZU::jwt', kc.token);
         const url = new URL(window.location.href);
         let parsed = parseCallbackParams(url.hash.substring(1), ['code', 'state', 'session_state', 'kc_action_status', 'kc_action', 'iss']);
-          if (parsed.oauthParams && kc.authServerUrl + '/realms/' + kc.realm === parsed.oauthParams.iss) {
+          if (parsed.oauthParams && cleanUrlPath(kc.authServerUrl + '/realms/' + kc.realm) === parsed.oauthParams.iss) {
               setInterval(() => {
                   kc.updateToken(10).error(() => kc.logout());
                   localStorage.setItem('ABZU::jwt', kc.token);
@@ -137,4 +137,10 @@ function removeFragment() {
     if (typeof window.history.replaceState == 'function') {
         history.replaceState({}, '', window.location.href.slice(0, -1));
     }
+}
+
+function cleanUrlPath(input) {
+    const u = new URL(input);
+    u.pathname = u.pathname.replace(/\/{2,}/g, '/');
+    return u.toString();
 }
