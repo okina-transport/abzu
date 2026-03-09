@@ -54,22 +54,30 @@ class OtherTransportModesMenuItems extends React.Component {
           .map((mode, index) => {
             const isChecked = this.isChecked(mode.transportMode);
             return (
-              <MenuItem key={'submode-' + index}>
-                <Grid container spacing={2}>
-                  <Grid item xs={1} style={{ margin: 'auto' }}>
-                    <Checkbox
-                      checked={isChecked} // Utilise `isChecked` pour l'état de la case
-                      onCheck={() => this.handleCheck(mode.transportMode)}
-                    />
+                <MenuItem
+                    key={'submode-' + index}
+                    onClick={() => this.handleCheck(mode.transportMode)}
+                >
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={1} style={{ margin: 'auto' }}>
+                      <Checkbox
+                          checked={isChecked}
+                          onCheck={(e, checked) => {
+                            if (e && typeof e.stopPropagation === 'function') {
+                              e.stopPropagation();
+                            }
+                            this.handleCheck(mode.transportMode);
+                          }}
+                      />
+                    </Grid>
+                    <Grid item xs={1} style={{ margin: 'auto' }}>
+                      <ModalityIconSvg type={mode.value} submode={mode.value} />
+                    </Grid>
+                    <Grid item xs={10} style={{ margin: 'auto' }}>
+                      <span>{mode.name}</span>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={1} style={{ margin: 'auto' }}>
-                    <ModalityIconSvg type={mode.value} submode={mode.value} />
-                  </Grid>
-                  <Grid item xs={10} style={{ margin: 'auto' }}>
-                    <span>{mode.name}</span>
-                  </Grid>
-                </Grid>
-              </MenuItem>
+                </MenuItem>
             );
           })}
       </Menu>
