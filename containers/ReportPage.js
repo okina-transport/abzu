@@ -105,7 +105,7 @@ class ReportPage extends React.Component {
 
     handleNearbyRadiusChange(nearbyRadius) {
         if (nearbyRadius === '' || this.state.regexp.test(nearbyRadius)) {
-            this.setState({nearbyRadius});
+            this.setState({ nearbyRadius: nearbyRadius === '' ? '' : parseInt(nearbyRadius, 10) });
         }
     }
 
@@ -296,7 +296,7 @@ class ReportPage extends React.Component {
         const fromURL = extractQueryParamsFromUrl();
         this.setState({
             searchQuery: fromURL.query || '',
-            nearbyRadius: fromURL.nearbyRadius || this.state.nearbyRadius,
+            nearbyRadius: fromURL.nearbyRadius ? parseInt(fromURL.nearbyRadius, 10) : this.state.nearbyRadius,
             organisationName: fromURL.organisationNama || this.state.organisationName,
             withoutLocationOnly: fromURL.withoutLocationOnly === 'true',
             withNearbySimilarDuplicates: fromURL.withNearbySimilarDuplicates === 'true',
@@ -612,6 +612,7 @@ class ReportPage extends React.Component {
                             floatingLabelText={formatMessage({
                                 id: 'nearby_radius'
                             })}
+                            type="number"
                             style={{marginLeft: 2, transform: 'scale(0.9)'}}
                             value={this.state.nearbyRadius}
                             onKeyDown={this.handleOnKeyDown.bind(this)}
