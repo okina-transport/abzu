@@ -344,12 +344,26 @@ helpers.mapParkingToVariables = (parkingArr, parentRef) => {
       }];
     }
 
+    if (source.numberOfCarsharingSpaces) {
+      parking.parkingAreas.push({
+        id : source.id,
+        specificParkingAreaUsage: 'autopartage',
+        totalCapacity: source.numberOfCarsharingSpaces
+      });
+    }
     if (source.numberOfCarpoolingSpaces) {
-      parking.parkingAreas = [{
+      parking.parkingAreas.push({
         id : source.id,
         specificParkingAreaUsage: 'covoiturage',
         totalCapacity: source.numberOfCarpoolingSpaces
-      }];
+      });
+    }
+    if (source.numberOfSpacesForRegisteredDisabledUserType) {
+      parking.parkingAreas.push({
+        id : source.id,
+        specificParkingAreaUsage: 'handicap',
+        totalCapacity: source.numberOfSpacesForRegisteredDisabledUserType
+      });
     }
 
     parking.name = {
