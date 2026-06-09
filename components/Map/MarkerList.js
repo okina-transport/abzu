@@ -29,7 +29,7 @@ import QuayMarker from './QuayMarker';
 import {withApollo} from 'react-apollo';
 import {
     allEntities,
-    allEntitiesParkings,
+    allEntitiesParkings, allEntitiesPointsOfInterest,
     getStopById,
     neighbourStopPlaceQuays
 } from '../../graphql/Tiamat/queries';
@@ -117,7 +117,7 @@ class MarkerList extends React.Component {
             client
                 .query({
                     fetchPolicy: 'network-only',
-                    query: getStopById,
+                    query: allEntitiesPointsOfInterest,
                     variables: {
                         id: id
                     }
