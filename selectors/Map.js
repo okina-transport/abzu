@@ -52,7 +52,7 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest}) =
     poiClusterMarkers
   } = pointOfInterest;
 
-  const { isCreatingNewStop, isCreatingNewParking, isCreatingNewPointOfInterest, showParkings, showStops, showPoiShop, showPoiAmenity, showPoiBuilding, showPoiHistoric, showPoiLanduse, showPoiLeisure, showPoiTourism, showPoiOffice, searchFilters, clusterThreshold } = user;
+  const { isCreatingNewStop, isCreatingNewParking, isCreatingNewPointOfInterest, showParkings, showStops, showPois, searchFilters, clusterThreshold } = user;
 
   let markers = activeSearchResult ? [activeSearchResult] : [];
 
@@ -72,7 +72,6 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest}) =
     markers = markers.concat(newStop);
   }
   const zoom = stopPlace.zoom;
-  const showPoiClusters = showPoiShop || showPoiAmenity || showPoiBuilding || showPoiHistoric || showPoiLanduse || showPoiLeisure || showPoiTourism || showPoiOffice;
 
   if(zoom != undefined && zoom < clusterThreshold){
 
@@ -85,7 +84,7 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest}) =
     }
 
 
-    if (poiClusterMarkers && showPoiClusters){
+    if (poiClusterMarkers && showPois){
       for (let poiClusterMarker of poiClusterMarkers) {
         poiClusterMarker.entityType = Entities.POI_CLUSTER_MARKER;
         poiClusterMarker.location = [poiClusterMarker.latitude, poiClusterMarker.longitude];
@@ -121,36 +120,8 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest}) =
        markers = markers.concat(neighbourParkings);
       }
 
-      if (showPoiShop) {
-       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'shop');
-      }
-
-      if (showPoiAmenity) {
-       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'amenity');
-      }
-
-      if (showPoiBuilding) {
-       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'building');
-      }
-
-      if (showPoiHistoric) {
-       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'historic');
-      }
-
-      if (showPoiLanduse) {
-       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'landuse');
-      }
-
-      if (showPoiLeisure) {
-       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'leisure');
-      }
-
-      if (showPoiTourism) {
-       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'tourism');
-      }
-
-      if (showPoiOffice) {
-       markers = addPOImarkers(markers, neighbourPointsOfInterest, 'office');
+      if (showPois && neighbourPointsOfInterest && neighbourPointsOfInterest.length) {
+       markers = markers.concat(neighbourPointsOfInterest);
       }
   }
 
@@ -160,61 +131,3 @@ export const getMarkersForMap = ({ stopPlace, user, parking, pointOfInterest}) =
 
   return markers;
 };
-
-const addPOImarkers = ( markers , neighbourPointsOfInterest,  classificationType) => {
-
-  let pois = filterPoiByClassification(neighbourPointsOfInterest, classificationType);
-  if (pois && pois.length ) {
-    markers = markers.concat(pois);
-  }
-  return markers;
-
-}
-
-const filterPoiByClassification = ( pointOfInterests , classificationType) => {
-  if (!pointOfInterests || pointOfInterests.length === 0){
-    return;
-  }
-
-  let pointOfSales = [];
-
-  for (let i = 0; i < pointOfInterests.length; i++) {
-
-    if (isMatchingClassification(pointOfInterests[i], classificationType)){
-      pointOfSales.push(pointOfInterests[i]);
-    }
-  }
-
-  return pointOfSales;
-
-};
-
-const isMatchingClassification = ( pointOfInterest, classificationType ) => {
-
-  if (!pointOfInterest || !pointOfInterest.classifications){
-    return false;
-  }
-
-  for (let i = 0; i < pointOfInterest.classifications.length; i++) {
-    if(isClassificationOfType(pointOfInterest.classifications[i], classificationType)){
-      return true;
-    }
-  }
-  return false;
-}
-
-const isClassificationOfType = ( classification, classificationType ) => {
-  if (!classification){
-    return false;
-  }
-
-  if (classification.name === classificationType){
-    return true;
-  }
-
-  if (!classification.parent){
-    return false;
-  }
-  return  isClassificationOfType(classification.parent, classificationType);
-
-}

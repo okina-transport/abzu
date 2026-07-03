@@ -217,45 +217,11 @@ const userReducer = (state = initialState, action) => {
         showParkings: action.payLoad
       });
 
-    case types.TOGGLED_IS_SHOW_POI_SHOP:
+    case types.TOGGLED_IS_SHOW_POIS:
       return Object.assign({}, state, {
-        showPoiShop: action.payLoad
+        showPois: action.payLoad
       });
 
-    case types.TOGGLED_IS_SHOW_POI_AMENITY:
-      return Object.assign({}, state, {
-        showPoiAmenity: action.payLoad
-      });
-
-    case types.TOGGLED_IS_SHOW_POI_BUILDING:
-      return Object.assign({}, state, {
-        showPoiBuilding: action.payLoad
-      });
-
-    case types.TOGGLED_IS_SHOW_POI_HISTORIC:
-      return Object.assign({}, state, {
-        showPoiHistoric: action.payLoad
-      });
-
-    case types.TOGGLED_IS_SHOW_POI_LANDUSE:
-      return Object.assign({}, state, {
-        showPoiLanduse: action.payLoad
-      });
-
-    case types.TOGGLED_IS_SHOW_POI_LEISURE:
-      return Object.assign({}, state, {
-        showPoiLeisure: action.payLoad
-      });
-
-    case types.TOGGLED_IS_SHOW_POI_TOURISM:
-      return Object.assign({}, state, {
-        showPoiTourism: action.payLoad
-      });
-
-    case types.TOGGLED_IS_SHOW_POI_OFFICE:
-      return Object.assign({}, state, {
-        showPoiOffice: action.payLoad
-      });
 
     case types.SET_SEARCH_TEXT:
       return Object.assign({}, state, {

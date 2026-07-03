@@ -27,7 +27,6 @@ import {
 
 } from '../../graphql/Tiamat/actions';
 import {getMarkersForMap} from '../../selectors/Map';
-import {getPOIClassifications, poiTypeMapping} from "../../utils/mapUtils";
 
 
 class Map extends React.Component {
@@ -45,7 +44,7 @@ class Map extends React.Component {
         const {client} = this.props;
 
        await getStopPlaceClusterMarkers(client);
-        getPoiClusterMarkers(client, []);
+        getPoiClusterMarkers(client);
         getParkingClusterMarkers(client);
     }
 
@@ -55,16 +54,10 @@ class Map extends React.Component {
             document.title = formatMessage({id: '_title_short'});
         }
 
-        const { client } = nextProps;
+        const { client, showPois } = nextProps;
 
-        const classifications = getPOIClassifications(nextProps);
-
-        const hasPoiFilterChanged = Object.keys(poiTypeMapping).some(
-            key => this.props[key] !== nextProps[key]
-        );
-
-        if (hasPoiFilterChanged && classifications.length > 0) {
-            getPoiClusterMarkers(client, classifications);
+        if (showPois && showPois !== this.props.showPois) {
+            getPoiClusterMarkers(client);
         }
     }
 
@@ -127,16 +120,7 @@ class Map extends React.Component {
 
 const mapStateToProps = state => {
     const {
-        showPoiShop,
-        showPoiAmenity,
-        showPoiBuilding,
-        showPoiHistoric,
-        showPoiLanduse,
-        showPoiLeisure,
-        showPoiTourism,
-        showPoiOffice,
-        showParkings,
-        showStops
+        showPois
     } = state.user;
 
     return {
@@ -149,16 +133,7 @@ const mapStateToProps = state => {
         isCreatingNewParking: state.user.isCreatingNewParking,
         isCreatingNewPointOfInterest: state.user.isCreatingNewPointOfInterest,
         activeBaselayer: state.user.activeBaselayer,
-        showPoiShop,
-        showPoiAmenity,
-        showPoiBuilding,
-        showPoiHistoric,
-        showPoiLanduse,
-        showPoiLeisure,
-        showPoiTourism,
-        showPoiOffice,
-        showParkings,
-        showStops,
+        showPois,
         activeMap: state.mapUtils.activeMap,
         ignoreStopId: getIn(
             state.stopPlace,
