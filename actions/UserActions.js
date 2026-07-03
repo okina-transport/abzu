@@ -29,7 +29,6 @@ import Routes from '../routes/';
 import {createThunk} from './';
 import {checkQuayUsage, checkStopPlaceUsage} from '../graphql/OTP/actions';
 import debounce from "lodash.debounce";
-import {getPOIClassifications} from "../utils/mapUtils";
 
 var UserActions = {};
 
@@ -160,36 +159,8 @@ UserActions.toggleShowParkings = value => dispatch => {
     dispatch(createThunk(types.TOGGLED_IS_SHOW_PARKINGS, value));
 };
 
-UserActions.toggleShowPoiShop = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_SHOP, value));
-};
-
-UserActions.toggleShowPoiAmenity = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_AMENITY, value));
-};
-
-UserActions.toggleShowPoiBuilding = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_BUILDING, value));
-};
-
-UserActions.toggleShowPoiHistoric = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_HISTORIC, value));
-};
-
-UserActions.toggleShowPoiLanduse = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_LANDUSE, value));
-};
-
-UserActions.toggleShowPoiLeisure = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_LEISURE, value));
-};
-
-UserActions.toggleShowPoiTourism = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_TOURISM, value));
-};
-
-UserActions.toggleShowPoiOffice = value => dispatch => {
-    dispatch(createThunk(types.TOGGLED_IS_SHOW_POI_OFFICE, value));
+UserActions.toggleShowPois = value => dispatch => {
+    dispatch(createThunk(types.TOGGLED_IS_SHOW_POIS, value));
 };
 
 UserActions.applyStopTypeSearchFilter = filters => dispatch => {
@@ -236,9 +207,9 @@ UserActions.deleteChip = key => dispatch => {
     dispatch(createThunk(types.DELETED_TOPOS_CHIP, key));
 };
 
-const syncMapData = debounce((dispatch, client, bounds, options, classifications) => {
+const syncMapData = debounce((dispatch, client, bounds, options) => {
     if (options.showPois) {
-        getNeighbourPointsOfInterest(client, null, bounds, false, classifications)
+        getNeighbourPointsOfInterest(client, null, bounds, false)
             .then(res => dispatch({type: 'UPDATE_POIS', data: res.data.pointOfInterestBBox}))
             .catch(err => console.error(err));
     }
@@ -258,16 +229,13 @@ const syncMapData = debounce((dispatch, client, bounds, options, classifications
 
 UserActions.mapMoveEnd = (zoom) => (dispatch, getState) => {
     const state = getState();
-    const { client, clusterThreshold, showParkings } = state.user;
+    const { client, clusterThreshold, showParkings, showPois } = state.user;
 
-    const classifications = getPOIClassifications(state.user);
-
-    const showPois = classifications.length > 0;
 
     if (zoom >= clusterThreshold && state.mapUtils.activeMap && client) {
         const bounds = state.mapUtils.activeMap.getBounds();
 
-        syncMapData(dispatch, client, bounds, { showPois, showParkings }, classifications);
+        syncMapData(dispatch, client, bounds, { showPois, showParkings });
     }
 
     dispatch({ type: types.MAP_MOVE_END, zoom });

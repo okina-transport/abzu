@@ -87,8 +87,7 @@ class SearchBox extends React.Component {
                 optionalOrgCodeFilter,
                 this.props.showStops,
                 this.props.showParkings,
-                this.props.showPoiShop,
-                this.props.showPointsOfInterest
+                this.props.showPois
             ).then(() => {
                 this.setState({loading: false});
             });
@@ -250,40 +249,9 @@ class SearchBox extends React.Component {
         this.props.dispatch(UserActions.toggleShowParkings(value));
     }
 
-    toggleShowPoiShop(value) {
-        this.props.dispatch(UserActions.toggleShowPoiShop(value));
+    toggleShowPois(value) {
+        this.props.dispatch(UserActions.toggleShowPois(value));
     }
-
-    toggleShowPoiAmenity(value) {
-        this.props.dispatch(UserActions.toggleShowPoiAmenity(value));
-    }
-
-    toggleShowPoiBuilding(value) {
-        this.props.dispatch(UserActions.toggleShowPoiBuilding(value));
-    }
-
-    toggleShowPoiHistoric(value) {
-        this.props.dispatch(UserActions.toggleShowPoiHistoric(value));
-    }
-
-    toggleShowPoiLanduse(value) {
-        this.props.dispatch(UserActions.toggleShowPoiLanduse(value));
-    }
-
-    toggleShowPoiLeisure(value) {
-        this.props.dispatch(UserActions.toggleShowPoiLeisure(value));
-    }
-
-    toggleShowPoiTourism(value) {
-        this.props.dispatch(UserActions.toggleShowPoiTourism(value));
-    }
-
-    toggleShowPoiOffice(value) {
-        this.props.dispatch(UserActions.toggleShowPoiOffice(value));
-    }
-
-
-
 
     handleTopographicalPlaceInput(searchText) {
         const {client} = this.props;
@@ -578,14 +546,7 @@ class SearchBox extends React.Component {
             filterByOrg,
             showStops,
             showParkings,
-            showPoiShop,
-            showPoiAmenity,
-            showPoiBuilding,
-            showPoiHistoric,
-            showPoiLanduse,
-            showPoiLeisure,
-            showPoiTourism,
-            showPoiOffice,
+            showPois,
             filterByFullTAD,
             filterByPartialTAD
         } = this.props;
@@ -774,62 +735,13 @@ class SearchBox extends React.Component {
                                             style={{paddingTop: '5'}}
                                         />
                                         <CheckBox
-                                            checked={showPoiShop}
-                                            onCheck={(e, value) => this.toggleShowPoiShop(value)}
-                                            label={formatMessage({id: 'show_poi_shop'})}
+                                            checked={showPois}
+                                            onCheck={(e, value) => this.toggleShowPois(value)}
+                                            label={formatMessage({id: 'show_pois'})}
                                             labelStyle={{fontSize: '0.8em'}}
                                             style={{paddingTop: '5'}}
                                         />
 
-                                        <CheckBox
-                                            checked={showPoiAmenity}
-                                            onCheck={(e, value) => this.toggleShowPoiAmenity(value)}
-                                            label={formatMessage({id: 'show_poi_amenity'})}
-                                            labelStyle={{fontSize: '0.8em'}}
-                                            style={{paddingTop: '5'}}
-                                        />
-                                        <CheckBox
-                                            checked={showPoiBuilding}
-                                            onCheck={(e, value) => this.toggleShowPoiBuilding(value)}
-                                            label={formatMessage({id: 'show_poi_building'})}
-                                            labelStyle={{fontSize: '0.8em'}}
-                                            style={{paddingTop: '5'}}
-                                        />
-                                        <CheckBox
-                                            checked={showPoiHistoric}
-                                            onCheck={(e, value) => this.toggleShowPoiHistoric(value)}
-                                            label={formatMessage({id: 'show_poi_historic'})}
-                                            labelStyle={{fontSize: '0.8em'}}
-                                            style={{paddingTop: '5'}}
-                                        />
-                                        <CheckBox
-                                            checked={showPoiLanduse}
-                                            onCheck={(e, value) => this.toggleShowPoiLanduse(value)}
-                                            label={formatMessage({id: 'show_poi_landuse'})}
-                                            labelStyle={{fontSize: '0.8em'}}
-                                            style={{paddingTop: '5'}}
-                                        />
-                                        <CheckBox
-                                            checked={showPoiLeisure}
-                                            onCheck={(e, value) => this.toggleShowPoiLeisure(value)}
-                                            label={formatMessage({id: 'show_poi_leisure'})}
-                                            labelStyle={{fontSize: '0.8em'}}
-                                            style={{paddingTop: '5'}}
-                                        />
-                                        <CheckBox
-                                            checked={showPoiTourism}
-                                            onCheck={(e, value) => this.toggleShowPoiTourism(value)}
-                                            label={formatMessage({id: 'show_poi_tourism'})}
-                                            labelStyle={{fontSize: '0.8em'}}
-                                            style={{paddingTop: '5'}}
-                                        />
-                                        <CheckBox
-                                            checked={showPoiOffice}
-                                            onCheck={(e, value) => this.toggleShowPoiOffice(value)}
-                                            label={formatMessage({id: 'show_poi_office'})}
-                                            labelStyle={{fontSize: '0.8em'}}
-                                            style={{paddingTop: '5'}}
-                                        />
                                     </div>
                                 </div>
                             ) : (
@@ -1132,17 +1044,9 @@ const mapStateToProps = state => {
         roles: state.roles.kc.tokenParsed.roles,
         showStops: state.user.showStops,
         showParkings: state.user.showParkings,
-        showPoiShop: state.user.showPoiShop,
-        showPointsOfInterest: state.user.showPointsOfInterest,
+        showPois: state.user.showPois,
         filterByFullTAD: state.user.searchFilters.filterByFullTAD,
-        filterByPartialTAD: state.user.searchFilters.filterByPartialTAD,
-        showPoiAmenity: state.user.showPoiAmenity,
-        showPoiBuilding: state.user.showPoiBuilding,
-        showPoiHistoric: state.user.showPoiHistoric,
-        showPoiLanduse: state.user.showPoiLanduse,
-        showPoiLeisure: state.user.showPoiLeisure,
-        showPoiTourism: state.user.showPoiTourism,
-        showPoiOffice: state.user.showPoiOffice
+        filterByPartialTAD: state.user.searchFilters.filterByPartialTAD
 
     };
 };
