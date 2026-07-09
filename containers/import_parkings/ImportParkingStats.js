@@ -4,7 +4,13 @@ import {connect} from "react-redux";
 import {injectIntl} from "react-intl";
 import React, {Component} from 'react';
 
-class ImportPOIStats extends Component{
+const ERROR_TYPE_MESSAGE_IDS = {
+    "TEMPLATE": "import_error_type_template",
+    "ENCODING": "import_error_type_encoding",
+    "MISSING_DATA": "import_error_type_missing_data"
+};
+
+class ImportParkingStats extends Component{
 
     constructor(props) {
         super(props);
@@ -86,6 +92,7 @@ class ImportPOIStats extends Component{
     render(){
 
         const { data, loading, error, emptyResult } = this.state;
+        const { intl: { formatMessage } } = this.props;
 
 
         if (emptyResult) {
@@ -112,6 +119,7 @@ class ImportPOIStats extends Component{
                         <th style={styles.th}>Started</th>
                         <th style={styles.th}>Finished</th>
                         <th style={styles.th}>Status</th>
+                        <th style={styles.th}>Error detail</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -128,6 +136,15 @@ class ImportPOIStats extends Component{
                                 }}
                             >
                                 {item.status}
+                            </td>
+                            <td style={styles.td}>
+                                {item.errors && item.errors.length > 0
+                                    ? item.errors.map((err, index) => (
+                                        <div key={index}>
+                                            {ERROR_TYPE_MESSAGE_IDS[err] ? formatMessage({id: ERROR_TYPE_MESSAGE_IDS[err]}) : err}
+                                        </div>
+                                    ))
+                                    : null}
                             </td>
                         </tr>
                     ))}
@@ -180,4 +197,4 @@ const mapStateToProps = state => ({
     kc: state.roles.kc
 });
 
-export default withApollo(connect(mapStateToProps)(injectIntl(ImportPOIStats)));
+export default withApollo(connect(mapStateToProps)(injectIntl(ImportParkingStats)));
