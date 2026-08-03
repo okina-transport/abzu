@@ -215,7 +215,7 @@ class Header extends React.Component {
     const portalImport = formatMessage({id: 'portal_import'});
     const portalOffers = formatMessage({id: 'portal_offers'});
 
-    const isSuperAdmin = roles.includes('ROLE_SUPER_ADMINISTRATEUR');
+    const canImportInAbzu = roles.includes('canImportInAbzu');
     const isAdmin = roles.includes('ROLE_ADMINISTRATEUR');
 
     const tiamatEnv = getTiamatEnv();
@@ -279,7 +279,7 @@ class Header extends React.Component {
                   )}
                 style={{ fontSize: 12, padding: 0 }}
               />
-              {isSuperAdmin && (
+              {canImportInAbzu && (
                   <React.Fragment>
                       <MenuItem
                           leftIcon={<ActionAccessibility color="#005A82" />}
@@ -316,7 +316,7 @@ class Header extends React.Component {
                     />
                   </React.Fragment>
               )}
-              {(isSuperAdmin || isAdmin) && (
+              {(canImportInAbzu || isAdmin) && (
                   <React.Fragment>
                     <MenuItem
                         leftIcon={<MapsLocalParking color="#005A82" />}
