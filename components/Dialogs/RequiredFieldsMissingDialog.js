@@ -9,7 +9,7 @@ class RequiredFieldsMissingDialog extends Component {
   render() {
 
     const { open, handleClose, requiredMissing, formatMessage, isNewStop } = this.props;
-    const { name, type, payment } = requiredMissing;
+    const { name, type, payment, keyValue, invalidQuays } = requiredMissing;
 
     const translations = {
       labelOK: formatMessage({id: 'ok'}),
@@ -19,7 +19,9 @@ class RequiredFieldsMissingDialog extends Component {
       stopPlaceType: formatMessage({id: 'stopPlaceType'}),
       setMissingFieldsNewStop: formatMessage({id: 'required_fields_missing_action_new'}),
       setMissingFields: formatMessage({id: 'required_fields_missing_action'}),
-      payment: formatMessage({id: 'parking_payment_process'})
+      payment: formatMessage({id: 'parking_payment_process'}),
+      keyValue: formatMessage({id: 'required_key_value_missing'}),
+      keyValueQuays: formatMessage({id: 'required_key_value_missing_quays'})
     };
 
 
@@ -48,6 +50,16 @@ class RequiredFieldsMissingDialog extends Component {
           {name && <li>{translations.name}</li>}
           {type && <li>{translations.stopPlaceType}</li>}
           {payment && <li>{translations.payment}</li>}
+          {keyValue && <li>{translations.keyValue}</li>}
+          {invalidQuays && invalidQuays.length > 0 &&
+            <li>
+              {translations.keyValueQuays}
+              <ul>
+                {invalidQuays.map(({ quay, index }) =>
+                  <li key={index}>{quay.publicCode || `#${index + 1}`}</li>
+                )}
+              </ul>
+            </li>}
         </ul>
         { isNewStop
           ? <p>{translations.setMissingFieldsNewStop}</p>

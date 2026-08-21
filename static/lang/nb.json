@@ -326,6 +326,8 @@
   "required_fields_missing_action": "Sett de nødvendige verdiene for å kunne lagre ny versjon",
   "required_fields_missing_info": "Stoppestedet du forsøker å lagre mangler minst ett påkrevd felt:",
   "required_fields_missing_title": "Påkrevde felt ikke satt",
+  "required_key_value_missing": "Stedet mangler en gyldig nøkkelverdi (imported-id) på formatet {provider}:StopPlace:{localId}",
+  "required_key_value_missing_quays": "Følgende plattformer mangler en gyldig nøkkelverdi (imported-id) på formatet {provider}:Quay:{localId}:",
   "restore_parking": "Gjenopprett parkering",
   "save_dialog_message_from": "Når er denne versjonen av stoppestedet gyldig fra?",
   "save_dialog_message_to": "Når utløper denne versjonen av stoppestedet?",
