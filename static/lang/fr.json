@@ -384,6 +384,8 @@
   "required_fields_missing_action": "Veuillez renseigner les champs requis afin de pouvoir enregistrer une nouvelle version",
   "required_fields_missing_info": "Informations requises manquantes pour enregistrer :",
   "required_fields_missing_title": "Champs requis manquants",
+  "required_key_value_missing": "Le point d'arrêt n'a pas de valeur de clé valide (imported-id) au format {provider}:StopPlace:{localId}",
+  "required_key_value_missing_quays": "Les quais suivants n'ont pas de valeur de clé valide (imported-id) au format {provider}:Quay:{localId} :",
   "reservations" : "Réservation",
   "restore_parking": "Restaurer le parking",
   "save_dialog_message_from": "À partir de quand cette nouvelle version devient-elle valide ?",

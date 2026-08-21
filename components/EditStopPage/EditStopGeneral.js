@@ -58,6 +58,7 @@ import Settings from '../../singletons/SettingsManager';
 import { getIn, getIsCurrentVersionMax } from '../../utils/';
 import VersionsPopover from './VersionsPopover';
 import RequiredFieldsMissingDialog from '../Dialogs/RequiredFieldsMissingDialog';
+import { hasValidImportedId, getInvalidQuaysForImportedId } from '../../models/stopPlaceUtils';
 import Routes from '../../routes/';
 import {
   shouldMutateParking,
@@ -85,7 +86,9 @@ class EditStopGeneral extends React.Component {
     if (
       !stopPlace.name ||
       !stopPlace.name.trim().length ||
-      !stopPlace.stopPlaceType
+      !stopPlace.stopPlaceType ||
+      !hasValidImportedId(stopPlace.keyValues, 'StopPlace') ||
+      getInvalidQuaysForImportedId(stopPlace.quays).length > 0
     ) {
       this.setState({
         requiredFieldsMissingOpen: true
@@ -798,7 +801,9 @@ class EditStopGeneral extends React.Component {
             }}
             requiredMissing={{
               name: !stopPlace.name || !stopPlace.name.trim().length,
-              type: !stopPlace.stopPlaceType
+              type: !stopPlace.stopPlaceType,
+              keyValue: !hasValidImportedId(stopPlace.keyValues, 'StopPlace'),
+              invalidQuays: getInvalidQuaysForImportedId(stopPlace.quays)
             }}
             formatMessage={formatMessage}
             isNewStop={stopPlace.isNewStop}

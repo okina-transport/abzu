@@ -349,6 +349,8 @@
   "required_fields_missing_action": "Set the required fields in order to save new version of stop place",
   "required_fields_missing_info": "The stop place you are trying to save is missing at least one required field:",
   "required_fields_missing_title": "Required fields are missing",
+  "required_key_value_missing": "Stop place is missing a valid key value (imported-id) in the format {provider}:StopPlace:{localId}",
+  "required_key_value_missing_quays": "The following quays are missing a valid key value (imported-id) in the format {provider}:Quay:{localId}:",
   "restore_parking": "Restore parking",
   "save_dialog_message_from": "When is the new version of your stop valid from?",
   "save_dialog_message_to": "When does the new version expire?",

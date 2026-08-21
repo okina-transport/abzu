@@ -31,6 +31,18 @@ export const getImportedId = keyValues => {
   return [];
 };
 
+const IMPORTED_ID_FORMAT = type => new RegExp(`^[A-Za-z0-9_-]+:${type}:[A-Za-z0-9_-]+$`);
+
+export const hasValidImportedId = (keyValues, type) => {
+  const values = getImportedId(keyValues);
+  return values.length > 0 && IMPORTED_ID_FORMAT(type).test(values[0]);
+};
+
+export const getInvalidQuaysForImportedId = quays =>
+  (quays || [])
+    .map((quay, index) => ({ quay, index }))
+    .filter(({ quay }) => !hasValidImportedId(quay.keyValues, 'Quay'));
+
 export const getImportedName = keyValues => {
   if (!keyValues) return [];
 
