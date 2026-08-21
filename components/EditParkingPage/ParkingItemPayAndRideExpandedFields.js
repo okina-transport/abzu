@@ -24,7 +24,6 @@ import {parkingPaymentProcesses} from '../../models/parkingPaymentProcess';
 import { parkingFreeSetting } from '../../models/parkingFree';
 import {parkingLayouts} from '../../models/parkingLayout';
 import {Subheader, TextField} from 'material-ui';
-import RechargingAvailablePopover from '../EditStopPage/RechargingAvailablePopover';
 import LocalParking from 'material-ui/svg-icons/maps/local-parking';
 import {ActionAccessible} from 'material-ui/svg-icons';
 import Payment from 'material-ui/svg-icons/action/payment';
@@ -78,10 +77,6 @@ const parkingIconStyles = (topMargin = 15) => ({
 });
 
 const hasElements = list => list && list.length > 0;
-
-const hasValue = value => value !== null && value !== undefined;
-
-const getRechargingAvailableValue = value => hasValue(value) ? value : null;
 
 const parkingPaymentProcessSelectFieldValue = (parkingPaymentProcess) => {
     return hasElements(parkingPaymentProcess) ? parkingPaymentProcess.map(value => `${value}`) : [];
@@ -198,17 +193,28 @@ const ParkingItemPayAndRideExpandedFields = (props) => {
                             }
                         </Grid>
                         {!isBikeParkingType && <Grid item>
-                                <Subheader>{formatMessage({id: 'parking_recharging_sub_header'})}</Subheader>
+                                <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
+                                    <FormControlLabel
+                                        label={formatMessage({id: 'parking_recharging_sub_header'})}
+                                        style={{marginTop: 10}}
+                                        control={
+                                            <Checkbox
+                                                disabled={disabled || hasExpired}
+                                                checked={!!rechargingAvailable}
+                                                indeterminate={rechargingAvailable === null}
+                                                label={formatMessage({id: 'parking_recharging_sub_header'})}
+                                                onChange={(_e, checked) => {
+                                                    handleSetRechargingAvailable(checked);
+                                                    handleSetNumberOfSpacesWithRechargePoint(0);
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </Box>
                                 <Info>
                                     {formatMessage({id: 'parking_recharging_available_info'})}
                                 </Info>
                                 <Box display="flex" flexDirection="row" className={classes.boxFullWidth}>
-                                    <RechargingAvailablePopover
-                                        disabled={disabled}
-                                        hasExpired={hasExpired}
-                                        handleSetRechargingAvailable={handleSetRechargingAvailable}
-                                        handleSetNumberOfSpacesWithRechargePoint={handleSetNumberOfSpacesWithRechargePoint}
-                                        rechargingAvailableValue={getRechargingAvailableValue(rechargingAvailable)}/>
                                     <TextField
                                         disabled={!rechargingAvailable || disabled || hasExpired}
                                         floatingLabelText={formatMessage({id: 'parking_number_of_spaces_with_recharge_point'})}
