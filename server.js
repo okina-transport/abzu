@@ -120,6 +120,10 @@ convictPromise
       res.send(getPage());
     });
 
+    app.get(ENDPOINTBASE + Routes.FUSION_SEMI_AUTO, function(req, res) {
+      res.send(getPage());
+    });
+
     app.get(ENDPOINTBASE + '_health', function(req, res) {
       res.sendStatus(200);
     });
