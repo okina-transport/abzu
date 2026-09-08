@@ -28,6 +28,7 @@ import ImportAccessibilityPage from "./ImportAccessibilityPage";
 import ImportParkingGlobalPage from './import_parkings/ImportParkingGlobalPage';
 import ImportPOIGlobalPage from './import_poi/ImportPOIGlobalPage';
 import ImportStopPlacesNetexPage from './import_stop_places/ImportStopPlacesNetexPage';
+import FusionSemiAutoPage from './FusionSemiAutoPage';
 
 class RouterContainer extends React.Component {
   render() {
@@ -46,6 +47,7 @@ class RouterContainer extends React.Component {
         <Route path={path + Routes.IMPORT_POI} component={ImportPOIGlobalPage} />
         <Route path={path + Routes.IMPORT_TAD} component={ImportTADPage} />
         <Route path={path + Routes.IMPORT_STOP_PLACES} component={ImportStopPlacesNetexPage} />
+        <Route path={path + Routes.FUSION_SEMI_AUTO} component={FusionSemiAutoPage} />
       </Route>
     );
 

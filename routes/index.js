@@ -8,7 +8,8 @@ const Routes = {
   IMPORT_POI:'poi_import',
   IMPORT_TAD:'tad_import',
   IMPORT_PARKINGS: 'import_parkings',
-  IMPORT_STOP_PLACES: 'import_stop_places'
+  IMPORT_STOP_PLACES: 'import_stop_places',
+  FUSION_SEMI_AUTO: 'fusion_semi_auto'
 };
 
 module.exports = Routes;
