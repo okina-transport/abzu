@@ -40,6 +40,7 @@ import {MapsStoreMallDirectory} from "material-ui/svg-icons/index.es";
 import {PoiIcon} from "./MainPage/PoiIcon";
 import {MapsDirectionsBike} from "material-ui/svg-icons/index.es";
 import {ActionAccessibility} from "material-ui/svg-icons/index.es";
+import MergeTypeIcon from "material-ui/svg-icons/editor/merge-type";
 
 class Header extends React.Component {
   constructor(props) {
@@ -98,6 +99,9 @@ class Header extends React.Component {
       case 'GoToImportPOI':
         this.goToImportPOI();
         break;
+      case 'GoToFusionSemiAuto':
+        this.goToFusionSemiAuto();
+        break;
       case 'GoToImportStopPlaces':
         this.goToImportStopPlaces();
         break;
@@ -137,6 +141,10 @@ class Header extends React.Component {
 
   goToImportPOI() {
     this.props.dispatch(UserActions.navigateTo( Routes.IMPORT_POI, ''));
+  }
+
+  goToFusionSemiAuto() {
+    this.props.dispatch(UserActions.navigateTo( Routes.FUSION_SEMI_AUTO, ''));
   }
 
   goToImportTAD() {
@@ -201,6 +209,7 @@ class Header extends React.Component {
     const importCSVAccessibility = formatMessage({id: 'import_accessibility' })
     const importCSVParkings = formatMessage({id: 'import_parkings'})
     const importPOI = formatMessage({id: 'import_poi'})
+    const fusionSemiAuto = formatMessage({id: 'fusion_semi_auto'})
     const importTAD = formatMessage({id: 'import_tad'})
     const importStopPlaces = formatMessage({id: 'import_stop_places'})
     const expiredStopLabel = formatMessage({ id: 'show_expired_stops' });
@@ -217,6 +226,7 @@ class Header extends React.Component {
 
     const canImportInAbzu = roles.includes('canImportInAbzu');
     const isAdmin = roles.includes('ROLE_ADMINISTRATEUR');
+    const hasAutomaticStopMergeRole = roles.includes('automaticStopMerge');
 
     const tiamatEnv = getTiamatEnv();
     const logo = getLogo();
@@ -341,6 +351,19 @@ class Header extends React.Component {
                         style={{ fontSize: 12, padding: 0 }}
                     />
                   </React.Fragment>
+              )}
+              {(hasAutomaticStopMergeRole) && (
+                  <MenuItem
+                      leftIcon={<MergeTypeIcon color="#005A82" />}
+                      primaryText={fusionSemiAuto}
+                      href = {Routes.FUSION_SEMI_AUTO}
+                      onClick={() =>
+                          this.handleConfirmChangeRoute(
+                              this.goToFusionSemiAuto().bind(this),
+                              'GoToFusionSemiAuto'
+                          )}
+                      style={{ fontSize: 12, padding: 0 }}
+                  />
               )}
               <MenuItem
                 primaryText={settings}
