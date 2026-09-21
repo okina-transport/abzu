@@ -15,22 +15,36 @@ limitations under the Licence. */
 
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import { jsonArrayToCSV } from '../../utils/CSVHelper';
-import {
-  ColumnTransformersStopPlace,
-  ColumnTransformersQuays
-} from '../../models/columnTransformers';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import { getDarkColor } from '../../config/themeConfig';
 import dayjs from "dayjs";
 
+const EXPORT_TYPE_STOP_PLACES = 'STOP_PLACES';
+const EXPORT_TYPE_QUAYS = 'QUAYS';
+
+// The CSV exports are built by Tiamat, so that they contain all the stop places matching the search, and not only the displayed ones
+const getReportCsvExportUrl = () => {
+  const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
+  return tiamatBaseUrl + "report/csv";
+};
+
+// Tiamat expects the arguments of the stopPlace GraphQL query
+const toSearchArguments = queryVariables => {
+  const { withDuplicateImportedIds, ...otherVariables } = queryVariables || {};
+  return {
+    ...otherVariables,
+    withDuplicatedQuayImportedIds: withDuplicateImportedIds
+  };
+};
+
 class ReportPageFooter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      isExporting: false
     };
   }
 
@@ -42,12 +56,8 @@ class ReportPageFooter extends React.Component {
     });
   }
 
-  downloadCSV(items, columns, filename, transformer) {
-    let csv = jsonArrayToCSV(items, columns, ';', transformer);
-    const BOM = "\uFEFF";
-    const content = BOM + csv;
+  downloadCSV(blob, filename) {
     let element = document.createElement('a');
-    let blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     let dateNow = dayjs().format('DD-MM-YYYY');
     let fullFilename = filename + '-' + dateNow + '.csv';
     let url = URL.createObjectURL(blob);
@@ -64,22 +74,45 @@ class ReportPageFooter extends React.Component {
     element.dispatchEvent(event);
   }
 
-  handleGetCSVStopPlace() {
-    const { results, stopPlaceColumnOptions } = this.props;
-    this.downloadCSV(
-      results,
-      stopPlaceColumnOptions,
-      'results-stop-places',
-      ColumnTransformersStopPlace
-    );
+  async exportCSV(type, columnOptions, filename) {
+    const { lastQueryVariables } = this.props;
     this.setState({
-      open: false
+      open: false,
+      isExporting: true
     });
+    try {
+      const response = await fetch(getReportCsvExportUrl(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem("ABZU::jwt")
+        },
+        body: JSON.stringify({
+          type,
+          columns: columnOptions.filter(option => option.checked).map(option => option.id),
+          arguments: toSearchArguments(lastQueryVariables)
+        })
+      });
+      if (!response.ok) {
+        throw new Error('Report CSV export failed with status ' + response.status);
+      }
+      this.downloadCSV(await response.blob(), filename);
+    } catch (err) {
+      console.error('Unable to export the report results as CSV', err);
+    } finally {
+      this.setState({
+        isExporting: false
+      });
+    }
+  }
+
+  handleGetCSVStopPlace() {
+    const { stopPlaceColumnOptions } = this.props;
+    this.exportCSV(EXPORT_TYPE_STOP_PLACES, stopPlaceColumnOptions, 'results-stop-places');
   }
 
   handleGetCSVQuays() {
-    const { results, quaysColumnOptions } = this.props;
-    let items = [];
+    const { quaysColumnOptions } = this.props;
     let finalColumns = quaysColumnOptions.slice();
     let prependedColumns = ['stopPlaceId', 'stopPlaceName'];
 
@@ -90,24 +123,7 @@ class ReportPageFooter extends React.Component {
       });
     });
 
-    results.forEach(result => {
-      const quays = result.quays.map(quay => ({
-        ...quay,
-        stopPlaceId: result.id,
-        stopPlaceName: result.name
-      }));
-      items = items.concat.apply(items, quays);
-    });
-
-    this.downloadCSV(
-      items,
-      finalColumns,
-      'results-quays',
-      ColumnTransformersQuays
-    );
-    this.setState({
-      open: false
-    });
+    this.exportCSV(EXPORT_TYPE_QUAYS, finalColumns, 'results-quays');
   }
 
   render() {
@@ -179,8 +195,8 @@ class ReportPageFooter extends React.Component {
         <div style={{ marginRight: 20, display: 'flex' }}>
           <RaisedButton
             onClick={this.handleExportOpen.bind(this)}
-            label={formatMessage({ id: 'export_to_csv' })}
-            disabled={!totalCount}
+            label={formatMessage({ id: this.state.isExporting ? 'loading' : 'export_to_csv' })}
+            disabled={!totalCount || this.state.isExporting}
             primary={true}
           />
           <Popover

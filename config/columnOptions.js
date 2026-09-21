@@ -99,6 +99,14 @@ export const columnOptionsStopPlace = [
     checked: false
   },
   {
+    id: 'inseeCode',
+    checked: false
+  },
+  {
+    id: 'mergeId',
+    checked: false
+  },
+  {
     id: 'parking',
     checked: false
   },
