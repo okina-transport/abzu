@@ -274,6 +274,9 @@ Fragments.stopPlace = {
           geometry {
               coordinates
           }
+          inseeCode
+          mergeId
+          provider
           quays {
               ...VerboseQuay
           }
@@ -415,6 +418,9 @@ Fragments.parentStopPlace = {
         geometry {
             coordinates
         }
+        inseeCode
+        mergeId
+        provider
         validBetween {
             fromDate
             toDate
