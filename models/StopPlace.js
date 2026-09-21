@@ -112,6 +112,18 @@ class StopPlace {
         clientStop.description = stop.description.value;
       }
 
+      if (stop.inseeCode) {
+        clientStop.inseeCode = stop.inseeCode;
+      }
+
+      if (stop.mergeId) {
+        clientStop.mergeId = stop.mergeId;
+      }
+
+      if (stop.provider) {
+        clientStop.provider = stop.provider;
+      }
+
       if (stop.placeEquipments) {
         clientStop.placeEquipments = simplifyPlaceEquipment(stop.placeEquipments);
       }

@@ -272,6 +272,18 @@ class ReportPage extends React.Component {
         });
     }
 
+    getStopPlaceColumnOptionsWithDependents() {
+        const options = this.state.columnOptionsStopPlace;
+        const result = [];
+        options.forEach(option => {
+            result.push(option);
+            if (option.id === 'mergeId' && option.checked) {
+                result.push({id: 'provider', checked: true});
+            }
+        });
+        return result;
+    }
+
     handleColumnQuaysCheck(id, checked) {
         const columnOptions = this.state.columnOptionsQuays.slice();
 
@@ -437,6 +449,9 @@ class ReportPage extends React.Component {
                 variables: queryVariables
             })
             .then(response => {
+                this.setState({
+                    lastQueryVariables: queryVariables
+                });
                 const stopPlaces = response.data.stopPlace;
                 const stopPlaceIds = [];
                 for (let i = 0; i < stopPlaces.length; i++) {
@@ -569,22 +584,24 @@ class ReportPage extends React.Component {
         const {intl, topographicalPlaces, results: dataSource, duplicateInfo} = this.props;
         const {locale, formatMessage} = intl;
         const results = hasParking ? dataSource.filter(stopPlace => stopPlace.parking && stopPlace.parking.length) : dataSource;
+        const stopPlaceColumnOptionsWithDependents = this.getStopPlaceColumnOptionsWithDependents();
+        const mergeIdColumnChecked = !!this.state.columnOptionsStopPlace.find(option => option.id === 'mergeId' && option.checked);
 
         let resultPage =
             <ReportResultView
                 activePageIndex={activePageIndex}
                 intl={intl}
                 results={results}
-                stopPlaceColumnOptions={this.state.columnOptionsStopPlace}
+                stopPlaceColumnOptions={stopPlaceColumnOptionsWithDependents}
                 quaysColumnOptions={this.state.columnOptionsQuays}
                 duplicateInfo={duplicateInfo}
             />;
 
         let resultHeader =
             <div>
-                <div style={{display: 'flex'}}>
+                <div style={{display: 'flex', alignItems: 'center'}}>
                     <ColumnFilterPopover
-                        style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
+                        style={{marginLeft: 2, transform: 'scale(0.9)'}}
                         columnOptions={this.state.columnOptionsStopPlace}
                         handleColumnCheck={this.handleColumnStopPlaceCheck.bind(this)}
                         buttonLabel={formatMessage({
@@ -596,7 +613,7 @@ class ReportPage extends React.Component {
                         selectAllLabel={formatMessage({id: 'all'})}
                     />
                     <ColumnFilterPopover
-                        style={{marginLeft: 2, marginTop: 5, transform: 'scale(0.9)'}}
+                        style={{marginLeft: 2, transform: 'scale(0.9)'}}
                         columnOptions={this.state.columnOptionsQuays}
                         handleColumnCheck={this.handleColumnQuaysCheck.bind(this)}
                         buttonLabel={formatMessage({id: 'column_filter_label_quays'})}
@@ -605,8 +622,7 @@ class ReportPage extends React.Component {
                         handleCheckAll={this.handleCheckAllColumnQuays.bind(this)}
                         selectAllLabel={formatMessage({id: 'all'})}
                     />
-                </div>
-                <div style={{display: 'flex'}}>
+
                     {nearbyStopPlaces || detectMultiModalPoints || withDistantQuays ?
                         <TextField
                             floatingLabelText={formatMessage({
@@ -621,12 +637,13 @@ class ReportPage extends React.Component {
                             }}
                         /> : ""
                     }
-                    {nearbyStopPlaces || detectMultiModalPoints || withDistantQuays || stopPlacesWithoutQuay || stopPlacesWithMultipleProducers || quaysWithMultipleProducers ?
+                    {nearbyStopPlaces || detectMultiModalPoints || withDistantQuays || stopPlacesWithoutQuay || stopPlacesWithMultipleProducers || quaysWithMultipleProducers || mergeIdColumnChecked ?
                         <TextField
                             floatingLabelText={formatMessage({
                                 id: 'organisation_name'
                             })}
                             type="text"
+                            style={{marginLeft: 2,transform: 'scale(0.9)'}}
                             defaultValue={this.state.organisationName}
                             onChange={(e, v) => {
                                 this.handleOrganisationNameChange(v);
@@ -770,8 +787,9 @@ class ReportPage extends React.Component {
 
                 <ReportPageFooter
                     results={results}
+                    lastQueryVariables={this.state.lastQueryVariables}
                     intl={intl}
-                    stopPlaceColumnOptions={this.state.columnOptionsStopPlace}
+                    stopPlaceColumnOptions={stopPlaceColumnOptionsWithDependents}
                     quaysColumnOptions={this.state.columnOptionsQuays}
                     handleSelectPage={this.handleSelectPage.bind(this)}
                     activePageIndex={activePageIndex}
