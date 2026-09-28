@@ -85,6 +85,12 @@ module.exports = new Promise(function (resolve, reject) {
       default: undefined,
       env: 'MAPBOX_TARIFF_ZONES_STYLE'
     },
+    thunderforestApiKey: {
+      doc: 'Thunderforest API key used for Atlas map tiles',
+      format: String,
+      default: undefined,
+      env: 'THUNDERFOREST_API_KEY'
+    },
     sentryDSN: {
       doc: 'SENTRY_DSN - found in https://sentry.io/settings/{organisation_slug}/{project_slug}/keys/',
       format: String,

@@ -70,6 +70,7 @@ convictPromise
           hostname: process.env.HOSTNAME,
           mapboxTariffZonesStyle: convict.get('mapboxTariffZonesStyle'),
           mapboxAccessToken: convict.get('mapboxAccessToken'),
+          thunderforestApiKey: convict.get('thunderforestApiKey'),
           sentryDSN: convict.get('sentryDSN'),
           defaultMapCentroid: JSON.parse(convict.get('defaultMapCentroid'))
         };
