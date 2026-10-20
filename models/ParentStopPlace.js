@@ -142,6 +142,10 @@ class ParentStopPlace {
         clientStop.provider = stop.provider;
       }
 
+      if (stop.created) {
+        clientStop.created = stop.created;
+      }
+
       if (stop.placeEquipments) {
         clientStop.placeEquipments = stop.placeEquipments;
       }

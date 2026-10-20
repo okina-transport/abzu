@@ -202,6 +202,7 @@ export const ColumnTransformerStopPlaceJsx = {
     }
     return <MdNotChecked color="#B71C1C" />;
   },
+  created: stop => (stop.created ? dayjs(stop.created).format('YYYY-MM-DD') : ''),
   tags: stop =>
     <TagTray
       tags={stop.tags}
@@ -402,6 +403,7 @@ export const ColumnTranslations = {
     sanitaryEquipment: 'WC',
     generalSign: 'Transportskilt',
     tags: 'Tagger',
+    created: 'Opprettelsesdato',
     notAssigned: 'N/A'
   },
   en: {
@@ -427,6 +429,7 @@ export const ColumnTranslations = {
     sanitaryEquipment: 'WC',
     generalSign: 'Transport sign',
     tags: 'Tags',
+    created: 'Creation date',
     notAssigned: 'N/A'
   },
   fr: {
@@ -452,6 +455,7 @@ export const ColumnTranslations = {
     sanitaryEquipment: 'WC',
     generalSign: 'Information voyageur à l\'arrêt',
     tags: 'Tags',
+    created: 'Date de création',
     notAssigned: 'N/R'
   }
 };

@@ -277,6 +277,7 @@ Fragments.stopPlace = {
           inseeCode
           mergeId
           provider
+          created
           quays {
               ...VerboseQuay
           }
@@ -421,6 +422,7 @@ Fragments.parentStopPlace = {
         inseeCode
         mergeId
         provider
+        created
         validBetween {
             fromDate
             toDate
