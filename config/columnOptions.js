@@ -137,5 +137,9 @@ export const columnOptionsStopPlace = [
   {
     id: 'tags',
     checked: true
+  },
+  {
+    id: 'created',
+    checked: false
   }
 ];
