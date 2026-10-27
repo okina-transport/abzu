@@ -27,7 +27,6 @@ class ImportParkingPage extends Component{
             parkAndRideDetection : false
 
         };
-        this.fileReader = new FileReader();
         this.handleOnChange = this.handleOnChange.bind(this);
         this.handleOnSubmit = this.handleOnSubmit.bind(this);
         this.handleParkingTypeSelectChange = this.handleParkingTypeSelectChange.bind(this);
@@ -58,42 +57,39 @@ class ImportParkingPage extends Component{
 
 
         if(this.state.file !== ""){
-            this.fileReader.onload = (event) => {
-                const csvOutput = event.target.result;
-                const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-                const url = tiamatBaseUrl + "parking/parking_async_import_csv";
+            const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
+            const url = tiamatBaseUrl + "parking/parking_async_import_csv";
 
-                const bodyFormData = new FormData();
+            const bodyFormData = new FormData();
 
-                bodyFormData.append('file', csvOutput);
+            // Envoi du fichier brut (sans décodage navigateur) pour que Tiamat puisse contrôler l'encodage
+            bodyFormData.append('file', this.state.file, this.state.file.name);
 
-                bodyFormData.append('file_name',this.state.file.name);
+            bodyFormData.append('file_name',this.state.file.name);
 
-                bodyFormData.append('parking_type', this.state.parkingType);
-                bodyFormData.append('parking_layout', this.state.parkingLayout);
-                bodyFormData.append('park_and_ride_detection', this.state.parkAndRideDetection);
+            bodyFormData.append('parking_type', this.state.parkingType);
+            bodyFormData.append('parking_layout', this.state.parkingLayout);
+            bodyFormData.append('park_and_ride_detection', this.state.parkAndRideDetection);
 
 
-                const username = getIn(this.props.kc, ['tokenParsed', 'preferred_username'], '');
-                bodyFormData.append('user', username);
+            const username = getIn(this.props.kc, ['tokenParsed', 'preferred_username'], '');
+            bodyFormData.append('user', username);
 
-                httpCall(
-                    url,
-                    {
-                        method: 'post',
-                        headers: {
-                            "Authorization": "Bearer " + localStorage.getItem("ABZU::jwt"),
-                            "Content-Type": "multipart/form-data; charset=utf-8"
-                        },
-                        data: bodyFormData
-                    }).then(response=>{
-                        console.log("response =>", response)
-                        this.setState({result:"Import démarré"});
-                    }).catch(error =>{
-                        this.setState({errors:error});
-                    });
-            };
-            this.fileReader.readAsText(this.state.file);
+            httpCall(
+                url,
+                {
+                    method: 'post',
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("ABZU::jwt"),
+                        "Content-Type": "multipart/form-data; charset=utf-8"
+                    },
+                    data: bodyFormData
+                }).then(response=>{
+                    console.log("response =>", response)
+                    this.setState({result:"Import démarré"});
+                }).catch(error =>{
+                    this.setState({errors:error});
+                });
         }
     }
 
