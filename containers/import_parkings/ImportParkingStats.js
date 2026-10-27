@@ -7,7 +7,13 @@ import React, {Component} from 'react';
 const ERROR_TYPE_MESSAGE_IDS = {
     "TEMPLATE": "import_error_type_template",
     "ENCODING": "import_error_type_encoding",
-    "MISSING_DATA": "import_error_type_missing_data"
+    "MISSING_DATA": "import_error_type_missing_data",
+    "DUPLICATE_ID_FILE": "import_error_type_duplicate_id_file",
+    "INVALID_FORMAT_NUMBER": "import_error_type_invalid_format_number",
+    "INVALID_FORMAT_COORDINATE": "import_error_type_invalid_format_coordinate",
+    "INVALID_FORMAT_ENUM": "import_error_type_invalid_format_enum",
+    "INVALID_FORMAT_DATE": "import_error_type_invalid_format_date",
+    "NO_DATA_ROWS": "import_error_type_no_data_rows_parking"
 };
 
 class ImportParkingStats extends Component{
@@ -64,6 +70,25 @@ class ImportParkingStats extends Component{
 
     componentWillUnmount() {
         clearInterval(this.intervalId); // Clear interval on component unmount
+    }
+
+    formatError(err, formatMessage) {
+        if (err.code === 'MISSING_DATA' && err.params && err.params.field) {
+            return formatMessage({id: 'import_error_missing_data_detail'}, err.params);
+        }
+        const message = ERROR_TYPE_MESSAGE_IDS[err.code] ? formatMessage({id: ERROR_TYPE_MESSAGE_IDS[err.code]}, err.params) : err.code;
+        if (err.code !== 'TEMPLATE' || !err.params) {
+            return message;
+        }
+        const { unExpectedColumns, missingColumns, orderIssue } = err.params;
+        return (
+            <React.Fragment>
+                <div>{message}</div>
+                {unExpectedColumns ? <div>{formatMessage({id: 'import_error_template_unexpected_columns'}, {columns: unExpectedColumns})}</div> : null}
+                {missingColumns ? <div>{formatMessage({id: 'import_error_template_missing_columns'}, {columns: missingColumns})}</div> : null}
+                {orderIssue === 'true' ? <div>{formatMessage({id: 'import_error_template_order_issue'})}</div> : null}
+            </React.Fragment>
+        );
     }
 
     formatDate(timestamp) {
@@ -141,10 +166,11 @@ class ImportParkingStats extends Component{
                                 {item.errors && item.errors.length > 0
                                     ? item.errors.map((err, index) => (
                                         <div key={index}>
-                                            {ERROR_TYPE_MESSAGE_IDS[err] ? formatMessage({id: ERROR_TYPE_MESSAGE_IDS[err]}) : err}
+                                            {this.formatError(err, formatMessage)}
                                         </div>
                                     ))
                                     : null}
+                                {item.userMessage ? <div>{item.userMessage}</div> : null}
                             </td>
                         </tr>
                     ))}
