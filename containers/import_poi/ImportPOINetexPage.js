@@ -20,7 +20,6 @@ class ImportPOINetexPage extends Component{
       result : "",
       loading: false
     };
-    this.fileReader = new FileReader();
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleOnSubmit = this.handleOnSubmit.bind(this);
   }
@@ -34,38 +33,35 @@ class ImportPOINetexPage extends Component{
 
     if(this.state.file !== ""){
       this.setState({ loading: true });
-      this.fileReader.onload = (event) => {
-        const csvOutput = event.target.result;
-        const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
-        const url = tiamatBaseUrl + "netex_poi/poi_async_import_netex";
+      const tiamatBaseUrl = window.config.tiamatBaseUrl.substring(0, window.config.tiamatBaseUrl.indexOf("graphql"));
+      const url = tiamatBaseUrl + "netex_poi/poi_async_import_netex";
 
-        const bodyFormData = new FormData();
+      const bodyFormData = new FormData();
 
-        bodyFormData.append('file', csvOutput);
+      // Send the raw file (no FileReader.readAsText) so that Tiamat receives the original bytes
+      // and can detect a non UTF-8 encoding.
+      bodyFormData.append('file', this.state.file, this.state.file.name);
 
-        bodyFormData.append('file_name',this.state.file.name);
+      bodyFormData.append('file_name', this.state.file.name);
 
-        const username = getIn(this.props.kc, ['tokenParsed', 'preferred_username'], '');
-        bodyFormData.append('provider', username);
-        bodyFormData.append('folder', "");
+      const username = getIn(this.props.kc, ['tokenParsed', 'preferred_username'], '');
+      bodyFormData.append('provider', username);
+      bodyFormData.append('folder', "");
 
-        httpCall(
-          url,
-          {
-            method: 'post',
-            headers: {
-              "Authorization": "Bearer " + localStorage.getItem("ABZU::jwt"),
-              "Content-Type": "multipart/form-data; charset=utf-8"
-            },
-            data: bodyFormData
-          }).then(response=>{
-          console.log("response =>", response)
-          this.setState({result:"Import démarré", loading: false});
-        }).catch(error =>{
-          this.setState({errors:error, loading: false});
-        });
-      };
-      this.fileReader.readAsText(this.state.file);
+      httpCall(
+        url,
+        {
+          method: 'post',
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("ABZU::jwt"),
+            "Content-Type": "multipart/form-data; charset=utf-8"
+          },
+          data: bodyFormData
+        }).then(response=>{
+        this.setState({result:"Import démarré", loading: false});
+      }).catch(error =>{
+        this.setState({errors:error, loading: false});
+      });
     }
   }
 
