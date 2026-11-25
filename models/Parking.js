@@ -27,14 +27,17 @@ class Parking {
     this.userDefinedCoordinates = userDefinedCoordinates;
   }
 
+  findSpace(userType) {
+    const parkingProperties = this.parking.parkingProperties;
+    if (!parkingProperties || !parkingProperties.length) {
+      return undefined;
+    }
+    return (parkingProperties[0].spaces || []).find(v => v.parkingUserType === userType);
+  }
+
   findNumberOfSpaces(userType, lookupKey) {
-    return (this.parking.parkingProperties !== undefined && this.parking.parkingProperties.length > 0)
-      ? this.parking.parkingProperties
-          .slice()
-          .shift()
-          .spaces
-          .find(v => v.parkingUserType === userType)[lookupKey]
-      : 0;
+    const space = this.findSpace(userType);
+    return space ? space[lookupKey] : 0;
   }
 
   findNumberOfSpacesInParkingArea(areaType) {
@@ -48,11 +51,8 @@ class Parking {
   }
 
   get numberOfSpaces() {
-    if (this.parking.parkingProperties !== undefined && this.parking.parkingProperties.length) {
-      return this.findNumberOfSpaces('allUsers', 'numberOfSpaces');
-    } else {
-      return this.parking.totalCapacity;
-    }
+    const allUsersSpace = this.findSpace('allUsers');
+    return allUsersSpace ? allUsersSpace.numberOfSpaces : this.parking.totalCapacity;
   }
 
   get numberOfSpacesWithRechargePoint() {
@@ -76,11 +76,12 @@ class Parking {
       return this.parking.parkingType;
     }
 
-    if (this.parking.parkingVehicleTypes.includes(PARKING_VEHICLE_TYPE.CAR)) {
+    const parkingVehicleTypes = this.parking.parkingVehicleTypes || [];
+    if (parkingVehicleTypes.includes(PARKING_VEHICLE_TYPE.CAR)) {
       return PARKING_TYPE.PARK_AND_RIDE;
     }
 
-    if (this.parking.parkingVehicleTypes.includes(PARKING_VEHICLE_TYPE.PEDAL_CYCLE)) {
+    if (parkingVehicleTypes.includes(PARKING_VEHICLE_TYPE.PEDAL_CYCLE)) {
       return PARKING_TYPE.BIKE_PARKING;
     }
 

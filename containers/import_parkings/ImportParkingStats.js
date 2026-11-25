@@ -14,7 +14,8 @@ const ERROR_TYPE_MESSAGE_IDS = {
     "INVALID_FORMAT_ENUM": "import_error_type_invalid_format_enum",
     "INVALID_FORMAT_DATE": "import_error_type_invalid_format_date",
     "NO_DATA_ROWS": "import_error_type_no_data_rows_parking",
-    "TOO_MANY_ERRORS": "import_error_type_too_many_errors"
+    "TOO_MANY_ERRORS": "import_error_type_too_many_errors",
+    "NO_DATA_IMPORTED": "import_error_type_no_data_imported_parking"
 };
 
 const MAX_VISIBLE_ERRORS = 10;
@@ -110,6 +111,7 @@ class ImportParkingStats extends Component{
                 <div>{message}</div>
                 {line ? <div>{formatMessage({id: column ? 'import_error_xml_location_with_column' : 'import_error_xml_location'}, {line, column})}</div> : null}
                 {detail ? <div>{formatMessage({id: 'import_error_xml_detail'}, {detail})}</div> : null}
+                {err.params.field === 'SiteFrame' ? <div>{formatMessage({id: 'import_error_template_parking_site_frame'}, err.params)}</div> : null}
                 {unExpectedColumns ? <div>{formatMessage({id: 'import_error_template_unexpected_columns'}, {columns: unExpectedColumns})}</div> : null}
                 {missingColumns ? <div>{formatMessage({id: 'import_error_template_missing_columns'}, {columns: missingColumns})}</div> : null}
                 {orderIssue === 'true' ? <div>{formatMessage({id: 'import_error_template_order_issue'})}</div> : null}
