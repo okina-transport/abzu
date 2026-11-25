@@ -13,7 +13,8 @@ const ERROR_TYPE_MESSAGE_IDS = {
     "INVALID_FORMAT_COORDINATE": "import_error_type_invalid_format_coordinate",
     "INVALID_FORMAT_ENUM": "import_error_type_invalid_format_enum",
     "NO_DATA_ROWS": "import_error_type_no_data_rows_poi",
-    "TOO_MANY_ERRORS": "import_error_type_too_many_errors"
+    "TOO_MANY_ERRORS": "import_error_type_too_many_errors",
+    "UNEXPECTED": "import_error_type_unexpected"
 };
 
 const MAX_VISIBLE_ERRORS = 10;
@@ -93,7 +94,8 @@ class ImportPOIStats extends Component{
         if (err.code === 'MISSING_DATA' && err.params && err.params.field) {
             return formatMessage({id: 'import_error_missing_data_detail'}, err.params);
         }
-        const message = ERROR_TYPE_MESSAGE_IDS[err.code] ? formatMessage({id: ERROR_TYPE_MESSAGE_IDS[err.code]}, err.params) : err.code;
+        // an error without message (unknown code) is shown as an unexpected error
+        const message = formatMessage({id: ERROR_TYPE_MESSAGE_IDS[err.code] || 'import_error_type_unexpected'}, err.params);
         if (err.code !== 'TEMPLATE') {
             return message;
         }

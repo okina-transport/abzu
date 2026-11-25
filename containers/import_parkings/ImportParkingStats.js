@@ -15,7 +15,20 @@ const ERROR_TYPE_MESSAGE_IDS = {
     "INVALID_FORMAT_DATE": "import_error_type_invalid_format_date",
     "NO_DATA_ROWS": "import_error_type_no_data_rows_parking",
     "TOO_MANY_ERRORS": "import_error_type_too_many_errors",
-    "NO_DATA_IMPORTED": "import_error_type_no_data_imported_parking"
+    "NO_DATA_IMPORTED": "import_error_type_no_data_imported_parking",
+    "HTTP_ERROR": "import_error_type_http_error",
+    "NOT_GBFS_FILE": "import_error_type_not_gbfs_file",
+    "UNSUPPORTED_GBFS_VERSION": "import_error_type_unsupported_gbfs_version",
+    "MISSING_REQUIRED_GBFS_FEED": "import_error_type_missing_required_gbfs_feed",
+    "MISSING_OPTIONAL_GBFS_FEED": "import_warning_missing_optional_gbfs_feed",
+    "INVALID_JSON": "import_error_type_invalid_json",
+    "UNEXPECTED": "import_error_type_unexpected"
+};
+
+// duplicated ids of a GBFS feed, by id field
+const GBFS_DUPLICATE_ID_MESSAGE_IDS = {
+    "station_id": "import_error_gbfs_duplicate_station_id",
+    "vehicle_type_id": "import_error_gbfs_duplicate_vehicle_type_id"
 };
 
 const MAX_VISIBLE_ERRORS = 10;
@@ -77,11 +90,40 @@ class ImportParkingStats extends Component{
         clearInterval(this.intervalId); // Clear interval on component unmount
     }
 
+    /**
+     * Error on a field of a GBFS file, held or not by a station, a vehicle type or a pricing plan.
+     * The message without entity uses the id suffixed by "_no_entity".
+     */
+    formatGbfsFieldError(messageId, params, formatMessage) {
+        const { file, entity, entityId, position, field } = params;
+        if (!entity) {
+            return formatMessage({id: messageId + '_no_entity'}, {file, field});
+        }
+        const entityLabel = formatMessage({id: 'gbfs_entity_' + entity});
+        const entityRef = entityId || formatMessage({id: 'gbfs_entity_position'}, {position});
+        return formatMessage({id: messageId}, {file, entityLabel, entityRef, field});
+    }
+
     formatError(err, formatMessage) {
+        if (err.code === 'FIELD_TOO_LONG' && err.params && err.params.file) {
+            const { file, entity, entityId, position, field, length, maxLength } = err.params;
+            const values = {file, field, length: Number(length), maxLength: Number(maxLength)};
+            if (entity !== 'station') {
+                return formatMessage({id: 'import_error_gbfs_field_too_long_no_entity'}, values);
+            }
+            const entityRef = entityId || formatMessage({id: 'gbfs_entity_position'}, {position});
+            return formatMessage({id: 'import_error_gbfs_station_field_too_long'}, {...values, entityRef});
+        }
         if (err.code === 'FIELD_TOO_LONG') {
             const { field, line, entity, entityId, length, maxLength } = err.params || {};
             return formatMessage({id: line ? 'import_error_field_too_long' : 'import_error_field_too_long_no_line'},
                 {field: field || '', line, entity: entity || '', entityId: entityId || '', length: length || '', maxLength: maxLength || ''});
+        }
+        if (err.code === 'FIELD_TRUNCATED' && err.params && err.params.entity === 'station' && err.params.field === 'address') {
+            const { entityId, position, originalLength, maxLength } = err.params;
+            const entityRef = entityId || formatMessage({id: 'gbfs_entity_position'}, {position});
+            return formatMessage({id: 'import_warning_gbfs_station_address_truncated'},
+                {entityRef, originalLength: Number(originalLength), maxLength: Number(maxLength)});
         }
         if (err.code === 'FIELD_TRUNCATED') {
             const { field, entityId, originalLength, maxLength } = err.params || {};
@@ -98,10 +140,47 @@ class ImportParkingStats extends Component{
             return formatMessage({id: line ? 'import_error_missing_data_netex_detail' : 'import_error_missing_data_netex_detail_no_line'},
                 {field, line, entity, entityId: entityId || ''});
         }
+        if (err.code === 'INVALID_FORMAT_COORDINATE' && err.params && err.params.file) {
+            const { entityId, position, coordinates } = err.params;
+            const entityRef = entityId || formatMessage({id: 'gbfs_entity_position'}, {position});
+            return formatMessage({id: 'import_error_gbfs_invalid_station_coordinates'}, {entityRef, coordinates});
+        }
+        if (err.code === 'DUPLICATE_ID_FILE' && err.params && GBFS_DUPLICATE_ID_MESSAGE_IDS[err.params.field]) {
+            return formatMessage({id: GBFS_DUPLICATE_ID_MESSAGE_IDS[err.params.field]}, {id: err.params.errorValue});
+        }
+        if (err.code === 'NO_DATA_ROWS' && err.params && err.params.file) {
+            return formatMessage({id: 'import_error_gbfs_no_station'}, {file: err.params.file});
+        }
+        if (err.code === 'MISSING_DATA' && err.params && err.params.file && !err.params.field) {
+            return formatMessage({id: 'import_warning_gbfs_optional_feed_errors'}, {file: err.params.file});
+        }
+        if (err.code === 'MISSING_REQUIRED_FIELD' && err.params) {
+            return this.formatGbfsFieldError('import_error_gbfs_missing_required_field', err.params, formatMessage);
+        }
+        if (err.code === 'MISSING_OPTIONAL_FIELD' && err.params) {
+            const { entity, entityId, position, field } = err.params;
+            if (entity === 'station' && field === 'capacity') {
+                const entityRef = entityId || formatMessage({id: 'gbfs_entity_position'}, {position});
+                return formatMessage({id: 'import_warning_gbfs_station_missing_capacity'}, {entityRef});
+            }
+            return this.formatGbfsFieldError('import_warning_gbfs_missing_optional_field', err.params, formatMessage);
+        }
+        if (err.code === 'INVALID_FORMAT_NUMBER' && err.params && err.params.file) {
+            const messageId = err.params.expected === 'integer' ? 'import_error_gbfs_invalid_integer' : 'import_error_gbfs_invalid_number';
+            return this.formatGbfsFieldError(messageId, err.params, formatMessage);
+        }
+        if (err.code === 'ENCODING' && err.params && err.params.file) {
+            return formatMessage({id: 'import_error_type_encoding_file'}, {file: err.params.file});
+        }
         if (err.code === 'MISSING_DATA' && err.params && err.params.field) {
             return formatMessage({id: 'import_error_missing_data_detail'}, err.params);
         }
-        const message = ERROR_TYPE_MESSAGE_IDS[err.code] ? formatMessage({id: ERROR_TYPE_MESSAGE_IDS[err.code]}, err.params) : err.code;
+        if (err.code === 'HTTP_ERROR' && err.params && err.params.file && !err.params.httpStatus) {
+            // the server could not be reached: there is no HTTP status
+            return formatMessage({id: 'import_error_type_http_error_no_status'}, {file: err.params.file});
+        }
+        // an error without message (unknown code) is shown as an unexpected error
+        const message = formatMessage({id: ERROR_TYPE_MESSAGE_IDS[err.code] || 'import_error_type_unexpected'}, err.params);
         if (err.code !== 'TEMPLATE' || !err.params) {
             return message;
         }
